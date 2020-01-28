@@ -66,77 +66,77 @@ public class Character {
 	public void removeSkill(String skill) {
 		this.listSkills.remove(skill);
 	}
-	
+
+	public String getId() {
+		return id;
+	}
+
 	public void setId(String id) {
 		this.id = id;
-	}	
-	
-	public String getId() {
-		return this.id;
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public String getName() {
-		return this.name;
+
+	public String getRace() {
+		return race;
 	}
-	
+
 	public void setRace(String race) {
 		this.race = race;
 	}
-	
-	public String getRace() {
-		return this.race;
+
+	public int getBaseDamage() {
+		return baseDamage;
 	}
-	
+
 	public void setBaseDamage(int baseDamage) {
 		this.baseDamage = baseDamage;
 	}
-	
-	public int getBaseDamage() {
-		return this.baseDamage;
+
+	public int getHp() {
+		return hp;
 	}
-	
+
 	public void setHp(int hp) {
 		this.hp = hp;
 	}
-	
-	public int getHp() {
-		return this.hp;
+
+	public int getHpMax() {
+		return hpMax;
 	}
-		
+
 	public void setHpMax(int hpMax) {
 		this.hpMax = hpMax;
 	}
-	
-	public int getHpMax() {
-		return this.hpMax = hpMax;
-	}
-	
-	public void setListSkills(List<String> listSkills) {
-		this.listSkills = listSkills; 
-	}
-	
+
 	public List<String> getListSkills() {
-		return this.listSkills;
+		return listSkills;
 	}
-	
-	public void setListItems(List<String> listItems) {
-		this.listItems = listItems; 
+
+	public void setListSkills(List<String> listSkills) {
+		this.listSkills = listSkills;
 	}
-	
+
 	public List<String> getListItems() {
-		return this.listItems;
+		return listItems;
 	}
-	
+
+	public void setListItems(List<String> listItems) {
+		this.listItems = listItems;
+	}
+
+	public int getItemsMax() {
+		return itemsMax;
+	}
+
 	public void setItemsMax(int itemsMax) {
 		this.itemsMax = itemsMax;
-	}
-	
-	public int getItemsMax() {
-		return this.itemsMax;
 	}
 
 }
