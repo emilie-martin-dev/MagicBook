@@ -4,43 +4,43 @@ import java.util.ArrayList;
 
 public class Node {
 	
-	private String texte;
-	private NodeType type;
-	private ArrayList<NodeLink> choix;
+	private String text;
+	private NodeType nodeType;
+	private ArrayList<NodeLink> choices;
 	
-	public Node(String texte, NodeType type, ArrayList<NodeLink> choix){
-		this.texte=texte;
-		this.type = type;
-		this.choix = choix;
+	public Node(String text, NodeType nodeType, ArrayList<NodeLink> choices){
+		this.text = text;
+		this.nodeType = nodeType;
+		this.choices = choices;
 	}
 
-	public String getTexte() {
-		return texte;
+	public String getText() {
+		return text;
 	}
 
-	public void setTexte(String texte) {
-		this.texte = texte;
+	public void setText(String text) {
+		this.text = text;
 	}
 
-	public NodeType getType() {
-		return type;
+	public NodeType getNodeType() {
+		return nodeType;
 	}
 
-	public void setType(NodeType type) {
-		this.type = type;
+	public void setNodeType(NodeType nodeType) {
+		this.nodeType = nodeType;
 	}
 
-	public ArrayList<NodeLink> getChoix() {
-		return choix;
+	public ArrayList<NodeLink> getChoices() {
+		return choices;
 	}
 
-	public void setChoix(ArrayList<NodeLink> choix) {
-		this.choix = choix;
+	public void setChoices(ArrayList<NodeLink> choices) {
+		this.choices = choices;
 	}
 	
 	@Override
 	public String toString(){
-		return this.texte;
+		return this.text;
 	}
 	
 }
