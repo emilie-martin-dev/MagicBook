@@ -2,8 +2,9 @@ package magic_book.core;
 
 import java.util.List;
 import java.util.ArrayList;
+import magic_book.core.utils.Parsable;
 
-public class Character { 
+public class Character implements Parsable { 
 
 	private String id;
 	private String name;
@@ -49,6 +50,16 @@ public class Character {
 		if (hp > hpMax) {
 			this.hp = hpMax;
 		}
+	}
+	
+	@Override
+	public String getParsableId() {
+		return this.id;
+	}
+	
+	@Override
+	public String getParsableText() {
+		return this.name;
 	}
 	
 	public void addItem(String item) {
