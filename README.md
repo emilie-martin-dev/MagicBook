@@ -22,4 +22,5 @@ Le projet étant réalisé en groupe, voici la liste des personnes affectées su
 
 - Justine MARTIN ([@jmartin-pro](https://github.com/jmartin-pro))
 - Auréline DEROUIN ([@Norah72](https://github.com/Norah72))
+- Dimitri STEPANIAK ([@dimitriStep](https://github.com/dimitriStep))
 - Maxime THOMAS ([@maxime-Thom](https://github.com/maxime-Thom))
