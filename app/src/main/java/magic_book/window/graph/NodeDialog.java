@@ -1,8 +1,12 @@
-package magic_book;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package magic_book.window.graph;
 
 import javafx.scene.layout.Pane;
 import javafx.application.Application;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,11 +18,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.Stage;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-
-public class Main extends Application {
+import javafx.stage.Stage;
+/**
+ *
+ * @author 21806986
+ */
+public class NodeDialog extends Stage {
 
 	@Override
 	public void start(Stage stage) {
@@ -62,9 +68,7 @@ public class Main extends Application {
 		stage.setScene(scene);
 		stage.show();
 	}
-
-	public static void main(String[] args) {
-		launch();
 	}
+	
+	
 
-}
