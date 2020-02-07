@@ -16,12 +16,12 @@ public class Character implements Parsable {
 	private List<String> listItems;
 	private int itemsMax;
 
-	public Character(String id, String name, String race, int baseDamage, int hp, int hpMax, List<String> listSkills, List<String> listItems, int itemsMax) {
+	public Character(String id, String name, String race, int baseDamage, int hpMax, List<String> listSkills, List<String> listItems, int itemsMax) {
 		this.id = id;
 		this.name = name;
 		this.race = race;
 		this.baseDamage = baseDamage;
-		this.hp = hp;
+		this.hp = hpMax;
 		this.hpMax = hpMax;
 		this.listSkills = listSkills;
 		this.listItems = listItems;

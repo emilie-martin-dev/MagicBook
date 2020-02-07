@@ -58,7 +58,6 @@ public class MainWindow extends Stage {
 		flow.setMaxWidth(210);
 		flow.setPadding(new Insets(5, 5, 5, 5));
 		border.setLeft(flow);
-		System.out.println(border.getCenter());
 		Pane appContent = new Pane();
 		appContent.setCursor(Cursor.CLOSED_HAND);
 		border.setCenter(appContent);
