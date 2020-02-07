@@ -10,91 +10,84 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
-import magic_book.core.Character;
 
 import javafx.stage.Stage;
+import magic_book.core.item.Item;
 
-public class CharacterDialog extends Stage {
-	
-	private Character character;
-	
+public class ItemDialog extends Stage {
+
+	private Item item;
+
 	private TextField idTextField;
 	private TextField nameTextField;
-	private TextField raceTextField;
-	
-	public CharacterDialog() {
-		initStageUI("Ajout d'un personnage");
-		
+
+	public ItemDialog() {
+		initStageUI("Ajout d'un item");
+
 		this.showAndWait();
 	}
-	
-	public CharacterDialog(Character character) {
-		initStageUI("Edition de " + character.getName());
-		
-		idTextField.setText(character.getId());
-		nameTextField.setText(character.getName());
-		raceTextField.setText(character.getRace());
-		
+
+	public ItemDialog(Item item) {
+		initStageUI("Edition de " + item.getNom());
+
+		idTextField.setText(item.getId());
+		nameTextField.setText(item.getNom());
+
 		this.showAndWait();
 	}
-	
+
 	private void initStageUI(String title) {
 		GridPane root = new GridPane();
-		
+
 		root.setPadding(new Insets(25));
 		root.setHgap(10);
 		root.setVgap(10);
-		
+
 		Label idLabel = new Label("Id : ");
 		Label nameLabel = new Label("Name: ");
-		Label raceLabel = new Label("Race : ");
-		
+
 		idTextField = new TextField();
 		nameTextField = new TextField();
-		raceTextField = new TextField();
-		
+
 		Button boutonAnnuler = new Button("Annuler");
 		boutonAnnuler.setOnAction((ActionEvent e) -> {
 			close();
 		});
-		
+
 		Button boutonValider = new Button("Valider");
 		boutonValider.setOnAction((ActionEvent e) -> {
 			if (idTextField.getText().trim().isEmpty()
-					|| nameTextField.getText().trim().isEmpty()
-					|| raceTextField.getText().trim().isEmpty()) {
+					|| nameTextField.getText().trim().isEmpty()) {
 				return;
 			}
-			
-			CharacterDialog.this.character = new Character(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
-			
+
+			ItemDialog.this.item = new Item(idTextField.getText().trim(), nameTextField.getText().trim());
+
 			close();
 		});
-		
+
 		HBox buttonsBox = new HBox();
 		buttonsBox.setSpacing(10d);
 		buttonsBox.setAlignment(Pos.BASELINE_RIGHT);
 		buttonsBox.getChildren().add(boutonAnnuler);
 		buttonsBox.getChildren().add(boutonValider);
-		
+
 		root.add(idLabel, 0, 0);
 		root.add(idTextField, 1, 0);
 		root.add(nameLabel, 0, 1);
 		root.add(nameTextField, 1, 1);
-		root.add(raceLabel, 0, 2);
-		root.add(raceTextField, 1, 2);
 		root.add(buttonsBox, 0, 3, 2, 1);
-		
+
 		Scene scene = new Scene(root);
-		
+
 		this.setResizable(false);
 		this.initModality(Modality.APPLICATION_MODAL);
 		this.setScene(scene);
 		this.setTitle(title);
 	}
-	
-	public Character getCharacter() {
-		return character;
+
+	public Item getItem() {
+		return item;
 	}
-	
+
 }
