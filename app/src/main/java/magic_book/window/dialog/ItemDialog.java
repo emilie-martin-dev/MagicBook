@@ -12,11 +12,11 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 
 import javafx.stage.Stage;
-import magic_book.core.item.Item;
+import magic_book.core.item.BookItem;
 
 public class ItemDialog extends Stage {
 
-	private Item item;
+	private BookItem item;
 
 	private TextField idTextField;
 	private TextField nameTextField;
@@ -27,7 +27,7 @@ public class ItemDialog extends Stage {
 		this.showAndWait();
 	}
 
-	public ItemDialog(Item item) {
+	public ItemDialog(BookItem item) {
 		initStageUI("Edition de " + item.getNom());
 
 		idTextField.setText(item.getId());
@@ -61,7 +61,7 @@ public class ItemDialog extends Stage {
 				return;
 			}
 
-			ItemDialog.this.item = new Item(idTextField.getText().trim(), nameTextField.getText().trim());
+			ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
 
 			close();
 		});
@@ -86,7 +86,7 @@ public class ItemDialog extends Stage {
 		this.setTitle(title);
 	}
 
-	public Item getItem() {
+	public BookItem getItem() {
 		return item;
 	}
 

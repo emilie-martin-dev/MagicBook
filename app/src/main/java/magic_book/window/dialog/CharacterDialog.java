@@ -10,13 +10,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
-import magic_book.core.Character;
+import magic_book.core.BookCharacter;
 
 import javafx.stage.Stage;
 
 public class CharacterDialog extends Stage {
 	
-	private Character character;
+	private BookCharacter character;
 	
 	private TextField idTextField;
 	private TextField nameTextField;
@@ -28,7 +28,7 @@ public class CharacterDialog extends Stage {
 		this.showAndWait();
 	}
 	
-	public CharacterDialog(Character character) {
+	public CharacterDialog(BookCharacter character) {
 		initStageUI("Edition de " + character.getName());
 		
 		idTextField.setText(character.getId());
@@ -66,7 +66,7 @@ public class CharacterDialog extends Stage {
 				return;
 			}
 			
-			CharacterDialog.this.character = new Character(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
+			CharacterDialog.this.character = new BookCharacter(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
 			
 			close();
 		});
@@ -93,7 +93,7 @@ public class CharacterDialog extends Stage {
 		this.setTitle(title);
 	}
 	
-	public Character getCharacter() {
+	public BookCharacter getCharacter() {
 		return character;
 	}
 	

@@ -1,5 +1,5 @@
 package magic_book.core.node;
 
-public enum NodeType {
+public enum BookNodeType {
 	BASIC, VICTORY, FAILURE
 };

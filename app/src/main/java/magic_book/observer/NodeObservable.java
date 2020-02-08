@@ -1,22 +1,22 @@
 package magic_book.observer;
 
-import magic_book.core.node.Node;
+import magic_book.core.node.BookNode;
 
 public class NodeObservable extends Observable<NodeObserver> {
 
-	public void notifyNodeAdded(Node node) {
+	public void notifyNodeAdded(BookNode node) {
 		for (NodeObserver nodeObserver : listObservers) {
 			nodeObserver.nodeAdded(node);
 		}
 	}
 
-	public void notifyNodeDeleted(Node node) {
+	public void notifyNodeDeleted(BookNode node) {
 		for (NodeObserver nodeObserver : listObservers) {
 			nodeObserver.nodeDeleted(node);
 		}
 	}
 
-	public void notifyNodeEdited(Node node) {
+	public void notifyNodeEdited(BookNode node) {
 		for (NodeObserver nodeObserver : listObservers) {
 			nodeObserver.nodeEdited(node);
 		}
