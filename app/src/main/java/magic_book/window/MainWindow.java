@@ -4,8 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -13,70 +15,71 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class MainWindow extends Stage {
-
-	private String mode;
+	
+	enum Mode {
+		SELECT, ADD_NODE, ADD_NODE_LINK;
+	}
+	
+	private Mode mode;
+	private ToggleGroup toggleGroup;
 
 	public MainWindow() {
-		BorderPane border = new BorderPane();
-		//Button button = new Button("Bouton");
-		//Label l= new Label("0");
-
-		//button.setOnAction(value ->  {
-		//   l.setText("1");
-		//});
-		//root.getChildren().add(button);
-		//root.getChildren().add(l);
-		mode = "0";
-		Scene scene = new Scene(border, 1000, 800);
-
-		Button add = new Button("Ajouter");
-		Button del = new Button("Supprimer");
-		Button mod = new Button("Modifier");
-
-		add.setOnAction(value -> {
-			mode = "add";
-			System.out.println("clic bouton");
-		});
-		del.setOnAction(value -> {
-			mode = "del";
-			System.out.println("clic bouton");
-		});
-		mod.setOnAction((ActionEvent value) -> {
-			mode = "mod";
-			System.out.println("clic bouton");
-		});
-
-		add.setMinSize(100, 100);
-		add.setMaxSize(100, 100);
-		del.setMinSize(100, 100);
-		del.setMaxSize(100, 100);
-		mod.setMinSize(100, 100);
-		mod.setMaxSize(100, 100);
-
-		FlowPane flow = new FlowPane();
-		flow.getChildren().addAll(add, del, mod);
-		flow.setMaxWidth(210);
-		flow.setPadding(new Insets(5, 5, 5, 5));
-		border.setLeft(flow);
-		Pane appContent = new Pane();
-		appContent.setCursor(Cursor.CLOSED_HAND);
-		border.setCenter(appContent);
-
-		appContent.addEventFilter(MouseEvent.MOUSE_PRESSED, (new EventHandler<MouseEvent>() {
+		BorderPane root = new BorderPane();
+		
+		Pane mainContent = new Pane();
+		mainContent.setCursor(Cursor.CLOSED_HAND);
+		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clic fenêtre avec mode " + mode);
-				if (mode == "add") {
-
-				}
-				if (mode == "del") {
-
+				if (mode == Mode.ADD_NODE) {
+					createANode();
 				}
 			}
 		}));
+		
+		root.setLeft(createLeftPanel());
+		root.setCenter(mainContent);
+		
+		Scene scene = new Scene(root, 1000, 800);
 
+		this.setTitle("Magic Book");
 		this.setScene(scene);
 		this.show();
 	}
+	
+	private Node createLeftPanel() {
+		ToggleButton selectToogle = createToggleButton("Selectionner", Mode.SELECT);
+		selectToogle.setSelected(true);
+		this.mode = Mode.SELECT;
+		ToggleButton addNodeToggle = createToggleButton("Ajouter noeud", Mode.ADD_NODE);
+		ToggleButton addNodeLinkToggle = createToggleButton("Ajouter lien", Mode.ADD_NODE_LINK);
 
+		FlowPane flow = new FlowPane();
+		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle);
+		flow.setPadding(new Insets(5, 5, 5, 5));
+		
+		return flow;
+	}
+	
+	private ToggleButton createToggleButton(String text, Mode mode) {
+		ToggleButton toggleButton = new ToggleButton(text);
+		
+		toggleButton.setOnAction((ActionEvent e) -> {
+			MainWindow.this.mode = mode;
+		});
+		
+		toggleButton.setPrefSize(100, 100);
+		
+		if(this.toggleGroup == null) {
+			this.toggleGroup = new ToggleGroup();
+		}
+		
+		this.toggleGroup.getToggles().add(toggleButton);
+		
+		return toggleButton;
+	}
+	
+	private void createANode() {
+	
+	}
 }
