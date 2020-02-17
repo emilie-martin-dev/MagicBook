@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
@@ -15,13 +16,18 @@ public class BookGenerator {
 
 	public static void generateBook(BookNode rootNode, List<Parsable> items, List<Parsable> characters, String path) throws IOException {
 		HashMap<BookNode, Integer> nodes = exploreNode(rootNode);
+		HashMap<Integer, BookNode> nodesInv = new HashMap<>();
+		for(Map.Entry<BookNode, Integer> entry : nodes.entrySet()){
+			nodesInv.put(entry.getValue(), entry.getKey());
+		}
 		
 		FileWriter fileWritter = new FileWriter(path);
 		
 		write(rootNode, items, characters, nodes, fileWritter);
 		nodes.remove(rootNode);
+		nodesInv.remove(1);
 			
-		for(BookNode n : nodes.keySet())
+		for(BookNode n : nodesInv.values())
 			write(n, items, characters, nodes, fileWritter);
 		
 		fileWritter.close();
