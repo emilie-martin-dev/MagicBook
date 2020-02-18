@@ -2,12 +2,12 @@ package magic_book.core.item;
 
 import magic_book.core.utils.Parsable;
 
-public class Item implements Parsable {
+public class BookItem implements Parsable {
 
 	private String id;
 	private String nom;
 
-	public Item(String id, String nom) {
+	public BookItem(String id, String nom) {
 		this.id = id;
 		this.nom = nom;
 	}

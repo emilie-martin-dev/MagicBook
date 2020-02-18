@@ -1,6 +1,6 @@
 package magic_book.core.item;
 
-public class Arme extends Item {
+public class Arme extends BookItem {
 	
 	private int degat;
 

@@ -1,4 +1,4 @@
-package magic_book.window.graph;
+package magic_book.window.dialog;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

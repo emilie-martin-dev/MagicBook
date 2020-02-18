@@ -1,0 +1,45 @@
+Paragraphe 1 :
+
+Vous avez faim, vous cherchez une boulangerie.
+
+Que souhaitez vous faire ?
+- Tourner à droite - Paragraphe suivant : 2
+- Aller tout droit - Paragraphe suivant : 5
+
+==================================================
+
+Paragraphe 2 :
+
+Vous apercevez au loin ce qui semble être un magasin
+
+Que souhaitez vous faire ?
+- Allez voir - Paragraphe suivant : 3
+- Allez à gauche - Paragraphe suivant : 4
+
+==================================================
+
+Paragraphe 3 :
+
+Vous sentez le pain chaud et les croissants.
+
+Félicitation vous avez gagné
+
+==================================================
+
+Paragraphe 4 :
+
+Vous êtes dans un cul de sac
+
+Que souhaitez vous faire ?
+- Faire demi tour - Paragraphe suivant : 2
+
+==================================================
+
+Paragraphe 5 :
+
+Vous vous êtes perdu...
+
+Vous avez perdu
+
+==================================================
+

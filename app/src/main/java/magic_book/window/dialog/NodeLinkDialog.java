@@ -1,4 +1,4 @@
- package magic_book.window.graph;
+ package magic_book.window.dialog;
 
  import javafx.event.ActionEvent;
  import javafx.event.EventHandler;
@@ -6,7 +6,7 @@
  import javafx.scene.control.Label;
  import javafx.scene.control.TextArea;
  import javafx.scene.layout.GridPane;
- import magic_book.core.node.NodeLink;
+ import magic_book.core.node.BookNodeLink;
 
  public class NodeLinkDialog extends AbstractDialog{
 	 
@@ -17,7 +17,7 @@
  		this.showAndWait();
  	}
 
- 	public NodeLinkDialog(NodeLink nodeLink) {
+ 	public NodeLinkDialog(BookNodeLink nodeLink) {
  		super("Modification du texte de choix");
 		texte.setText(nodeLink.getText());	
 		

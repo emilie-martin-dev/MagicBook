@@ -1,6 +1,6 @@
 package magic_book.core.item;
 
-public class Potion extends Item {
+public class Potion extends BookItem {
 	
 	private int vie;
 

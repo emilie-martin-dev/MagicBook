@@ -1,13 +1,13 @@
 package magic_book.observer;
 
-import magic_book.core.node.Node;
+import magic_book.core.node.BookNode;
 
 public interface NodeObserver {
 
-	public void nodeAdded(Node node);
+	public void nodeAdded(BookNode node);
 
-	public void nodeDeleted(Node node);
+	public void nodeDeleted(BookNode node);
 
-	public void nodeEdited(Node node);
+	public void nodeEdited(BookNode node);
 
 }
