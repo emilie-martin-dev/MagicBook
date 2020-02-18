@@ -14,13 +14,9 @@ import magic_book.window.graph.NodeLinkDialog;
 public class Main extends Application {
         @Override
 	public void start(Stage stage) {
-		//stage.show();
-		//Node node = new Node("test",NodeType.FAILURE,null);
-		//NodeDialog dialog = new NodeDialog();
-		//NodeDialog dialog = new NodeDialog(node);
-		//System.out.println("Le texte creer : "+node);
+		//new NodeDialog();
 		
-                new MainWindow();
+        new MainWindow();
 		}
 	
 	public static void main(String[] args) {
