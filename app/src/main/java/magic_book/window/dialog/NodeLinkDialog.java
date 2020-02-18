@@ -44,11 +44,9 @@
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
-			String texteHistoire = (String) texte.getText();
-			//NodeType choixBox = (NodeType) choix.getValue();
-			//NodeDialog.this.node = new Node(texteHistoire, choixBox, null);
-			close();
-		};
+ 				String texteHistoire = (String) texte.getText();
+ 				close();
+ 		};
 	}
 
  }

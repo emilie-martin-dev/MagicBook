@@ -1,5 +1,7 @@
 package magic_book.window;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -16,7 +18,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import magic_book.window.dialog.NodeDialog;
+import magic_book.window.gui.NodeFx;
 
 public class MainWindow extends Stage {
 
@@ -26,21 +32,29 @@ public class MainWindow extends Stage {
 
 	private Mode mode;
 	private ToggleGroup toggleGroup;
+	
+	private List<NodeFx> listeNoeud;
 
 	public MainWindow() {
 		BorderPane root = new BorderPane();
 
+		listeNoeud = new ArrayList<>();
+		
 		Pane mainContent = new Pane();
 		mainContent.setCursor(Cursor.CLOSED_HAND);
 		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (mode == Mode.ADD_NODE) {
-					createANode();
+					mainContent.getChildren().add(handleNodeCreation(event));
+				}
+				if (mode == Mode.SELECT) {
+					modifANode(event);
 				}
 			}
 		}));
 
+		
 		root.setTop(createMenuBar());
 		root.setLeft(createLeftPanel());
 		root.setCenter(mainContent);
@@ -118,7 +132,28 @@ public class MainWindow extends Stage {
 		return toggleButton;
 	}
 
-	private void createANode() {
+	private Rectangle handleNodeCreation(MouseEvent event) {
+		NodeDialog dialog = new NodeDialog();
+		NodeFx rectangle = null;
+		
+		if (dialog.getNode() != null){
+			rectangle = new NodeFx(dialog.getNode());
+			listeNoeud.add(rectangle);
+			rectangle.setX(event.getX());
+			rectangle.setY(event.getY());
+			rectangle.setWidth(50);
+			rectangle.setHeight(50);
+			rectangle.setFill(Color.GREEN);
+		}
+		
+		return rectangle;
+	}
+	
+	private void createANode(Node node) {
+		
+	}
+	
+	private void modifANode(MouseEvent event){
 		
 	}
 }
