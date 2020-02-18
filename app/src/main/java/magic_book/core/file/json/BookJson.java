@@ -1,6 +1,7 @@
 package magic_book.core.file.json;
 
 import java.util.List;
+import java.util.Map;
 
 public class BookJson {
 
@@ -8,7 +9,7 @@ public class BookJson {
 	private List<String> intro_sequence;
 	private SetupJson setup;
 	private List<List<String>> synonymes;
-	private List<SectionJson> sections;
+	private Map<Integer, SectionJson> sections;
 
 	public String getPrompt() {
 		return prompt;
@@ -42,11 +43,11 @@ public class BookJson {
 		this.synonymes = synonymes;
 	}
 
-	public List<SectionJson> getSections() {
+	public Map<Integer, SectionJson> getSections() {
 		return sections;
 	}
 
-	public void setSections(List<SectionJson> sections) {
+	public void setSections(Map<Integer, SectionJson> sections) {
 		this.sections = sections;
 	}
 

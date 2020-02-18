@@ -6,7 +6,7 @@ class SetupJson {
 
 	private List<String> disciplines;
 	private List<String> weapons;
-	private List<String> equipment;
+	private List<ItemJson> equipment;
 
 	public List<String> getDisciplines() {
 		return disciplines;
@@ -24,11 +24,11 @@ class SetupJson {
 		this.weapons = weapons;
 	}
 
-	public List<String> getEquipment() {
+	public List<ItemJson> getEquipment() {
 		return equipment;
 	}
 
-	public void setEquipment(List<String> equipment) {
+	public void setEquipment(List<ItemJson> equipment) {
 		this.equipment = equipment;
 	}
 

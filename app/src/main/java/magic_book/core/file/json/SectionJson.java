@@ -20,6 +20,7 @@ public class SectionJson {
 	private int combat_skill;
 	private boolean no_ambiguity;
 	private List<ItemJson> items;
+	private int eat_amount;
 
 	public boolean isIs_random_pick() {
 		return is_random_pick;
@@ -141,4 +142,20 @@ public class SectionJson {
 		this.trim_choices = trim_choices;
 	}
 
+	public List<ItemJson> getItems() {
+		return items;
+	}
+
+	public void setItems(List<ItemJson> items) {
+		this.items = items;
+	}
+
+	public int getEat_amount() {
+		return eat_amount;
+	}
+
+	public void setEat_amount(int eat_amount) {
+		this.eat_amount = eat_amount;
+	}
+	
 }
