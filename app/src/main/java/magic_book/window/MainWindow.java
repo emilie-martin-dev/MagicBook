@@ -119,6 +119,6 @@ public class MainWindow extends Stage {
 	}
 
 	private void createANode() {
-
+		
 	}
 }

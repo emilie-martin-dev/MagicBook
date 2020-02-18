@@ -15,7 +15,7 @@ public class BookNode {
 	}
 
 	public String getText() {
-		return text;
+		return this.text;
 	}
 
 	public void setText(String text) {
@@ -37,10 +37,10 @@ public class BookNode {
 	public void setChoices(ArrayList<BookNodeLink> choices) {
 		this.choices = choices;
 	}
-	
+
 	@Override
 	public String toString(){
 		return this.text;
 	}
-	
+
 }
