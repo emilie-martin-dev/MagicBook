@@ -1,14 +1,14 @@
 package magic_book.core.node;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class BookNode {
 	
 	private String text;
 	private BookNodeType nodeType;
-	private ArrayList<BookNodeLink> choices;
+	private List<BookNodeLink> choices;
 	
-	public BookNode(String text, BookNodeType nodeType, ArrayList<BookNodeLink> choices){
+	public BookNode(String text, BookNodeType nodeType, List<BookNodeLink> choices){
 		this.text = text;
 		this.nodeType = nodeType;
 		this.choices = choices;
@@ -30,11 +30,11 @@ public class BookNode {
 		this.nodeType = nodeType;
 	}
 
-	public ArrayList<BookNodeLink> getChoices() {
+	public List<BookNodeLink> getChoices() {
 		return choices;
 	}
 
-	public void setChoices(ArrayList<BookNodeLink> choices) {
+	public void setChoices(List<BookNodeLink> choices) {
 		this.choices = choices;
 	}
 
