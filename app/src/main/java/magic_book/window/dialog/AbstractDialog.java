@@ -24,7 +24,6 @@ public abstract class AbstractDialog extends Stage {
 		
 		root.setCenter(getMainUI());
 		root.setBottom(getControlButtons());
-				
 		
 		Scene scene = new Scene(root);
  		this.initModality(Modality.APPLICATION_MODAL);
@@ -58,6 +57,5 @@ public abstract class AbstractDialog extends Stage {
 		
 		return box;
 	}
-
 
 }

@@ -7,7 +7,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.layout.HBox;
+
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeType;
 
@@ -34,16 +34,12 @@ import magic_book.core.node.BookNodeType;
 	@Override
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
-		
 		root.setHgap(10);
 		root.setVgap(10);
 		
 		Label textLabel = new Label("Texte :");
 		texte = new TextArea();
-		root.add(textLabel, 0, 0);
-		root.add(texte, 0, 1, 2, 1);
 		Label labelChoix = new Label("Choix du type du noeud :");
-		root.add(labelChoix, 0, 2);
 		
 		nodeType = new ChoiceBox();
 
@@ -52,22 +48,21 @@ import magic_book.core.node.BookNodeType;
  		nodeType.getItems().add(BookNodeType.FAILURE);
  		nodeType.setValue(BookNodeType.BASIC);
 
- 		HBox choix = new HBox(nodeType);
-		root.add(choix,1 ,2 );
+		root.add(textLabel, 0, 0);
+		root.add(texte, 0, 1, 2, 1);
+		root.add(labelChoix, 0, 2);
+		root.add(nodeType,1 ,2 );
 		
 		return root;
 	}
 
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
-		return new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				String texteHistoire = (String) texte.getText();
-				BookNodeType choixBox = (BookNodeType) nodeType.getValue();
-				NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
-				close();
-			}
+		return (ActionEvent e) -> {
+			String texteHistoire = (String) texte.getText();
+			BookNodeType choixBox = (BookNodeType) nodeType.getValue();
+			NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
+			close();
 		};
 	}
 	
