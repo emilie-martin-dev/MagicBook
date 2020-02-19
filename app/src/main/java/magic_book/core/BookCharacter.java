@@ -42,6 +42,9 @@ public class BookCharacter implements Parsable {
 	
 	public void damage(int amount) {
 		this.hp -= amount;
+		if (this.hp < 0){
+			this.hp = 0;
+		}
 	}
 	
 	public void heal(int amount) {
