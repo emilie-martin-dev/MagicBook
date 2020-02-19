@@ -2,9 +2,11 @@ package magic_book.utils;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
@@ -16,6 +18,8 @@ public class BookGenerator {
 
 	public static void generateBook(BookNode rootNode, List<Parsable> items, List<Parsable> characters, String path) throws IOException {
 		HashMap<BookNode, Integer> nodes = exploreNode(rootNode);
+		nodes = shuffle(nodes);		
+		
 		HashMap<Integer, BookNode> nodesInv = new HashMap<>();
 		for(Map.Entry<BookNode, Integer> entry : nodes.entrySet()){
 			nodesInv.put(entry.getValue(), entry.getKey());
@@ -24,8 +28,8 @@ public class BookGenerator {
 		FileWriter fileWritter = new FileWriter(path);
 		
 		write(rootNode, items, characters, nodes, fileWritter);
+		nodesInv.remove(nodes.get(rootNode));
 		nodes.remove(rootNode);
-		nodesInv.remove(1);
 			
 		for(BookNode n : nodesInv.values())
 			write(n, items, characters, nodes, fileWritter);
@@ -82,5 +86,28 @@ public class BookGenerator {
 		fileWritter.write("\n");
 		fileWritter.write("==================================================\n");
 		fileWritter.write("\n");
+	}
+
+	private static HashMap<BookNode, Integer> shuffle(HashMap<BookNode, Integer> nodes) {
+		HashMap<BookNode, Integer> shuffle = new HashMap<>();
+		List<Integer> usedNumber = new ArrayList<>();
+		
+		for(int i = 1 ; i < nodes.size() ; i++) {
+			usedNumber.add(i);
+		}
+		
+		Random rand = new Random();
+		for(Map.Entry<BookNode, Integer> entry : nodes.entrySet()) {
+			if(entry.getValue() == 1) {
+				shuffle.put(entry.getKey(), 1);
+				continue;
+			}
+			
+			int index = rand.nextInt(usedNumber.size());
+			shuffle.put(entry.getKey(), usedNumber.get(index)+1);
+			usedNumber.remove(index);
+		}
+		
+		return shuffle;
 	}
 }
