@@ -6,16 +6,7 @@ public class ChoiceJson {
 
 	private String text;
 	private SectionJson section;
-	private List<String> words;
 	private List<Integer> range;
-
-	public List<String> getWords() {
-		return words;
-	}
-
-	public void setWords(List<String> words) {
-		this.words = words;
-	}
 
 	public String getText() {
 		return text;
