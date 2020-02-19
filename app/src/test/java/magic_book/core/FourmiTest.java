@@ -8,8 +8,6 @@ import java.util.Arrays;
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeType;
-import org.junit.Test;
-
 
 public class FourmiTest {
 	
@@ -26,11 +24,13 @@ public class FourmiTest {
 	
 	@Test
 	public void estimerDifficulteLivre_test(){	
-		BookNode firstNode = getBasicStory();
-		firstNode.getChoices().get(1).getDestination().setNodeType(BookNodeType.VICTORY);
-		Fourmi fourmi = new Fourmi(firstNode);
-
-		Assert.assertTrue(fourmi.estimerDifficulteLivre(firstNode, 100)== 100.0f);
+		BookNode end = new BookNode("Vous sentez le pain chaud et les croissants.", BookNodeType.VICTORY, null);
+		BookNode firstNode = new BookNode("Vous avez faim, vous cherchez une boulangerie.", BookNodeType.BASIC, Arrays.asList(new BookNodeLink("Tourner à droite", end)));
+		
+		Assert.assertTrue(Fourmi.estimerDifficulteLivre(firstNode, 100) == 100.0f);
+		
+		end.setNodeType(BookNodeType.FAILURE);
+		Assert.assertTrue(Fourmi.estimerDifficulteLivre(firstNode, 100) == 0.0f);
 	}
 
 	@Test

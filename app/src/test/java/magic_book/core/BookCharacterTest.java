@@ -1,16 +1,7 @@
 package magic_book.core;
 
-import java.util.ArrayList;
-import magic_book.core.BookCharacter;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
-import magic_book.core.item.BookItem;
-import magic_book.core.node.BookNode;
-import magic_book.core.node.BookNodeLink;
-import magic_book.core.node.BookNodeType;
 
 public class BookCharacterTest {
 
@@ -27,7 +18,5 @@ public class BookCharacterTest {
 		
 		Assert.assertTrue(character.getHp() == character.getHpMax());
 	}
-	
-	
 	
 }

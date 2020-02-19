@@ -16,8 +16,8 @@ public class Fourmi {
 	public void faireUnChoix() {
 		Random rand = new Random();
 		
-		int nb = rand.nextInt(currentNode.getChoices().size()); // en fonction du nombre de choix possible prends une direction aléatoire
-		this.currentNode = currentNode.getChoices().get(nb).getDestination(); // change de noeud
+		int nb = rand.nextInt(currentNode.getChoices().size()); 		
+		this.currentNode = currentNode.getChoices().get(nb).getDestination(); 
 	}
 
 	public BookNode getCurrentNode() {
@@ -27,10 +27,10 @@ public class Fourmi {
 	public static float estimerDifficulteLivre(BookNode node, int nbFourmi){
 		int victory = 0;
 		
-		for(int i = 0 ; i < nbFourmi ; i++){ // creer les fourmis
+		for(int i = 0 ; i < nbFourmi ; i++){
 			Fourmi f = new Fourmi(node);
 			
-			while(f.getCurrentNode().getNodeType() == BookNodeType.BASIC){
+			while(f.getCurrentNode().getNodeType() != BookNodeType.VICTORY && f.getCurrentNode().getNodeType() != BookNodeType.FAILURE){
 				f.faireUnChoix();
 			}	
 			
@@ -43,9 +43,3 @@ public class Fourmi {
 	}
 	
 }
-	
-	
-	
-	
-	
-	
