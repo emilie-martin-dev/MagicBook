@@ -12,6 +12,9 @@ public class BookNode {
 		this.text = text;
 		this.nodeType = nodeType;
 		this.choices = choices;
+		
+		if(this.choices == null)
+			this.choices = new ArrayList<>();
 	}
 
 	public String getText() {

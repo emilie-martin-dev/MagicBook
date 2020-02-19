@@ -20,6 +20,7 @@ public class SectionJson {
 	private int combat_skill;
 	private boolean no_ambiguity;
 	private List<ItemJson> items;
+	private List<ChoiceJson> choices;
 	private int eat_amount;
 
 	public boolean isIs_random_pick() {
@@ -148,6 +149,14 @@ public class SectionJson {
 
 	public void setItems(List<ItemJson> items) {
 		this.items = items;
+	}
+
+	public List<ChoiceJson> getChoices() {
+		return choices;
+	}
+
+	public void setChoices(List<ChoiceJson> choices) {
+		this.choices = choices;
 	}
 
 	public int getEat_amount() {

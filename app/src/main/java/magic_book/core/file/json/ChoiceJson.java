@@ -5,7 +5,7 @@ import java.util.List;
 public class ChoiceJson {
 
 	private String text;
-	private SectionJson section;
+	private int section;
 	private List<Integer> range;
 
 	public String getText() {
@@ -24,11 +24,11 @@ public class ChoiceJson {
 		this.range = range;
 	}
 
-	public SectionJson getSection() {
+	public int getSection() {
 		return section;
 	}
 
-	public void setSection(SectionJson section) {
+	public void setSection(int section) {
 		this.section = section;
 	}
 
