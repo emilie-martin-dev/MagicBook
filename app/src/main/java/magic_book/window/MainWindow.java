@@ -21,23 +21,26 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import magic_book.core.node.BookNode;
+import magic_book.observer.ModeObservable;
+import magic_book.observer.ModeObserver;
 import magic_book.window.dialog.NodeDialog;
+import magic_book.window.gui.Mode;
 import magic_book.window.gui.NodeFx;
 
 public class MainWindow extends Stage {
-
-	enum Mode {
-		SELECT, ADD_NODE, ADD_NODE_LINK;
-	}
 
 	private Mode mode;
 	private ToggleGroup toggleGroup;
 	
 	private List<NodeFx> listeNoeud;
+	
+	private ModeObservable modeObservable;
 
 	public MainWindow() {
 		BorderPane root = new BorderPane();
 
+		modeObservable = new ModeObservable();
 		listeNoeud = new ArrayList<>();
 		
 		Pane mainContent = new Pane();
@@ -46,10 +49,13 @@ public class MainWindow extends Stage {
 			@Override
 			public void handle(MouseEvent event) {
 				if (mode == Mode.ADD_NODE) {
-					mainContent.getChildren().add(handleNodeCreation(event));
+					NodeFx node = handleNodeCreation(event, mode);
+					if (node != null){
+						mainContent.getChildren().add(node);
+					}
 				}
 				if (mode == Mode.SELECT) {
-					modifANode(event);
+					modifANode(event, mode);
 				}
 			}
 		}));
@@ -119,6 +125,7 @@ public class MainWindow extends Stage {
 
 		toggleButton.setOnAction((ActionEvent e) -> {
 			MainWindow.this.mode = mode;
+			modeObservable.notifyModeChanged(mode);
 		});
 
 		toggleButton.setPrefSize(100, 100);
@@ -132,12 +139,13 @@ public class MainWindow extends Stage {
 		return toggleButton;
 	}
 
-	private Rectangle handleNodeCreation(MouseEvent event) {
+	private NodeFx handleNodeCreation(MouseEvent event, Mode mode) {
 		NodeDialog dialog = new NodeDialog();
 		NodeFx rectangle = null;
 		
 		if (dialog.getNode() != null){
 			rectangle = new NodeFx(dialog.getNode());
+			modeObservable.addObserver(rectangle);
 			listeNoeud.add(rectangle);
 			rectangle.setX(event.getX());
 			rectangle.setY(event.getY());
@@ -153,7 +161,10 @@ public class MainWindow extends Stage {
 		
 	}
 	
-	private void modifANode(MouseEvent event){
-		
+	private void modifANode(MouseEvent event, Mode mode){
+		event.consume();
+		MouseEvent ev1 = event;
+		System.out.println("clique select");
+
 	}
 }
