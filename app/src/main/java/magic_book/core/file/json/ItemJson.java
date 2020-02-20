@@ -2,6 +2,7 @@ package magic_book.core.file.json;
 
 public class ItemJson {
 
+	private String id;
 	private String name;
 	private int endurance;
 	private boolean is_consumable;
@@ -11,6 +12,14 @@ public class ItemJson {
 	private float item_worth;
 	private int value;
 	private boolean is_unlimited;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getAc_section() {
 		return ac_section;

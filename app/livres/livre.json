@@ -62,52 +62,58 @@
         ],
         "equipment": [
             {
+                "id": "sword",
                 "name": "Sword",
                 "ac_section": "weapons"
             },
             {
+                "id": "short_sword",
                 "name": "Short Sword",
                 "ac_section": "weapons"
             },
             {
+                "id": "meal",
                 "name": "Meal",
                 "ac_section": "backpack_items"
             },
             {
-                "name": "Meal",
-                "ac_section": "backpack_items"
-            },
-            {
+                "id": "chainmail_waistcoat",
                 "endurance": 4,
                 "is_permanent": true,
                 "name": "Chainmail Waistcoat",
                 "ac_section": "special_items"
             },
             {
+                "id": "mace",
                 "name": "Mace",
                 "ac_section": "weapons"
             },
             {
+                "id": "healing_potion",
                 "endurance": 4,
                 "is_consumable": true,
                 "name": "Healing Potion",
                 "ac_section": "backpack_items"
             },
             {
+                "id": "quarterstaff",
                 "name": "Quarterstaff",
                 "ac_section": "weapons"
             },
             {
+                "id": "spear",
                 "name": "Spear",
                 "ac_section": "weapons"
             },
             {
+                "id": "shield",
                 "combat_skill": 2,
                 "is_permanent": true,
                 "name": "Shield",
                 "ac_section": "special_items"
             },
             {
+                "id": "broadsword",
                 "name": "Broadsword",
                 "ac_section": "weapons"
             }

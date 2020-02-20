@@ -2,7 +2,7 @@ package magic_book.core.file.json;
 
 import java.util.List;
 
-class SetupJson {
+public class SetupJson {
 
 	private List<String> disciplines;
 	private List<String> weapons;

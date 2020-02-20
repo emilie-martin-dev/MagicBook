@@ -6,27 +6,31 @@ import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import magic_book.core.Book;
 import magic_book.core.file.deserializer.BookNodeTypeDeserializer;
 
 import magic_book.core.file.json.BookJson;
 import magic_book.core.file.json.ChoiceJson;
+import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.SectionJson;
+import magic_book.core.item.BookItem;
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeType;
 
 public class BookReader {
 	
-	public static BookNode read(String path) throws FileNotFoundException {		
+	public static Book read(String path) throws FileNotFoundException {		
 		BookJson bookJson = readFileWithGson(path);
 		
 		HashMap<Integer, BookNode> nodes = getEveryNodes(bookJson);
+		List<BookItem> items = getEveryItems(bookJson);
 		
-		nodes = linkEveryNodes(bookJson, nodes);
-		
-		return nodes.get(1);
+		return new Book(nodes, items, null);
 	}
 
 	private static BookJson readFileWithGson(String path) throws FileNotFoundException {
@@ -37,6 +41,18 @@ public class BookReader {
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(path)); 
 		
 		return gson.fromJson(bufferedReader, BookJson.class); 
+	}
+	
+	private static HashMap<Integer, BookNode> getEveryNodes(BookJson bookJson) {
+		HashMap<Integer, BookNode> nodes = new HashMap<>();
+		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
+			SectionJson sectionJson = entry.getValue();
+			BookNode node = new BookNode(sectionJson.getText(), sectionJson.getType(), null);
+			
+			nodes.put(entry.getKey(), node);
+		}
+		
+		return linkEveryNodes(bookJson, nodes);
 	}
 	
 	private static HashMap<Integer, BookNode> linkEveryNodes(BookJson bookJson, HashMap<Integer, BookNode> nodes) {
@@ -52,15 +68,15 @@ public class BookReader {
 		return nodes;
 	}
 
-	private static HashMap<Integer, BookNode> getEveryNodes(BookJson bookJson) {
-		HashMap<Integer, BookNode> nodes = new HashMap<>();
-		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
-			SectionJson sectionJson = entry.getValue();
-			BookNode node = new BookNode(sectionJson.getText(), sectionJson.getType(), null);
-			
-			nodes.put(entry.getKey(), node);
-		}
+	private static List<BookItem> getEveryItems(BookJson bookJson) {
+		List<BookItem> items = new ArrayList<>();
 		
-		return nodes;
+		for(ItemJson i : bookJson.getSetup().getEquipment()) {
+			BookItem item = new BookItem(i.getId(), i.getName());
+			items.add(item);
+		}
+			
+		return items;
 	}
+	
 }
