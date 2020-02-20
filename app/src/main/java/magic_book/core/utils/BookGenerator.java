@@ -1,4 +1,4 @@
-package magic_book.utils;
+package magic_book.core.utils;
 
 import java.io.FileWriter;
 import java.io.IOException;

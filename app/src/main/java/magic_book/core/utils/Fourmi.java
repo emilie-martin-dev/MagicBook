@@ -1,4 +1,4 @@
-package magic_book.core;
+package magic_book.core.utils;
 
 import java.util.Random;
 
