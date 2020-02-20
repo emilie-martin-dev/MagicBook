@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
+import magic_book.core.file.deserializer.BookNodeTypeDeserializer;
 
 import magic_book.core.file.json.BookJson;
 import magic_book.core.file.json.ChoiceJson;
@@ -23,6 +24,22 @@ public class BookReader {
 		
 		HashMap<Integer, BookNode> nodes = getEveryNodes(bookJson);
 		
+		nodes = linkEveryNodes(bookJson, nodes);
+		
+		return nodes.get(1);
+	}
+
+	private static BookJson readFileWithGson(String path) throws FileNotFoundException {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(BookNodeType.class, new BookNodeTypeDeserializer());
+		
+		Gson gson = builder.create(); 
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(path)); 
+		
+		return gson.fromJson(bufferedReader, BookJson.class); 
+	}
+	
+	private static HashMap<Integer, BookNode> linkEveryNodes(BookJson bookJson, HashMap<Integer, BookNode> nodes) {
 		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
 			SectionJson sectionJson = entry.getValue();
 			
@@ -32,23 +49,14 @@ public class BookReader {
 			}
 		}
 		
-		return nodes.get(1);
-	}
-
-	private static BookJson readFileWithGson(String path) throws FileNotFoundException {
-		GsonBuilder builder = new GsonBuilder();
-		
-		Gson gson = builder.create(); 
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(path)); 
-		
-		return gson.fromJson(bufferedReader, BookJson.class); 
+		return nodes;
 	}
 
 	private static HashMap<Integer, BookNode> getEveryNodes(BookJson bookJson) {
 		HashMap<Integer, BookNode> nodes = new HashMap<>();
 		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
 			SectionJson sectionJson = entry.getValue();
-			BookNode node = new BookNode(sectionJson.getText(), BookNodeType.BASIC, null);
+			BookNode node = new BookNode(sectionJson.getText(), sectionJson.getType(), null);
 			
 			nodes.put(entry.getKey(), node);
 		}

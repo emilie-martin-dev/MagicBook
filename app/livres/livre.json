@@ -241,7 +241,8 @@
         },
         "8": {
             "text": "Your sleep is deep indeed-and it is a sleep from which you will never awaken.\nDuring the night you are bitten by a sand snake. Its deadly venom takes only\nseconds to work.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "9": {
             "text": "It is early morning on the fifteenth day of your quest when you open your eyes\nto the breathtaking spectacle of Hammerdal, the mountain city. The capital of\nDurenor, unlike other cities in the Lastlands, does not need man-made\nfortifications. The encircling peaks of the Hammerdal Range offer a far more\nsecure protection to the people within.\n\nhttp://www.projectaon.org/en/xhtml/lw/02fotw//ill1.png[Illustration]: The King's Tower, a magnificent structure of glass and stone.\n\nThe carriage speeds through the lush farmlands surrounding the city with its\nmany towers and wide streets. On a hill in the very centre of Hammerdal stands\nthe King's Tower, a magnificent structure of glass and stone. As the carriage\nhalts at the tower gates, you suddenly realize for the first time that as a\nwielder of the Sommerswerd, your destiny is to become part of the oldest legend\nof the Lastlands.",
@@ -291,7 +292,8 @@
         },
         "11": {
             "text": "Covering yourself with your Kai cloak, you hide inside a large wooden barrel.\nBut it is to no avail, for in less than a minute the trapdoor is thrown open and\nfour angry villagers drop to the stone floor, torches and swords held high in\ntheir hands. As you are dragged kicking from the cellar, the screams of the\ncrowd drown your pleas for mercy.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "12": {
             "is_random_pick": true,
@@ -875,7 +877,8 @@
         },
         "44": {
             "text": "The venom is in your bloodstream. Your arm feels numb and you are beginning to\nsweat. The last sound you hear is the gentle lap of the surf and the cries of\nvultures high above.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "45": {
             "is_random_pick": true,
@@ -1007,7 +1010,8 @@
         },
         "54": {
             "text": "As you race through the door, you are knocked off your feet by the force of a\nspear thrust into your chest. As the moonlight fades, the last thing you see of\nthis world is a circle of screaming villagers as they stab and hack you to\ndeath.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "55": {
             "items": [
@@ -2235,7 +2239,8 @@
         },
         "126": {
             "text": "The man pulls a hidden bell-rope, and suddenly four armed guards burst into the\nroom.\n\n\"These documents are forgeries. No doubt you are a spy, or worse perhaps? No\nmatter, you'll soon find out how we deal with criminals in Port Bax. Take him\naway.\"\n\nBefore you can explain, you are seized by both arms and marched away to the city\ngaol. All your equipment is confiscated, including all Special Items and\nWeapons, and you are thrown into a cell full of evil-looking villains. You\nnotice that several of these ruffians bear the strange tattoo of a serpent on\ntheir left wrists: the sign of Vonotar the Traitor. By the time the guards have\nexamined your possessions and realized your true identity, you have been\nstrangled to death by the wizard's evil agents.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "127": {
             "must_eat": true,
@@ -2767,7 +2772,8 @@
         },
         "159": {
             "text": "You eventually come to a halt at the base of a huge fir tree. You try to stand,\nbut the pain in your legs and side is so great that you collapse and lose\nconsciousness. It is a sleep that will spare you the pain of the Helghast\nblades, but it is also a sleep from which there is no awakening.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "160": {
             "text": "\"Forgive me, my lord, I did not mean to startle you.\" The man seems nervous, and\nthe open hand that is extended towards you is shaking quite visibly.\n\nWith some caution you accept the gesture of friendship, and sit with the man at\na tavern table. The place is deserted save for a couple of mice gnawing at a\nlarge chunk of cheese.\n\nhttp://www.projectaon.org/en/xhtml/lw/02fotw//small17.png[Illustration]\n\n\"Captain Kelman has instructed me to take you to the Green Sceptre, but only if\nI am sure that you are the Kai Lord they call Lone Wolf. Can you prove your\nidentity?\" You decide you must show your mastery of one of your Kai Disciplines.",
@@ -3339,7 +3345,8 @@
         },
         "190": {
             "text": "Using the edge of a steel rule to prise open the lock, you suddenly feel a sharp\npain in your chest. A cunning trap has been laid, and as you open the box, a\nsmall needle shoots out and embeds itself in your flesh. It is tipped with a\ndeadly poison. You die instantly.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "191": {
             "text": "At the end of the avenue, the cobbled street turns abruptly to the right.\nOpposite this point is a tall, white stone building with a plaque above the\ndoor.\n\nhttp://www.projectaon.org/en/xhtml/lw/02fotw//small20.png[Illustration]: Port Watchtower-Harbour Authority\n\nYou can see that the cobbled street ends at a high stone wall. There is a large\nred gate in this wall and it is guarded by two soldiers. Beyond the gate, you\ncan make out the masts of ships moored in the harbour.",
@@ -3644,11 +3651,13 @@
         },
         "213": {
             "text": "You climb to the top of a pile of sheaves of hay and pull your warm Kai cloak\naround your shoulders to keep out the chill wind. You quickly fall asleep,\nlittle knowing you will never open your eyes again. One of the other passengers\non the coach who is an agent of the Darklords creeps out and assassinates you in\nthe dark chill of the night. Do you know who it was?",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "214": {
             "text": "Once you are inside, you are immediately aware that this is not a shop at all.\nThe room is cold and bare except for a large table in the centre. You notice\nsinister large iron manacles attached to each of its corners.\n\nYou are in the headquarters of the Silent Brotherhood, Lachlan's notorious\nsecret police. With a mounting feeling of terror, you remember the tale of\nanother Kai Lord; of how he had been captured and accused of spying. He had\nescaped after being tortured for three days and nights. You are not to be so\nfortunate. The door has automatically locked and soon the Silent Brothers, who\nare at this moment observing you through peep-holes in the wall, will come for\nyou.\n\nIt may interest you to know that after a long week in the prison of the chief\ninquisitor you did not let a single Kai secret pass your lips. It is a record\nthat has yet to be equalled, but not one that spared your life.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "215": {
             "text": "Thirty yards along on the left side of the street, you hear the sound of\nmerriment drifting out of a large ramshackle building. There is a creaking sign\nabove the door.\n\nhttp://www.projectaon.org/en/xhtml/lw/02fotw//small22.png[Illustration]: The North Star Tavern",
@@ -3969,7 +3978,8 @@
         },
         "234": {
             "text": "Before you can defend yourself, the Helghast has smashed into you and you both\nfall onto the highway below.\n\nIt may be some comfort to learn that your death was swift and painless. Your\nneck was instantly broken and you were spared the agony of the Helghast's black\nfingers tearing and burning their way through your throat. The Seal of Hammerdal\nis now on its way to Holmgard, which will now fall to the Darklords.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "235": {
             "text": "As you reach the landing of the next floor, you hear the door crash open and the\nangry mob pour through. At the top of the stairs, a Short Sword hangs on a hook\nby the fireplace. You may take this weapon if you wish. Looking around you, you\nsee that there is only one way to escape from this room and that is to jump\nthrough the window to the street below.",
@@ -4183,7 +4193,8 @@
         },
         "248": {
             "text": "As you lay the golden sword upon the deck, the zombie captain dives at you and\npins you down. His strength is unnatural. As he sinks a dagger into your throat,\nthe last thing you hear is a hideous laugh of victory.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "249": {
             "text": "During the course of the afternoon's journey, you chat with your fellow\ntravellers and learn about their backgrounds.\n\nhttp://www.projectaon.org/en/xhtml/lw/02fotw//ill15.png[Illustration]: You chat with your fellow travellers and learn about their\nbackgrounds.\n\nSitting opposite are two brothers named Ganon and Dorier. They are knights in\nthe Order of the White Mountain, warrior lords of Durenor who have pledged\nallegiance to protect the country from raids by the bandits of the Wildlands.\nThey own a castle and land near Port Bax. Next to them sits Halvorc the\nmerchant. His nose is swollen and his face is badly bruised thanks to Lachlan,\nthe Overlord of Ragadorn. A little misunderstanding about port taxes lost him\nhis cargo and most of his gold. Seated by the far door is a priest called\nParsion. Like you, he is a Sommlending who has journeyed across the Wildlands by\ncoach on his way to Port Bax. Beside you sits a young woman called Viveka. She\nis a mercenary adventuress who earns her gold by fighting for it, and sells her\nservices to the highest bidder. She is returning to Port Bax having collected\npayment for a successful adventure in Ragadorn.\n\nNot wishing to reveal your true identity, you have pretended to be a simple\npeasant. The travellers seem unaware of the war that now rages in Sommerlund.",
@@ -4674,7 +4685,8 @@
         },
         "275": {
             "text": "You become weaker and weaker until your body finally surrenders to the welcoming\narms of death. Your assassin has successfully completed his mission.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "276": {
             "text": "A grim-looking sailor is challenging all-comers to an arm-wrestling contest. He\nis so confident of winning that he will pay 5 Gold Crowns to anyone who beats\nhim. As you approach his table, a serving girl whispers in your ear, \"Be careful\nstranger, he is an evil man. He breaks the arms of those who lose, and murders\nany who beat him.\"\n\nhttp://www.projectaon.org/en/xhtml/lw/02fotw//small26.png[Illustration]\n\nAs you face the sailor across the table, bets are made throughout the tavern.\n\nIf you do not have this skill, conduct the wrestling contest as if you were in\ncombat. The first one to reach 0 ENDURANCE points, loses the match.\n\nSailor: COMBAT SKILL 18, ENDURANCE 25\n\nWhen the contest is over, restore your ENDURANCE points to the same total that\nyou had before the contest.",
@@ -4950,7 +4962,8 @@
         },
         "292": {
             "text": "You have been walking in the rain for over three hours when you are confronted\nby seven horsemen. They are mercenaries employed by the Overlord of Ragadorn and\nthey bear his emblem, a black ship on a red crest, upon their shields.\n\nThey demand that you hand over all your gold or they will kill you. When they\ndiscover that you have no gold, they chase you and eventually cut you down with\ntheir longswords. As you lie dying on the road, the last sight that you remember\nis the outline of Ragadorn on the distant horizon.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "293": {
             "text": "This road eventually ends at a deserted forest cabin. Although it is furnished,\na layer of fine dust covers everything inside and indicates that this place has\nnot been used for several months. It is a dead end, and you have wasted precious\ntime. You must return to the fork and take the left path without further delay.",
@@ -5441,7 +5454,8 @@
         },
         "317": {
             "text": "The shriek of the dying Szall is soon echoed by your own death-cry as two\ncrossbow bolts embed themselves in your back.",
-            "choices": []
+            "choices": [],
+            "type" : "FAILURE"
         },
         "318": {
             "text": "You are standing in a large, empty hall. Opposite are two doors, each with a\nbrass sign above them.",
@@ -6013,7 +6027,8 @@
         },
         "350": {
             "text": "Holmgard has suffered much since your departure. Many of the shops and houses\nyou remember passing on your way to the quay, are little more now than heaps of\nashes. The Darklords' army with their evil engines of war surround the walls,\nand the flaming arcs of fireballs shooting through the air continually light the\nnight sky as they rain down on the streets below. The people fight the fire as\nbest they can, but they are hungry and exhausted and close to surrender. At\nfirst, as it enters the harbour, the fleet is mistaken for the enemy and cries\nof despair can be heard all along the quay. But as the first of the soldiers set\nfoot in the city and unfurl the royal arms of Durenor, the news of your return\nspreads quickly. The cries of despair have changed to a chorus of cheers: \"The\nKai Lord has returned.\"\n\nYou are standing at the top of the great watchtower, high above the main gate of\nthe city, when the first light of dawn creeps slowly over the horizon. Thousand\nupon thousand of the black-clad enemy are massed around the city wall, huddled\nlike beetles in the trenches that cover the plain. In the midst of this horde, a\ngreat red tent has been erected bearing the symbol of a broken skull. It is the\nmark of Zagarna, Lord of Kaag, a Darklord of Helgedad. His great ambition is the\ndestruction of Holmgard; his fiercest desire to lead his army to victory over\nthe House of Ulnar and claim Sommerlund for his own.\n\nBut victory is not to be his this day. Raising the Sommerswerd high above your\nhead, a shaft of dawn sunlight catches upon the tip of the golden sword and a\nbrilliant flash of blinding white flame runs the entire length of the blade. The\npower of the Sommerswerd electrifies you. Your senses reel and now your body\nreacts instinctively. You lower the Sommerswerd and point the blade towards the\ntent of Lord Zagarna. There is a mighty roar as the power of the sun-sword is\nunleashed in a searing white beam. The tent explodes and a brilliant fireball of\nwhite flame mushrooms skyward. A long and terrible cry rends the air. It is Lord\nZagarna. The leader of the evil army is no more.\n\nhttp://www.projectaon.org/en/xhtml/lw/02fotw//ill20.png[Illustration]: There is a mighty roar as the power of the sun-sword is unleashed\nin a searing white beam.\n\nGripped with fear and panic, the vast black army rise up and run in chaos from\nthe city wall. The impossible has happened, their invincible master is slain.\nAgain the Sommerswerd has returned to defeat them. The army and the allies of\nDurenor ride out of the city gates in pursuit of the panic-stricken enemy as\nthey run blindly towards the Durncrag Mountains. The victory is yours. Holmgard\nis saved and the murder of the Kai has finally been avenged.\n\nBut for you, Lone Wolf, a life of high adventure has only just begun. A new\nchallenge awaits you and the Sommerswerd in Book Three of the Lone Wolf series:\n\nThe Caverns of Kalte",
-            "choices": []
+            "choices": [],
+            "type" : "VICTORY"
         }
     }
 }
