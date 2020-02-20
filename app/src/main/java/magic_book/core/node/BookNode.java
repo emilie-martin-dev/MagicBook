@@ -14,7 +14,7 @@ public class BookNode {
 		this.nodeType = nodeType;
 		this.choices = choices;
 		
-		if(this.choices == null) 
+		if(this.choices == null)
 			this.choices = new ArrayList<>();
 	}
 

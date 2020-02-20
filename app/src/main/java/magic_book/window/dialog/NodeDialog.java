@@ -15,7 +15,7 @@ import magic_book.core.node.BookNodeType;
 
 	private TextArea texte;
  	private BookNode node = null;
- 	private ChoiceBox nodeType;
+ 	private ChoiceBox<BookNodeType> nodeType;
 
  	public NodeDialog() {
  		super("Creation d'une page");
@@ -41,7 +41,7 @@ import magic_book.core.node.BookNodeType;
 		texte = new TextArea();
 		Label labelChoix = new Label("Choix du type du noeud :");
 		
-		nodeType = new ChoiceBox();
+		nodeType = new ChoiceBox<>();
 
  		nodeType.getItems().add(BookNodeType.BASIC);
  		nodeType.getItems().add(BookNodeType.VICTORY);
