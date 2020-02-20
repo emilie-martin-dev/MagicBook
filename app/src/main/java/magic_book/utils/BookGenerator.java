@@ -26,11 +26,7 @@ public class BookGenerator {
 		}
 		
 		FileWriter fileWritter = new FileWriter(path);
-		
-		write(rootNode, items, characters, nodes, fileWritter);
-		nodesInv.remove(nodes.get(rootNode));
-		nodes.remove(rootNode);
-			
+
 		for(BookNode n : nodesInv.values())
 			write(n, items, characters, nodes, fileWritter);
 		
@@ -56,6 +52,29 @@ public class BookGenerator {
 		}
 		
 		return nodes;
+	}
+	
+	private static HashMap<BookNode, Integer> shuffle(HashMap<BookNode, Integer> nodes) {
+		HashMap<BookNode, Integer> shuffle = new HashMap<>();
+		List<Integer> usedNumber = new ArrayList<>();
+		
+		for(int i = 1 ; i < nodes.size() ; i++) {
+			usedNumber.add(i);
+		}
+		
+		Random rand = new Random();
+		for(Map.Entry<BookNode, Integer> entry : nodes.entrySet()) {
+			if(entry.getValue() == 1) {
+				shuffle.put(entry.getKey(), 1);
+				continue;
+			}
+			
+			int index = rand.nextInt(usedNumber.size());
+			shuffle.put(entry.getKey(), usedNumber.get(index)+1);
+			usedNumber.remove(index);
+		}
+		
+		return shuffle;
 	}
 
 	private static void write(BookNode node, List<Parsable> items, List<Parsable> characters, HashMap<BookNode, Integer> nodes, FileWriter fileWritter) throws IOException {
@@ -88,26 +107,4 @@ public class BookGenerator {
 		fileWritter.write("\n");
 	}
 
-	private static HashMap<BookNode, Integer> shuffle(HashMap<BookNode, Integer> nodes) {
-		HashMap<BookNode, Integer> shuffle = new HashMap<>();
-		List<Integer> usedNumber = new ArrayList<>();
-		
-		for(int i = 1 ; i < nodes.size() ; i++) {
-			usedNumber.add(i);
-		}
-		
-		Random rand = new Random();
-		for(Map.Entry<BookNode, Integer> entry : nodes.entrySet()) {
-			if(entry.getValue() == 1) {
-				shuffle.put(entry.getKey(), 1);
-				continue;
-			}
-			
-			int index = rand.nextInt(usedNumber.size());
-			shuffle.put(entry.getKey(), usedNumber.get(index)+1);
-			usedNumber.remove(index);
-		}
-		
-		return shuffle;
-	}
 }
