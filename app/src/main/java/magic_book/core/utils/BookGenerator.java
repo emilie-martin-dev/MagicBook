@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import magic_book.core.BookCharacter;
+import magic_book.core.item.BookItem;
 
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
@@ -16,7 +18,7 @@ import magic_book.core.utils.TextParser;
 
 public class BookGenerator {
 
-	public static void generateBook(BookNode rootNode, List<Parsable> items, List<Parsable> characters, String path) throws IOException {
+	public static void generateBook(BookNode rootNode, List<BookItem> items, List<BookCharacter> characters, String path) throws IOException {
 		HashMap<BookNode, Integer> nodes = exploreNode(rootNode);
 		nodes = shuffle(nodes);		
 		
@@ -77,7 +79,7 @@ public class BookGenerator {
 		return shuffle;
 	}
 
-	private static void write(BookNode node, List<Parsable> items, List<Parsable> characters, HashMap<BookNode, Integer> nodes, FileWriter fileWritter) throws IOException {
+	private static void write(BookNode node, List<BookItem> items, List<BookCharacter> characters, HashMap<BookNode, Integer> nodes, FileWriter fileWritter) throws IOException {
 		fileWritter.write("Paragraphe " + nodes.get(node) + " :\n");
 		fileWritter.write("\n");
 		

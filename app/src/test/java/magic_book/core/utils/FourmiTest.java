@@ -1,6 +1,5 @@
 package magic_book.core.utils;
 
-import magic_book.core.utils.Fourmi;
 import org.junit.Assert;
 import org.junit.Test;
 

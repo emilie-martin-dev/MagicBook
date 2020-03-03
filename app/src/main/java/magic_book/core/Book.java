@@ -1,5 +1,6 @@
 package magic_book.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import magic_book.core.item.BookItem;
@@ -16,12 +17,22 @@ public class Book {
 		this.nodes = nodes;
 		this.items = items;
 		this.characters = characters;
+		
+		if(this.items == null)
+			this.items = new ArrayList<>();
+		
+		if(this.characters == null)
+			this.characters = new ArrayList<>();
 	}
 	
 	public HashMap<Integer, BookNode> getNodes() {
 		return nodes;
 	}
 
+	public BookNode getRootNode() {
+		return nodes.get(1);
+	}
+	
 	public void setNodes(HashMap<Integer, BookNode> nodes) {
 		this.nodes = nodes;
 	}
