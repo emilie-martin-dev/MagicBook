@@ -165,7 +165,7 @@ public class MainWindow extends Stage implements NodeFxObserver {
 			} else {				
 				NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
 				BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
-				bookNodeLink.setDestination(firstNodeFxSelected);
+				bookNodeLink.setDestination(firstNodeFxSelected.getNode());
 				// TODO vérifier si on a bien validé
 				
 				this.firstNodeFxSelected = null;
