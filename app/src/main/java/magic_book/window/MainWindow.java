@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -14,6 +16,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -48,10 +52,6 @@ public class MainWindow extends Stage implements NodeFxObserver {
 		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			if (mode == Mode.ADD_NODE) {
 				createNode((int) event.getX(), (int) event.getY());
-			} else if (mode == Mode.SELECT) {
-
-			} else if (mode == Mode.ADD_NODE_LINK) {
-
 			}
 		});
 		
@@ -103,12 +103,13 @@ public class MainWindow extends Stage implements NodeFxObserver {
 		ToggleButton selectToogle = createToggleButton("Selectionner", Mode.SELECT);
 		ToggleButton addNodeToggle = createToggleButton("Ajouter noeud", Mode.ADD_NODE);
 		ToggleButton addNodeLinkToggle = createToggleButton("Ajouter lien", Mode.ADD_NODE_LINK);
+		ToggleButton suppNode = createToggleButton("Supprime Noeud", Mode.SUPPRIMER);
 		
 		selectToogle.setSelected(true);
 		this.mode = Mode.SELECT;
 
 		FlowPane flow = new FlowPane();
-		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle);
+		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode);
 		flow.setPadding(new Insets(5, 5, 5, 5));
 
 		return flow;
@@ -158,7 +159,7 @@ public class MainWindow extends Stage implements NodeFxObserver {
 				NodeDialog nodeDialog = new NodeDialog(nodeFx.getNode());
 				
 				// TODO sauvegarder la modification sur le noeud
-			}
+			}			
 		} else if(mode == Mode.ADD_NODE_LINK) {
 			if(this.firstNodeFxSelected == null) {
 				this.firstNodeFxSelected = nodeFx;
@@ -167,12 +168,13 @@ public class MainWindow extends Stage implements NodeFxObserver {
 				BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 				bookNodeLink.setDestination(firstNodeFxSelected.getNode());
 				// TODO vérifier si on a bien validé
-				
+
 				this.firstNodeFxSelected = null;
-			}			
+			} 		
+		} else if(mode == Mode.SUPPRIMER) {
+			mainContent.getChildren().remove(nodeFx);
 		}
-		
-		
+
 		event.consume();
 	}
 }
