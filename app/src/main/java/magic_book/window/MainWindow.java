@@ -1,5 +1,6 @@
 package magic_book.window;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import magic_book.core.Book;
 import magic_book.core.file.BookReader;
@@ -87,7 +90,19 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
 			try {
-				Book book = BookReader.read("livres/livre.json");
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Ouvrir un livre");
+				fileChooser.getExtensionFilters().addAll(
+					new ExtensionFilter("Livre", "*.mbf"),
+					new ExtensionFilter("JSON", "*.json"),
+					new ExtensionFilter("Tous les fichiers", "*.*"));
+				
+				File selectedFile = fileChooser.showOpenDialog(this);
+				if (selectedFile == null) {
+					return;
+				}
+				
+				Book book = BookReader.read(selectedFile.getAbsolutePath());
 				
 				for(BookNode node : book.getNodes().values()) {					
 					createNode(node, 0, 0);
