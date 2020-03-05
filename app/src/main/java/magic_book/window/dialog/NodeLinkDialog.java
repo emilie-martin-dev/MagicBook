@@ -22,6 +22,8 @@ public class NodeLinkDialog extends AbstractDialog{
 
 	public NodeLinkDialog(BookNodeLink nodeLink) {
 		super("Modification du texte de choix");
+		
+		this.nodeLink = nodeLink;
 		texte.setText(nodeLink.getText());	
 		
 		this.showAndWait();
@@ -47,8 +49,12 @@ public class NodeLinkDialog extends AbstractDialog{
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			String texteHistoire = (String) texte.getText();
-						
-			NodeLinkDialog.this.nodeLink = new BookNodeLink(texteHistoire, null);
+			
+			if(NodeLinkDialog.this.nodeLink == null) {
+				NodeLinkDialog.this.nodeLink = new BookNodeLink(texteHistoire, null);
+			} else {
+				NodeLinkDialog.this.nodeLink.setText(texteHistoire);
+			}
 
 			close();
 		};

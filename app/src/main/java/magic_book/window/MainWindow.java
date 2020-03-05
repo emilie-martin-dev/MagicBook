@@ -2,6 +2,7 @@ package magic_book.window;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.SimpleDoubleProperty;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -20,14 +21,17 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import magic_book.core.node.BookNode;
 
 import magic_book.core.node.BookNodeLink;
 import magic_book.observer.NodeFxObserver;
+import magic_book.observer.NodeLinkFxObserver;
 import magic_book.window.dialog.NodeDialog;
 import magic_book.window.dialog.NodeLinkDialog;
 import magic_book.window.gui.NodeFx;
+import magic_book.window.gui.NodeLinkFx;
 
-public class MainWindow extends Stage implements NodeFxObserver {
+public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObserver {
 
 	private Mode mode;
 	private ToggleGroup toggleGroup;
@@ -47,7 +51,11 @@ public class MainWindow extends Stage implements NodeFxObserver {
 		mainContent.setCursor(Cursor.CLOSED_HAND);
 		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			if (mode == Mode.ADD_NODE) {
-				createNode((int) event.getX(), (int) event.getY());
+				NodeDialog nodeDialog = new NodeDialog();
+				BookNode node = nodeDialog.getNode();
+				if(node != null) {
+					createNode(node, (int) event.getX(), (int) event.getY());
+				}
 			} else if (mode == Mode.SELECT) {
 
 			} else if (mode == Mode.ADD_NODE_LINK) {
@@ -132,24 +140,33 @@ public class MainWindow extends Stage implements NodeFxObserver {
 		return toggleButton;
 	}
 
-	private NodeFx createNode(int x, int y) {
-		NodeDialog nodeDialog = new NodeDialog();
-		NodeFx nodeFx = null;
-		
-		if (nodeDialog.getNode() != null) {
-			nodeFx = new NodeFx(nodeDialog.getNode());
-			nodeFx.setX(x);
-			nodeFx.setY(y);
-			nodeFx.setWidth(50);
-			nodeFx.setHeight(50);
-			nodeFx.setFill(Color.GREEN);
-			nodeFx.addNodeFxObserver(this);
-			
-			listeNoeud.add(nodeFx);
-			mainContent.getChildren().add(nodeFx);
-		}
-		
-		return nodeFx;
+	private void createNode(BookNode node, int x, int y) {
+		NodeFx nodeFx = new NodeFx(node);
+		nodeFx.setX(x);
+		nodeFx.setY(y);
+		nodeFx.setWidth(50);
+		nodeFx.setHeight(50);
+		nodeFx.setFill(Color.GREEN);
+		nodeFx.addNodeFxObserver(this);
+
+		listeNoeud.add(nodeFx);
+		mainContent.getChildren().add(nodeFx);
+	}
+	
+	public void createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
+		bookNodeLink.setDestination(firstNodeFxSelected.getNode());
+		firstNodeFxSelected.getNode().getChoices().add(bookNodeLink);
+
+		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx);
+
+		nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
+		nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
+
+		nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
+		nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
+
+		nodeLinkFx.addNodeLinkFxObserver(this);
+		mainContent.getChildren().add(nodeLinkFx);
 	}
 	
 	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {		
@@ -165,8 +182,9 @@ public class MainWindow extends Stage implements NodeFxObserver {
 			} else {				
 				NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
 				BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
-				bookNodeLink.setDestination(firstNodeFxSelected.getNode());
-				// TODO vérifier si on a bien validé
+				if(bookNodeLink != null) {
+					createNodeLink(bookNodeLink, firstNodeFxSelected, nodeFx);
+				}
 				
 				this.firstNodeFxSelected = null;
 			}			
@@ -174,5 +192,14 @@ public class MainWindow extends Stage implements NodeFxObserver {
 		
 		
 		event.consume();
+	}
+
+	@Override
+	public void onNodeLinkFXClicked(NodeLinkFx nodeLinkFx, MouseEvent event) {
+		if(mode == Mode.SELECT) {
+			if(event.getClickCount() == 2) {
+				new NodeLinkDialog(nodeLinkFx.getNodeLink());
+			}
+		} 
 	}
 }
