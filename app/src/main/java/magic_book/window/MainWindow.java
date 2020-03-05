@@ -152,9 +152,28 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
 			try {
-				BookGenerator.generateBook(firstNodeFxSelected.getNode(), new ArrayList<>(), new ArrayList<>(), "build/livre.txt");
+				if(firstNodeFxSelected == null) {
+					Alert a = new Alert(AlertType.WARNING);
+					a.setTitle("Erreur lors de l'export");
+					a.setHeaderText("Merci de sélectionner au préalable le noeud de départ");
+					a.show(); 
+					return;
+				}
+				
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Exporter en texte");
+				
+				File selectedFile = fileChooser.showSaveDialog(this);
+				if (selectedFile == null) {
+					return;
+				}
+				
+				BookGenerator.generateBook(firstNodeFxSelected.getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
 			} catch (IOException ex) {
-				Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+				Alert a = new Alert(AlertType.ERROR);
+				a.setTitle("Erreur lors de l'export du fichier");
+				a.setHeaderText("Impossible de sauvegarder le fichier sur le disque");
+				a.show(); 
 			}
 		});
 
