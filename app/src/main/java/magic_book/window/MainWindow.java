@@ -1,7 +1,9 @@
 package magic_book.window;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -16,31 +18,43 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class MainWindow extends Stage {
+import magic_book.core.node.BookNodeLink;
+import magic_book.observer.NodeFxObserver;
+import magic_book.window.dialog.NodeDialog;
+import magic_book.window.dialog.NodeLinkDialog;
+import magic_book.window.gui.NodeFx;
 
-	enum Mode {
-		SELECT, ADD_NODE, ADD_NODE_LINK;
-	}
+public class MainWindow extends Stage implements NodeFxObserver {
 
 	private Mode mode;
 	private ToggleGroup toggleGroup;
+	
+	private List<NodeFx> listeNoeud;
+	
+	private NodeFx firstNodeFxSelected;
+	
+	private Pane mainContent;
 
 	public MainWindow() {
 		BorderPane root = new BorderPane();
 
-		Pane mainContent = new Pane();
+		listeNoeud = new ArrayList<>();
+		
+		mainContent = new Pane();
 		mainContent.setCursor(Cursor.CLOSED_HAND);
-		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (mode == Mode.ADD_NODE) {
-					createANode();
-				}
-			}
-		}));
+		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
+			if (mode == Mode.ADD_NODE) {
+				createNode((int) event.getX(), (int) event.getY());
+			} else if (mode == Mode.SELECT) {
 
+			} else if (mode == Mode.ADD_NODE_LINK) {
+
+			}
+		});
+		
 		root.setTop(createMenuBar());
 		root.setLeft(createLeftPanel());
 		root.setCenter(mainContent);
@@ -118,7 +132,47 @@ public class MainWindow extends Stage {
 		return toggleButton;
 	}
 
-	private void createANode() {
+	private NodeFx createNode(int x, int y) {
+		NodeDialog nodeDialog = new NodeDialog();
+		NodeFx nodeFx = null;
 		
+		if (nodeDialog.getNode() != null) {
+			nodeFx = new NodeFx(nodeDialog.getNode());
+			nodeFx.setX(x);
+			nodeFx.setY(y);
+			nodeFx.setWidth(50);
+			nodeFx.setHeight(50);
+			nodeFx.setFill(Color.GREEN);
+			nodeFx.addNodeFxObserver(this);
+			
+			listeNoeud.add(nodeFx);
+			mainContent.getChildren().add(nodeFx);
+		}
+		
+		return nodeFx;
+	}
+	
+	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {		
+		if(mode == Mode.SELECT) {
+			if(event.getClickCount() == 2) {
+				NodeDialog nodeDialog = new NodeDialog(nodeFx.getNode());
+				
+				// TODO sauvegarder la modification sur le noeud
+			}
+		} else if(mode == Mode.ADD_NODE_LINK) {
+			if(this.firstNodeFxSelected == null) {
+				this.firstNodeFxSelected = nodeFx;
+			} else {				
+				NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
+				BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
+				bookNodeLink.setDestination(firstNodeFxSelected);
+				// TODO vérifier si on a bien validé
+				
+				this.firstNodeFxSelected = null;
+			}			
+		}
+		
+		
+		event.consume();
 	}
 }

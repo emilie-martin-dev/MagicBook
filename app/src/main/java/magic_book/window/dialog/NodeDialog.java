@@ -61,7 +61,9 @@ import magic_book.core.node.BookNodeType;
 		return (ActionEvent e) -> {
 			String texteHistoire = (String) texte.getText();
 			BookNodeType choixBox = (BookNodeType) nodeType.getValue();
+			
 			NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
+			
 			close();
 		};
 	}
