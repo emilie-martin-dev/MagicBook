@@ -3,10 +3,10 @@ package magic_book.window.dialog;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+
 import magic_book.core.item.BookItem;
 
 public class ItemDialog extends AbstractDialog {
@@ -29,26 +29,6 @@ public class ItemDialog extends AbstractDialog {
 		nameTextField.setText(item.getNom());
 
 		this.showAndWait();
-	}
-
-	private void initStageUI(String title) {
-
-
-		Button boutonValider = new Button("Valider");
-		boutonValider.setOnAction((ActionEvent e) -> {
-			if (idTextField.getText().trim().isEmpty()
-					|| nameTextField.getText().trim().isEmpty()) {
-				return;
-			}
-
-			ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
-
-			close();
-		});
-	}
-
-	public BookItem getItem() {
-		return item;
 	}
 
 	@Override
@@ -81,6 +61,10 @@ public class ItemDialog extends AbstractDialog {
 			
 			close();
 		};
+	}
+
+	public BookItem getItem() {
+		return item;
 	}
 
 }

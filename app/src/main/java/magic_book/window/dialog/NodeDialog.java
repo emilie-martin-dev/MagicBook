@@ -59,11 +59,13 @@ import magic_book.core.node.BookNodeType;
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
-				String texteHistoire = (String) texte.getText();
-				BookNodeType choixBox = (BookNodeType) nodeType.getValue();
-				NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
-				close();
-				};
+			String texteHistoire = (String) texte.getText();
+			BookNodeType choixBox = (BookNodeType) nodeType.getValue();
+			
+			NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
+			
+			close();
+		};
 	}
 	
 	public BookNode getNode() {

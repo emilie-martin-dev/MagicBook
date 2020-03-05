@@ -5,6 +5,6 @@ import magic_book.window.gui.NodeFx;
 
 public interface NodeFxObserver {
 
-	public void onNodeFXClicked(NodeFx node, MouseEvent event);
+	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event);
 	
 }

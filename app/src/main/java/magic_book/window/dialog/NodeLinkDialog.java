@@ -1,29 +1,31 @@
- package magic_book.window.dialog;
+package magic_book.window.dialog;
 
- import javafx.event.ActionEvent;
- import javafx.event.EventHandler;
- import javafx.scene.Node;
- import javafx.scene.control.Label;
- import javafx.scene.control.TextArea;
- import javafx.scene.layout.GridPane;
- 
- import magic_book.core.node.BookNodeLink;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
 
- public class NodeLinkDialog extends AbstractDialog{
-	 
+import magic_book.core.node.BookNodeLink;
+
+public class NodeLinkDialog extends AbstractDialog{
+	
 	private TextArea texte;
 	
- 	public NodeLinkDialog() {
- 		super("Création du texte de choix");
- 		this.showAndWait();
- 	}
+	private BookNodeLink nodeLink;
+	
+	public NodeLinkDialog() {
+		super("Création du texte de choix");
+		this.showAndWait();
+	}
 
- 	public NodeLinkDialog(BookNodeLink nodeLink) {
- 		super("Modification du texte de choix");
+	public NodeLinkDialog(BookNodeLink nodeLink) {
+		super("Modification du texte de choix");
 		texte.setText(nodeLink.getText());	
 		
- 		this.showAndWait();
- 	}
+		this.showAndWait();
+	}
 
 	@Override
 	protected Node getMainUI() {
@@ -44,9 +46,16 @@
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
- 				String texteHistoire = (String) texte.getText();
- 				close();
- 		};
+			String texteHistoire = (String) texte.getText();
+						
+			NodeLinkDialog.this.nodeLink = new BookNodeLink(texteHistoire, null);
+
+			close();
+		};
 	}
 
- }
+	public BookNodeLink getNodeLink() {
+		return nodeLink;
+	}
+	
+}

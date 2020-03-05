@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+
 import magic_book.core.BookCharacter;
 
 
@@ -31,26 +32,6 @@ public class CharacterDialog extends AbstractDialog {
 		raceTextField.setText(character.getRace());
 		
 		this.showAndWait();
-	}
-	
-
-		/*
-		Button boutonValider = new Button("Valider");
-		boutonValider.setOnAction((ActionEvent e) -> {
-			if (idTextField.getText().trim().isEmpty()
-					|| nameTextField.getText().trim().isEmpty()
-					|| raceTextField.getText().trim().isEmpty()) {
-				return;
-			}
-			
-			CharacterDialog.this.character = new BookCharacter(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
-			
-			close();
-		});*/
-
-	
-	public BookCharacter getCharacter() {
-		return character;
 	}
 
 	@Override
@@ -81,15 +62,20 @@ public class CharacterDialog extends AbstractDialog {
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
-				if (idTextField.getText().trim().isEmpty()
-						|| nameTextField.getText().trim().isEmpty()
-						|| raceTextField.getText().trim().isEmpty()) {
-					return;
-				}
+			if (idTextField.getText().trim().isEmpty()
+					|| nameTextField.getText().trim().isEmpty()
+					|| raceTextField.getText().trim().isEmpty()) {
+				return;
+			}
+			
 			CharacterDialog.this.character = new BookCharacter(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
 			
 			close();
 		};
+	}
+	
+	public BookCharacter getCharacter() {
+		return character;
 	}
 	
 }

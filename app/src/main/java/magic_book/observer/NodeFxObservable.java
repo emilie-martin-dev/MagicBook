@@ -5,11 +5,10 @@ import magic_book.window.gui.NodeFx;
 
 public class NodeFxObservable extends Observable<NodeFxObserver> {
 
-	public void notifyOnNodeFXClicked(NodeFx node, MouseEvent event) {
+	public void notifyOnNodeFXClicked(NodeFx nodeFx, MouseEvent event) {
 		for (NodeFxObserver nodeObserver : listObservers) {
-			nodeObserver.onNodeFXClicked(node, event);
+			nodeObserver.onNodeFXClicked(nodeFx, event);
 		}
 	}
-
 
 }
