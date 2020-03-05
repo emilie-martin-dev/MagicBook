@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -20,8 +18,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -107,7 +103,7 @@ public class MainWindow extends Stage implements NodeFxObserver {
 		ToggleButton selectToogle = createToggleButton("Selectionner", Mode.SELECT);
 		ToggleButton addNodeToggle = createToggleButton("Ajouter noeud", Mode.ADD_NODE);
 		ToggleButton addNodeLinkToggle = createToggleButton("Ajouter lien", Mode.ADD_NODE_LINK);
-		ToggleButton suppNode = createToggleButton("Supprime Noeud", Mode.SUPPRIMER);
+		ToggleButton suppNode = createToggleButton("Supprime Noeud", Mode.DELETE);
 		
 		selectToogle.setSelected(true);
 		this.mode = Mode.SELECT;
@@ -175,7 +171,7 @@ public class MainWindow extends Stage implements NodeFxObserver {
 
 				this.firstNodeFxSelected = null;
 			} 		
-		} else if(mode == Mode.SUPPRIMER) {
+		} else if(mode == Mode.DELETE) {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("Suppression");
 			alert.setHeaderText("Voulez vous vraiment supprimer ?");
