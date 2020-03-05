@@ -214,6 +214,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 
 		toggleButton.setOnAction((ActionEvent e) -> {
 			MainWindow.this.mode = mode;
+			this.firstNodeFxSelected = null;
 		});
 
 		toggleButton.setPrefSize(100, 100);
