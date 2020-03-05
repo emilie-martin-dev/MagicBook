@@ -159,7 +159,13 @@ public class MainWindow extends Stage implements NodeFxObserver {
 				NodeDialog nodeDialog = new NodeDialog(nodeFx.getNode());
 				
 				// TODO sauvegarder la modification sur le noeud
-			}			
+			}
+			nodeFx.setOnMouseDragged(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent select) {
+					nodeFx.setX(select.getX()-nodeFx.getWidth()/2);
+					nodeFx.setY(select.getY()-nodeFx.getHeight()/2);
+				}
+			});
 		} else if(mode == Mode.ADD_NODE_LINK) {
 			if(this.firstNodeFxSelected == null) {
 				this.firstNodeFxSelected = nodeFx;
