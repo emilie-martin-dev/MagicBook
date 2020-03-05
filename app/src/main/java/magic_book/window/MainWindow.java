@@ -22,25 +22,28 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import magic_book.core.node.BookNode;
-import magic_book.observer.ModeObservable;
-import magic_book.observer.ModeObserver;
+import magic_book.core.node.BookNodeLink;
+import magic_book.observer.NodeFxObserver;
+import magic_book.observer.NodeObservable;
+import magic_book.observer.NodeObserver;
 import magic_book.window.dialog.NodeDialog;
+import magic_book.window.dialog.NodeLinkDialog;
 import magic_book.window.gui.Mode;
 import magic_book.window.gui.NodeFx;
 
-public class MainWindow extends Stage {
+public class MainWindow extends Stage implements NodeFxObserver {
 
 	private Mode mode;
 	private ToggleGroup toggleGroup;
 	
 	private List<NodeFx> listeNoeud;
 	
-	private ModeObservable modeObservable;
+	private NodeFx firstNode;
 
 	public MainWindow() {
 		BorderPane root = new BorderPane();
 
-		modeObservable = new ModeObservable();
+		
 		listeNoeud = new ArrayList<>();
 		
 		Pane mainContent = new Pane();
@@ -55,7 +58,9 @@ public class MainWindow extends Stage {
 					}
 				}
 				if (mode == Mode.SELECT) {
-					modifANode(event, mode);
+				}
+				if (mode == Mode.ADD_NODE_LINK) {
+					
 				}
 			}
 		}));
@@ -125,7 +130,7 @@ public class MainWindow extends Stage {
 
 		toggleButton.setOnAction((ActionEvent e) -> {
 			MainWindow.this.mode = mode;
-			modeObservable.notifyModeChanged(mode);
+			//modeObservable.notifyModeChanged(mode);
 		});
 
 		toggleButton.setPrefSize(100, 100);
@@ -145,26 +150,42 @@ public class MainWindow extends Stage {
 		
 		if (dialog.getNode() != null){
 			rectangle = new NodeFx(dialog.getNode());
-			modeObservable.addObserver(rectangle);
 			listeNoeud.add(rectangle);
 			rectangle.setX(event.getX());
 			rectangle.setY(event.getY());
 			rectangle.setWidth(50);
 			rectangle.setHeight(50);
 			rectangle.setFill(Color.GREEN);
+			rectangle.addNodeFxObserver(this);
 		}
 		
 		return rectangle;
 	}
 	
-	private void createANode(Node node) {
-		
-	}
-	
-	private void modifANode(MouseEvent event, Mode mode){
-		event.consume();
-		MouseEvent ev1 = event;
-		System.out.println("clique select");
-
+	public void onNodeFXClicked(NodeFx node, MouseEvent event){		
+		if(mode == Mode.SELECT){
+			if(event.getClickCount() == 2){
+				BookNode bookNode = new BookNode(node.getNode().getText(), node.getNode().getNodeType(), node.getNode().getChoices());
+				NodeDialog nodial = new NodeDialog(bookNode);
+				event.consume();
+			}
+		}
+		if(mode == Mode.ADD_NODE_LINK){
+			if(this.firstNode != null){
+				BookNode bookNode = new BookNode(firstNode.getNode().getText(), firstNode.getNode().getNodeType(), firstNode.getNode().getChoices());
+				BookNodeLink bookNodeLink = new BookNodeLink(null, bookNode);
+				NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(bookNodeLink);
+				//nodeLinkDialog
+				System.out.println("second");
+				this.firstNode = null;
+			}
+			if(this.firstNode == null){
+				this.firstNode = node;
+				System.out.println("first");
+			}
+			System.out.println("bonjur");
+			event.consume();
+			
+		}
 	}
 }
