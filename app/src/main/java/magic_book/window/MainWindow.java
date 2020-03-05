@@ -2,8 +2,11 @@ package magic_book.window;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -31,6 +34,7 @@ import magic_book.core.file.BookReader;
 import magic_book.core.node.BookNode;
 
 import magic_book.core.node.BookNodeLink;
+import magic_book.core.utils.BookGenerator;
 import magic_book.observer.NodeFxObserver;
 import magic_book.observer.NodeLinkFxObserver;
 import magic_book.window.dialog.NodeDialog;
@@ -146,6 +150,13 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		Menu menuBook = new Menu("Livre");
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre");
+		menuBookGenerate.setOnAction((ActionEvent e) -> {
+			try {
+				BookGenerator.generateBook(firstNodeFxSelected.getNode(), new ArrayList<>(), new ArrayList<>(), "build/livre.txt");
+			} catch (IOException ex) {
+				Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		});
 
 		menuBook.getItems().addAll(menuBookDifficulty, menuBookGenerate);
 
@@ -229,6 +240,8 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	
 	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {		
 		if(mode == Mode.SELECT) {
+			this.firstNodeFxSelected = nodeFx;
+			
 			if(event.getClickCount() == 2) {
 				NodeDialog nodeDialog = new NodeDialog(nodeFx.getNode());
 				
@@ -240,6 +253,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 			} else {				
 				NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
 				BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
+				
 				if(bookNodeLink != null) {
 					createNodeLink(bookNodeLink, firstNodeFxSelected, nodeFx);
 				}

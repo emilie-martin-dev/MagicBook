@@ -13,8 +13,6 @@ import magic_book.core.item.BookItem;
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeType;
-import magic_book.core.utils.Parsable;
-import magic_book.core.utils.TextParser;
 
 public class BookGenerator {
 
