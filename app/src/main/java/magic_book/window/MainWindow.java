@@ -1,14 +1,16 @@
 package magic_book.window;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.property.SimpleDoubleProperty;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -21,6 +23,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import magic_book.core.Book;
+import magic_book.core.file.BookReader;
 import magic_book.core.node.BookNode;
 
 import magic_book.core.node.BookNodeLink;
@@ -81,6 +85,43 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
+		menuFileOpen.setOnAction((ActionEvent e) -> {
+			try {
+				Book book = BookReader.read("livres/livre.json");
+				
+				for(BookNode node : book.getNodes().values()) {					
+					createNode(node, 0, 0);
+				}
+				
+				for(BookNode node : book.getNodes().values()) {
+					NodeFx first = null;
+					for(NodeFx fx : listeNoeud) {
+						if(fx.getNode() == node) {
+							first = fx;
+							break;
+						}
+					}
+						
+					for(BookNodeLink choice : node.getChoices()) {
+						NodeFx second = null;
+						for(NodeFx fx : listeNoeud) {
+							if(fx.getNode() == choice.getDestination()) {
+								second = fx;
+								break;
+							}
+						}
+
+						createNodeLink(choice, first, second);
+					}
+				}
+
+			} catch (FileNotFoundException ex) {
+				Alert a = new Alert(AlertType.ERROR);
+				a.setTitle("Erreur lors de l'ouverture du fichier");
+				a.setHeaderText("Le fichier n'existe pas");
+				a.show(); 
+			}
+		});
 		MenuItem menuFileSave = new MenuItem("Enregistrer");
 		MenuItem menuFileSaveAs = new MenuItem("Enregistrer sous");
 
@@ -154,8 +195,10 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	}
 	
 	public void createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
-		bookNodeLink.setDestination(firstNodeFxSelected.getNode());
-		firstNodeFxSelected.getNode().getChoices().add(bookNodeLink);
+		bookNodeLink.setDestination(secondNodeFx.getNode());
+		
+		if(!firstNodeFx.getNode().getChoices().contains(bookNodeLink))
+			firstNodeFx.getNode().getChoices().add(bookNodeLink);
 
 		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx);
 
@@ -174,7 +217,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 			if(event.getClickCount() == 2) {
 				NodeDialog nodeDialog = new NodeDialog(nodeFx.getNode());
 				
-				// TODO sauvegarder la modification sur le noeud
+				//TODO : sauvegarder la modification sur le noeud
 			}
 		} else if(mode == Mode.ADD_NODE_LINK) {
 			if(this.firstNodeFxSelected == null) {
