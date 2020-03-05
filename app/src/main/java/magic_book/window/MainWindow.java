@@ -5,8 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -15,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -197,12 +197,13 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		ToggleButton selectToogle = createToggleButton("Selectionner", Mode.SELECT);
 		ToggleButton addNodeToggle = createToggleButton("Ajouter noeud", Mode.ADD_NODE);
 		ToggleButton addNodeLinkToggle = createToggleButton("Ajouter lien", Mode.ADD_NODE_LINK);
+		ToggleButton suppNode = createToggleButton("Supprime Noeud", Mode.DELETE);
 		
 		selectToogle.setSelected(true);
 		this.mode = Mode.SELECT;
 
 		FlowPane flow = new FlowPane();
-		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle);
+		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode);
 		flow.setPadding(new Insets(5, 5, 5, 5));
 
 		return flow;
@@ -257,14 +258,12 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		mainContent.getChildren().add(nodeLinkFx);
 	}
 	
-	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {		
+	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {	
 		if(mode == Mode.SELECT) {
 			this.firstNodeFxSelected = nodeFx;
 			
 			if(event.getClickCount() == 2) {
-				NodeDialog nodeDialog = new NodeDialog(nodeFx.getNode());
-				
-				//TODO : sauvegarder la modification sur le noeud
+				new NodeDialog(nodeFx.getNode());
 			}
 		} else if(mode == Mode.ADD_NODE_LINK) {
 			if(this.firstNodeFxSelected == null) {
@@ -278,10 +277,18 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 				}
 				
 				this.firstNodeFxSelected = null;
-			}			
+			} 		
+		} else if(mode == Mode.DELETE) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Suppression");
+			alert.setHeaderText("Voulez vous vraiment supprimer ?");
+
+			Optional<ButtonType> choix = alert.showAndWait();
+			if(choix.get() == ButtonType.OK){
+				mainContent.getChildren().remove(nodeFx);
+			}
 		}
-		
-		
+
 		event.consume();
 	}
 
