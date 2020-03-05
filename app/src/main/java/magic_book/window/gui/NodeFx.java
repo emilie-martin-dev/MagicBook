@@ -1,5 +1,6 @@
 package magic_book.window.gui;
 
+import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 
@@ -19,7 +20,14 @@ public class NodeFx extends Rectangle {
 		
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			nodeFxObservable.notifyOnNodeFXClicked(NodeFx.this, event);
-		});				
+		});
+		
+		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent select) {
+					NodeFx.this.setX(select.getX()-NodeFx.this.getWidth()/2);
+					NodeFx.this.setY(select.getY()-NodeFx.this.getHeight()/2);
+				}
+			});
 	}
 	
 	public void addNodeFxObserver(NodeFxObserver observer) {

@@ -2,6 +2,7 @@ package magic_book.window;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -10,6 +11,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -153,19 +157,13 @@ public class MainWindow extends Stage implements NodeFxObserver {
 		return nodeFx;
 	}
 	
-	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {		
+	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {	
 		if(mode == Mode.SELECT) {
 			if(event.getClickCount() == 2) {
 				NodeDialog nodeDialog = new NodeDialog(nodeFx.getNode());
 				
 				// TODO sauvegarder la modification sur le noeud
 			}
-			nodeFx.setOnMouseDragged(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent select) {
-					nodeFx.setX(select.getX()-nodeFx.getWidth()/2);
-					nodeFx.setY(select.getY()-nodeFx.getHeight()/2);
-				}
-			});
 		} else if(mode == Mode.ADD_NODE_LINK) {
 			if(this.firstNodeFxSelected == null) {
 				this.firstNodeFxSelected = nodeFx;
@@ -178,7 +176,14 @@ public class MainWindow extends Stage implements NodeFxObserver {
 				this.firstNodeFxSelected = null;
 			} 		
 		} else if(mode == Mode.SUPPRIMER) {
-			mainContent.getChildren().remove(nodeFx);
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Suppression");
+			alert.setHeaderText("Voulez vous vraiment supprimer ?");
+
+			Optional<ButtonType> choix = alert.showAndWait();
+			if(choix.get() == ButtonType.OK){
+				mainContent.getChildren().remove(nodeFx);
+			}
 		}
 
 		event.consume();
