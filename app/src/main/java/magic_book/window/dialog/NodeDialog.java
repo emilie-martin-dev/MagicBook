@@ -25,6 +25,9 @@ import magic_book.core.node.BookNodeType;
 
  	public NodeDialog(BookNode node) {
  		super("Edition de la page");
+		
+		this.node = node;
+		
  		texte.setText(node.getText());
  		nodeType.setValue(node.getNodeType());
 
@@ -62,7 +65,12 @@ import magic_book.core.node.BookNodeType;
 			String texteHistoire = (String) texte.getText();
 			BookNodeType choixBox = (BookNodeType) nodeType.getValue();
 			
-			NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
+			if (NodeDialog.this.node == null){
+				NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
+			} else{
+				NodeDialog.this.node.setText(texteHistoire);
+				NodeDialog.this.node.setNodeType(choixBox);
+			}
 			
 			close();
 		};
