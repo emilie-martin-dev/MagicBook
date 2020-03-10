@@ -34,6 +34,7 @@ import magic_book.core.file.BookReader;
 import magic_book.core.node.BookNode;
 
 import magic_book.core.node.BookNodeLink;
+import magic_book.core.node.BookNodeType;
 import magic_book.core.utils.BookGenerator;
 import magic_book.observer.NodeFxObserver;
 import magic_book.observer.NodeLinkFxObserver;
@@ -48,15 +49,17 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	private ToggleGroup toggleGroup;
 	
 	private List<NodeFx> listeNoeud;
+	private List<NodeLinkFx> listeNoeudLien;
 	
 	private NodeFx firstNodeFxSelected;
 	
 	private Pane mainContent;
-
+	
 	public MainWindow() {
 		BorderPane root = new BorderPane();
 
 		listeNoeud = new ArrayList<>();
+		listeNoeudLien = new ArrayList<>();
 		
 		mainContent = new Pane();
 		mainContent.setCursor(Cursor.CLOSED_HAND);
@@ -256,6 +259,8 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
 
 		nodeLinkFx.addNodeLinkFxObserver(this);
+		
+		listeNoeudLien.add(nodeLinkFx);
 		mainContent.getChildren().add(nodeLinkFx);
 	}
 	
@@ -285,8 +290,27 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 			alert.setHeaderText("Voulez vous vraiment supprimer ?");
 
 			Optional<ButtonType> choix = alert.showAndWait();
+			
 			if(choix.get() == ButtonType.OK){
+				
 				mainContent.getChildren().remove(nodeFx);
+				
+				List<NodeLinkFx> listRemoveNodeFx = new ArrayList();
+				
+				for(NodeLinkFx nodeLinkFx: listeNoeudLien){
+					
+					NodeFx nodeFxStart = nodeLinkFx.getStart();
+					NodeFx nodeFxEnd = nodeLinkFx.getEnd();
+					
+					if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
+						mainContent.getChildren().remove(nodeLinkFx);
+						listRemoveNodeFx.add(nodeLinkFx);
+					}
+				}
+				for(NodeLinkFx nodeLinkRemove:listRemoveNodeFx){
+					listeNoeudLien.remove(nodeLinkRemove);
+				}
+				
 			}
 		}
 
@@ -299,6 +323,6 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 			if(event.getClickCount() == 2) {
 				new NodeLinkDialog(nodeLinkFx.getNodeLink());
 			}
-		} 
+		}
 	}
 }
