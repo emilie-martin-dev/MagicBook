@@ -2,6 +2,7 @@ package magic_book.window.gui;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import magic_book.core.node.BookNode;
@@ -28,6 +29,10 @@ public class NodeFx extends Rectangle {
 					NodeFx.this.setY(select.getY()-NodeFx.this.getHeight()/2);
 				}
 			});
+		
+		this.setWidth(50);
+		this.setHeight(50);
+		this.setFill(Color.GREEN);
 	}
 	
 	public void addNodeFxObserver(NodeFxObserver observer) {

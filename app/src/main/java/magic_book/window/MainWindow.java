@@ -235,9 +235,6 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		NodeFx nodeFx = new NodeFx(node);
 		nodeFx.setX(x);
 		nodeFx.setY(y);
-		nodeFx.setWidth(50);
-		nodeFx.setHeight(50);
-		nodeFx.setFill(Color.GREEN);
 		nodeFx.addNodeFxObserver(this);
 
 		listeNoeud.add(nodeFx);
