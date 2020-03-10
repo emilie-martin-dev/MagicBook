@@ -19,6 +19,7 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
@@ -32,17 +33,26 @@ import javafx.stage.Stage;
 import magic_book.core.Book;
 import magic_book.core.file.BookReader;
 import magic_book.core.node.BookNode;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.layout.VBox;
+import magic_book.core.BookCharacter;
+import magic_book.core.item.Arme;
+import magic_book.core.item.BookItem;
 
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.utils.BookGenerator;
-import magic_book.observer.NodeFxObserver;
 import magic_book.observer.NodeLinkFxObserver;
 import magic_book.window.dialog.NodeDialog;
 import magic_book.window.dialog.NodeLinkDialog;
 import magic_book.window.gui.NodeFx;
 import magic_book.window.gui.NodeLinkFx;
+import magic_book.observer.RectangleFxObserver;
+import magic_book.window.dialog.PreludeDialog;
+import magic_book.window.gui.PreludeFx;
+import magic_book.window.gui.RectangleFx;
 
-public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObserver {
+public class MainWindow extends Stage implements NodeLinkFxObserver {
 
 	private Mode mode;
 	private ToggleGroup toggleGroup;
@@ -52,6 +62,8 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	private NodeFx firstNodeFxSelected;
 	
 	private Pane mainContent;
+	
+	private PreludeFx prelude;
 
 	public MainWindow() {
 		BorderPane root = new BorderPane();
@@ -59,6 +71,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		listeNoeud = new ArrayList<>();
 		
 		mainContent = new Pane();
+		mainContent.setStyle("-fx-background-color: #dddddd;");
 		mainContent.setCursor(Cursor.CLOSED_HAND);
 		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			if (mode == Mode.ADD_NODE) {
@@ -77,6 +90,9 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		root.setTop(createMenuBar());
 		root.setLeft(createLeftPanel());
 		root.setCenter(mainContent);
+		
+		prelude = createNodePrelude();
+		
 
 		Scene scene = new Scene(root, 1000, 800);
 
@@ -84,6 +100,8 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		this.setScene(scene);
 		this.show();
 	}
+	
+	
 
 	private MenuBar createMenuBar() {
 		MenuBar menuBar = new MenuBar();
@@ -182,6 +200,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		// --- Menu affichage
 		Menu menuShow = new Menu("Affichage");
 		CheckMenuItem menuShowItemsCharacters = new CheckMenuItem("Items et personnage");
+		
 		CheckMenuItem menuShowStats = new CheckMenuItem("Stats");
 		menuShowItemsCharacters.setSelected(true);
 		menuShowStats.setSelected(true);
@@ -194,6 +213,8 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	}
 
 	private Node createLeftPanel() {
+		VBox leftContent = new VBox();
+		
 		ToggleButton selectToogle = createToggleButton("Selectionner", Mode.SELECT);
 		ToggleButton addNodeToggle = createToggleButton("Ajouter noeud", Mode.ADD_NODE);
 		ToggleButton addNodeLinkToggle = createToggleButton("Ajouter lien", Mode.ADD_NODE_LINK);
@@ -204,9 +225,13 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 
 		FlowPane flow = new FlowPane();
 		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode);
-		flow.setPadding(new Insets(5, 5, 5, 5));
-
-		return flow;
+		leftContent.setMaxWidth(250);
+		leftContent.setPadding(new Insets(5, 5, 5, 5));
+		leftContent.setSpacing(15);
+		leftContent.getChildren().add(flow);
+		leftContent.getChildren().add(gestionPerso());
+		
+		return leftContent;
 	}
 
 	private ToggleButton createToggleButton(String text, Mode mode) {
@@ -235,11 +260,31 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		nodeFx.setWidth(50);
 		nodeFx.setHeight(50);
 		nodeFx.setFill(Color.GREEN);
-		nodeFx.addNodeFxObserver(this);
+		nodeFx.addNodeFxObserver(new NodeFxListener());
 
 		listeNoeud.add(nodeFx);
 		mainContent.getChildren().add(nodeFx);
 	}
+
+		
+	private PreludeFx createNodePrelude() {
+		PreludeFx preludeFx = new PreludeFx();
+		preludeFx.setX(600);
+		preludeFx.setY(20);
+		preludeFx.setWidth(100);
+		preludeFx.setHeight(100);
+		preludeFx.setFill(Color.RED);
+		preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
+			PreludeDialog dialog = new PreludeDialog();
+			System.out.println(dialog.getTexteHistoire());
+			
+		});
+
+		mainContent.getChildren().add(preludeFx);
+		
+		return preludeFx;
+	}
+	
 	
 	public void createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
 		bookNodeLink.setDestination(secondNodeFx.getNode());
@@ -258,40 +303,6 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		nodeLinkFx.addNodeLinkFxObserver(this);
 		mainContent.getChildren().add(nodeLinkFx);
 	}
-	
-	public void onNodeFXClicked(NodeFx nodeFx, MouseEvent event) {	
-		if(mode == Mode.SELECT) {
-			this.firstNodeFxSelected = nodeFx;
-			
-			if(event.getClickCount() == 2) {
-				new NodeDialog(nodeFx.getNode());
-			}
-		} else if(mode == Mode.ADD_NODE_LINK) {
-			if(this.firstNodeFxSelected == null) {
-				this.firstNodeFxSelected = nodeFx;
-			} else {				
-				NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
-				BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
-				
-				if(bookNodeLink != null) {
-					createNodeLink(bookNodeLink, firstNodeFxSelected, nodeFx);
-				}
-				
-				this.firstNodeFxSelected = null;
-			} 		
-		} else if(mode == Mode.DELETE) {
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Suppression");
-			alert.setHeaderText("Voulez vous vraiment supprimer ?");
-
-			Optional<ButtonType> choix = alert.showAndWait();
-			if(choix.get() == ButtonType.OK){
-				mainContent.getChildren().remove(nodeFx);
-			}
-		}
-
-		event.consume();
-	}
 
 	@Override
 	public void onNodeLinkFXClicked(NodeLinkFx nodeLinkFx, MouseEvent event) {
@@ -299,6 +310,71 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 			if(event.getClickCount() == 2) {
 				new NodeLinkDialog(nodeLinkFx.getNodeLink());
 			}
-		} 
+		}
 	}
+	
+	private VBox gestionPerso(){
+		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", "", 0, 0, null, null, 0));
+		rootPerso.setExpanded(true);
+		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", "Humain", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", "Goblin", 0, 0, null, null, 0));
+		rootPerso.getChildren().addAll(Perso1, Perso2);
+		TreeView<BookCharacter> treeView = new TreeView<> (rootPerso);
+		
+		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Item"));
+		rootPerso.setExpanded(true);
+		TreeItem<BookItem> Item1 = new TreeItem<> (new Arme("1","Epée",5));
+		TreeItem<BookItem> Item2 = new TreeItem<> (new BookItem("2","Bouclier"));
+		rootItem.getChildren().addAll(Item1, Item2);
+		TreeView<BookItem> treeView2 = new TreeView<> (rootItem);
+		
+		
+		VBox vBox = new VBox(10, treeView,treeView2);
+		vBox.setSpacing(5);
+		
+		return vBox;
+		
+		
+	}
+
+	class NodeFxListener implements RectangleFxObserver {
+		
+		public void onRectangleFXClicked(RectangleFx rectangleFx, MouseEvent event) {	
+			NodeFx nodeFx = (NodeFx) rectangleFx;
+			if(mode == Mode.SELECT) {
+				MainWindow.this.firstNodeFxSelected = nodeFx;
+
+				if(event.getClickCount() == 2) {
+					new NodeDialog(nodeFx.getNode());
+				}
+			} else if(mode == Mode.ADD_NODE_LINK) {
+				if(MainWindow.this.firstNodeFxSelected == null) {
+					MainWindow.this.firstNodeFxSelected = nodeFx;
+				} else {				
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
+					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
+
+					if(bookNodeLink != null) {
+						createNodeLink(bookNodeLink, firstNodeFxSelected, nodeFx);
+					}
+
+					MainWindow.this.firstNodeFxSelected = null;
+				} 		
+			} else if(mode == Mode.DELETE) {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("Suppression");
+				alert.setHeaderText("Voulez vous vraiment supprimer ?");
+
+				Optional<ButtonType> choix = alert.showAndWait();
+				if(choix.get() == ButtonType.OK){
+					mainContent.getChildren().remove(nodeFx);
+				}
+			}
+
+			event.consume();
+		}
+	}
+	
 }
+	
+

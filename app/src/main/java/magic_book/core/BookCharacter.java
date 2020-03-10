@@ -64,6 +64,11 @@ public class BookCharacter implements Parsable {
 	public String getParsableText() {
 		return this.name;
 	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
 	
 	public void addItem(String item) {
 		this.listItems.add(item);
