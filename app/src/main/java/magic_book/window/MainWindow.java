@@ -282,13 +282,8 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 				this.firstNodeFxSelected = null;
 			} 		
 		} else if(mode == Mode.DELETE) {
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Suppression");
-			alert.setHeaderText("Voulez vous vraiment supprimer ?");
-
-			Optional<ButtonType> choix = alert.showAndWait();
 			
-			if(choix.get() == ButtonType.OK){
+			if (alertSupp() == true){
 				
 				mainContent.getChildren().remove(nodeFx);
 				
@@ -320,6 +315,23 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 			if(event.getClickCount() == 2) {
 				new NodeLinkDialog(nodeLinkFx.getNodeLink());
 			}
+		} else if(mode == Mode.DELETE) {
+			if (alertSupp() == true){
+				listeNoeudLien.remove(nodeLinkFx);
+				mainContent.getChildren().remove(nodeLinkFx);
+			}
 		}
+	}
+	
+	public boolean alertSupp() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Suppression");
+		alert.setHeaderText("Voulez vous vraiment supprimer ?");
+
+		Optional<ButtonType> choix = alert.showAndWait();
+		if (choix.get() == ButtonType.OK){
+			return true;
+		}
+		return false;
 	}
 }
