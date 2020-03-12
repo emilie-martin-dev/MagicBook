@@ -10,11 +10,19 @@ import magic_book.observer.RectangleFxObserver;
 
 public class PreludeFx extends RectangleFx {
 	
-	private String TexteHistoire;
+	private String texte;
 	
-	public PreludeFx() {
+	public PreludeFx(String texte) {
 		super();
+		this.texte = texte;
 	}
 	
+		public String getText() {
+		return this.texte;
+	}
+
+	public void setText(String text) {
+		this.texte = texte;
+	}
 	
 }

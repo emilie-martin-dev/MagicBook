@@ -10,11 +10,14 @@ import javafx.scene.control.ChoiceBox;
 
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeType;
+import magic_book.window.gui.PreludeFx;
 
  public class PreludeDialog extends AbstractDialog {
 
 	private String textePrelude;
 	private TextArea texte;
+	//private PreludeFx node = new PreludeFx(null);
+	
 
  	public PreludeDialog() {
  		super("Creation du Prelude");
@@ -22,10 +25,11 @@ import magic_book.core.node.BookNodeType;
  		this.showAndWait();
  	}
 
- 	public PreludeDialog(BookNode node) {
+ 	public PreludeDialog(PreludeFx node) {
  		super("Edition du Prelude");
 		
 		this.node = node;
+		
 		texte.setText(node.getText());
 		this.showAndWait();
  	}
@@ -46,7 +50,14 @@ import magic_book.core.node.BookNodeType;
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
-			textePrelude = (String) texte.getText();
+			String textePrelude = (String) texte.getText();
+			
+			if (PreludeDialog.this.node == null){
+				PreludeDialog.this.node = new PreludeFx(textePrelude);
+			} else{
+				PreludeDialog.this.node.setText(textePrelude);
+			}
+			
 			close();
 		};
 	}

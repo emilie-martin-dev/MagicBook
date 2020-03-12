@@ -268,17 +268,12 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 
 		
 	private PreludeFx createNodePrelude() {
-		PreludeFx preludeFx = new PreludeFx();
+		PreludeFx preludeFx = new PreludeFx(null);
 		preludeFx.setX(600);
 		preludeFx.setY(20);
 		preludeFx.setWidth(100);
 		preludeFx.setHeight(100);
 		preludeFx.setFill(Color.RED);
-		preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
-			PreludeDialog dialog = new PreludeDialog();
-			System.out.println(dialog.getTexteHistoire());
-			
-		});
 
 		mainContent.getChildren().add(preludeFx);
 		
