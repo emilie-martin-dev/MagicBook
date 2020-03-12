@@ -17,10 +17,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) throws FileNotFoundException, IOException {
-		Book book = BookReader.read("livres/livre.json");
-		BookGenerator.generateBook(book.getRootNode(), book.getItems(), book.getCharacters(), "build/livre");
-		System.out.println("Difficulté : " + (100-Fourmi.estimerDifficulteLivre(book.getRootNode(), 10000)) + "%");
-		
 		new MainWindow();
 	}
 	

@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -36,6 +37,7 @@ import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeType;
 import magic_book.core.utils.BookGenerator;
+import magic_book.core.utils.Fourmi;
 import magic_book.observer.NodeFxObserver;
 import magic_book.observer.NodeLinkFxObserver;
 import magic_book.window.dialog.NodeDialog;
@@ -56,7 +58,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	private Pane mainContent;
 	BorderPane root = new BorderPane();
 	
-	public MainWindow() {
+	public MainWindow() throws IOException {
 		
 
 		listeNoeud = new ArrayList<>();
@@ -80,6 +82,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		
 		root.setTop(createMenuBar());
 		root.setLeft(createLeftPanel());
+		root.setRight(createRightPanel());
 		root.setCenter(mainContent);
 
 		Scene scene = new Scene(root, 1000, 800);
@@ -211,6 +214,17 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		flow.setPadding(new Insets(5, 5, 5, 5));
 
 		return flow;
+	}
+	
+	private Node createRightPanel() throws FileNotFoundException, IOException {
+		Book book = BookReader.read("livres/livre.json");
+		BookGenerator.generateBook(book.getRootNode(), book.getItems(), book.getCharacters(), "build/livre");
+		Label labelDifficulte = new Label("Difficulté : " + (100-Fourmi.estimerDifficulteLivre(book.getRootNode(), 10000)) + "%");
+
+		FlowPane diff = new FlowPane();
+		diff.getChildren().addAll(labelDifficulte);
+
+		return diff;
 	}
 
 	private ToggleButton createToggleButton(String text, Mode mode) {
