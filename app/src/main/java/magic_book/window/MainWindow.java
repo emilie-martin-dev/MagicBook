@@ -54,9 +54,10 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	private NodeFx firstNodeFxSelected;
 	
 	private Pane mainContent;
+	BorderPane root = new BorderPane();
 	
 	public MainWindow() {
-		BorderPane root = new BorderPane();
+		
 
 		listeNoeud = new ArrayList<>();
 		listeNoeudLien = new ArrayList<>();
