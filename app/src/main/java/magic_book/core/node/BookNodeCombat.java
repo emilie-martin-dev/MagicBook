@@ -1,7 +1,7 @@
 package magic_book.core.node;
 
 import java.util.List;
-import magic_book.core.BookCharacter;
+import magic_book.core.game.BookCharacter;
 import magic_book.window.gui.NodeFx;
 
 
