@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -16,11 +17,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -35,12 +39,17 @@ import javafx.scene.layout.VBox;
 
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.file.BookTextExporter;
+import magic_book.core.game.BookCharacter;
+import magic_book.core.item.Arme;
+import magic_book.core.item.BookItem;
 import magic_book.observer.NodeLinkFxObserver;
 import magic_book.window.dialog.NodeDialog;
 import magic_book.window.dialog.NodeLinkDialog;
 import magic_book.window.gui.NodeFx;
 import magic_book.window.gui.NodeLinkFx;
 import magic_book.observer.RectangleFxObserver;
+import magic_book.window.dialog.CharacterDialog;
+import magic_book.window.dialog.ItemDialog;
 import magic_book.window.dialog.PreludeDialog;
 import magic_book.window.gui.PreludeFx;
 import magic_book.window.gui.RectangleFx;
@@ -59,6 +68,9 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 	
 	private PreludeFx preludeFx;
 
+	private TreeView<BookItem> treeViewItem;
+	private TreeView<BookCharacter> treeViewPerso;
+	
 	public MainWindow() {
 		BorderPane root = new BorderPane();
 
@@ -225,7 +237,128 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		leftContent.setSpacing(15);
 		leftContent.getChildren().add(flow);
 		
+		
+		VBox ItemsPersos = gestionPerso();
+		leftContent.getChildren().add(ItemsPersos);
+
+		
 		return leftContent;
+	}
+	
+	private VBox gestionPerso(){
+
+		//Création des TreeItem avec les items/persos
+		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", "", 0, 0, null, null, 0));
+		rootPerso.setExpanded(true);
+		
+		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", "Humain", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", "Goblin", 0, 0, null, null, 0));
+		rootPerso.getChildren().addAll(Perso1, Perso2);
+		treeViewPerso = new TreeView<> (rootPerso);
+
+		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","item"));
+		rootItem.setExpanded(true);
+		
+		TreeItem<BookItem> Item1 = new TreeItem<> (new Arme("1","epee",5));
+		TreeItem<BookItem> Item2 = new TreeItem<> (new BookItem("2","bouclier"));
+		rootItem.getChildren().addAll(Item1, Item2);
+		treeViewItem = new TreeView<> (rootItem);
+
+		//Création des context menus pour ajouter/supprimer des personnages
+		ContextMenu contextMenuPerso = new ContextMenu();
+		MenuItem menuPersoAdd = new MenuItem("Ajouter un Personnage");
+		MenuItem menuPersoUpdate = new MenuItem("Modifier un Personnage");
+		MenuItem menuPersoDel = new MenuItem("Supprimer un Personnage");
+
+		menuPersoAdd.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				CharacterDialog characterDialog = new CharacterDialog();
+				BookCharacter perso = characterDialog.getCharacter();
+				if(perso != null) {
+					addCharacter(perso);
+				}
+			}
+		});
+
+		menuPersoUpdate.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
+				if(selectedItem != null) {
+					BookCharacter character = selectedItem.getValue();
+					new CharacterDialog(character);
+					
+					treeViewPerso.refresh();
+				}
+			}
+		});
+		
+		menuPersoDel.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
+				rootPerso.getChildren().remove(selectedItem);
+			}
+		});
+		
+		contextMenuPerso.getItems().addAll(menuPersoAdd, menuPersoUpdate, menuPersoDel);
+		treeViewPerso.setContextMenu(contextMenuPerso);
+
+
+		//Création des context menus pour ajouter/supprimer des items
+		ContextMenu contextMenuItem = new ContextMenu();
+		MenuItem menuItemAdd = new MenuItem("Ajouter un Item");
+		MenuItem menuItemUpdate = new MenuItem("Modifier un Item");
+		MenuItem menuItemDel = new MenuItem("Supprimer un Item");
+
+		menuItemAdd.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				ItemDialog itemDialog = new ItemDialog();
+				BookItem item = itemDialog.getItem();
+				if(item != null) {
+					addItem(item);
+				}
+			}
+		});
+		
+		menuItemUpdate.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
+				if(selectedItem != null) {
+					BookItem item = selectedItem.getValue();
+					new ItemDialog(item);
+					
+					treeViewItem.refresh();
+				}
+			}
+		});
+
+		menuItemDel.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
+				rootItem.getChildren().remove(selectedItem);
+			}
+		});
+		
+		contextMenuItem.getItems().addAll(menuItemAdd, menuItemUpdate, menuItemDel);
+		treeViewItem.setContextMenu(contextMenuItem);
+
+		VBox vBox = new VBox(treeViewPerso, treeViewItem);
+		vBox.setSpacing(5);
+
+		return vBox;
+	}
+
+	private void addCharacter(BookCharacter chara){
+		treeViewPerso.getRoot().getChildren().add(new TreeItem<> (chara));
+	}
+
+	private void addItem(BookItem item){
+		treeViewItem.getRoot().getChildren().add(new TreeItem<> (item));
 	}
 	
 	private Node createRightPanel() {
@@ -383,5 +516,3 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 	}
 	
 }
-	
-
