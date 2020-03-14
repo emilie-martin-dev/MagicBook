@@ -2,6 +2,7 @@ package magic_book.window.gui;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import magic_book.observer.RectangleFxObservable;
@@ -11,8 +12,7 @@ public class RectangleFx extends Rectangle {
 
 	private RectangleFxObservable nodeFxObservable;
 
-	public RectangleFx() {
-	
+	public RectangleFx(Color color) {	
 		nodeFxObservable = new RectangleFxObservable();
 		
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
@@ -28,6 +28,7 @@ public class RectangleFx extends Rectangle {
 		
 		this.setWidth(50);
 		this.setHeight(50);
+		this.setFill(color);
 	}
 	
 	public void addNodeFxObserver(RectangleFxObserver observer) {

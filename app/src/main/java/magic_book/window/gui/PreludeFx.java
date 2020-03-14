@@ -7,11 +7,9 @@ public class PreludeFx extends RectangleFx {
 	private String texte;
 	
 	public PreludeFx(String texte) {
-		super();
+		super(Color.RED);
 		
 		this.texte = texte;
-		
-		this.setFill(Color.RED);
 	}
 	
 	public String getText() {

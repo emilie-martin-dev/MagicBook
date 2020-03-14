@@ -25,7 +25,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -52,6 +51,7 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 	private ToggleGroup toggleGroup;
 	
 	private List<NodeFx> listeNoeud;
+	private List<NodeLinkFx> listeNoeudLien;
 	
 	private NodeFx firstNodeFxSelected;
 	
@@ -63,6 +63,7 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		BorderPane root = new BorderPane();
 
 		listeNoeud = new ArrayList<>();
+		listeNoeudLien = new ArrayList<>();
 		
 		mainContent = new Pane();
 		mainContent.setStyle("-fx-background-color: #dddddd;");
@@ -83,6 +84,7 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		
 		root.setTop(createMenuBar());
 		root.setLeft(createLeftPanel());
+		root.setRight(createRightPanel());
 		root.setCenter(mainContent);
 		
 		createNodePrelude();
@@ -225,6 +227,15 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		
 		return leftContent;
 	}
+	
+	private Node createRightPanel() {
+		//Label prefixLabelNodeCount = new Label("Total de noeuds : " + this.listeNoeud.size());
+
+		VBox statsLayout = new VBox();
+		//statsLayout.getChildren().addAll(labelNodeCount);
+
+		return statsLayout;
+	}
 
 	private ToggleButton createToggleButton(String text, Mode mode) {
 		ToggleButton toggleButton = new ToggleButton(text);
@@ -249,7 +260,6 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		NodeFx nodeFx = new NodeFx(node);
 		nodeFx.setX(x);
 		nodeFx.setY(y);
-		nodeFx.setFill(Color.GREEN);
 		nodeFx.addNodeFxObserver(new NodeFxListener());
 
 		listeNoeud.add(nodeFx);
@@ -289,7 +299,22 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
 
 		nodeLinkFx.addNodeLinkFxObserver(this);
+		
+		listeNoeudLien.add(nodeLinkFx);
 		mainContent.getChildren().add(nodeLinkFx);
+	}
+	
+	public boolean confirmDeleteDialog() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Suppression");
+		alert.setHeaderText("Voulez vous vraiment supprimer ?");
+
+		Optional<ButtonType> choix = alert.showAndWait();
+		if (choix.get() == ButtonType.OK){
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -297,6 +322,11 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		if(mode == Mode.SELECT) {
 			if(event.getClickCount() == 2) {
 				new NodeLinkDialog(nodeLinkFx.getNodeLink());
+			}
+		} else if(mode == Mode.DELETE) {
+			if (confirmDeleteDialog()== true){
+				listeNoeudLien.remove(nodeLinkFx);
+				mainContent.getChildren().remove(nodeLinkFx);
 			}
 		}
 	}
@@ -325,13 +355,26 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 					MainWindow.this.firstNodeFxSelected = null;
 				} 		
 			} else if(mode == Mode.DELETE) {
-				Alert alert = new Alert(AlertType.CONFIRMATION);
-				alert.setTitle("Suppression");
-				alert.setHeaderText("Voulez vous vraiment supprimer ?");
+				if (confirmDeleteDialog()) {
 
-				Optional<ButtonType> choix = alert.showAndWait();
-				if(choix.get() == ButtonType.OK){
 					mainContent.getChildren().remove(nodeFx);
+
+					List<NodeLinkFx> nodeFxToRemove = new ArrayList();
+
+					for(NodeLinkFx nodeLinkFx: listeNoeudLien){
+						NodeFx nodeFxStart = nodeLinkFx.getStart();
+						NodeFx nodeFxEnd = nodeLinkFx.getEnd();
+
+						if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
+							mainContent.getChildren().remove(nodeLinkFx);
+							nodeFxToRemove.add(nodeLinkFx);
+						}
+					}
+
+					for(NodeLinkFx nodeLinkRemove:nodeFxToRemove){
+						listeNoeudLien.remove(nodeLinkRemove);
+					}
+
 				}
 			}
 
