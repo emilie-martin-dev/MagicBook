@@ -2,40 +2,21 @@ package magic_book.core.node;
 
 import java.util.ArrayList;
 import java.util.List;
+import magic_book.core.item.BookItem;
 
 
 public class BookNodeWithChoice extends AbstractBookNodeWithChoice {
 	
-	public BookNodeWithChoice(String text, List<BookNodeLink> choices, BookNodeType nodeType){
-		super(text, choices);
+	public BookNodeWithChoice(String text, int nbItemsAPrendre, List<BookItem> items, List<BookNodeLink> choices){
+		super(text, nbItemsAPrendre, items, choices);
 		
 		if(this.choices == null)
 			this.choices = new ArrayList<>();
 	}
-
-	public String getText() {
-		return this.text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public List<BookNodeLink> getChoices() {
-		return choices;
-	}
-
-	public void setChoices(List<BookNodeLink> choices) {
-		this.choices = choices;
-	}
-
-	@Override
-	public String toString(){
-		return this.text;
-	}
-
+	
 	@Override
 	public boolean isTerminal() {
 		return false;
 	}
+
 }
