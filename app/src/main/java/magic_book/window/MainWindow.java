@@ -16,7 +16,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -26,7 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -35,9 +34,7 @@ import magic_book.core.file.BookReader;
 import magic_book.core.node.BookNode;
 
 import magic_book.core.node.BookNodeLink;
-import magic_book.core.node.BookNodeType;
 import magic_book.core.utils.BookGenerator;
-import magic_book.core.utils.Fourmi;
 import magic_book.observer.NodeFxObserver;
 import magic_book.observer.NodeLinkFxObserver;
 import magic_book.window.dialog.NodeDialog;
@@ -56,10 +53,9 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 	private NodeFx firstNodeFxSelected;
 	
 	private Pane mainContent;
-	BorderPane root = new BorderPane();
 	
-	public MainWindow() throws IOException {
-		
+	public MainWindow() {
+		BorderPane root = new BorderPane();
 
 		listeNoeud = new ArrayList<>();
 		listeNoeudLien = new ArrayList<>();
@@ -216,15 +212,13 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		return flow;
 	}
 	
-	private Node createRightPanel() throws FileNotFoundException, IOException {
-		Book book = BookReader.read("livres/livre.json");
-		BookGenerator.generateBook(book.getRootNode(), book.getItems(), book.getCharacters(), "build/livre");
-		Label labelDifficulte = new Label("Difficulté : " + (100-Fourmi.estimerDifficulteLivre(book.getRootNode(), 10000)) + "%");
+	private Node createRightPanel() {
+		//Label prefixLabelNodeCount = new Label("Total de noeuds : " + this.listeNoeud.size());
 
-		FlowPane diff = new FlowPane();
-		diff.getChildren().addAll(labelDifficulte);
+		VBox statsLayout = new VBox();
+		//statsLayout.getChildren().addAll(labelNodeCount);
 
-		return diff;
+		return statsLayout;
 	}
 
 	private ToggleButton createToggleButton(String text, Mode mode) {
@@ -298,23 +292,23 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 			} 		
 		} else if(mode == Mode.DELETE) {
 			
-			if (alertSupp() == true){
+			if (confirmDeleteDialog()) {
 				
 				mainContent.getChildren().remove(nodeFx);
 				
-				List<NodeLinkFx> listRemoveNodeFx = new ArrayList();
+				List<NodeLinkFx> nodeFxToRemove = new ArrayList();
 				
 				for(NodeLinkFx nodeLinkFx: listeNoeudLien){
-					
 					NodeFx nodeFxStart = nodeLinkFx.getStart();
 					NodeFx nodeFxEnd = nodeLinkFx.getEnd();
 					
 					if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
 						mainContent.getChildren().remove(nodeLinkFx);
-						listRemoveNodeFx.add(nodeLinkFx);
+						nodeFxToRemove.add(nodeLinkFx);
 					}
 				}
-				for(NodeLinkFx nodeLinkRemove:listRemoveNodeFx){
+				
+				for(NodeLinkFx nodeLinkRemove:nodeFxToRemove){
 					listeNoeudLien.remove(nodeLinkRemove);
 				}
 				
@@ -331,14 +325,14 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 				new NodeLinkDialog(nodeLinkFx.getNodeLink());
 			}
 		} else if(mode == Mode.DELETE) {
-			if (alertSupp() == true){
+			if (confirmDeleteDialog() == true){
 				listeNoeudLien.remove(nodeLinkFx);
 				mainContent.getChildren().remove(nodeLinkFx);
 			}
 		}
 	}
 	
-	public boolean alertSupp() {
+	public boolean confirmDeleteDialog() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Suppression");
 		alert.setHeaderText("Voulez vous vraiment supprimer ?");
@@ -347,6 +341,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 		if (choix.get() == ButtonType.OK){
 			return true;
 		}
+		
 		return false;
 	}
 }

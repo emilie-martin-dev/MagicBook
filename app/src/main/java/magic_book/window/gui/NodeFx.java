@@ -24,17 +24,17 @@ public class NodeFx extends Rectangle {
 		});
 		
 		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent select) {
-					if (select.getX() > 0 && select.getY() > 0){
-						NodeFx.this.setX(select.getX()-NodeFx.this.getWidth()/2);
-						NodeFx.this.setY(select.getY()-NodeFx.this.getHeight()/2);
-					} else if (select.getX() <= 0){ 
-						NodeFx.this.setX(0.1);
-					} else if (select.getY() <= 0){ 
-						NodeFx.this.setY(0.1);
-					}
+			public void handle(MouseEvent select) {
+				if (select.getX() > 0 && select.getY() > 0){
+					NodeFx.this.setX(select.getX()-NodeFx.this.getWidth()/2);
+					NodeFx.this.setY(select.getY()-NodeFx.this.getHeight()/2);
+				} else if (select.getX() <= 0){ 
+					NodeFx.this.setX(0.1);
+				} else if (select.getY() <= 0){ 
+					NodeFx.this.setY(0.1);
 				}
-			});
+			}
+		});
 		
 		this.setWidth(50);
 		this.setHeight(50);
