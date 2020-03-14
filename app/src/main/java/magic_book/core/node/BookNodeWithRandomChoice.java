@@ -8,16 +8,4 @@ public class BookNodeWithRandomChoice extends AbstractBookNodeWithChoice<BookNod
 	public BookNodeWithRandomChoice(String text, int nbItemsAPrendre, List<BookItem> items, List<BookNodeLinkRandom> choices){
 		super(text, nbItemsAPrendre, items, choices);
 	}
-
-
-	@Override
-	public boolean isTerminal() {
-		return false;
-	}
-
-	@Override
-	public List<BookNodeLinkRandom> getChoices() {
-		return choices;
-	}
-	
 }

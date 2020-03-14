@@ -1,19 +1,16 @@
 package magic_book.core.node;
 
+import java.util.ArrayList;
 
-public class BookNodeTerminal {
+public class BookNodeTerminal extends AbstractBookNode {
 
 	private BookNodeStatus bookNodeStatus;
-	
-	public BookNodeTerminal(BookNodeStatus bookNodeStatus){
+
+	public BookNodeTerminal(String texte, BookNodeStatus bookNodeStatus){
+		super(texte);
+		
 		this.bookNodeStatus = bookNodeStatus;
 	}
-	
-	
-	public boolean isTerminal() {
-		return true;
-	}
-
 	public BookNodeStatus getBookNodeStatus() {
 		return bookNodeStatus;
 	}
@@ -21,6 +18,10 @@ public class BookNodeTerminal {
 	public void setBookNodeStatus(BookNodeStatus bookNodeStatus) {
 		this.bookNodeStatus = bookNodeStatus;
 	}
-	
-	
+
+	@Override
+	public ArrayList<BookNodeLink> getChoices() {
+		return new ArrayList<BookNodeLink>();
+	}
+
 }

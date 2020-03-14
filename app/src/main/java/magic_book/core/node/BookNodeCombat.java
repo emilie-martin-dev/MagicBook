@@ -1,18 +1,17 @@
 package magic_book.core.node;
 
+import java.util.ArrayList;
 import java.util.List;
 import magic_book.core.game.BookCharacter;
-import magic_book.window.gui.NodeFx;
-
 
 public class BookNodeCombat extends AbstractBookNode{
-	private boolean winBookNodeLink;
-	private boolean looseBookNodeLink;
-	private NodeFx evasionBookNodeLink;
+	private BookNodeLink winBookNodeLink;
+	private BookNodeLink looseBookNodeLink;
+	private BookNodeLink evasionBookNodeLink;
 	private int evasionTurn;
 	private List<BookCharacter> ennemies;
 	
-	public BookNodeCombat(String text, boolean winBookNodeLink, boolean looseBookNodeLink, NodeFx evasionBookNodeLink, int evasionTurn, List<BookCharacter> ennemies){
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionTurn, List<BookCharacter> ennemies){
 		super(text);
 		this.winBookNodeLink = winBookNodeLink;
 		this.looseBookNodeLink = looseBookNodeLink;
@@ -23,31 +22,42 @@ public class BookNodeCombat extends AbstractBookNode{
 	}
 
 	@Override
-	public boolean isTerminal() {
-		return false;
+	public List<BookNodeLink> getChoices() {
+		List<BookNodeLink> choices = new ArrayList<>();
+		
+		if(winBookNodeLink != null)
+			choices.add(winBookNodeLink);
+		
+		if(looseBookNodeLink != null)
+			choices.add(looseBookNodeLink);
+		
+		if(evasionBookNodeLink != null)
+			choices.add(evasionBookNodeLink);
+		
+		return choices;
 	}
 
-	public boolean isWinBookNodeLink() {
+	public BookNodeLink isWinBookNodeLink() {
 		return winBookNodeLink;
 	}
 
-	public void setWinBookNodeLink(boolean winBookNodeLink) {
+	public void setWinBookNodeLink(BookNodeLink winBookNodeLink) {
 		this.winBookNodeLink = winBookNodeLink;
 	}
 
-	public boolean isLooseBookNodeLink() {
+	public BookNodeLink isLooseBookNodeLink() {
 		return looseBookNodeLink;
 	}
 
-	public void setLooseBookNodeLink(boolean looseBookNodeLink) {
+	public void setLooseBookNodeLink(BookNodeLink looseBookNodeLink) {
 		this.looseBookNodeLink = looseBookNodeLink;
 	}
 
-	public NodeFx getEvasionBookNodeLink() {
+	public BookNodeLink getEvasionBookNodeLink() {
 		return evasionBookNodeLink;
 	}
 
-	public void setEvasionBookNodeLink(NodeFx evasionBookNodeLink) {
+	public void setEvasionBookNodeLink(BookNodeLink evasionBookNodeLink) {
 		this.evasionBookNodeLink = evasionBookNodeLink;
 	}
 

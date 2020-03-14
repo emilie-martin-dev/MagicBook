@@ -9,13 +9,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.control.ChoiceBox;
 
 import magic_book.core.node.AbstractBookNode;
-import magic_book.core.node.BookNodeType;
+import magic_book.core.node.BookNodeStatus;
+import magic_book.core.node.BookNodeTerminal;
+import magic_book.core.node.BookNodeWithChoice;
 
  public class NodeDialog extends AbstractDialog {
 
+	private static final String BASIC = "Basic";
+	private static final String FAILURE = "Défaite";
+	private static final String VICTORY = "Victoire";
+	 
 	private TextArea texte;
  	private AbstractBookNode node = null;
- 	private ChoiceBox<BookNodeType> nodeType;
+ 	private ChoiceBox<String> nodeType;
 
  	public NodeDialog() {
  		super("Creation d'une page");
@@ -26,11 +32,14 @@ import magic_book.core.node.BookNodeType;
  	public NodeDialog(AbstractBookNode node) {
  		super("Edition de la page");
 		
-		this.node = node;
-		
  		texte.setText(node.getText());
- 		nodeType.setValue(node.getNodeType());
-
+		if(node instanceof BookNodeTerminal) {
+			BookNodeTerminal terminalNode = (BookNodeTerminal) node;
+			nodeType.setValue(terminalNode.getBookNodeStatus() == BookNodeStatus.FAILURE ? FAILURE : VICTORY);
+		} else {
+			nodeType.setValue(BASIC);
+		}
+			
  		this.showAndWait();
  	}
 	
@@ -46,10 +55,10 @@ import magic_book.core.node.BookNodeType;
 		
 		nodeType = new ChoiceBox<>();
 
- 		nodeType.getItems().add(BookNodeType.BASIC);
- 		nodeType.getItems().add(BookNodeType.VICTORY);
- 		nodeType.getItems().add(BookNodeType.FAILURE);
- 		nodeType.setValue(BookNodeType.BASIC);
+ 		nodeType.getItems().add(BASIC);
+ 		nodeType.getItems().add(VICTORY);
+ 		nodeType.getItems().add(FAILURE);
+ 		nodeType.setValue(BASIC);
 
 		root.add(textLabel, 0, 0);
 		root.add(texte, 0, 1, 2, 1);
@@ -63,13 +72,11 @@ import magic_book.core.node.BookNodeType;
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			String texteHistoire = (String) texte.getText();
-			BookNodeType choixBox = (BookNodeType) nodeType.getValue();
 			
-			if (NodeDialog.this.node == null){
-				NodeDialog.this.node = new AbstractBookNode(texteHistoire, choixBox, null);
-			} else{
-				NodeDialog.this.node.setText(texteHistoire);
-				NodeDialog.this.node.setNodeType(choixBox);
+			if(nodeType.getValue() == BASIC) {
+				NodeDialog.this.node = new BookNodeWithChoice(texteHistoire, 0, null, null);
+			} else {
+				NodeDialog.this.node = new BookNodeTerminal(texteHistoire, nodeType.getValue() == VICTORY ? BookNodeStatus.VICTORY : BookNodeStatus.FAILURE);
 			}
 			
 			close();

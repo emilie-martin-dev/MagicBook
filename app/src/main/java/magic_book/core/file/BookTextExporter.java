@@ -12,8 +12,9 @@ import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
 
 import magic_book.core.node.AbstractBookNode;
-import magic_book.core.node.AbstractBookNodeWithChoice;
 import magic_book.core.node.BookNodeLink;
+import magic_book.core.node.BookNodeStatus;
+import magic_book.core.node.BookNodeTerminal;
 
 public class BookTextExporter {
 
@@ -38,7 +39,7 @@ public class BookTextExporter {
 		return exploreNode(node, new HashMap<>());
 	}
 	
-	private static HashMap<AbstractBookNode, Integer> exploreNode(AbstractBookNode node, HashMap<AbstractBookNodeWithChoice, Integer> nodes) {
+	private static HashMap<AbstractBookNode, Integer> exploreNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodes) {
 		if(node == null)
 			return null;
 		
@@ -84,14 +85,17 @@ public class BookTextExporter {
 		
 		fileWritter.write(TextParser.parseText(node.getText(), items, characters)+"\n");
 
-		if(node.getNodeType() == BookNodeType.FAILURE) {
-			fileWritter.write("\n");
-			fileWritter.write("Vous avez perdu\n");
-		}
-		
-		if(node.getNodeType() == BookNodeType.VICTORY) {
-			fileWritter.write("\n");
-			fileWritter.write("Félicitation vous avez gagné\n");
+		if(node instanceof BookNodeTerminal) {
+			BookNodeTerminal nodeTerminal = (BookNodeTerminal) node;
+			if(nodeTerminal.getBookNodeStatus() == BookNodeStatus.FAILURE) {
+				fileWritter.write("\n");
+				fileWritter.write("Vous avez perdu\n");
+			}
+
+			if(nodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY) {
+				fileWritter.write("\n");
+				fileWritter.write("Félicitation vous avez gagné\n");
+			}
 		}
 		
 		if(!node.getChoices().isEmpty()) {

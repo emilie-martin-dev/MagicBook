@@ -2,7 +2,7 @@ package magic_book.core.node;
 
 
 public enum BookNodeStatus {
-	VICTORY("Victoire"), FAILURE("Perdu");
+	VICTORY("Victoire"), FAILURE("Défaite");
 
 	private String name;
 

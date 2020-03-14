@@ -1,5 +1,7 @@
 package magic_book.core.node;
 
+import java.util.List;
+
 public abstract class AbstractBookNode {
 	
 	private String text;
@@ -7,7 +9,8 @@ public abstract class AbstractBookNode {
 	public AbstractBookNode(String text){
 		this.text = text;
 	}
-	public abstract boolean isTerminal();
+	
+	public abstract <T extends BookNodeLink> List<T> getChoices();
 
 	public String getText() {
 		return text;

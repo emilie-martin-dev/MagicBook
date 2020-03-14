@@ -1,12 +1,12 @@
 package magic_book.core.file.json;
 
 import java.util.List;
-import magic_book.core.node.BookNodeType;
+import magic_book.core.node.BookNodeStatus;
 
 public class SectionJson {
 
 	private String text;
-	private BookNodeType type = BookNodeType.BASIC;
+	private BookNodeStatus type;
 	private boolean alterance_choice;
 	private boolean trim_choices;
 	private boolean is_random_pick;
@@ -25,11 +25,11 @@ public class SectionJson {
 	private List<ChoiceJson> choices;
 	private int eat_amount;
 
-	public BookNodeType getType() {
+	public BookNodeStatus getType() {
 		return type;
 	}
 
-	public void setType(BookNodeType type) {
+	public void setType(BookNodeStatus type) {
 		this.type = type;
 	}
 	
