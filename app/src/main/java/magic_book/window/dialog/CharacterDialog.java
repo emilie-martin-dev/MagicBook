@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-import magic_book.core.BookCharacter;
+import magic_book.core.game.BookCharacter;
 
 
 public class CharacterDialog extends AbstractDialog {

@@ -1,5 +1,6 @@
 package magic_book.core;
 
+import magic_book.core.game.BookCharacter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

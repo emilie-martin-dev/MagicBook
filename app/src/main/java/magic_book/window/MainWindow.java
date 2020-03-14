@@ -34,7 +34,7 @@ import magic_book.core.file.BookReader;
 import magic_book.core.node.BookNode;
 
 import magic_book.core.node.BookNodeLink;
-import magic_book.core.utils.BookGenerator;
+import magic_book.core.file.BookTextExporter;
 import magic_book.observer.NodeFxObserver;
 import magic_book.observer.NodeLinkFxObserver;
 import magic_book.window.dialog.NodeDialog;
@@ -168,7 +168,7 @@ public class MainWindow extends Stage implements NodeFxObserver, NodeLinkFxObser
 					return;
 				}
 				
-				BookGenerator.generateBook(firstNodeFxSelected.getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
+				BookTextExporter.generateBook(firstNodeFxSelected.getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
 			} catch (IOException ex) {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'export du fichier");

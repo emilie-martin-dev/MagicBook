@@ -1,4 +1,4 @@
-package magic_book.core.utils;
+package magic_book.core.parser;
 
 public interface Parsable {
 	

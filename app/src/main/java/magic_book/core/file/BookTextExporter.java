@@ -1,5 +1,6 @@
-package magic_book.core.utils;
+package magic_book.core.file;
 
+import magic_book.core.parser.TextParser;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,14 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import magic_book.core.BookCharacter;
+import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
 
 import magic_book.core.node.BookNode;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeType;
 
-public class BookGenerator {
+public class BookTextExporter {
 
 	public static void generateBook(BookNode rootNode, List<BookItem> items, List<BookCharacter> characters, String path) throws IOException {
 		HashMap<BookNode, Integer> nodes = exploreNode(rootNode);
