@@ -11,4 +11,9 @@ public class BookNodeWithRandomChoice extends AbstractBookNodeWithChoice{
 	public List getRandomChoice(){
 		return choices;
 	}
+
+	@Override
+	public boolean isTerminal() {
+		return false;
+	}
 }
