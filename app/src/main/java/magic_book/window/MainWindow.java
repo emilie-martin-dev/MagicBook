@@ -19,7 +19,6 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
@@ -63,7 +62,7 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 	
 	private Pane mainContent;
 	
-	private PreludeFx prelude;
+	private PreludeFx preludeFx;
 
 	public MainWindow() {
 		BorderPane root = new BorderPane();
@@ -91,9 +90,8 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		root.setLeft(createLeftPanel());
 		root.setCenter(mainContent);
 		
-		prelude = createNodePrelude();
+		createNodePrelude();
 		
-
 		Scene scene = new Scene(root, 1000, 800);
 
 		this.setTitle("Magic Book");
@@ -257,29 +255,30 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		NodeFx nodeFx = new NodeFx(node);
 		nodeFx.setX(x);
 		nodeFx.setY(y);
-		nodeFx.setWidth(50);
-		nodeFx.setHeight(50);
 		nodeFx.setFill(Color.GREEN);
 		nodeFx.addNodeFxObserver(new NodeFxListener());
 
 		listeNoeud.add(nodeFx);
 		mainContent.getChildren().add(nodeFx);
 	}
-
-		
-	private PreludeFx createNodePrelude() {
+	
+	private void createNodePrelude() {
 		PreludeFx preludeFx = new PreludeFx(null);
-		preludeFx.setX(600);
-		preludeFx.setY(20);
-		preludeFx.setWidth(100);
-		preludeFx.setHeight(100);
-		preludeFx.setFill(Color.RED);
+		preludeFx.setX(10);
+		preludeFx.setY(10);
+		
+		preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
+			if(mode == Mode.SELECT) {
+				if(event.getClickCount() == 2) {
+					PreludeDialog dialog = new PreludeDialog(this.preludeFx.getText());
+					this.preludeFx.setText(dialog.getTextePrelude());
+				}
+			}
+		});
 
 		mainContent.getChildren().add(preludeFx);
-		
-		return preludeFx;
+		this.preludeFx = preludeFx;
 	}
-	
 	
 	public void createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
 		bookNodeLink.setDestination(secondNodeFx.getNode());
