@@ -38,4 +38,9 @@ public class BookItem implements Parsable {
 		this.nom = nom;
 	}
 
+
+	@Override
+	public String toString() {
+		return this.nom;
+	}
 }
