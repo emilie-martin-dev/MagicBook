@@ -31,6 +31,8 @@ public class CharacterDialog extends AbstractDialog {
 		nameTextField.setText(character.getName());
 		raceTextField.setText(character.getRace());
 		
+		this.character = character;
+		
 		this.showAndWait();
 	}
 
@@ -68,7 +70,13 @@ public class CharacterDialog extends AbstractDialog {
 				return;
 			}
 			
-			CharacterDialog.this.character = new BookCharacter(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
+			if(CharacterDialog.this.character == null)
+				CharacterDialog.this.character = new BookCharacter(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
+			else {
+				CharacterDialog.this.character.setId(idTextField.getText().trim());
+				CharacterDialog.this.character.setName(nameTextField.getText().trim());
+				CharacterDialog.this.character.setRace(raceTextField.getText().trim());
+			}
 			
 			close();
 		};

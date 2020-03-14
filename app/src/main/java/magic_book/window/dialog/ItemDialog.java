@@ -27,6 +27,8 @@ public class ItemDialog extends AbstractDialog {
 
 		idTextField.setText(item.getId());
 		nameTextField.setText(item.getNom());
+		
+		this.item = item;
 
 		this.showAndWait();
 	}
@@ -56,8 +58,13 @@ public class ItemDialog extends AbstractDialog {
 					|| nameTextField.getText().trim().isEmpty()) {
 				return;
 			}
-
-			ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
+			
+			if(ItemDialog.this.item == null)
+				ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
+			else {
+				ItemDialog.this.item.setId(idTextField.getText().trim());
+				ItemDialog.this.item.setNom(nameTextField.getText().trim());
+			}
 			
 			close();
 		};
