@@ -10,8 +10,6 @@ public class BookNodeWithChoice extends AbstractBookNodeWithChoice<BookNodeLink>
 	public BookNodeWithChoice(String text, int nbItemsAPrendre, List<BookItem> items, List<BookNodeLink> choices){
 		super(text, nbItemsAPrendre, items, choices);
 		
-		if(this.choices == null)
-			this.choices = new ArrayList<>();
 	}
 	
 	@Override
