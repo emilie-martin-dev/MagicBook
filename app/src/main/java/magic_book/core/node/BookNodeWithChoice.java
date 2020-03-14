@@ -36,6 +36,6 @@ public class BookNodeWithChoice extends AbstractBookNodeWithChoice {
 
 	@Override
 	public boolean isTerminal() {
-		return true;
+		return false;
 	}
 }

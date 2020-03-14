@@ -1,6 +1,7 @@
 package magic_book.core.node;
 
 import java.util.List;
+import magic_book.core.BookCharacter;
 import magic_book.window.gui.NodeFx;
 
 
@@ -9,9 +10,9 @@ public class BookNodeCombat extends AbstractBookNode{
 	private boolean looseBookNodeLink;
 	private NodeFx evasionBookNodeLink;
 	private int evasionTurn;
-	private List<Personnages> ennemies;
+	private List<BookCharacter> ennemies;
 	
-	public BookNodeCombat(String text, boolean winBookNodeLink, boolean looseBookNodeLink, NodeFx evasionBookNodeLink, int evasionTurn, List<Personnages> ennemies){
+	public BookNodeCombat(String text, boolean winBookNodeLink, boolean looseBookNodeLink, NodeFx evasionBookNodeLink, int evasionTurn, List<BookCharacter> ennemies){
 		super(text);
 		this.winBookNodeLink = winBookNodeLink;
 		this.looseBookNodeLink = looseBookNodeLink;
@@ -23,6 +24,6 @@ public class BookNodeCombat extends AbstractBookNode{
 
 	@Override
 	public boolean isTerminal() {
-		return true;
+		return false;
 	}
 }
