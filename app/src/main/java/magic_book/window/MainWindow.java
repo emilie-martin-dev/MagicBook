@@ -227,7 +227,6 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		leftContent.setPadding(new Insets(5, 5, 5, 5));
 		leftContent.setSpacing(15);
 		leftContent.getChildren().add(flow);
-		leftContent.getChildren().add(gestionPerso());
 		
 		return leftContent;
 	}
@@ -307,30 +306,6 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		}
 	}
 	
-	private VBox gestionPerso(){
-		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", "", 0, 0, null, null, 0));
-		rootPerso.setExpanded(true);
-		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", "Humain", 0, 0, null, null, 0));
-		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", "Goblin", 0, 0, null, null, 0));
-		rootPerso.getChildren().addAll(Perso1, Perso2);
-		TreeView<BookCharacter> treeView = new TreeView<> (rootPerso);
-		
-		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Item"));
-		rootPerso.setExpanded(true);
-		TreeItem<BookItem> Item1 = new TreeItem<> (new Arme("1","Epée",5));
-		TreeItem<BookItem> Item2 = new TreeItem<> (new BookItem("2","Bouclier"));
-		rootItem.getChildren().addAll(Item1, Item2);
-		TreeView<BookItem> treeView2 = new TreeView<> (rootItem);
-		
-		
-		VBox vBox = new VBox(10, treeView,treeView2);
-		vBox.setSpacing(5);
-		
-		return vBox;
-		
-		
-	}
-
 	class NodeFxListener implements RectangleFxObserver {
 		
 		public void onRectangleFXClicked(RectangleFx rectangleFx, MouseEvent event) {	
