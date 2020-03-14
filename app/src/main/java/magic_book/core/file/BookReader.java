@@ -18,16 +18,16 @@ import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.item.BookItem;
-import magic_book.core.node.BookNode;
+import magic_book.core.node.AbstractBookNode;
+import magic_book.core.node.AbstractBookNodeWithChoice;
 import magic_book.core.node.BookNodeLink;
-import magic_book.core.node.BookNodeType;
 
 public class BookReader {
 	
 	public static Book read(String path) throws FileNotFoundException {		
 		BookJson bookJson = readFileWithGson(path);
 		
-		HashMap<Integer, BookNode> nodes = getEveryNodes(bookJson);
+		HashMap<Integer, AbstractBookNode> nodes = getEveryNodes(bookJson);
 		List<BookItem> items = getEveryItems(bookJson);
 		
 		return new Book(nodes, items, null);
@@ -43,19 +43,19 @@ public class BookReader {
 		return gson.fromJson(bufferedReader, BookJson.class); 
 	}
 	
-	private static HashMap<Integer, BookNode> getEveryNodes(BookJson bookJson) {
-		HashMap<Integer, BookNode> nodes = new HashMap<>();
+	private static HashMap<Integer, AbstractBookNode> getEveryNodes(BookJson bookJson) {
+		HashMap<Integer, AbstractBookNode> nodes = new HashMap<>();
 		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
 			SectionJson sectionJson = entry.getValue();
 			BookNode node = new BookNode(sectionJson.getText(), sectionJson.getType(), null);
-			
+			//NE PEUT PAS ETRE ABSTRACT
 			nodes.put(entry.getKey(), node);
 		}
 		
 		return linkEveryNodes(bookJson, nodes);
 	}
 	
-	private static HashMap<Integer, BookNode> linkEveryNodes(BookJson bookJson, HashMap<Integer, BookNode> nodes) {
+	private static HashMap<Integer, AbstractBookNodeWithChoice> linkEveryNodes(BookJson bookJson, HashMap<Integer, AbstractBookNodeWithChoice> nodes) {
 		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
 			SectionJson sectionJson = entry.getValue();
 			

@@ -8,13 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.ChoiceBox;
 
-import magic_book.core.node.BookNode;
+import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.BookNodeType;
 
  public class NodeDialog extends AbstractDialog {
 
 	private TextArea texte;
- 	private BookNode node = null;
+ 	private AbstractBookNode node = null;
  	private ChoiceBox<BookNodeType> nodeType;
 
  	public NodeDialog() {
@@ -23,7 +23,7 @@ import magic_book.core.node.BookNodeType;
  		this.showAndWait();
  	}
 
- 	public NodeDialog(BookNode node) {
+ 	public NodeDialog(AbstractBookNode node) {
  		super("Edition de la page");
 		
 		this.node = node;
@@ -66,7 +66,7 @@ import magic_book.core.node.BookNodeType;
 			BookNodeType choixBox = (BookNodeType) nodeType.getValue();
 			
 			if (NodeDialog.this.node == null){
-				NodeDialog.this.node = new BookNode(texteHistoire, choixBox, null);
+				NodeDialog.this.node = new AbstractBookNode(texteHistoire, choixBox, null);
 			} else{
 				NodeDialog.this.node.setText(texteHistoire);
 				NodeDialog.this.node.setNodeType(choixBox);
@@ -76,7 +76,7 @@ import magic_book.core.node.BookNodeType;
 		};
 	}
 	
-	public BookNode getNode() {
+	public AbstractBookNode getNode() {
 		return node;
 	}
  }

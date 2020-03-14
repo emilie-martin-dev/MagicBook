@@ -8,7 +8,7 @@ import magic_book.core.item.BookItem;
 public abstract class AbstractBookNodeWithChoice <T extends BookNodeLink> extends AbstractBookNode{
 	private int nbItemsAPrendre;
 	private List<BookItem> items;
-	private List<T> choices;
+	List<T> choices;
 	
 	public AbstractBookNodeWithChoice(String text, int nbItemsAPrendre, List<BookItem> items, List<T> choices){
 		super(text);

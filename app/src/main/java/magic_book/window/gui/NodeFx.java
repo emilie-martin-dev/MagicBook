@@ -2,24 +2,24 @@ package magic_book.window.gui;
 
 import javafx.scene.paint.Color;
 
-import magic_book.core.node.BookNode;
+import magic_book.core.node.AbstractBookNode;
 
 public class NodeFx extends RectangleFx {
 	
-	private BookNode node;
+	private AbstractBookNode node;
 	
 
-	public NodeFx(BookNode node) {
+	public NodeFx(AbstractBookNode node) {
 		super(Color.GREEN);
 		
 		this.node = node;
 	}
 
-	public BookNode getNode() {
+	public AbstractBookNode getNode() {
 		return node;
 	}
 
-	public void setNode(BookNode node) {
+	public void setNode(AbstractBookNode node) {
 		this.node = node;
 	}
 	
