@@ -26,4 +26,45 @@ public class BookNodeCombat extends AbstractBookNode{
 	public boolean isTerminal() {
 		return false;
 	}
+
+	public boolean isWinBookNodeLink() {
+		return winBookNodeLink;
+	}
+
+	public void setWinBookNodeLink(boolean winBookNodeLink) {
+		this.winBookNodeLink = winBookNodeLink;
+	}
+
+	public boolean isLooseBookNodeLink() {
+		return looseBookNodeLink;
+	}
+
+	public void setLooseBookNodeLink(boolean looseBookNodeLink) {
+		this.looseBookNodeLink = looseBookNodeLink;
+	}
+
+	public NodeFx getEvasionBookNodeLink() {
+		return evasionBookNodeLink;
+	}
+
+	public void setEvasionBookNodeLink(NodeFx evasionBookNodeLink) {
+		this.evasionBookNodeLink = evasionBookNodeLink;
+	}
+
+	public int getEvasionTurn() {
+		return evasionTurn;
+	}
+
+	public void setEvasionTurn(int evasionTurn) {
+		this.evasionTurn = evasionTurn;
+	}
+
+	public List<BookCharacter> getEnnemies() {
+		return ennemies;
+	}
+
+	public void setEnnemies(List<BookCharacter> ennemies) {
+		this.ennemies = ennemies;
+	}
+	
 }

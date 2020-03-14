@@ -3,9 +3,9 @@ package magic_book.core.node;
 public class BookNodeLink {
 
 	private String text;
-	private BookNode destination;
+	private AbstractBookNode destination;
 
-	public BookNodeLink(String text, BookNode destination){
+	public BookNodeLink(String text, AbstractBookNode destination){
 		this.text = text;
 		this.destination = destination;
 	}
@@ -18,11 +18,11 @@ public class BookNodeLink {
 		this.text = text;
 	}
 
-	public BookNode getDestination() {
+	public AbstractBookNode getDestination() {
 		return destination;
 	}
 
-	public void setDestination(BookNode destination) {
+	public void setDestination(AbstractBookNode destination) {
 		this.destination = destination;
 	}
 	
