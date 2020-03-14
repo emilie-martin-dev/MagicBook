@@ -2,7 +2,7 @@ package magic_book.core.game;
 
 import java.util.List;
 import java.util.ArrayList;
-import magic_book.core.utils.Parsable;
+import magic_book.core.parser.Parsable;
 
 public class BookCharacter implements Parsable { 
 

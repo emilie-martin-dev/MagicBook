@@ -1,4 +1,4 @@
-package magic_book.core.utils;
+package magic_book.core.parser;
 
 import java.util.List;
 import java.util.regex.Matcher;

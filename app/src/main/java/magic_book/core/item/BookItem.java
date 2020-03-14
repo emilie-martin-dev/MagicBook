@@ -1,6 +1,6 @@
 package magic_book.core.item;
 
-import magic_book.core.utils.Parsable;
+import magic_book.core.parser.Parsable;
 
 public class BookItem implements Parsable {
 
