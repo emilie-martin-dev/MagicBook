@@ -1,11 +1,12 @@
 package magic_book.core.node;
 
-public enum BookNodeType {
-	BASIC("Basic"), VICTORY("Victoire"), FAILURE("Échec");
+
+public enum BookNodeStatus {
+	VICTORY("Victoire"), FAILURE("Défaite");
 
 	private String name;
 
-	BookNodeType(String name) {
+	BookNodeStatus(String name) {
 		this.name = name;
 	}
 

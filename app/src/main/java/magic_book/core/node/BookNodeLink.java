@@ -8,14 +8,14 @@ import magic_book.core.requirement.AbstractRequirement;
 public class BookNodeLink {
 
 	private String text;
-	private BookNode destination;
+	private AbstractBookNode destination;
 	private List<AbstractRequirement> requirements;
 	
-	public BookNodeLink(String text, BookNode destination) {
+	public BookNodeLink(String text, AbstractBookNode destination) {
 		this(text, destination, null);
 	}
 	
-	public BookNodeLink(String text, BookNode destination, List<AbstractRequirement> requirements) {
+	public BookNodeLink(String text, AbstractBookNode destination, List<AbstractRequirement> requirements) {
 		this.text = text;
 		this.destination = destination;
 		this.requirements = requirements;
@@ -53,11 +53,11 @@ public class BookNodeLink {
 		this.text = text;
 	}
 
-	public BookNode getDestination() {
+	public AbstractBookNode getDestination() {
 		return destination;
 	}
 
-	public void setDestination(BookNode destination) {
+	public void setDestination(AbstractBookNode destination) {
 		this.destination = destination;
 	}
 	

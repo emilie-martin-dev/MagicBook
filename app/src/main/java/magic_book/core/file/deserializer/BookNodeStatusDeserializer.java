@@ -5,14 +5,14 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
-import magic_book.core.node.BookNodeType;
+import magic_book.core.node.BookNodeStatus;
 
 
-public class BookNodeTypeDeserializer implements JsonDeserializer<BookNodeType> {
+public class BookNodeStatusDeserializer implements JsonDeserializer<BookNodeStatus> {
 
 	@Override
-	public BookNodeType deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
-		for(BookNodeType nodeType : BookNodeType.values()) {					
+	public BookNodeStatus deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+		for(BookNodeStatus nodeType : BookNodeStatus.values()) {					
 			if(nodeType.name().equals(je.getAsString())) {
 				return nodeType;
 			}

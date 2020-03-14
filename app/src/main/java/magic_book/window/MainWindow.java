@@ -34,7 +34,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import magic_book.core.Book;
 import magic_book.core.file.BookReader;
-import magic_book.core.node.BookNode;
+import magic_book.core.node.AbstractBookNode;
 import javafx.scene.layout.VBox;
 
 import magic_book.core.node.BookNodeLink;
@@ -83,7 +83,7 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		mainContent.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			if (mode == Mode.ADD_NODE) {
 				NodeDialog nodeDialog = new NodeDialog();
-				BookNode node = nodeDialog.getNode();
+				AbstractBookNode node = nodeDialog.getNode();
 				if(node != null) {
 					createNode(node, (int) event.getX(), (int) event.getY());
 				}
@@ -133,11 +133,11 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 				
 				Book book = BookReader.read(selectedFile.getAbsolutePath());
 				
-				for(BookNode node : book.getNodes().values()) {					
+				for(AbstractBookNode node : book.getNodes().values()) {					
 					createNode(node, 0, 0);
 				}
 				
-				for(BookNode node : book.getNodes().values()) {
+				for(AbstractBookNode node : book.getNodes().values()) {
 					NodeFx first = null;
 					for(NodeFx fx : listeNoeud) {
 						if(fx.getNode() == node) {
@@ -389,7 +389,7 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		return toggleButton;
 	}
 
-	private void createNode(BookNode node, int x, int y) {
+	private void createNode(AbstractBookNode node, int x, int y) {
 		NodeFx nodeFx = new NodeFx(node);
 		nodeFx.setX(x);
 		nodeFx.setY(y);
@@ -418,11 +418,6 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 	}
 	
 	public void createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
-		bookNodeLink.setDestination(secondNodeFx.getNode());
-		
-		if(!firstNodeFx.getNode().getChoices().contains(bookNodeLink))
-			firstNodeFx.getNode().getChoices().add(bookNodeLink);
-
 		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx);
 
 		nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
@@ -472,7 +467,10 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 				MainWindow.this.firstNodeFxSelected = nodeFx;
 
 				if(event.getClickCount() == 2) {
-					new NodeDialog(nodeFx.getNode());
+					NodeDialog dialog = new NodeDialog(nodeFx.getNode());
+					if(dialog.getNode() != null) {
+						nodeFx.setNode(dialog.getNode());
+					}
 				}
 			} else if(mode == Mode.ADD_NODE_LINK) {
 				if(MainWindow.this.firstNodeFxSelected == null) {
