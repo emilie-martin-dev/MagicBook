@@ -1,6 +1,6 @@
 package magic_book.core.utils;
 
-import magic_book.core.BookCharacter;
+import magic_book.core.game.BookCharacter;
 
 import org.junit.Assert;
 import org.junit.Test;

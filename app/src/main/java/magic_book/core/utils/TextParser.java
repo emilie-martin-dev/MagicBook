@@ -3,7 +3,7 @@ package magic_book.core.utils;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import magic_book.core.BookCharacter;
+import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
 
 public class TextParser {

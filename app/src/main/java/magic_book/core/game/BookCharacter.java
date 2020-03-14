@@ -1,4 +1,4 @@
-package magic_book.core;
+package magic_book.core.game;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -154,17 +154,3 @@ public class BookCharacter implements Parsable {
 	}
 
 }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	

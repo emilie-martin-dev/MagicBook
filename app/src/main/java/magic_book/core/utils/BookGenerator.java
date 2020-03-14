@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import magic_book.core.BookCharacter;
+import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
 
 import magic_book.core.node.BookNode;
