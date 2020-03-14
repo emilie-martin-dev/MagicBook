@@ -16,12 +16,12 @@ public class NodeLinkDialog extends AbstractDialog{
 	private BookNodeLink nodeLink;
 	
 	public NodeLinkDialog() {
-		super("Création du texte de choix");
+		super("Création du choix");
 		this.showAndWait();
 	}
 
 	public NodeLinkDialog(BookNodeLink nodeLink) {
-		super("Modification du texte de choix");
+		super("Modification du choix");
 		
 		this.nodeLink = nodeLink;
 		texte.setText(nodeLink.getText());	
