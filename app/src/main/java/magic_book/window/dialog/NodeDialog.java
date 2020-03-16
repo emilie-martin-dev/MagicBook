@@ -11,7 +11,7 @@ import javafx.scene.control.ChoiceBox;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.BookNodeStatus;
 import magic_book.core.node.BookNodeTerminal;
-import magic_book.core.node.BookNodeWithChoice;
+import magic_book.core.node.BookNodeWithChoices;
 
  public class NodeDialog extends AbstractDialog {
 
@@ -74,7 +74,7 @@ import magic_book.core.node.BookNodeWithChoice;
 			String texteHistoire = (String) texte.getText();
 			
 			if(nodeType.getValue() == BASIC) {
-				NodeDialog.this.node = new BookNodeWithChoice(texteHistoire, 0, null, null);
+				NodeDialog.this.node = new BookNodeWithChoices(texteHistoire, 0, null, null);
 			} else {
 				NodeDialog.this.node = new BookNodeTerminal(texteHistoire, nodeType.getValue() == VICTORY ? BookNodeStatus.VICTORY : BookNodeStatus.FAILURE);
 			}

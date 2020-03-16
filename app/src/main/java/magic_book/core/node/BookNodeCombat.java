@@ -3,22 +3,28 @@ package magic_book.core.node;
 import java.util.ArrayList;
 import java.util.List;
 import magic_book.core.game.BookCharacter;
+import magic_book.core.item.BookItem;
 
-public class BookNodeCombat extends AbstractBookNode{
+public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
+	
 	private BookNodeLink winBookNodeLink;
 	private BookNodeLink looseBookNodeLink;
 	private BookNodeLink evasionBookNodeLink;
-	private int evasionTurn;
+	private int evasionRound;
 	private List<BookCharacter> ennemies;
 	
-	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionTurn, List<BookCharacter> ennemies){
-		super(text);
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionRound, List<BookCharacter> ennemies){
+		this(text, winBookNodeLink, looseBookNodeLink, evasionBookNodeLink, evasionRound, ennemies, 0, null, null);
+	}
+	
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionTurn, List<BookCharacter> ennemies, int nbItemsAPrendre, List<BookItem> items, List<BookNodeLink> choices){
+		super(text, nbItemsAPrendre, items, choices);
+		
 		this.winBookNodeLink = winBookNodeLink;
 		this.looseBookNodeLink = looseBookNodeLink;
 		this.evasionBookNodeLink = evasionBookNodeLink;
-		this.evasionTurn = evasionTurn;
+		this.evasionRound = evasionTurn;
 		this.ennemies = ennemies;
-		
 	}
 
 	@Override
@@ -33,6 +39,8 @@ public class BookNodeCombat extends AbstractBookNode{
 		
 		if(evasionBookNodeLink != null)
 			choices.add(evasionBookNodeLink);
+		
+		choices.addAll(super.getChoices());
 		
 		return choices;
 	}
@@ -61,12 +69,12 @@ public class BookNodeCombat extends AbstractBookNode{
 		this.evasionBookNodeLink = evasionBookNodeLink;
 	}
 
-	public int getEvasionTurn() {
-		return evasionTurn;
+	public int getEvasionRound() {
+		return evasionRound;
 	}
 
-	public void setEvasionTurn(int evasionTurn) {
-		this.evasionTurn = evasionTurn;
+	public void setEvasionRound(int evasionRound) {
+		this.evasionRound = evasionRound;
 	}
 
 	public List<BookCharacter> getEnnemies() {

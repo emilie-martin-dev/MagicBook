@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -118,53 +120,62 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Ouvrir un livre");
+			fileChooser.getExtensionFilters().addAll(
+				new ExtensionFilter("Livre", "*.mbf"),
+				new ExtensionFilter("JSON", "*.json"),
+				new ExtensionFilter("Tous les fichiers", "*.*"));
+
+			File selectedFile = fileChooser.showOpenDialog(this);
+			if (selectedFile == null) {
+				return;
+			}
+
+			BookReader reader = new BookReader();
+			Book book = null;
+			
 			try {
-				FileChooser fileChooser = new FileChooser();
-				fileChooser.setTitle("Ouvrir un livre");
-				fileChooser.getExtensionFilters().addAll(
-					new ExtensionFilter("Livre", "*.mbf"),
-					new ExtensionFilter("JSON", "*.json"),
-					new ExtensionFilter("Tous les fichiers", "*.*"));
-				
-				File selectedFile = fileChooser.showOpenDialog(this);
-				if (selectedFile == null) {
-					return;
-				}
-				
-				Book book = BookReader.read(selectedFile.getAbsolutePath());
-				
-				for(AbstractBookNode node : book.getNodes().values()) {					
-					createNode(node, 0, 0);
-				}
-				
-				for(AbstractBookNode node : book.getNodes().values()) {
-					NodeFx first = null;
-					for(NodeFx fx : listeNoeud) {
-						if(fx.getNode() == node) {
-							first = fx;
-							break;
-						}
-					}
-						
-					for(BookNodeLink choice : node.getChoices()) {
-						NodeFx second = null;
-						for(NodeFx fx : listeNoeud) {
-							if(fx.getNode() == choice.getDestination()) {
-								second = fx;
-								break;
-							}
-						}
-
-						createNodeLink(choice, first, second);
-					}
-				}
-
+				book = reader.read(selectedFile.getAbsolutePath());
 			} catch (FileNotFoundException ex) {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'ouverture du fichier");
 				a.setHeaderText("Le fichier n'existe pas");
 				a.show(); 
+			} catch (IOException ex) {
+				Alert a = new Alert(AlertType.ERROR);
+				a.setTitle("Erreur lors de l'ouverture du fichier");
+				a.setHeaderText("Le fichier n'est pas bien formé");
+				a.show();
 			}
+
+			for(AbstractBookNode node : book.getNodes().values()) {					
+				createNode(node, 0, 0);
+			}
+
+			for(AbstractBookNode node : book.getNodes().values()) {
+				NodeFx first = null;
+				for(NodeFx fx : listeNoeud) {
+					if(fx.getNode() == node) {
+						first = fx;
+						break;
+					}
+				}
+
+				for(BookNodeLink choice : node.getChoices()) {
+					NodeFx second = null;
+					for(NodeFx fx : listeNoeud) {
+						if(fx.getNode() == choice.getDestination()) {
+							second = fx;
+							break;
+						}
+					}
+
+					createNodeLink(choice, first, second);
+				}
+			}
+
+			
 		});
 		MenuItem menuFileSave = new MenuItem("Enregistrer");
 		MenuItem menuFileSaveAs = new MenuItem("Enregistrer sous");
@@ -248,11 +259,11 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 	private VBox gestionPerso(){
 
 		//Création des TreeItem avec les items/persos
-		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", "", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", 0, 0, null, null, 0));
 		rootPerso.setExpanded(true);
 		
-		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", "Humain", 0, 0, null, null, 0));
-		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", "Goblin", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", 0, 0, null, null, 0));
 		rootPerso.getChildren().addAll(Perso1, Perso2);
 		treeViewPerso = new TreeView<> (rootPerso);
 

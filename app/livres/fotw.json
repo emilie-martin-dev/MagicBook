@@ -51,8 +51,7 @@
 						"id": "spear"
 					},
 					{
-						"id": "shield",
-						"amount":
+						"id": "shield"
 					},
 					{
 						"id": "broadsword"
@@ -101,184 +100,184 @@
 				"name": "Axe",
 				"damage": 3,
 				"durability": 6,
-				"item_type": "weapons"
+				"item_type": "WEAPONS"
 			},
 			{
 				"id": "backpack",
 				"name": "Backpack",
-				"item_type": "backpack"
+				"item_type": "BACKPACK"
 			},
 			{
 				"id": "blanket",
 				"name": "Blanket",
-				"item_type": "backpack_items"
+				"item_type": "BACKPACK_ITEM"
 			},
 			{
 				"id": "broadsword",
 				"name": "Broadsword",
 				"damage": 3,
 				"durability": 10,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "chainmail_waistcoat",
 				"name": "Chainmail Waistcoat",
 				"resistance": 4,
 				"durability": -1,
-				"item_type": "defense"
+				"item_type": "DEFENSE"
 			},
 			{
 				"id": "dagger",
 				"name": "Dagger",
 				"damage": 1,
 				"durability": 4,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "documents",
 				"name": "Documents",
-				"item_type": "key_item"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "fur_blanket",
 				"name": "Fur Blanket",
-				"item_type": "backpack_items"
+				"item_type": "BACKPACK_ITEM"
 			},
 			{
 				"id": "gold",
 				"name": "Gold Crowns",
-				"item_type": "money"
+				"item_type": "MONEY"
 			},
 			{
 				"id": "gold_ring",
 				"name": "Gold Ring",
-				"item_type": "backpack_items"
+				"item_type": "BACKPACK_ITEM"
 			},
 			{
 				"id": "healing_potion_4",
 				"name": "Healing Potion (4HP)",
-				"amount": 4,
-				"usage_limit": 1,
-				"item_type": "healing",
+				"hp": 4,
+				"durability": 1,
+				"item_type": "HEALING"
 			},
 			{
 				"id": "healing_potion_3",
 				"name": "Healing Potion (3HP)",
-				"amount": 3,
-				"usage_limit": 1,
-				"item_type": "healing",
+				"hp": 3,
+				"durability": 1,
+				"item_type": "HEALING"
 			},
 			{
 				"id": "laumspur_meal",
 				"name": "Laumspur Meal",
 				"hp": 3,
-				"usage_limit": 1,
-				"item_type": "healing"
+				"durability": 1,
+				"item_type": "HEALING"
 			},
 			{
 				"id": "laumspur_potion",
 				"name": "Laumspur Potion",
 				"hp": 5,
-				"usage_limit": 1,
-				"item_type": "healing"
+				"durability": 1,
+				"item_type": "HEALING"
 			},
 			{
 				"id": "mace",
 				"name": "Mace",
 				"damage": 3,
 				"durability": 8,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "magic_spear",
 				"name": "Magic Spear",
 				"damage": 3,
 				"durability": 13,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "meal",
 				"name": "Meal",
-				"item_type": "backpack_items"
+				"item_type": "BACKPACK_ITEM"
 			},
 			{
 				"id": "potion_orange",
 				"name": "Potion of Orange Liquid",
-				"item_type": "backpack_items"
+				"item_type": "BACKPACK_ITEM"
 			},
 			{
 				"id": "quarterstaff",
 				"name": "Quarterstaff",
 				"damage": 2,
 				"durability": 9,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "red_pass",
 				"name": "Red Pass",
-				"item_type": "key_item"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "rope",
 				"name": "Rope",
-				"item_type": "key_item"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "seal_hammerdal",
 				"name": "Seal of Hammerdal",
-				"item_type": "key_item"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "shield",
 				"name": "Shield",
 				"resistance": 2,
 				"durability": -1,
-				"item_type": "defense"
+				"item_type": "DEFENSE"
 			},
 			{
 				"id": "short_sword",
 				"name": "Short Sword",
 				"damage": 2,
 				"durability": 5,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "sommerswerd",
 				"name": "Sommerswerd",
 				"damage": 5,
 				"durability": 13,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "spear",
 				"name": "Spear",
 				"damage": 2,
 				"durability": 10,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "sword",
 				"name": "Sword",
 				"damage": 2,
 				"durability": 6,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "ticket",
 				"name": "Ticket",
-				"item_type": "key_item"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "warhammer",
 				"name": "Warhammer",
 				"damage": 3,
 				"durability": 9,
-				"item_type": "weapon"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "white_pass",
 				"name": "White Pass",
-				"item_type": "basic"
+				"item_type": "KEY_ITEM"
 			}
 		],
 		"characters" : [
@@ -303,7 +302,7 @@
 				"immune": ["Mindblast"],
 				"hp": 30,
 				"combat_skill": 22,
-				"double_damage": true,
+				"double_damage": true
 			},
 			{
 				"id": "helghast_mindforce",
@@ -318,7 +317,7 @@
 				"name": "Zombie Crew",
 				"hp": 18,
 				"combat_skill": 13,
-				"double_damage": true,
+				"double_damage": true
 			},
 			{
 				"id": "giaks",
@@ -655,7 +654,7 @@
 					"id": "quarterstaff"
 				},
 				{
-					"id": "Healing Potion",
+					"id": "Healing Potion"
 				},
 				{
 					"id": "meal",
@@ -1394,7 +1393,7 @@
 					"section": "229",
 					"requires": {
 						"kai_disciplines": "Sixth Sense"
-					},
+					}
 				},
 				{
 					"requires_not": {
@@ -1566,7 +1565,7 @@
 				},
 				{
 					"id": "gold",
-					"amount": 2,
+					"amount": 2
 				}
 			],
 			"choices": [
@@ -1982,7 +1981,7 @@
 			"text": "Laumspur is a delicious herb, much sought after in the Lastlands for its healing properties. You have picked enough for one Meal. Eating this meal will restore 3 HP points to your total. (Remember to add this to your Action Chart if you possess a Backpack. Otherwise you must consume it now or abandon it.) You wrap the herb up, and return to the coach with the other passengers.",
 			"items": [
 				{
-					"id": "laumspur_meal",
+					"id": "laumspur_meal"
 				}
 			],
 			"choices": [
@@ -4213,7 +4212,7 @@
 					"section": "272",
 					"requires": {
 						"kai_disciplines": "Sixth Sense"
-					},
+					}
 				},
 				{
 					"requires_not": {
@@ -4285,7 +4284,7 @@
 				},
 				{
 					"id": "gold",
-					"amount": 6,
+					"amount": 6
 				},
 				{
 					"id": "potion_orange"
@@ -4639,7 +4638,7 @@
 					"bridge_guard",
 					"bridge_guard"
 				]
-			},
+			}
 		},
 		"283": {
 			"text": "You stare in awe at the variety of merchandise. Silk and spices from the opulent bazaars of Vassagonia; jewels from the mines of Bor; the finest weapons and armour from the smithies of Durenor; furs from the Brumalmarc of Kalte; cloth from Cloeasia; and all kinds of food and drink cover the tables.\n\nNear the centre of the trading post you notice that the prices are displayed on large pieces of stretched vellum. One of the signs in particular catches your eye:\n\n* Swords 4 Gold Crowns each\n\n* Daggers 2 Gold Crowns each\n\n* Broadswords 6 Gold Crowns each\n\n* Spears 5 Gold Crowns each\n\n* Fine Foods 2 Gold Crowns per Meal\n\n* Gold Rings 8 Gold Crowns each\n\n* Fur Blankets 3 Gold Crowns each\n\n* Backpacks 1 Gold Crown each\n\nIf you have enough money, you may purchase any of the above items. When you have concluded your purchases, you may leave the trading post by a side exit.",
@@ -4905,7 +4904,7 @@
 				},
 				{
 					"id": "gold",
-					"amount": 3,
+					"amount": 3
 				},
 				{
 					"id": "dagger"
@@ -4948,7 +4947,7 @@
 				},
 				{
 					"id": "gold",
-					"amount": 12,
+					"amount": 12
 				}
 			],
 			"choices": [
@@ -4995,7 +4994,7 @@
 				"enemies": [
 					"border_guard"
 				]
-			},
+			}
 		},
 		"307": {
 			"text": "The guards look angry and ready to attack. You will have to think of something quickly.",
@@ -5200,7 +5199,7 @@
 			]
 		},
 		"321": {
-			"must_eat": -2,
+			"must_eat": true,
 			"text": "The meal is poor. It is made up of yesterday's leftovers, and what the captain tells you as you finish your meagre supper confirms your suspicions.\n\n\"I have a confession to make, Kai Lord. The fire destroyed our entire food store; we had barely enough in the galley for this meal. I fear that we will have to survive on a diet of fresh fish until we reach Port Bax.\"\n\nUnless you have food in your Backpack, the poor meal leaves you hungry and you lose 2 HP points.\n\nAfter dinner, the captain challenges you to a game of Samor, a board game a little like chess, involving skilful strategy and bluff. To add a little excitement, he suggests a small wager.",
 			"alternate_choices": true,
 			"choices": [
@@ -5290,7 +5289,7 @@
 			"shop": [
 				{
 					"id": "documents",
-					"price_max": 6
+					"price": 6
 				}
 			],
 			"choices": [
@@ -5447,7 +5446,7 @@
 			"choices": [
 				{
 					"text": "If you wish to enter this shop and ask how you can reach Durenor.",
-					"section": "161",
+					"section": "161"
 				},
 				{
 					"text": "If you wish to ignore this shop and continue.",
@@ -5506,7 +5505,7 @@
 			"choices": [
 				{
 					"text": "If you wish to remove the spear.",
-					"section": "269",
+					"section": "269"
 				},
 				{
 					"text": "If you would rather leave the spear where it is and run away from here as quickly as possible, erase the Magic Spear from your Action Chart",

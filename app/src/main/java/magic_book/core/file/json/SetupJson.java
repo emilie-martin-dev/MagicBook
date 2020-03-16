@@ -4,32 +4,32 @@ import java.util.List;
 
 public class SetupJson {
 
-	private List<String> disciplines;
-	private List<String> weapons;
-	private List<ItemJson> equipment;
+	private List<SkillJson> skills;
+	private List<ItemJson> items;
+	private List<CharacterJson> characters;
 
-	public List<String> getDisciplines() {
-		return disciplines;
+	public List<SkillJson> getSkills() {
+		return skills;
 	}
 
-	public void setDisciplines(List<String> disciplines) {
-		this.disciplines = disciplines;
+	public void setSkills(List<SkillJson> skills) {
+		this.skills = skills;
 	}
 
-	public List<String> getWeapons() {
-		return weapons;
+	public List<ItemJson> getItems() {
+		return items;
 	}
 
-	public void setWeapons(List<String> weapons) {
-		this.weapons = weapons;
+	public void setItems(List<ItemJson> items) {
+		this.items = items;
 	}
 
-	public List<ItemJson> getEquipment() {
-		return equipment;
+	public List<CharacterJson> getCharacters() {
+		return characters;
 	}
 
-	public void setEquipment(List<ItemJson> equipment) {
-		this.equipment = equipment;
+	public void setCharacters(List<CharacterJson> characters) {
+		this.characters = characters;
 	}
 
 }

@@ -8,7 +8,6 @@ public class BookCharacter implements Parsable {
 
 	private String id;
 	private String name;
-	private String race;
 	private int baseDamage;
 	private int hp;
 	private int hpMax;
@@ -16,10 +15,9 @@ public class BookCharacter implements Parsable {
 	private List<String> listItems;
 	private int itemsMax;
 
-	public BookCharacter(String id, String name, String race, int baseDamage, int hpMax, List<String> listSkills, List<String> listItems, int itemsMax) {
+	public BookCharacter(String id, String name, int baseDamage, int hpMax, List<String> listSkills, List<String> listItems, int itemsMax) {
 		this.id = id;
 		this.name = name;
-		this.race = race;
 		this.baseDamage = baseDamage;
 		this.hp = hpMax;
 		this.hpMax = hpMax;
@@ -100,14 +98,6 @@ public class BookCharacter implements Parsable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getRace() {
-		return race;
-	}
-
-	public void setRace(String race) {
-		this.race = race;
 	}
 
 	public int getBaseDamage() {
