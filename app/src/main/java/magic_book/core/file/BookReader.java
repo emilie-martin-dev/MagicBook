@@ -43,7 +43,7 @@ public class BookReader {
 		characters = getEveryCharacters(bookJson);
 		nodes = getEveryNodes(bookJson);
 		
-		return new Book(nodes, items, characters);
+		return new Book(bookJson.getPrelude(), nodes, items, characters);
 	}
 
 	private BookJson readFileWithGson(String path) throws FileNotFoundException {
@@ -93,7 +93,7 @@ public class BookReader {
 			} else if(sectionJson.getChoices() != null && !sectionJson.getChoices().isEmpty()){
 				node = createBookNodeWithChoices(sectionJson);
 			} else {
-				throw new IOException("Noeuds invalide");
+				throw new IOException("Noeud invalide");
 			}
 			
 			nodes.put(entry.getKey(), node);
@@ -158,10 +158,10 @@ public class BookReader {
 				if(combatJson.getWin() != null)
 					nodeCombat.setWinBookNodeLink(new BookNodeLink(combatJson.getWin().getText(), nodes.get(combatJson.getWin().getSection())));
 			
-				if(combatJson.getLoose()!= null)
+				if(combatJson.getLoose() != null)
 					nodeCombat.setLooseBookNodeLink(new BookNodeLink(combatJson.getLoose().getText(), nodes.get(combatJson.getLoose().getSection())));
 			
-				if(combatJson.getEvasion()!= null)
+				if(combatJson.getEvasion() != null)
 					nodeCombat.setLooseBookNodeLink(new BookNodeLink(combatJson.getEvasion().getText(), nodes.get(combatJson.getEvasion().getSection())));
 			}
 		}
