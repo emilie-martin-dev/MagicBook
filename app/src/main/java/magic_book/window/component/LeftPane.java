@@ -5,19 +5,11 @@
  */
 package magic_book.window.component;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -26,21 +18,12 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import magic_book.core.Book;
-import magic_book.core.file.BookReader;
-import magic_book.core.file.BookTextExporter;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.item.Arme;
 import magic_book.core.item.BookItem;
-import magic_book.core.node.AbstractBookNode;
-import magic_book.core.node.BookNodeLink;
-import magic_book.window.MainWindow;
 import magic_book.window.Mode;
 import magic_book.window.dialog.CharacterDialog;
 import magic_book.window.dialog.ItemDialog;
-import magic_book.window.gui.NodeFx;
-import magic_book.window.gui.NodeLinkFx;
 
 /**
  *
