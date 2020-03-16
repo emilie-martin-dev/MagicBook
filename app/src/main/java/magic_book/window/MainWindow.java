@@ -17,12 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import magic_book.core.Book;
 import magic_book.core.file.BookReader;
-import magic_book.core.node.AbstractBookNode;
-
-import magic_book.core.node.BookNodeLink;
 import magic_book.core.file.BookTextExporter;
-import magic_book.window.gui.NodeFx;
-import magic_book.window.gui.NodeLinkFx;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
@@ -73,33 +68,7 @@ public class MainWindow extends Stage{
 				}
 				
 				Book book = BookReader.read(selectedFile.getAbsolutePath());
-				
-				for(AbstractBookNode node : book.getNodes().values()) {					
-					graphPane.createNode(node, 0, 0);
-				}
-				
-				for(AbstractBookNode node : book.getNodes().values()) {
-					NodeFx first = null;
-					for(NodeFx fx : graphPane.getListeNoeud()) {
-						if(fx.getNode() == node) {
-							first = fx;
-							break;
-						}
-					}
-						
-					for(BookNodeLink choice : node.getChoices()) {
-						NodeFx second = null;
-						for(NodeFx fx : graphPane.getListeNoeud()) {
-							if(fx.getNode() == choice.getDestination()) {
-								second = fx;
-								break;
-							}
-						}
-						
-						NodeLinkFx nodeLinkFx = graphPane.createNodeLink(choice, first, second);
-						graphPane.getChildren().add(nodeLinkFx);
-					}
-				}
+				graphPane.setBookNode(book);
 
 			} catch (FileNotFoundException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);

@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import magic_book.core.Book;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.BookNodeLink;
 import magic_book.observer.NodeLinkFxObserver;
@@ -41,7 +42,7 @@ public class GraphPane extends Pane {
 		this.setCursor(Cursor.CLOSED_HAND);
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			if (mode == Mode.ADD_NODE) {
-				NodeFx createnode = mode(event);
+				NodeFx createnode = createNodeFxDialog(event);
 				if (createnode != null){
 					createnode.addNodeFxObserver(new NodeFxListener());
 					this.getChildren().add(createnode);
@@ -60,7 +61,7 @@ public class GraphPane extends Pane {
 		return nodeFx;
 	}
 	
-	public NodeFx mode(MouseEvent event){
+	public NodeFx createNodeFxDialog(MouseEvent event){
 		NodeFx createnode = null;
 		NodeDialog nodeDialog = new NodeDialog();
 		AbstractBookNode node = nodeDialog.getNode();
@@ -116,7 +117,36 @@ public class GraphPane extends Pane {
 		this.getChildren().add(preludeFx);
 		this.setPreludeFx(preludeFx);
 	}
+	
+	public void setBookNode(Book book){	
+		for(AbstractBookNode node : book.getNodes().values()) {					
+			createNode(node, 0, 0);
+		}
 
+		for(AbstractBookNode node : book.getNodes().values()) {
+			NodeFx first = null;
+			for(NodeFx fx : getListeNoeud()) {
+				if(fx.getNode() == node) {
+					first = fx;
+					break;
+				}
+			}
+
+			for(BookNodeLink choice : node.getChoices()) {
+				NodeFx second = null;
+				for(NodeFx fx : getListeNoeud()) {
+					if(fx.getNode() == choice.getDestination()) {
+						second = fx;
+						break;
+					}
+				}
+
+				NodeLinkFx nodeLinkFx = createNodeLink(choice, first, second);
+				this.getChildren().add(nodeLinkFx);
+			}
+		}
+	}
+	
 	public List<NodeFx> getListeNoeud() {
 		return listeNoeud;
 	}
@@ -128,22 +158,24 @@ public class GraphPane extends Pane {
 	public NodeFx getFirstNodeFxSelected() {
 		return firstNodeFxSelected;
 	}
+	
+	public PreludeFx getPreludeFx() {
+		return preludeFx;
+	}
+	
+	public Mode getMode() {
+		return mode;
+	}
 
 	public void setFirstNodeFxSelected(NodeFx firstNodeFxSelected) {
 		this.firstNodeFxSelected = firstNodeFxSelected;
 	}
 
-	public PreludeFx getPreludeFx() {
-		return preludeFx;
-	}
 
 	public void setPreludeFx(PreludeFx preludeFx) {
 		this.preludeFx = preludeFx;
 	}
 
-	public Mode getMode() {
-		return mode;
-	}
 
 	public void setMode(Mode mode) {
 		this.mode = mode;

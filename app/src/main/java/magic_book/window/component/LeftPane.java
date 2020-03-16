@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package magic_book.window.component;
 
 import javafx.event.ActionEvent;
@@ -25,10 +20,6 @@ import magic_book.window.Mode;
 import magic_book.window.dialog.CharacterDialog;
 import magic_book.window.dialog.ItemDialog;
 
-/**
- *
- * @author norah
- */
 public class LeftPane extends Pane{
 	
 	private GraphPane graphPane;
