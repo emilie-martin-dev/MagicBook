@@ -8,14 +8,17 @@ import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import magic_book.core.Book;
+import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.window.component.GraphPane;
@@ -54,28 +57,34 @@ public class MainWindow extends Stage{
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
-			try {
-				FileChooser fileChooser = new FileChooser();
-				fileChooser.setTitle("Ouvrir un livre");
-				fileChooser.getExtensionFilters().addAll(
-					new FileChooser.ExtensionFilter("Livre", "*.mbf"),
-					new FileChooser.ExtensionFilter("JSON", "*.json"),
-					new FileChooser.ExtensionFilter("Tous les fichiers", "*.*"));
-				
-				File selectedFile = fileChooser.showOpenDialog(this);
-				if (selectedFile == null) {
-					return;
-				}
-				
-				Book book = BookReader.read(selectedFile.getAbsolutePath());
-				graphPane.setBookNode(book);
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Ouvrir un livre");
+			fileChooser.getExtensionFilters().addAll(
+				new ExtensionFilter("Livre", "*.mbf"),
+				new ExtensionFilter("JSON", "*.json"),
+				new ExtensionFilter("Tous les fichiers", "*.*"));
 
+			File selectedFile = fileChooser.showOpenDialog(this);
+			if (selectedFile == null) {
+				return;
+			}
+
+			try {
+				BookReader reader = new BookReader();
+				Book book = reader.read(selectedFile.getAbsolutePath());
+				graphPane.setBookNode(book);
 			} catch (FileNotFoundException ex) {
-				Alert a = new Alert(Alert.AlertType.ERROR);
+				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'ouverture du fichier");
 				a.setHeaderText("Le fichier n'existe pas");
 				a.show(); 
-			}
+			} catch (BookFileException ex) {
+				Alert a = new Alert(AlertType.ERROR);
+				a.setTitle("Erreur lors de l'ouverture du fichier");
+				a.setHeaderText("Le fichier n'est pas bien formé");
+				a.setContentText(ex.getMessage());
+				a.show();
+			}			
 		});
 		MenuItem menuFileSave = new MenuItem("Enregistrer");
 		MenuItem menuFileSaveAs = new MenuItem("Enregistrer sous");

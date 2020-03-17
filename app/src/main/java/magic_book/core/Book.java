@@ -1,29 +1,37 @@
 package magic_book.core;
 
 import magic_book.core.game.BookCharacter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import magic_book.core.item.BookItem;
 import magic_book.core.node.AbstractBookNode;
 
 
 public class Book {
 	
+	private String textPrelude;
 	private HashMap<Integer, AbstractBookNode> nodes;
-	private List<BookItem> items;
-	private List<BookCharacter> characters;
+	private HashMap<String, BookItem> items;
+	private HashMap<String, BookCharacter> characters;
 
-	public Book(HashMap<Integer, AbstractBookNode> nodes, List<BookItem> items, List<BookCharacter> characters) {
+	public Book(String textPrelude, HashMap<Integer, AbstractBookNode> nodes, HashMap<String, BookItem> items, HashMap<String, BookCharacter> characters) {
+ 		this.textPrelude = textPrelude;
 		this.nodes = nodes;
 		this.items = items;
 		this.characters = characters;
 		
 		if(this.items == null)
-			this.items = new ArrayList<>();
+			this.items = new HashMap<>();
 		
 		if(this.characters == null)
-			this.characters = new ArrayList<>();
+			this.characters = new HashMap<>();
+	}
+
+	public String getTextPrelude() {
+		return textPrelude;
+	}
+
+	public void setTextPrelude(String textPrelude) {
+		this.textPrelude = textPrelude;
 	}
 	
 	public HashMap<Integer, AbstractBookNode> getNodes() {
@@ -38,19 +46,19 @@ public class Book {
 		this.nodes = nodes;
 	}
 
-	public List<BookItem> getItems() {
+	public HashMap<String, BookItem> getItems() {
 		return items;
 	}
 
-	public void setItems(List<BookItem> items) {
+	public void setItems(HashMap<String, BookItem> items) {
 		this.items = items;
 	}
 
-	public List<BookCharacter> getCharacters() {
+	public HashMap<String, BookCharacter> getCharacters() {
 		return characters;
 	}
 
-	public void setCharacters(List<BookCharacter> characters) {
+	public void setCharacters(HashMap<String, BookCharacter> characters) {
 		this.characters = characters;
 	}
 

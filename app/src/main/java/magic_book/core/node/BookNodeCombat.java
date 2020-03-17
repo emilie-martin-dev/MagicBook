@@ -2,23 +2,30 @@ package magic_book.core.node;
 
 import java.util.ArrayList;
 import java.util.List;
-import magic_book.core.game.BookCharacter;
 
-public class BookNodeCombat extends AbstractBookNode{
+public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
+	
 	private BookNodeLink winBookNodeLink;
 	private BookNodeLink looseBookNodeLink;
 	private BookNodeLink evasionBookNodeLink;
-	private int evasionTurn;
-	private List<BookCharacter> ennemies;
+	private int evasionRound;
+	private List<String> ennemiesId;
 	
-	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionTurn, List<BookCharacter> ennemies){
-		super(text);
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionRound, List<String> ennemiesId){
+		this(text, winBookNodeLink, looseBookNodeLink, evasionBookNodeLink, evasionRound, ennemiesId, 0, null, null, null);
+	}
+	
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionTurn, List<String> ennemiesId, int nbItemsAPrendre, List<BookItemsLink> itemLinks, List<BookItemsLink> shopItemLinks, List<BookNodeLink> choices){
+		super(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices);
+		
 		this.winBookNodeLink = winBookNodeLink;
 		this.looseBookNodeLink = looseBookNodeLink;
 		this.evasionBookNodeLink = evasionBookNodeLink;
-		this.evasionTurn = evasionTurn;
-		this.ennemies = ennemies;
+		this.evasionRound = evasionTurn;
+		this.ennemiesId = ennemiesId;
 		
+		if(this.ennemiesId == null)
+			this.ennemiesId = new ArrayList<>();
 	}
 
 	@Override
@@ -34,9 +41,15 @@ public class BookNodeCombat extends AbstractBookNode{
 		if(evasionBookNodeLink != null)
 			choices.add(evasionBookNodeLink);
 		
+		choices.addAll(super.getChoices());
+		
 		return choices;
 	}
 
+	public void addEnnemieId(String ennemieId) {
+		this.ennemiesId.add(ennemieId);
+	}
+	
 	public BookNodeLink isWinBookNodeLink() {
 		return winBookNodeLink;
 	}
@@ -61,20 +74,20 @@ public class BookNodeCombat extends AbstractBookNode{
 		this.evasionBookNodeLink = evasionBookNodeLink;
 	}
 
-	public int getEvasionTurn() {
-		return evasionTurn;
+	public int getEvasionRound() {
+		return evasionRound;
 	}
 
-	public void setEvasionTurn(int evasionTurn) {
-		this.evasionTurn = evasionTurn;
+	public void setEvasionRound(int evasionRound) {
+		this.evasionRound = evasionRound;
 	}
 
-	public List<BookCharacter> getEnnemies() {
-		return ennemies;
+	public List<String> getEnnemiesId() {
+		return ennemiesId;
 	}
 
-	public void setEnnemies(List<BookCharacter> ennemies) {
-		this.ennemies = ennemies;
+	public void setEnnemiesId(List<String> ennemiesId) {
+		this.ennemiesId = ennemiesId;
 	}
 	
 }

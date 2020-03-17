@@ -16,7 +16,6 @@ public class CharacterDialog extends AbstractDialog {
 	
 	private TextField idTextField;
 	private TextField nameTextField;
-	private TextField raceTextField;
 	
 	public CharacterDialog() {
 		super("Ajout d'un personnage");
@@ -29,7 +28,6 @@ public class CharacterDialog extends AbstractDialog {
 		
 		idTextField.setText(character.getId());
 		nameTextField.setText(character.getName());
-		raceTextField.setText(character.getRace());
 		
 		this.character = character;
 		
@@ -49,14 +47,12 @@ public class CharacterDialog extends AbstractDialog {
 		
 		idTextField = new TextField();
 		nameTextField = new TextField();
-		raceTextField = new TextField();
 		
 		root.add(idLabel, 0, 0);
 		root.add(idTextField, 1, 0);
 		root.add(nameLabel, 0, 1);
 		root.add(nameTextField, 1, 1);
 		root.add(raceLabel, 0, 2);
-		root.add(raceTextField, 1, 2);
 		
 		return root;
 	}
@@ -65,17 +61,15 @@ public class CharacterDialog extends AbstractDialog {
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			if (idTextField.getText().trim().isEmpty()
-					|| nameTextField.getText().trim().isEmpty()
-					|| raceTextField.getText().trim().isEmpty()) {
+					|| nameTextField.getText().trim().isEmpty()) {
 				return;
 			}
 			
 			if(CharacterDialog.this.character == null)
-				CharacterDialog.this.character = new BookCharacter(idTextField.getText().trim(), nameTextField.getText().trim(), raceTextField.getText().trim(), 0, 0, null, null, 0);
+				CharacterDialog.this.character = new BookCharacter(idTextField.getText().trim(), nameTextField.getText().trim(), 0, 0, null, null, 0);
 			else {
 				CharacterDialog.this.character.setId(idTextField.getText().trim());
 				CharacterDialog.this.character.setName(nameTextField.getText().trim());
-				CharacterDialog.this.character.setRace(raceTextField.getText().trim());
 			}
 			
 			close();

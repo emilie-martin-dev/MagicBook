@@ -1,20 +1,19 @@
 package magic_book.core.file.json;
 
-import java.util.List;
 import java.util.Map;
 
 public class BookJson {
 	
-	private List<String> intro_sequence;
+	private String prelude;
 	private SetupJson setup;
 	private Map<Integer, SectionJson> sections;
 
-	public List<String> getIntro_sequence() {
-		return intro_sequence;
+	public String getPrelude() {
+		return prelude;
 	}
 
-	public void setIntro_sequence(List<String> intro_sequence) {
-		this.intro_sequence = intro_sequence;
+	public void setPrelude(String prelude) {
+		this.prelude = prelude;
 	}
 
 	public SetupJson getSetup() {

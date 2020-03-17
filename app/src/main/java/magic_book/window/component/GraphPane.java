@@ -22,8 +22,6 @@ import magic_book.window.gui.NodeLinkFx;
 import magic_book.window.gui.PreludeFx;
 import magic_book.window.gui.RectangleFx;
 
-
-
 public class GraphPane extends Pane {
 	
 
@@ -42,11 +40,7 @@ public class GraphPane extends Pane {
 		this.setCursor(Cursor.CLOSED_HAND);
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			if (mode == Mode.ADD_NODE) {
-				NodeFx createnode = createNodeFxDialog(event);
-				if (createnode != null){
-					createnode.addNodeFxObserver(new NodeFxListener());
-					this.getChildren().add(createnode);
-				}
+				createNodeFxDialog(event);
 			}
 		});
 		createNodePrelude();
@@ -56,25 +50,28 @@ public class GraphPane extends Pane {
 		NodeFx nodeFx = new NodeFx(node);
 		nodeFx.setX(x);
 		nodeFx.setY(y);
-
+		nodeFx.addNodeFxObserver(new NodeFxListener());
+		
 		listeNoeud.add(nodeFx);
+		this.getChildren().add(nodeFx);
+			
 		return nodeFx;
 	}
 	
 	public NodeFx createNodeFxDialog(MouseEvent event){
-		NodeFx createnode = null;
 		NodeDialog nodeDialog = new NodeDialog();
 		AbstractBookNode node = nodeDialog.getNode();
-		if(node != null) {
-			createnode = createNode(node, (int) event.getX(), (int) event.getY());
-			return createnode;
-		}
-		return createnode;
+		
+		if(node != null) 
+			return createNode(node, (int) event.getX(), (int) event.getY());
+		
+		return null;
 	}
 	
 
 	public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
 		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx);
+		nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
 
 		nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
 		nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
@@ -82,7 +79,9 @@ public class GraphPane extends Pane {
 		nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
 		nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
 
+		this.getChildren().add(nodeLinkFx);
 		listeNoeudLien.add(nodeLinkFx);
+		
 		return nodeLinkFx;
 	}
 	
@@ -119,13 +118,14 @@ public class GraphPane extends Pane {
 	}
 	
 	public void setBookNode(Book book){	
-		for(AbstractBookNode node : book.getNodes().values()) {					
+		for(AbstractBookNode node : book.getNodes().values()) {
+			System.out.println("magic_book.window.component.GraphPane.setBookNode()");
 			createNode(node, 0, 0);
 		}
-
+		
 		for(AbstractBookNode node : book.getNodes().values()) {
 			NodeFx first = null;
-			for(NodeFx fx : getListeNoeud()) {
+			for(NodeFx fx : listeNoeud) {
 				if(fx.getNode() == node) {
 					first = fx;
 					break;
@@ -134,15 +134,14 @@ public class GraphPane extends Pane {
 
 			for(BookNodeLink choice : node.getChoices()) {
 				NodeFx second = null;
-				for(NodeFx fx : getListeNoeud()) {
+				for(NodeFx fx : listeNoeud) {
 					if(fx.getNode() == choice.getDestination()) {
 						second = fx;
 						break;
 					}
 				}
 
-				NodeLinkFx nodeLinkFx = createNodeLink(choice, first, second);
-				this.getChildren().add(nodeLinkFx);
+				createNodeLink(choice, first, second);
 			}
 		}
 	}
@@ -204,7 +203,6 @@ public class GraphPane extends Pane {
 					}
 				}
 			} else if(mode == Mode.ADD_NODE_LINK) {
-				NodeLinkFx nodeLinkFx = null;
 				if(firstNodeFxSelected == null) {
 					firstNodeFxSelected = nodeFx;
 				} else {				
@@ -213,8 +211,6 @@ public class GraphPane extends Pane {
 
 					if(bookNodeLink != null) {
 						nodeLinkFx = createNodeLink(bookNodeLink, firstNodeFxSelected, nodeFx);
-						GraphPane.this.getChildren().add(nodeLinkFx);
-						nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
 					}
 
 					firstNodeFxSelected = null;
@@ -226,7 +222,6 @@ public class GraphPane extends Pane {
 					GraphPane.this.getChildren().remove(nodeFx);
 				}
 				List<NodeLinkFx> nodeFxToRemove = new ArrayList();
-				NodeLinkFx nodeLinkFxRemove = null;
 
 				for(NodeLinkFx nodeLinkFx: listeNoeudLien){
 					NodeFx nodeFxStart = nodeLinkFx.getStart();

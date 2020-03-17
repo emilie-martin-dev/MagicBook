@@ -32,7 +32,6 @@ public class LeftPane extends Pane{
 		this.graphPane = graphPane;
 		this.getChildren().add(createLeftPanel());
 	}
-
 	
 	private Node createLeftPanel() {
 		VBox leftContent = new VBox();
@@ -52,10 +51,8 @@ public class LeftPane extends Pane{
 		leftContent.setSpacing(15);
 		leftContent.getChildren().add(flow);
 		
-		
 		VBox ItemsPersos = gestionPerso();
 		leftContent.getChildren().add(ItemsPersos);
-
 		
 		return leftContent;
 	}
@@ -63,11 +60,11 @@ public class LeftPane extends Pane{
 	private VBox gestionPerso(){
 
 		//Création des TreeItem avec les items/persos
-		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", "", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", 0, 0, null, null, 0));
 		rootPerso.setExpanded(true);
 		
-		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", "Humain", 0, 0, null, null, 0));
-		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", "Goblin", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", 0, 0, null, null, 0));
+		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", 0, 0, null, null, 0));
 		rootPerso.getChildren().addAll(Perso1, Perso2);
 		treeViewPerso = new TreeView<> (rootPerso);
 
