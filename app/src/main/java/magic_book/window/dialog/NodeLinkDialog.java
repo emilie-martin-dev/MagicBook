@@ -38,6 +38,7 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		Label textLabel = new Label("Texte choix :");
 		texte = new TextArea();
+		texte.setWrapText(true);
 		
 		root.add(textLabel, 0, 0);
 		root.add(texte, 0, 1);

@@ -36,6 +36,7 @@ import javafx.scene.layout.GridPane;
 		
 		Label textLabel = new Label("Texte :");
 		texte = new TextArea();
+		texte.setWrapText(true);
 		root.add(textLabel, 0, 0);
 		root.add(texte, 0, 1, 2, 1);
 		return root;

@@ -24,7 +24,6 @@ import magic_book.window.gui.RectangleFx;
 
 public class GraphPane extends Pane {
 	
-
 	private List<NodeFx> listeNoeud;
 	private List<NodeLinkFx> listeNoeudLien;
 	private NodeFx firstNodeFxSelected;
@@ -118,8 +117,9 @@ public class GraphPane extends Pane {
 	}
 	
 	public void setBookNode(Book book){	
+		preludeFx.setText(book.getTextPrelude());
+		
 		for(AbstractBookNode node : book.getNodes().values()) {
-			System.out.println("magic_book.window.component.GraphPane.setBookNode()");
 			createNode(node, 0, 0);
 		}
 		
@@ -170,11 +170,9 @@ public class GraphPane extends Pane {
 		this.firstNodeFxSelected = firstNodeFxSelected;
 	}
 
-
 	public void setPreludeFx(PreludeFx preludeFx) {
 		this.preludeFx = preludeFx;
 	}
-
 
 	public void setMode(Mode mode) {
 		this.mode = mode;
@@ -187,7 +185,6 @@ public class GraphPane extends Pane {
 	public void setListeNoeudLien(List<NodeLinkFx> listeNoeudLien) {
 		this.listeNoeudLien = listeNoeudLien;
 	}
-	
 	
 	class NodeFxListener implements RectangleFxObserver {
 		
@@ -210,7 +207,7 @@ public class GraphPane extends Pane {
 					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
 					if(bookNodeLink != null) {
-						nodeLinkFx = createNodeLink(bookNodeLink, firstNodeFxSelected, nodeFx);
+						createNodeLink(bookNodeLink, firstNodeFxSelected, nodeFx);
 					}
 
 					firstNodeFxSelected = null;

@@ -51,6 +51,7 @@ import magic_book.core.node.BookNodeWithChoices;
 		
 		Label textLabel = new Label("Texte :");
 		texte = new TextArea();
+		texte.setWrapText(true);
 		Label labelChoix = new Label("Choix du type du noeud :");
 		
 		nodeType = new ChoiceBox<>();
