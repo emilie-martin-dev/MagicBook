@@ -1,6 +1,7 @@
 package magic_book.window.component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import javafx.scene.Cursor;
@@ -119,29 +120,15 @@ public class GraphPane extends Pane {
 	public void setBookNode(Book book){	
 		preludeFx.setText(book.getTextPrelude());
 		
+		HashMap<AbstractBookNode, NodeFx> nodeNodeFxMapping = new HashMap<>();
 		for(AbstractBookNode node : book.getNodes().values()) {
-			createNode(node, 0, 0);
+			NodeFx createdNodeFx = createNode(node, 0, 0);
+			nodeNodeFxMapping.put(node, createdNodeFx);
 		}
 		
 		for(AbstractBookNode node : book.getNodes().values()) {
-			NodeFx first = null;
-			for(NodeFx fx : listeNoeud) {
-				if(fx.getNode() == node) {
-					first = fx;
-					break;
-				}
-			}
-
 			for(BookNodeLink choice : node.getChoices()) {
-				NodeFx second = null;
-				for(NodeFx fx : listeNoeud) {
-					if(fx.getNode() == choice.getDestination()) {
-						second = fx;
-						break;
-					}
-				}
-
-				createNodeLink(choice, first, second);
+				createNodeLink(choice, nodeNodeFxMapping.get(node), nodeNodeFxMapping.get(choice.getDestination()));
 			}
 		}
 	}
