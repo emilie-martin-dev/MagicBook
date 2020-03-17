@@ -24,6 +24,7 @@ import magic_book.core.file.BookTextExporter;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
+import magic_book.window.gui.NodeFx;
 
 public class MainWindow extends Stage{
 
@@ -99,24 +100,26 @@ public class MainWindow extends Stage{
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
+			NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
+			if(firstNodeFx == null) {
+				Alert a = new Alert(Alert.AlertType.WARNING);
+				a.setTitle("Erreur lors de l'export");
+				a.setHeaderText("Merci de sélectionner au préalable le noeud de départ");
+				a.show(); 
+				
+				return;
+			}
+
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Exporter en texte");
+
+			File selectedFile = fileChooser.showSaveDialog(this);
+			if (selectedFile == null) {
+				return;
+			}
+			
 			try {
-				if(graphPane.getSelectedNodeFx() == null) {
-					Alert a = new Alert(Alert.AlertType.WARNING);
-					a.setTitle("Erreur lors de l'export");
-					a.setHeaderText("Merci de sélectionner au préalable le noeud de départ");
-					a.show(); 
-					return;
-				}
-				
-				FileChooser fileChooser = new FileChooser();
-				fileChooser.setTitle("Exporter en texte");
-				
-				File selectedFile = fileChooser.showSaveDialog(this);
-				if (selectedFile == null) {
-					return;
-				}
-				
-				BookTextExporter.generateBook(graphPane.getSelectedNodeFx().getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
+				BookTextExporter.generateBook(firstNodeFx.getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
 			} catch (IOException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
 				a.setTitle("Erreur lors de l'export du fichier");
