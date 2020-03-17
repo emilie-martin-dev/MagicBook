@@ -118,6 +118,12 @@ public class GraphPane extends Pane {
 	}
 	
 	public void setBookNode(Book book){	
+		listeNoeud.clear();
+		listeNoeudLien.clear();
+		firstNodeFxSelected = null;
+		this.getChildren().clear();		
+		
+		createNodePrelude();
 		preludeFx.setText(book.getTextPrelude());
 		
 		HashMap<AbstractBookNode, NodeFx> nodeNodeFxMapping = new HashMap<>();

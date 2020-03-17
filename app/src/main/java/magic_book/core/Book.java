@@ -19,6 +19,9 @@ public class Book {
 		this.items = items;
 		this.characters = characters;
 		
+		if(this.nodes == null)
+			this.nodes = new HashMap<>();
+		
 		if(this.items == null)
 			this.items = new HashMap<>();
 		

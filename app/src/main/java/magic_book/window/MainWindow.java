@@ -55,6 +55,9 @@ public class MainWindow extends Stage{
 		// --- Menu fichier
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
+		menuFileNew.setOnAction((ActionEvent e) -> {
+			graphPane.setBookNode(new Book("", null, null, null));
+		});
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
 			FileChooser fileChooser = new FileChooser();
