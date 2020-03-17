@@ -1,5 +1,6 @@
 package magic_book.window.component;
 
+import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,8 +14,8 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
-import magic_book.core.item.Arme;
 import magic_book.core.item.BookItem;
 import magic_book.window.Mode;
 import magic_book.window.dialog.CharacterDialog;
@@ -62,18 +63,11 @@ public class LeftPane extends Pane{
 		//Création des TreeItem avec les items/persos
 		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", 0, 0, null, null, 0));
 		rootPerso.setExpanded(true);
-		
-		TreeItem<BookCharacter> Perso1 = new TreeItem<> (new BookCharacter("0", "Robert", 0, 0, null, null, 0));
-		TreeItem<BookCharacter> Perso2 = new TreeItem<> (new BookCharacter("1", "Didier", 0, 0, null, null, 0));
-		rootPerso.getChildren().addAll(Perso1, Perso2);
 		treeViewPerso = new TreeView<> (rootPerso);
 
-		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","item"));
+		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Items"));
 		rootItem.setExpanded(true);
 		
-		TreeItem<BookItem> Item1 = new TreeItem<> (new Arme("1","epee",5));
-		TreeItem<BookItem> Item2 = new TreeItem<> (new BookItem("2","bouclier"));
-		rootItem.getChildren().addAll(Item1, Item2);
 		treeViewItem = new TreeView<> (rootItem);
 
 		//Création des context menus pour ajouter/supprimer des personnages
@@ -116,7 +110,6 @@ public class LeftPane extends Pane{
 		
 		contextMenuPerso.getItems().addAll(menuPersoAdd, menuPersoUpdate, menuPersoDel);
 		treeViewPerso.setContextMenu(contextMenuPerso);
-
 
 		//Création des context menus pour ajouter/supprimer des items
 		ContextMenu contextMenuItem = new ContextMenu();
@@ -164,17 +157,28 @@ public class LeftPane extends Pane{
 
 		return vBox;
 	}
+	
+	public void setBook(Book book) {
+		treeViewPerso.getRoot().getChildren().clear();
+		treeViewItem.getRoot().getChildren().clear();
+		
+		for(Map.Entry<String, BookCharacter> entry : book.getCharacters().entrySet()) {
+			addCharacter(entry.getValue());
+		}
+		
+		
+		for(Map.Entry<String, BookItem> entry : book.getItems().entrySet()) {
+			addItem(entry.getValue());
+		}
+	}
 
-
-	private void addCharacter(BookCharacter chara){
-		treeViewPerso.getRoot().getChildren().add(new TreeItem<> (chara));
+	private void addCharacter(BookCharacter character){
+		treeViewPerso.getRoot().getChildren().add(new TreeItem<> (character));
 	}
 
 	private void addItem(BookItem item){
 		treeViewItem.getRoot().getChildren().add(new TreeItem<> (item));
 	}
-	
-	
 
 	private ToggleButton createToggleButton(String text, Mode mode) {
 		ToggleButton toggleButton = new ToggleButton(text);

@@ -56,7 +56,7 @@ public class MainWindow extends Stage{
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		menuFileNew.setOnAction((ActionEvent e) -> {
-			graphPane.setBookNode(new Book("", null, null, null));
+			changeBook(new Book("", null, null, null));
 		});
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
@@ -75,7 +75,7 @@ public class MainWindow extends Stage{
 			try {
 				BookReader reader = new BookReader();
 				Book book = reader.read(selectedFile.getAbsolutePath());
-				graphPane.setBookNode(book);
+				changeBook(book);
 			} catch (FileNotFoundException ex) {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'ouverture du fichier");
@@ -140,6 +140,11 @@ public class MainWindow extends Stage{
 		menuBar.getMenus().addAll(menuFile, menuBook, menuShow);
 
 		return menuBar;
+	}
+	
+	private void changeBook(Book book) {
+		graphPane.setBook(book);
+		leftPane.setBook(book);
 	}
 
 }

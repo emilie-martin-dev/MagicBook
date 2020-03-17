@@ -119,7 +119,7 @@ public class GraphPane extends Pane {
 		this.setPreludeFx(preludeFx);
 	}
 	
-	public void setBookNode(Book book){	
+	public void setBook(Book book){	
 		listeNoeud.clear();
 		listeNoeudLien.clear();
 		firstNodeFxSelected = null;
