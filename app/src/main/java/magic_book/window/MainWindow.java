@@ -97,10 +97,10 @@ public class MainWindow extends Stage{
 		// --- Menu livre
 		Menu menuBook = new Menu("Livre");
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
-		MenuItem menuBookGenerate = new MenuItem("Générer le livre");
+		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
 			try {
-				if(graphPane.getFirstNodeFxSelected() == null) {
+				if(graphPane.getSelectedNodeFx() == null) {
 					Alert a = new Alert(Alert.AlertType.WARNING);
 					a.setTitle("Erreur lors de l'export");
 					a.setHeaderText("Merci de sélectionner au préalable le noeud de départ");
@@ -116,7 +116,7 @@ public class MainWindow extends Stage{
 					return;
 				}
 				
-				BookTextExporter.generateBook(graphPane.getFirstNodeFxSelected().getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
+				BookTextExporter.generateBook(graphPane.getSelectedNodeFx().getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
 			} catch (IOException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
 				a.setTitle("Erreur lors de l'export du fichier");

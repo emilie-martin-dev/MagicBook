@@ -40,13 +40,14 @@ public class LeftPane extends Pane{
 		ToggleButton selectToogle = createToggleButton("Selectionner", Mode.SELECT);
 		ToggleButton addNodeToggle = createToggleButton("Ajouter noeud", Mode.ADD_NODE);
 		ToggleButton addNodeLinkToggle = createToggleButton("Ajouter lien", Mode.ADD_NODE_LINK);
-		ToggleButton suppNode = createToggleButton("Supprime Noeud", Mode.DELETE);
+		ToggleButton suppNode = createToggleButton("Supprime noeud", Mode.DELETE);
+		ToggleButton firstNode = createToggleButton("Sélectionner premier noeud", Mode.FIRST_NODE);
 		
 		selectToogle.setSelected(true);
 		graphPane.setMode(Mode.SELECT);
 
 		FlowPane flow = new FlowPane();
-		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode);
+		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode, firstNode);
 		leftContent.setMaxWidth(250);
 		leftContent.setPadding(new Insets(5, 5, 5, 5));
 		leftContent.setSpacing(15);
@@ -185,7 +186,7 @@ public class LeftPane extends Pane{
 
 		toggleButton.setOnAction((ActionEvent e) -> {
 			graphPane.setMode(mode);
-			graphPane.setFirstNodeFxSelected(null);
+			graphPane.setSelectedNodeFx(null);
 		});
 
 		toggleButton.setPrefSize(100, 100);

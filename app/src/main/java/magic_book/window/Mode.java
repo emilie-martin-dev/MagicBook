@@ -2,6 +2,6 @@ package magic_book.window;
 
 public enum Mode {
 	
-	SELECT, ADD_NODE, ADD_NODE_LINK, DELETE;
+	SELECT, ADD_NODE, ADD_NODE_LINK, DELETE, FIRST_NODE;
 	
 }

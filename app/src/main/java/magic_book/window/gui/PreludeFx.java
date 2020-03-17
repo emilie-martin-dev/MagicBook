@@ -4,20 +4,29 @@ import javafx.scene.paint.Color;
 
 public class PreludeFx extends RectangleFx {
 	
-	private String texte;
+	private NodeFx firstNode;
+	private String text;
 	
 	public PreludeFx(String texte) {
 		super(Color.RED);
 		
-		this.texte = texte;
+		this.text = texte;
 	}
 	
 	public String getText() {
-		return this.texte;
+		return this.text;
 	}
 
 	public void setText(String text) {
-		this.texte = text;
+		this.text = text;
+	}
+
+	public NodeFx getFirstNode() {
+		return firstNode;
+	}
+
+	public void setFirstNode(NodeFx firstNode) {
+		this.firstNode = firstNode;
 	}
 	
 }
