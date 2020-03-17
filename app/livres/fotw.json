@@ -2536,7 +2536,7 @@
 			"items": [
 				{
 					"auto": true,
-					"name": "white_pass"
+					"id": "white_pass"
 				}
 			],
 			"choices": [

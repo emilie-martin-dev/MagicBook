@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,6 +36,7 @@ import magic_book.core.Book;
 import magic_book.core.file.BookReader;
 import magic_book.core.node.AbstractBookNode;
 import javafx.scene.layout.VBox;
+import magic_book.core.exception.BookFileException;
 
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.file.BookTextExporter;
@@ -142,10 +141,11 @@ public class MainWindow extends Stage implements NodeLinkFxObserver {
 				a.setTitle("Erreur lors de l'ouverture du fichier");
 				a.setHeaderText("Le fichier n'existe pas");
 				a.show(); 
-			} catch (IOException ex) {
+			} catch (BookFileException ex) {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'ouverture du fichier");
 				a.setHeaderText("Le fichier n'est pas bien formé");
+				a.setContentText(ex.getMessage());
 				a.show();
 			}
 

@@ -11,7 +11,7 @@ public class SectionJson {
 	private List<ItemLinkJson> items;
 	@SerializedName("amount_to_pick")
 	private int amountToPick;
-	private List<ItemJson> shop;
+	private List<ItemLinkJson> shop;
 	private List<ChoiceJson> choices;
 	private CombatJson combat;
 	@SerializedName("alterance_choice")
@@ -56,11 +56,11 @@ public class SectionJson {
 		this.amountToPick = amountToPick;
 	}
 
-	public List<ItemJson> getShop() {
+	public List<ItemLinkJson> getShop() {
 		return shop;
 	}
 
-	public void setShop(List<ItemJson> shop) {
+	public void setShop(List<ItemLinkJson> shop) {
 		this.shop = shop;
 	}
 

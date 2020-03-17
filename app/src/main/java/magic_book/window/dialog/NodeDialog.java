@@ -74,7 +74,7 @@ import magic_book.core.node.BookNodeWithChoices;
 			String texteHistoire = (String) texte.getText();
 			
 			if(nodeType.getValue() == BASIC) {
-				NodeDialog.this.node = new BookNodeWithChoices(texteHistoire, 0, null, null);
+				NodeDialog.this.node = new BookNodeWithChoices(texteHistoire);
 			} else {
 				NodeDialog.this.node = new BookNodeTerminal(texteHistoire, nodeType.getValue() == VICTORY ? BookNodeStatus.VICTORY : BookNodeStatus.FAILURE);
 			}

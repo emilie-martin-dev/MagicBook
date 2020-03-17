@@ -6,22 +6,24 @@ import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import magic_book.core.Book;
+import magic_book.core.exception.BookFileException;
 import magic_book.core.file.deserializer.BookNodeStatusDeserializer;
 import magic_book.core.file.json.BookJson;
 import magic_book.core.file.json.CharacterJson;
 import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
+import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.AbstractBookNodeWithChoices;
+import magic_book.core.node.BookItemsLink;
 import magic_book.core.node.BookNodeCombat;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeLinkRandom;
@@ -36,7 +38,7 @@ public class BookReader {
 	private HashMap<String, BookCharacter> characters;
 	private HashMap<Integer, AbstractBookNode> nodes;
 	
-	public Book read(String path) throws FileNotFoundException, IOException {		
+	public Book read(String path) throws FileNotFoundException, BookFileException {		
 		BookJson bookJson = readFileWithGson(path);
 		
 		items = getEveryItems(bookJson);
@@ -56,29 +58,31 @@ public class BookReader {
 		return gson.fromJson(bufferedReader, BookJson.class);
 	}
 
-	private HashMap<String, BookItem> getEveryItems(BookJson bookJson) {
+	private HashMap<String, BookItem> getEveryItems(BookJson bookJson) throws BookFileException {
 		HashMap<String, BookItem> items = new HashMap<>();
 		
 		for(ItemJson i : bookJson.getSetup().getItems()) {
 			BookItem item = new BookItem(i.getId(), i.getName());
+			
 			items.put(item.getId(), item);
 		}
 			
 		return items;
 	}
 	
-	private HashMap<String, BookCharacter> getEveryCharacters(BookJson bookJson) {
+	private HashMap<String, BookCharacter> getEveryCharacters(BookJson bookJson) throws BookFileException {
 		HashMap<String, BookCharacter> characters = new HashMap<>();
 		
 		for(CharacterJson c : bookJson.getSetup().getCharacters()) {
 			BookCharacter character = new BookCharacter(c.getId(), c.getName(), c.getCombatSkill(), c.getHp(), null, null, 8);
+			
 			characters.put(character.getId(), character);
 		}
 			
 		return characters;
 	}
 	
-	private HashMap<Integer, AbstractBookNode> getEveryNodes(BookJson bookJson) throws IOException {
+	private HashMap<Integer, AbstractBookNode> getEveryNodes(BookJson bookJson) throws BookFileException {
 		HashMap<Integer, AbstractBookNode> nodes = new HashMap<>();
 		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
 			SectionJson sectionJson = entry.getValue();
@@ -93,7 +97,7 @@ public class BookReader {
 			} else if(sectionJson.getChoices() != null && !sectionJson.getChoices().isEmpty()){
 				node = createBookNodeWithChoices(sectionJson);
 			} else {
-				throw new IOException("Noeud invalide");
+				throw new BookFileException("Le noeud numéro " + entry.getKey() + " est invalide");
 			}
 			
 			nodes.put(entry.getKey(), node);
@@ -119,14 +123,38 @@ public class BookReader {
 	private BookNodeCombat createBookNodeCombat(SectionJson sectionJson) {
 		BookNodeCombat bookNodeCombat = new BookNodeCombat(sectionJson.getText(), null, null, null, sectionJson.getCombat().getEvasionRound(), null);	
 		bookNodeCombat = (BookNodeCombat) fillCommunNodeValues(sectionJson, bookNodeCombat);
-		//TODO : Gestion des ennemis
+		
+		for(String ennemie : sectionJson.getCombat().getEnemies()) {
+			bookNodeCombat.addEnnemieId(ennemie);
+		}
 		
 		return bookNodeCombat;
 	}
 	
 	private AbstractBookNodeWithChoices fillCommunNodeValues(SectionJson section, AbstractBookNodeWithChoices node) {
 		node.setNbItemsAPrendre(section.getAmountToPick());
-		// TODO : Gestion des items et shop
+		
+		if(section.getItems() != null) {
+			for(ItemLinkJson itemLinkJson : section.getItems()) {
+				BookItemsLink bookItemsLink = new BookItemsLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
+				if(bookItemsLink.getAmount() == 0) {
+					bookItemsLink.setAmount(1);
+				}
+
+				node.addItemLink(bookItemsLink);
+			}
+		}
+		
+		if(section.getShop() != null) {
+			for(ItemLinkJson itemLinkJson : section.getShop()) {
+				BookItemsLink bookItemsLink = new BookItemsLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
+				if(bookItemsLink.getAmount() == 0) {
+					bookItemsLink.setAmount(1);
+				}
+
+				node.addShopItemLink(bookItemsLink);
+			}
+		}
 		
 		return node;
 	}
@@ -141,7 +169,7 @@ public class BookReader {
 					AbstractBookNodeWithChoices nodeWithChoices = (AbstractBookNodeWithChoices) node;
 					BookNodeLink nodeLink = null;
 
-					if(choiceJson.getWeight() != 0) {
+					if(sectionJson.isRandomPick()) {
 						nodeLink = new BookNodeLinkRandom(choiceJson.getText(), nodes.get(choiceJson.getSection()), choiceJson.getWeight());
 					} else {
 						nodeLink = new BookNodeLink(choiceJson.getText(), nodes.get(choiceJson.getSection()));
@@ -169,5 +197,4 @@ public class BookReader {
 		return nodes;
 	}
 
-	
 }

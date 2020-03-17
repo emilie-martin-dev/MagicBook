@@ -2,25 +2,30 @@ package magic_book.core.node;
 
 import java.util.ArrayList;
 import java.util.List;
-import magic_book.core.item.BookItem;
 
 
-public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode{
+public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
+	
 	private int nbItemsAPrendre;
-	private List<BookItem> items;
+	private List<BookItemsLink> itemLinks;
+	private List<BookItemsLink> shopItemLinks;
 	private List<T> choices;
 	
-	public AbstractBookNodeWithChoices(String text, int nbItemsAPrendre, List<BookItem> items, List<T> choices){
+	public AbstractBookNodeWithChoices(String text, int nbItemsAPrendre, List<BookItemsLink> itemLinks, List<BookItemsLink> shopItemLinks, List<T> choices){
 		super(text);
 		this.nbItemsAPrendre = nbItemsAPrendre;
-		this.items = items;
+		this.itemLinks = itemLinks;
+		this.shopItemLinks = shopItemLinks;
 		this.choices = choices;
 		
 		if(this.choices == null)
 			this.choices = new ArrayList<>();
 		
-		if(this.items == null)
-			this.items = new ArrayList<>();
+		if(this.itemLinks == null)
+			this.itemLinks = new ArrayList<>();
+		
+		if(this.shopItemLinks == null)
+			this.shopItemLinks = new ArrayList<>();
 	}
 	
 	@Override
@@ -31,13 +36,13 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	public void addChoices(T newChoices){
 		this.choices.add(newChoices);
 	}
-
-	public void addItem(BookItem newItem){
-		this.items.add(newItem);
-	}
 	
-	public void removeItem(BookItem removeItem){
-		this.items.remove(removeItem);
+	public void addShopItemLink(BookItemsLink newShopItemLink){
+		this.shopItemLinks.add(newShopItemLink);
+	}
+
+	public void addItemLink(BookItemsLink newItemLink){
+		this.itemLinks.add(newItemLink);
 	}
 	
 	public int getNbItemsAPrendre() {
@@ -48,14 +53,22 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		this.nbItemsAPrendre = nbItemsAPrendre;
 	}
 
-	public List<BookItem> getItems() {
-		return items;
+	public List<BookItemsLink> getItemLinks() {
+		return itemLinks;
 	}
 
-	public void setItems(List<BookItem> items) {
-		this.items = items;
+	public void setItemLinks(List<BookItemsLink> itemLinks) {
+		this.itemLinks = itemLinks;
 	}
 
+	public List<BookItemsLink> getShopItemLinks() {
+		return shopItemLinks;
+	}
+
+	public void setShopItemLinks(List<BookItemsLink> shopItemLinks) {
+		this.shopItemLinks = shopItemLinks;
+	}
+	
 	public void setChoices(List<T> choices) {
 		this.choices = choices;
 	}
