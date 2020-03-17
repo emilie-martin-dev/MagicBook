@@ -7,12 +7,12 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
@@ -21,7 +21,7 @@ import magic_book.window.Mode;
 import magic_book.window.dialog.CharacterDialog;
 import magic_book.window.dialog.ItemDialog;
 
-public class LeftPane extends Pane{
+public class LeftPane extends ScrollPane {
 	
 	private GraphPane graphPane;
 	
@@ -31,7 +31,12 @@ public class LeftPane extends Pane{
 	
 	public LeftPane(GraphPane graphPane){
 		this.graphPane = graphPane;
-		this.getChildren().add(createLeftPanel());
+		
+		this.setMaxWidth(250);
+		this.setPadding(new Insets(5, 5, 5, 5));
+		this.setFitToWidth(true);
+				
+		this.setContent(createLeftPanel());
 	}
 	
 	private Node createLeftPanel() {
@@ -48,13 +53,11 @@ public class LeftPane extends Pane{
 
 		FlowPane flow = new FlowPane();
 		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode, firstNode);
-		leftContent.setMaxWidth(250);
-		leftContent.setPadding(new Insets(5, 5, 5, 5));
 		leftContent.setSpacing(15);
 		leftContent.getChildren().add(flow);
 		
-		VBox ItemsPersos = gestionPerso();
-		leftContent.getChildren().add(ItemsPersos);
+		VBox itemPerso = gestionPerso();
+		leftContent.getChildren().add(itemPerso);
 		
 		return leftContent;
 	}
@@ -65,7 +68,7 @@ public class LeftPane extends Pane{
 		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", 0, 0, null, null, 0));
 		rootPerso.setExpanded(true);
 		treeViewPerso = new TreeView<> (rootPerso);
-
+		
 		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Items"));
 		rootItem.setExpanded(true);
 		
