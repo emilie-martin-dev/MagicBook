@@ -39,6 +39,8 @@ public class GraphPane extends Pane {
 		this.setStyle("-fx-background-color: #dddddd;");
 		this.setCursor(Cursor.CLOSED_HAND);
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
+			firstNodeFxSelected = null;
+			
 			if (mode == Mode.ADD_NODE) {
 				createNodeFxDialog(event);
 			}
@@ -227,6 +229,7 @@ public class GraphPane extends Pane {
 					listeNoeudLien.remove(nodeLinkRemove);
 				}
 			}
+			
 			event.consume();
 		}
 	}
@@ -247,6 +250,8 @@ public class GraphPane extends Pane {
 					GraphPane.this.getChildren().remove(nodeLinkFx);
 				}
 			}
+			
+			event.consume();
 		}
 	}
 }
