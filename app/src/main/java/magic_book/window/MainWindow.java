@@ -32,11 +32,16 @@ public class MainWindow extends Stage{
 	private LeftPane leftPane;
 	private RightPane rightPane;
 	
+	private Book book;
+	
 	public MainWindow() {
+		book = new Book("", null, null, null);
+		
 		BorderPane root = new BorderPane();
-		graphPane = new GraphPane();
-		leftPane = new LeftPane(graphPane);
-		rightPane = new RightPane(graphPane);
+		graphPane = new GraphPane(book);
+		leftPane = new LeftPane(graphPane, book);
+		rightPane = new RightPane(graphPane, book);
+		
 		
 		root.setTop(createMenuBar());
 		root.setLeft(leftPane);
@@ -148,6 +153,8 @@ public class MainWindow extends Stage{
 	private void changeBook(Book book) {
 		graphPane.setBook(book);
 		leftPane.setBook(book);
+	
+		this.book = book;
 	}
 
 }

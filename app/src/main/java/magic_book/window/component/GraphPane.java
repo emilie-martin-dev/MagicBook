@@ -35,10 +35,12 @@ public class GraphPane extends Pane {
 	
 	private Mode mode;
 	private PreludeFx preludeFx;	
+	private Book book;
 	
-	public GraphPane(){
+	public GraphPane(Book book){
 		listeNoeud = new ArrayList<>();
 		listeNoeudLien = new ArrayList<>();
+		this.book = book;
 		
 		preludeFxFirstNodeLine = new Line();
 		preludeFxFirstNodeLine.setStrokeWidth(3);

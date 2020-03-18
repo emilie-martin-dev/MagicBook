@@ -32,8 +32,11 @@ public class LeftPane extends ScrollPane {
 	private TreeView<BookItem> treeViewItem;
 	private TreeView<BookCharacter> treeViewPerso;
 	
-	public LeftPane(GraphPane graphPane){
+	private Book book;
+	
+	public LeftPane(GraphPane graphPane, Book book){
 		this.graphPane = graphPane;
+		this.book = book;
 		
 		this.setMaxWidth(250);
 		this.setPadding(new Insets(5, 5, 5, 5));
@@ -102,9 +105,13 @@ public class LeftPane extends ScrollPane {
 				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
 				if(selectedItem != null) {
 					BookCharacter character = selectedItem.getValue();
+					String oldId = character.getId();
 					new CharacterDialog(character);
 					
 					treeViewPerso.refresh();
+					
+					book.getCharacters().remove(oldId);	
+					book.getCharacters().put(character.getId(), character);
 				}
 			}
 		});
@@ -114,6 +121,7 @@ public class LeftPane extends ScrollPane {
 			public void handle(ActionEvent event) {
 				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
 				rootPerso.getChildren().remove(selectedItem);
+				book.getCharacters().remove(selectedItem.getValue().getId());
 			}
 		});
 		
@@ -143,9 +151,13 @@ public class LeftPane extends ScrollPane {
 				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
 				if(selectedItem != null) {
 					BookItem item = selectedItem.getValue();
+					String oldId = item.getId();
 					new ItemDialog(item);
 					
 					treeViewItem.refresh();
+					
+					book.getItems().remove(oldId);	
+					book.getItems().put(item.getId(), item);
 				}
 			}
 		});
@@ -155,6 +167,7 @@ public class LeftPane extends ScrollPane {
 			public void handle(ActionEvent event) {
 				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
 				rootItem.getChildren().remove(selectedItem);
+				book.getItems().remove(selectedItem.getValue().getId());
 			}
 		});
 		
@@ -179,14 +192,18 @@ public class LeftPane extends ScrollPane {
 		for(Map.Entry<String, BookItem> entry : book.getItems().entrySet()) {
 			addItem(entry.getValue());
 		}
+		
+		this.book = book;
 	}
 
 	private void addCharacter(BookCharacter character){
 		treeViewPerso.getRoot().getChildren().add(new TreeItem<> (character));
+		book.getCharacters().put(character.getId(), character);
 	}
 
 	private void addItem(BookItem item){
 		treeViewItem.getRoot().getChildren().add(new TreeItem<> (item));
+		book.getItems().put(item.getId(), item);
 	}
 
 	private ToggleButton createToggleButton(String path, Mode mode) {
