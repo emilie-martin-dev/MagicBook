@@ -5,11 +5,11 @@ import magic_book.core.parser.Parsable;
 public class BookItem implements Parsable {
 
 	private String id;
-	private String nom;
+	private String name;
 
 	public BookItem(String id, String nom) {
 		this.id = id;
-		this.nom = nom;
+		this.name = nom;
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class BookItem implements Parsable {
 
 	@Override
 	public String getParsableText() {
-		return this.nom;
+		return this.name;
 	}
 
 	public String getId() {
@@ -30,17 +30,17 @@ public class BookItem implements Parsable {
 		this.id = id;
 	}
 
-	public String getNom() {
-		return nom;
+	public String getName() {
+		return name;
 	}
 
-	public void setNom(String nom) {
-		this.nom = nom;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 
 	@Override
 	public String toString() {
-		return this.nom;
+		return this.name;
 	}
 }

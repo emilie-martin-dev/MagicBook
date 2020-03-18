@@ -7,7 +7,8 @@ import magic_book.core.node.BookNodeStatus;
 public class SectionJson {
 
 	private String text;
-	private BookNodeStatus type;
+	@SerializedName("end_type")
+	private BookNodeStatus endType;
 	private List<ItemLinkJson> items;
 	@SerializedName("amount_to_pick")
 	private int amountToPick;
@@ -32,12 +33,12 @@ public class SectionJson {
 		this.text = text;
 	}
 
-	public BookNodeStatus getType() {
-		return type;
+	public BookNodeStatus getEndType() {
+		return endType;
 	}
 
-	public void setType(BookNodeStatus type) {
-		this.type = type;
+	public void setEndType(BookNodeStatus endType) {
+		this.endType = endType;
 	}
 
 	public List<ItemLinkJson> getItems() {

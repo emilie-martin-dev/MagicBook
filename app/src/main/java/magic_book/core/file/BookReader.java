@@ -92,8 +92,8 @@ public class BookReader {
 				node = createBookNodeCombat(sectionJson);
 			} else if(sectionJson.isRandomPick()) {
 				node = createBookNodeWithRandomChoices(sectionJson);
-			} else if(sectionJson.getChoices() != null && sectionJson.getChoices().isEmpty()) {
-				node = new BookNodeTerminal(sectionJson.getText(), sectionJson.getType());
+			} else if(sectionJson.getEndType() != null) {
+				node = new BookNodeTerminal(sectionJson.getText(), sectionJson.getEndType());
 			} else if(sectionJson.getChoices() != null && !sectionJson.getChoices().isEmpty()){
 				node = createBookNodeWithChoices(sectionJson);
 			} else {
@@ -190,7 +190,7 @@ public class BookReader {
 					nodeCombat.setLooseBookNodeLink(new BookNodeLink(combatJson.getLoose().getText(), nodes.get(combatJson.getLoose().getSection())));
 			
 				if(combatJson.getEvasion() != null)
-					nodeCombat.setLooseBookNodeLink(new BookNodeLink(combatJson.getEvasion().getText(), nodes.get(combatJson.getEvasion().getSection())));
+					nodeCombat.setEvasionBookNodeLink(new BookNodeLink(combatJson.getEvasion().getText(), nodes.get(combatJson.getEvasion().getSection())));
 			}
 		}
 		

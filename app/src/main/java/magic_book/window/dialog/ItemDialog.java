@@ -23,10 +23,10 @@ public class ItemDialog extends AbstractDialog {
 	}
 
 	public ItemDialog(BookItem item) {
-		super("Edition de " + item.getNom());
+		super("Edition de " + item.getName());
 
 		idTextField.setText(item.getId());
-		nameTextField.setText(item.getNom());
+		nameTextField.setText(item.getName());
 		
 		this.item = item;
 
@@ -63,7 +63,7 @@ public class ItemDialog extends AbstractDialog {
 				ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
 			else {
 				ItemDialog.this.item.setId(idTextField.getText().trim());
-				ItemDialog.this.item.setNom(nameTextField.getText().trim());
+				ItemDialog.this.item.setName(nameTextField.getText().trim());
 			}
 			
 			close();

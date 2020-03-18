@@ -50,7 +50,7 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		this.ennemiesId.add(ennemieId);
 	}
 	
-	public BookNodeLink isWinBookNodeLink() {
+	public BookNodeLink getWinBookNodeLink() {
 		return winBookNodeLink;
 	}
 
@@ -58,7 +58,7 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		this.winBookNodeLink = winBookNodeLink;
 	}
 
-	public BookNodeLink isLooseBookNodeLink() {
+	public BookNodeLink getLooseBookNodeLink() {
 		return looseBookNodeLink;
 	}
 
