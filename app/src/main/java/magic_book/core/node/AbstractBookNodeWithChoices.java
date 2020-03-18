@@ -6,12 +6,12 @@ import java.util.List;
 
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
 	
-	private int nbItemsAPrendre;
+	private Integer nbItemsAPrendre;
 	private List<BookItemsLink> itemLinks;
 	private List<BookItemsLink> shopItemLinks;
 	private List<T> choices;
 	
-	public AbstractBookNodeWithChoices(String text, int nbItemsAPrendre, List<BookItemsLink> itemLinks, List<BookItemsLink> shopItemLinks, List<T> choices){
+	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemsLink> itemLinks, List<BookItemsLink> shopItemLinks, List<T> choices){
 		super(text);
 		this.nbItemsAPrendre = nbItemsAPrendre;
 		this.itemLinks = itemLinks;
@@ -45,11 +45,11 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		this.itemLinks.add(newItemLink);
 	}
 	
-	public int getNbItemsAPrendre() {
+	public Integer getNbItemsAPrendre() {
 		return nbItemsAPrendre;
 	}
 
-	public void setNbItemsAPrendre(int nbItemsAPrendre) {
+	public void setNbItemsAPrendre(Integer nbItemsAPrendre) {
 		this.nbItemsAPrendre = nbItemsAPrendre;
 	}
 

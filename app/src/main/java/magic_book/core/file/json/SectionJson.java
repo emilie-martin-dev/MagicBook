@@ -11,19 +11,19 @@ public class SectionJson {
 	private BookNodeStatus endType;
 	private List<ItemLinkJson> items;
 	@SerializedName("amount_to_pick")
-	private int amountToPick;
+	private Integer amountToPick;
 	private List<ItemLinkJson> shop;
 	private List<ChoiceJson> choices;
 	private CombatJson combat;
 	@SerializedName("alterance_choice")
-	private boolean alteranceChoice;
+	private Boolean alteranceChoice;
 	@SerializedName("trim_choices")
-	private boolean trimChoices;
+	private Boolean trimChoices;
 	@SerializedName("is_random_pick")
-	private boolean isRandomPick;
+	private Boolean isRandomPick;
 	@SerializedName("must_eat")
-	private boolean mustEat;
-	private int hp;
+	private Boolean mustEat;
+	private Integer hp;
 
 	public String getText() {
 		return text;
@@ -49,11 +49,11 @@ public class SectionJson {
 		this.items = items;
 	}
 
-	public int getAmountToPick() {
+	public Integer getAmountToPick() {
 		return amountToPick;
 	}
 
-	public void setAmountToPick(int amountToPick) {
+	public void setAmountToPick(Integer amountToPick) {
 		this.amountToPick = amountToPick;
 	}
 
@@ -81,45 +81,45 @@ public class SectionJson {
 		this.combat = combat;
 	}
 
-	public boolean isAlteranceChoice() {
+	public Boolean isAlteranceChoice() {
 		return alteranceChoice;
 	}
 
-	public void setAlteranceChoice(boolean alteranceChoice) {
+	public void setAlteranceChoice(Boolean alteranceChoice) {
 		this.alteranceChoice = alteranceChoice;
 	}
 
-	public boolean isTrimChoices() {
+	public Boolean getTrimChoices() {
 		return trimChoices;
 	}
 
-	public void setTrimChoices(boolean trimChoices) {
+	public void setTrimChoices(Boolean trimChoices) {
 		this.trimChoices = trimChoices;
 	}
 
-	public boolean isRandomPick() {
+	public Boolean isRandomPick() {
 		return isRandomPick;
 	}
 
-	public void setIsRandomPick(boolean isRandomPick) {
+	public void setIsRandomPick(Boolean isRandomPick) {
 		this.isRandomPick = isRandomPick;
 	}
 
-	public boolean isMustEat() {
+	public Boolean getMustEat() {
 		return mustEat;
 	}
 
-	public void setMustEat(boolean mustEat) {
+	public void setMustEat(Boolean mustEat) {
 		this.mustEat = mustEat;
 	}
 
-	public int getHp() {
+	public Integer getHp() {
 		return hp;
 	}
 
-	public void setHp(int hp) {
+	public void setHp(Integer hp) {
 		this.hp = hp;
 	}
-	
-	
+
+		
 }

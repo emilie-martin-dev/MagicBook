@@ -74,7 +74,7 @@ public class BookReader {
 		HashMap<String, BookCharacter> characters = new HashMap<>();
 		
 		for(CharacterJson c : bookJson.getSetup().getCharacters()) {
-			BookCharacter character = new BookCharacter(c.getId(), c.getName(), c.getCombatSkill(), c.getHp(), null, null, 8);
+			BookCharacter character = new BookCharacter(c.getId(), c.getName(), c.getCombatSkill(), c.getHp(), null, null, 0);
 			
 			characters.put(character.getId(), character);
 		}
@@ -90,7 +90,7 @@ public class BookReader {
 			
 			if(sectionJson.getCombat() != null) {
 				node = createBookNodeCombat(sectionJson);
-			} else if(sectionJson.isRandomPick()) {
+			} else if(sectionJson.isRandomPick() != null && sectionJson.isRandomPick()) {
 				node = createBookNodeWithRandomChoices(sectionJson);
 			} else if(sectionJson.getEndType() != null) {
 				node = new BookNodeTerminal(sectionJson.getText(), sectionJson.getEndType());
@@ -137,7 +137,7 @@ public class BookReader {
 		if(section.getItems() != null) {
 			for(ItemLinkJson itemLinkJson : section.getItems()) {
 				BookItemsLink bookItemsLink = new BookItemsLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
-				if(bookItemsLink.getAmount() == 0) {
+				if(bookItemsLink.getAmount() == null) {
 					bookItemsLink.setAmount(1);
 				}
 
@@ -148,7 +148,7 @@ public class BookReader {
 		if(section.getShop() != null) {
 			for(ItemLinkJson itemLinkJson : section.getShop()) {
 				BookItemsLink bookItemsLink = new BookItemsLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
-				if(bookItemsLink.getAmount() == 0) {
+				if(bookItemsLink.getAmount() == null) {
 					bookItemsLink.setAmount(1);
 				}
 
@@ -169,7 +169,7 @@ public class BookReader {
 					AbstractBookNodeWithChoices nodeWithChoices = (AbstractBookNodeWithChoices) node;
 					BookNodeLink nodeLink = null;
 
-					if(sectionJson.isRandomPick()) {
+					if(sectionJson.isRandomPick() != null && sectionJson.isRandomPick()) {
 						nodeLink = new BookNodeLinkRandom(choiceJson.getText(), nodes.get(choiceJson.getSection()), choiceJson.getWeight());
 					} else {
 						nodeLink = new BookNodeLink(choiceJson.getText(), nodes.get(choiceJson.getSection()));

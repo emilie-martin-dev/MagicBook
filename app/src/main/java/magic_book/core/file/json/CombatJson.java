@@ -10,9 +10,9 @@ public class CombatJson {
 	private ChoiceJson loose;
 	private List<String> enemies;
 	@SerializedName("combat_skill")
-	private int combatSkill;
+	private Integer combatSkill;
 	@SerializedName("evasion_round")
-	private int evasionRound;
+	private Integer evasionRound;
 
 	public ChoiceJson getWin() {
 		return win;
@@ -46,20 +46,20 @@ public class CombatJson {
 		this.enemies = enemies;
 	}
 
-	public int getCombatSkill() {
+	public Integer getCombatSkill() {
 		return combatSkill;
 	}
 
-	public void setCombatSkill(int combatSkill) {
+	public void setCombatSkill(Integer combatSkill) {
 		this.combatSkill = combatSkill;
 	}
 
-	public int getEvasionRound() {
+	public Integer getEvasionRound() {
 		return evasionRound;
 	}
 
-	public void setEvasionRound(int evasionRound) {
+	public void setEvasionRound(Integer evasionRound) {
 		this.evasionRound = evasionRound;
 	}
-	
+
 }

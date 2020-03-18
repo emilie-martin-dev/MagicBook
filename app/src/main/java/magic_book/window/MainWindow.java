@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -21,6 +23,7 @@ import magic_book.core.Book;
 import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
+import magic_book.core.file.BookWritter;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
@@ -71,7 +74,7 @@ public class MainWindow extends Stage{
 			fileChooser.getExtensionFilters().addAll(
 				new ExtensionFilter("Livre", "*.mbf"),
 				new ExtensionFilter("JSON", "*.json"),
-				new ExtensionFilter("Tous les fichiers", "*.*"));
+				new ExtensionFilter("Tous les fichiers", "*"));
 
 			File selectedFile = fileChooser.showOpenDialog(this);
 			if (selectedFile == null) {
@@ -96,6 +99,14 @@ public class MainWindow extends Stage{
 			}			
 		});
 		MenuItem menuFileSave = new MenuItem("Enregistrer");
+		menuFileSave.setOnAction((ActionEvent e) -> {
+			BookWritter bookWritter = new BookWritter();
+			try {
+				bookWritter.write("", book);
+			} catch (FileNotFoundException ex) {
+				Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		});
 		MenuItem menuFileSaveAs = new MenuItem("Enregistrer sous");
 
 		menuFile.getItems().addAll(menuFileNew, menuFileOpen, menuFileSave, menuFileSaveAs);

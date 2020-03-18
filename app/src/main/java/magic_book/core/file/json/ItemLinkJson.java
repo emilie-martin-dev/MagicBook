@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName;
 public class ItemLinkJson {
 	
 	private String id;
-	private int amount;
-	private int price;
+	private Integer amount;
+	private Integer price;
 	@SerializedName("selling_price")
-	private int sellingPrice;
-	private boolean auto;
+	private Integer sellingPrice;
+	private Boolean auto;
 
 	public String getId() {
 		return id;
@@ -20,36 +20,36 @@ public class ItemLinkJson {
 		this.id = id;
 	}
 
-	public int getAmount() {
+	public Integer getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
 
-	public int getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 
-	public int getSellingPrice() {
+	public Integer getSellingPrice() {
 		return sellingPrice;
 	}
 
-	public void setSellingPrice(int sellingPrice) {
+	public void setSellingPrice(Integer sellingPrice) {
 		this.sellingPrice = sellingPrice;
 	}
 
-	public boolean isAuto() {
+	public Boolean isAuto() {
 		return auto;
 	}
 
-	public void setAuto(boolean auto) {
+	public void setAuto(Boolean auto) {
 		this.auto = auto;
 	}
-	
+
 }

@@ -3,19 +3,19 @@ package magic_book.core.node;
 public class BookItemsLink {
 	
 	private String id;
-	private int amount;
-	private int price;
-	private int sellingPrice;
-	private boolean auto;
+	private Integer amount;
+	private Integer price;
+	private Integer sellingPrice;
+	private Boolean auto;
 
-	public BookItemsLink(String id, int amount, int price, boolean auto, int selling_price) {
+	public BookItemsLink(String id, Integer amount, Integer price, Boolean auto, Integer selling_price) {
 		this.id = id;
 		this.amount = amount;
 		this.price = price;
 		this.auto = auto;
 		this.sellingPrice = selling_price;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -24,36 +24,36 @@ public class BookItemsLink {
 		this.id = id;
 	}
 
-	public int getAmount() {
+	public Integer getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
 
-	public int getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	
-	public boolean isAuto() {
-		return auto;
-	}
 
-	public void setAuto(boolean auto) {
-		this.auto = auto;
-	}
-
-	public int getSellingPrice() {
+	public Integer getSellingPrice() {
 		return sellingPrice;
 	}
 
-	public void setSellingPrice(int sellingPrice) {
+	public void setSellingPrice(Integer sellingPrice) {
 		this.sellingPrice = sellingPrice;
+	}
+
+	public Boolean getAuto() {
+		return auto;
+	}
+
+	public void setAuto(Boolean auto) {
+		this.auto = auto;
 	}
 	
 }

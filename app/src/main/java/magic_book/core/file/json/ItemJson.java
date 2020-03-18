@@ -6,13 +6,13 @@ public class ItemJson {
 
 	private String id;
 	private String name;
-	private int damage;
-	private int durability;
-	private int resistance;
-	private int hp;
+	private Integer damage;
+	private Integer durability;
+	private Integer resistance;
+	private Integer hp;
 	@SerializedName("item_type")
 	private ItemType itemType;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -29,20 +29,36 @@ public class ItemJson {
 		this.name = name;
 	}
 
-	public int getDamage() {
+	public Integer getDamage() {
 		return damage;
 	}
 
-	public void setDamage(int damage) {
+	public void setDamage(Integer damage) {
 		this.damage = damage;
 	}
 
-	public int getDurability() {
+	public Integer getDurability() {
 		return durability;
 	}
 
-	public void setDurability(int durability) {
+	public void setDurability(Integer durability) {
 		this.durability = durability;
+	}
+
+	public Integer getResistance() {
+		return resistance;
+	}
+
+	public void setResistance(Integer resistance) {
+		this.resistance = resistance;
+	}
+
+	public Integer getHp() {
+		return hp;
+	}
+
+	public void setHp(Integer hp) {
+		this.hp = hp;
 	}
 
 	public ItemType getItemType() {
@@ -51,22 +67,6 @@ public class ItemJson {
 
 	public void setItemType(ItemType itemType) {
 		this.itemType = itemType;
-	}
-
-	public int getResistance() {
-		return resistance;
-	}
-
-	public void setResistance(int resistance) {
-		this.resistance = resistance;
-	}
-
-	public int getHp() {
-		return hp;
-	}
-
-	public void setHp(int hp) {
-		this.hp = hp;
 	}
 	
 }

@@ -7,13 +7,13 @@ public class CharacterJson {
 	
 	private String id;
 	private String name;
-	private int hp;
+	private Integer hp;
 	@SerializedName("combat_skill")
-	private int combatSkill;
+	private Integer combatSkill;
 	private List<String> skills;
 	private List<String> immune;
 	@SerializedName("double_damage")
-	private boolean doubleDamage;			
+	private Boolean doubleDamage;			
 
 	public String getId() {
 		return id;
@@ -31,19 +31,19 @@ public class CharacterJson {
 		this.name = name;
 	}
 
-	public int getHp() {
+	public Integer getHp() {
 		return hp;
 	}
 
-	public void setHp(int hp) {
+	public void setHp(Integer hp) {
 		this.hp = hp;
 	}
 
-	public int getCombatSkill() {
+	public Integer getCombatSkill() {
 		return combatSkill;
 	}
 
-	public void setCombatSkill(int combatSkill) {
+	public void setCombatSkill(Integer combatSkill) {
 		this.combatSkill = combatSkill;
 	}
 
@@ -63,12 +63,12 @@ public class CharacterJson {
 		this.immune = immune;
 	}
 
-	public boolean isDoubleDamage() {
+	public Boolean getDoubleDamage() {
 		return doubleDamage;
 	}
 
-	public void setDoubleDamage(boolean doubleDamage) {
+	public void setDoubleDamage(Boolean doubleDamage) {
 		this.doubleDamage = doubleDamage;
 	}
-	
+
 }
