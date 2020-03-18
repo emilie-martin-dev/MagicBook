@@ -114,17 +114,17 @@
 				"name": "Axe",
 				"damage": 3,
 				"durability": 6,
-				"item_type": "WEAPONS"
+				"item_type": "WEAPON"
 			},
 			{
 				"id": "backpack",
 				"name": "Backpack",
-				"item_type": "BACKPACK"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "blanket",
 				"name": "Blanket",
-				"item_type": "BACKPACK_ITEM"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "broadsword",
@@ -160,7 +160,7 @@
 			{
 				"id": "fur_blanket",
 				"name": "Fur Blanket",
-				"item_type": "BACKPACK_ITEM"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "gold",
@@ -170,7 +170,7 @@
 			{
 				"id": "gold_ring",
 				"name": "Gold Ring",
-				"item_type": "BACKPACK_ITEM"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "healing_potion_4",
@@ -217,12 +217,12 @@
 			{
 				"id": "meal",
 				"name": "Meal",
-				"item_type": "BACKPACK_ITEM"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "potion_orange",
 				"name": "Potion of Orange Liquid",
-				"item_type": "BACKPACK_ITEM"
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "quarterstaff",
@@ -1940,10 +1940,26 @@
 				{
 					"text": "If you have the Kai Discipline of Healing, a healing potion, or some Laumspur and you want to try to save the man's life.",
 					"section": "239",
-					"requires_or": {
-						"backpack_items": "Healing|Laumspur",
-						"kai_disciplines": "Healing"
-					}
+					"requirements": [
+						[
+							{
+								"id": "laumspur_potion",
+								"type": "item"
+							}
+						],
+						[
+							{
+								"id": "laumspur_meal",
+								"type": "item"
+							}
+						],
+						[
+							{
+								"id": "healing",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you wish to attack the Szalls.",

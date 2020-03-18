@@ -18,11 +18,16 @@ import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.ItemLinkJson;
+import magic_book.core.file.json.ItemType;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.file.json.SkillJson;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookSkill;
+import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItem;
+import magic_book.core.item.BookItemHealing;
+import magic_book.core.item.BookItemMoney;
+import magic_book.core.item.BookItemWeapon;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.AbstractBookNodeWithChoices;
 import magic_book.core.node.BookItemsLink;
@@ -78,7 +83,21 @@ public class BookReader {
 		HashMap<String, BookItem> items = new HashMap<>();
 		
 		for(ItemJson i : bookJson.getSetup().getItems()) {
-			BookItem item = new BookItem(i.getId(), i.getName());
+			BookItem item = null;
+			
+			if(i.getItemType() == ItemType.DEFENSE) {
+				item = new BookItemDefense(i.getId(), i.getName(), i.getDurability(), i.getResistance());
+			} else if(i.getItemType() == ItemType.WEAPON) {
+				item = new BookItemWeapon(i.getId(), i.getName(), i.getDurability(), i.getDamage());
+			} else if(i.getItemType() == ItemType.MONEY) {
+				item = new BookItemMoney(i.getId(), i.getName(), 0);
+			} else if(i.getItemType() == ItemType.HEALING) {
+				item = new BookItemHealing(i.getId(), i.getName(), i.getDurability(), i.getHp());				
+			} else if(i.getItemType() == ItemType.KEY_ITEM) {
+				item = new BookItem(i.getId(), i.getName());				
+			} else {
+				throw new BookFileException("L'item avec le type " + i.getItemType() + " est invalide");
+			}
 			
 			items.put(item.getId(), item);
 		}
