@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import magic_book.core.Book;
@@ -110,6 +111,24 @@ public class BookReader {
 		
 		for(CharacterJson c : bookJson.getSetup().getCharacters()) {
 			BookCharacter character = new BookCharacter(c.getId(), c.getName(), c.getCombatSkill(), c.getHp(), null, null, 0);
+			
+			if(c.getSkills() != null) {
+				for(String skill : c.getSkills()) {
+					character.getSkills().add(skill);
+				}
+			}
+			
+			if(c.getImmune() != null) {
+				for(String immune : c.getImmune()) {
+					character.getImmunes().add(immune);
+				}
+			}
+			
+			if(c.getDoubleDamage() == null) {
+				character.setDoubleDamage(false);
+			} else {
+				character.setDoubleDamage(c.getDoubleDamage());
+			}
 			
 			characters.put(character.getId(), character);
 		}

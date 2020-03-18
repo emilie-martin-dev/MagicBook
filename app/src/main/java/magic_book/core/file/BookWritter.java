@@ -66,6 +66,24 @@ public class BookWritter {
 			characterJson.setHp(character.getHp());
 			characterJson.setCombatSkill(character.getBaseDamage());
 			
+			if(character.isDoubleDamage()) {
+				characterJson.setDoubleDamage(true);
+			}
+			
+			if(!character.getSkills().isEmpty()) {
+				characterJson.setSkills(new ArrayList<>());
+				for(String skill : character.getSkills()) {
+					characterJson.getSkills().add(skill);
+				}
+			}
+			
+			if(!character.getImmunes().isEmpty()) {
+				characterJson.setImmune(new ArrayList<>());
+				for(String immune : character.getImmunes()) {
+					characterJson.getImmune().add(immune);
+				}
+			}
+			
 			characters.add(characterJson);
 		}
 		

@@ -11,26 +11,38 @@ public class BookCharacter implements Parsable {
 	private int baseDamage;
 	private int hp;
 	private int hpMax;
-	private List<String> listSkills;
-	private List<String> listItems;
+	private List<String> skills;
+	private List<String> immunes;
+	private List<String> items;
 	private int itemsMax;
+	private boolean doubleDamage;
 
 	public BookCharacter(String id, String name, int baseDamage, int hpMax, List<String> listSkills, List<String> listItems, int itemsMax) {
+		this(id, name, baseDamage, hpMax, listSkills, null, listItems, itemsMax, false);
+	}
+	
+	public BookCharacter(String id, String name, int baseDamage, int hpMax, List<String> listSkills, List<String> listImmune, List<String> listItems, int itemsMax, boolean doubleDamage) {
 		this.id = id;
 		this.name = name;
 		this.baseDamage = baseDamage;
 		this.hp = hpMax;
 		this.hpMax = hpMax;
-		this.listSkills = listSkills;
-		this.listItems = listItems;
+		this.skills = listSkills;
+		this.immunes = listImmune;
+		this.items = listItems;
 		this.itemsMax = itemsMax;
+		this.doubleDamage = doubleDamage;
 		
-		if(this.listSkills == null) {
-			this.listSkills = new ArrayList<>();
+		if(this.skills == null) {
+			this.skills = new ArrayList<>();
 		}
 		
-		if(this.listItems == null) {
-			this.listItems = new ArrayList<>();
+		if(this.immunes == null) {
+			this.immunes = new ArrayList<>();
+		}
+		
+		if(this.items == null) {
+			this.items = new ArrayList<>();
 		}
 	}
 	
@@ -69,19 +81,19 @@ public class BookCharacter implements Parsable {
 	}
 	
 	public void addItem(String item) {
-		this.listItems.add(item);
+		this.items.add(item);
 	}
 
 	public void addSkill(String skill) {
-		this.listSkills.add(skill);
+		this.skills.add(skill);
 	}
 	
 	public void removeItem(String item) {
-		this.listItems.remove(item);
+		this.items.remove(item);
 	}
 
 	public void removeSkill(String skill) {
-		this.listSkills.remove(skill);
+		this.skills.remove(skill);
 	}
 
 	public String getId() {
@@ -124,20 +136,28 @@ public class BookCharacter implements Parsable {
 		this.hpMax = hpMax;
 	}
 
-	public List<String> getListSkills() {
-		return listSkills;
+	public List<String> getSkills() {
+		return skills;
 	}
 
-	public void setListSkills(List<String> listSkills) {
-		this.listSkills = listSkills;
+	public void setSkills(List<String> skills) {
+		this.skills = skills;
 	}
 
-	public List<String> getListItems() {
-		return listItems;
+	public List<String> getImmunes() {
+		return immunes;
 	}
 
-	public void setListItems(List<String> listItems) {
-		this.listItems = listItems;
+	public void setImmunes(List<String> immunes) {
+		this.immunes = immunes;
+	}
+
+	public List<String> getItems() {
+		return items;
+	}
+
+	public void setItems(List<String> items) {
+		this.items = items;
 	}
 
 	public int getItemsMax() {
@@ -146,6 +166,14 @@ public class BookCharacter implements Parsable {
 
 	public void setItemsMax(int itemsMax) {
 		this.itemsMax = itemsMax;
+	}
+
+	public boolean isDoubleDamage() {
+		return doubleDamage;
+	}
+
+	public void setDoubleDamage(boolean doubleDamage) {
+		this.doubleDamage = doubleDamage;
 	}
 
 }
