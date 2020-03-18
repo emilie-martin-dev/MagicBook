@@ -1,5 +1,6 @@
 package magic_book.window.component;
 
+import java.io.InputStream;
 import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,6 +13,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import magic_book.core.Book;
@@ -42,16 +45,18 @@ public class LeftPane extends ScrollPane {
 	private Node createLeftPanel() {
 		VBox leftContent = new VBox();
 		
-		ToggleButton selectToogle = createToggleButton("Selectionner", Mode.SELECT);
-		ToggleButton addNodeToggle = createToggleButton("Ajouter noeud", Mode.ADD_NODE);
-		ToggleButton addNodeLinkToggle = createToggleButton("Ajouter lien", Mode.ADD_NODE_LINK);
-		ToggleButton suppNode = createToggleButton("Supprime noeud", Mode.DELETE);
-		ToggleButton firstNode = createToggleButton("Sélectionner premier noeud", Mode.FIRST_NODE);
+		ToggleButton selectToogle = createToggleButton("icons/select.png", Mode.SELECT);
+		ToggleButton addNodeToggle = createToggleButton("icons/add_node.png", Mode.ADD_NODE);
+		ToggleButton addNodeLinkToggle = createToggleButton("icons/add_link.png", Mode.ADD_NODE_LINK);
+		ToggleButton suppNode = createToggleButton("icons/delete.png", Mode.DELETE);
+		ToggleButton firstNode = createToggleButton("icons/first_node.png", Mode.FIRST_NODE);
 		
 		selectToogle.setSelected(true);
 		graphPane.setMode(Mode.SELECT);
 
 		FlowPane flow = new FlowPane();
+		flow.setHgap(5);
+		flow.setVgap(5);
 		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode, firstNode);
 		leftContent.setSpacing(15);
 		leftContent.getChildren().add(flow);
@@ -184,15 +189,21 @@ public class LeftPane extends ScrollPane {
 		treeViewItem.getRoot().getChildren().add(new TreeItem<> (item));
 	}
 
-	private ToggleButton createToggleButton(String text, Mode mode) {
-		ToggleButton toggleButton = new ToggleButton(text);
+	private ToggleButton createToggleButton(String path, Mode mode) {
+		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
+		ImageView imageView = new ImageView(new Image(stream));
+		imageView.setFitHeight(40);		
+		imageView.setFitWidth(40);
+		ToggleButton toggleButton = new ToggleButton("", imageView);
+		
+		imageView.setPreserveRatio(true);
+		toggleButton.setMinSize(50, 50);
+		toggleButton.setMaxSize(50, 50);
 
 		toggleButton.setOnAction((ActionEvent e) -> {
 			graphPane.setMode(mode);
 			graphPane.setSelectedNodeFx(null);
 		});
-
-		toggleButton.setPrefSize(100, 100);
 
 		if (this.toggleGroup == null) {
 			this.toggleGroup = new ToggleGroup();
