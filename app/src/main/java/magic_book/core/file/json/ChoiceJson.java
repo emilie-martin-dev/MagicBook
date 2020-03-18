@@ -1,5 +1,7 @@
 package magic_book.core.file.json;
 
+import java.util.List;
+
 public class ChoiceJson {
 
 	private String text;
@@ -8,7 +10,8 @@ public class ChoiceJson {
 	private Integer hp;
 	private Integer gold;
 	private Boolean auto;
-
+	private List<List<RequirementJson>> requirements;
+	
 	public String getText() {
 		return text;
 	}
@@ -56,5 +59,13 @@ public class ChoiceJson {
 	public void setAuto(Boolean auto) {
 		this.auto = auto;
 	}
-	
+
+	public List<List<RequirementJson>> getRequirements() {
+		return requirements;
+	}
+
+	public void setRequirements(List<List<RequirementJson>> requirements) {
+		this.requirements = requirements;
+	}
+
 }

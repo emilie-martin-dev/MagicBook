@@ -8,24 +8,24 @@
 			},
 			{
 				"text": "Kai Disciplines\n\nOver the centuries, the Kai monks have mastered the skills of the warrior. These skills are known as the Kai Disciplines, and they are taught to all Kai Lords. You have learnt only five of the skills listed below. The choice of which five skills these are, is for you to make. As all of the Disciplines may be of use to you at some point on your perilous quest, pick your five with care. The correct use of a Discipline at the right time can save your life.\n\nCamouflage\n\nThis Discipline enables a Kai Lord to blend in with his surroundings. In the countryside, he can hide undetected among trees and rocks and pass close to an enemy without being seen. In a town or city, it enables him to look and sound like a native of that area, and can help him to find shelter or a safe hiding place.\n\nHunting\n\nThis skill ensures that a Kai Lord will never starve in the wild. He will always be able to hunt for food for himself except in areas of wasteland and desert. The skill also enables a Kai Lord to be able to move stealthily when stalking his prey.\n\nSixth Sense\n\nThis skill may warn a Kai Lord of imminent danger. It may also reveal the true purpose of a stranger or strange object encountered in your adventure.\n\nTracking\n\nThis skill enables a Kai Lord to make the correct choice of a path in the wild, to discover the location of a person or object in a town or city and to read the secrets of footprints or tracks.\n\nHealing\n\nThis Discipline can be used to restore HP points lost in combat. If you possess this skill you may restore 1 HP point to your total for every numbered section of the book you pass through in which you are not involved in combat. (This is only to be used after your HP has fallen below its original level.) Remember that your HP cannot rise above its original level.\n\nWeaponskill\n\nUpon entering the Kai Monastery, each initiate is taught to master one type of weapon. When you enter combat carrying this weapon, you add 2 points to your COMBAT SKILL. The fact that you are skilled with a weapon does not mean you set out on the adventure carrying that particular weapon. However, you will have opportunities to acquire weapons in the course of your adventures. You cannot carry more than 2 weapons.\n\nMindshield\n\nThe Darklords and many of the evil creatures in their command have the ability to attack you using their Mindforce. The Kai Discipline of Mindshield prevents you from losing any HP points when subjected to this form of attack.\n\nMindblast\n\nThis enables a Kai Lord to attack an enemy using the force of his mind. It can be used at the same time as normal combat weapons and adds two extra points to your COMBAT SKILL. Not all the creatures encountered on this adventure will be harmed by Mindblast. You will be told if a creature is immune.\n\nAnimal Kinship\n\nThis skill enables a Kai Lord to communicate with some animals and to be able to guess the intentions of others.\n\nMind Over Matter\n\nMastery of this Discipline enables a Kai Lord to move small objects with his powers of concentration.",
-				"type": "skills",
+				"type": "skill",
 				"skills": [
-					"Camouflage",
-					"Hunting",
-					"Sixth Sense",
-					"Tracking",
-					"Healing",
-					"Weaponskill",
-					"Mindshield",
-					"Mindblast",
-					"Animal Kinship",
-					"Mind Over Matter"
+					"camouflage",
+					"hunting",
+					"sixth_sense",
+					"tracking",
+					"healing",
+					"weaponskill",
+					"mindshield",
+					"mindblast",
+					"animal_kinship",
+					"mind_over_matter"
 				],
 				"amount_to_pick": 5
 			},
 			{
 				"text": "Equipment\n\nGuard Captain D\\u2019Val leads you to the Royal Armoury where your green tunic and Kai cloak are taken from you to be repaired and cleaned. While you await their return, Captain D\\u2019Val hands you a pouch of Gold for your journey:\n\nOn a large table in the centre of the armoury, a number of items have been laid out for your choice.",
-				"type": "items",
+				"type": "item",
 				"amount_to_pick": 2,
 				"items": [
 					{
@@ -64,34 +64,48 @@
 		],
 		"skills": [
 			{
-				"id": "Camouflage"
+				"id": "camouflage",
+				"name": "Camouflage"
 			},
 			{
-				"id": "Hunting"
+				"id": "mindforce",
+				"name": "Mindforce"
 			},
 			{
-				"id": "Sixth Sense"
+				"id": "hunting",
+				"name": "Hunting"
 			},
 			{
-				"id": "Tracking"
+				"id": "sixth_sense",
+				"name": "Sixth Sense"
 			},
 			{
-				"id": "Healing"
+				"id": "tracking",
+				"name": "Tracking"
 			},
 			{
-				"id": "Weaponskill"
+				"id": "healing",
+				"name": "Healing"
 			},
 			{
-				"id": "Mindshield"
+				"id": "weaponskill",
+				"name": "Weaponskill"
 			},
 			{
-				"id": "Mindblast"
+				"id": "mindshield",
+				"name": "Mindshield"
 			},
 			{
-				"id": "Animal Kinship"
+				"id": "mindblast",
+				"name": "Mindblast"
 			},
 			{
-				"id": "Mind Over Matter"
+				"id": "animal_kinship",
+				"name": "Animal Kinship"
+			},
+			{
+				"id": "mind_over_matter",
+				"name": "Mind Over Matter"
 			}
 		],
 		"items": [
@@ -125,6 +139,11 @@
 				"resistance": 4,
 				"durability": -1,
 				"item_type": "DEFENSE"
+			},
+			{
+				"id": "crystal_star_pendant",
+				"name": "crystal_star_pendant",
+				"item_type": "KEY_ITEM"
 			},
 			{
 				"id": "dagger",
@@ -284,7 +303,7 @@
 			{
 				"id": "wounded_helghast",
 				"name": "Wounded Helghast",
-				"immune": ["Mindblast"],
+				"immune": ["mindblast"],
 				"hp": 20,
 				"double_damage": true,
 				"combat_skill": 22
@@ -292,14 +311,14 @@
 			{
 				"id": "dorier_ganon",
 				"name": "Dorier + Ganon",
-				"immune": ["Mindblast"],
+				"immune": ["mindblast"],
 				"hp": 30,
 				"combat_skill": 28
 			},
 			{
 				"id": "helghast_double_damage",
 				"name": "Helghast",
-				"immune": ["Mindblast"],
+				"immune": ["mindblast"],
 				"hp": 30,
 				"combat_skill": 22,
 				"double_damage": true
@@ -307,10 +326,10 @@
 			{
 				"id": "helghast_mindforce",
 				"name": "Helghast",
-				"immune": ["Mindblast"],
+				"immune": ["mindblast"],
 				"hp": 30,
 				"combat_skill": 22,
-				"skills": ["Mindforce"]
+				"skills": ["mindforce"]
 			},
 			{
 				"id": "zombie_crew",
@@ -334,7 +353,7 @@
 			{
 				"id": "zombie_captain",
 				"name": "Zombie Captain",
-				"immune": ["Mindblast"],
+				"immune": ["mindblast"],
 				"hp": 15,
 				"double_damage": true,
 				"combat_skill": 15
@@ -472,14 +491,16 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "42",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements": [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you do not have this skill (Sixth Sense).",
 					"section": "168"
 				}
@@ -770,14 +791,16 @@
 				{
 					"text": "If you have the Kai Discipline of Animal Kinship.",
 					"section": "144",
-					"requires": {
-						"kai_disciplines": "Animal Kinship"
-					}
+					"requirements": [
+						[
+							{
+								"id": "animal_kinship",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Animal Kinship"
-					},
 					"text": "If you do not have this skill (Animal Kinship).",
 					"section": "295"
 				}
@@ -807,14 +830,23 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense or Mind Over Matter.",
 					"section": "116",
-					"requires": {
-						"kai_disciplines": "Sixth Sense|Mind Over Matter"
-					}
+					"requirements": [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						],
+						[
+							{
+								"id": "mind_over_matter",
+								"type": "skill"
+							}
+						]
+					]
+
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense|Mind Over Matter"
-					},
 					"text": "If you do not have either of these skills (Sixth Sense or Mind Over Matter).",
 					"section": "153"
 				}
@@ -945,21 +977,20 @@
 				{
 					"text": "If you have the Kai Discipline of Tracking.",
 					"section": "13",
-					"requires": {
-						"kai_disciplines": "Tracking"
-					}
+					"requirements": [
+						[
+							{
+								"id": "tracking",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					},
 					"text": "Take the left fork.",
 					"section": "155"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					},
 					"text": "Take the right fork.",
 					"section": "293"
 				}
@@ -972,28 +1003,37 @@
 				{
 					"text": "If you have some Laumspur.",
 					"section": "145",
-					"requires": {
-						"backpack_items": "Laumspur"
-					},
+					"requirements": [
+						[
+							{
+								"id": "laumspur_meal",
+								"type": "item"
+							}
+						],
+						[
+							{
+								"id": "laumspur_potion",
+								"type": "item"
+							}
+						]
+					],
 					"is_special": true
 				},
 				{
-					"requires_not": {
-						"backpack_items": "Laumspur"
-					},
 					"text": "If you have the Kai Discipline of Healing.",
 					"section": "210",
-					"requires": {
-						"kai_disciplines": "Healing"
-					}
+					"requirements": [
+						[
+							{
+								"id": "healing",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you have neither of the above.",
-					"section": "275",
-					"requires_not": {
-						"backpack_items": "Laumspur",
-						"kai_disciplines": "Healing"
-					}
+					"section": "275"
 				}
 			]
 		},
@@ -1035,16 +1075,18 @@
 				{
 					"text": "If you have a ticket for the journey to Port Bax.",
 					"section": "346",
-					"requires": {
-						"special_items": "Ticket"
-					}
+					"requirements": [
+						[
+							{
+								"id": "ticket",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not have a ticket.",
-					"section": "156",
-					"requires_not": {
-						"special_items": "Ticket"
-					}
+					"section": "156"
 				}
 			]
 		},
@@ -1062,14 +1104,16 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "97",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements": [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you do not possess this skill (Sixth Sense).",
 					"section": "242"
 				}
@@ -1206,16 +1250,18 @@
 				{
 					"text": "If you have a Magic Spear.",
 					"section": "338",
-					"requires": {
-						"special_items": "Magic Spear"
-					}
+					"requirements": [
+						[
+							{
+								"id": "magic_spear",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not have a Magic Spear.",
-					"section": "234",
-					"requires_not": {
-						"special_items": "Magic Spear"
-					}
+					"section": "234"
 				}
 			]
 		},
@@ -1293,16 +1339,18 @@
 				{
 					"text": "If you have a Magic Spear.",
 					"section": "332",
-					"requires": {
-						"special_items": "Magic Spear"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "magic_spear",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not, you must evade the combat and dive into the cover of the forest.",
-					"section": "311",
-					"requires_not": {
-						"special_items": "Magic Spear"
-					}
+					"section": "311"
 				}
 			]
 		},
@@ -1335,21 +1383,28 @@
 				{
 					"text": "If you do not have the documents he requires or do not wish to show them to him, you will have to risk showing him the Seal of Hammerdal if you possess it.",
 					"section": "263",
-					"requires": {
-						"special_items": "Seal of Hammerdal"
-					}
+					"requirements": [
+						[
+							{
+								"id": "seal_hammerdal",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you have collected the necessary documents on your quest.",
 					"section": "126",
-					"requires": {
-						"special_items": "Documents"
-					}
+					"requirements": [
+						[
+							{
+								"id": "documents",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"special_items": "Seal of Hammerdal|Documents"
-					},
 					"text": "If you do not have either the Seal or the documents, leave the room and return to the outer hall.",
 					"section": "318"
 				}
@@ -1363,21 +1418,20 @@
 				{
 					"text": "If you have the Kai Discipline of Animal Kinship.",
 					"section": "264",
-					"requires": {
-						"kai_disciplines": "Animal Kinship"
-					}
+					"requirements": [
+						[
+							{
+								"id": "animal_kinship",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Animal Kinship"
-					},
 					"text": "If you want to try to grab this deadly snake behind its head and throw it into the road.",
 					"section": "188"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Animal Kinship"
-					},
 					"text": "If you wish to jump up and brush the snake away.",
 					"section": "201"
 				}
@@ -1391,21 +1445,20 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "229",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements": [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you wish to search the wagon for food and equipment",
 					"section": "134"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you would rather ignore the wagon and continue on your way.",
 					"section": "208"
 				}
@@ -1467,16 +1520,18 @@
 				{
 					"text": "If you have a Crystal Star Pendant.",
 					"section": "219",
-					"requires": {
-						"special_items": "Crystal Star Pendant"
-					}
+					"requirements": [
+						[
+							{
+								"id": "crystal_star_pendant",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not (have a Crystal Star Pendant).",
-					"section": "44",
-					"requires_not": {
-						"special_items": "Crystal Star Pendant"
-					}
+					"section": "44"
 				}
 			]
 		},
@@ -1509,9 +1564,15 @@
 					"gold": -2,
 					"text": "Pay the innkeeper 2 Gold Crowns for a room for the night",
 					"section": "56",
-					"requires": {
-						"gold": 2
-					}
+					"requirements": [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 2
+							}
+						]
+					]
 				},
 				{
 					"text": "Enter an arm-wrestling competition.",
@@ -1546,9 +1607,15 @@
 					"gold": -10,
 					"text": "Sign the forms and purchase a White Pass",
 					"section": "142",
-					"requires": {
-						"gold": 10
-					},
+					"requirements": [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 10
+							}
+						]
+					],
 					"is_special": true
 				},
 				{
@@ -1628,9 +1695,15 @@
 				{
 					"text": "If you wish to show him the Seal.",
 					"section": "15",
-					"requires": {
-						"special_items": "Seal of Hammerdal"
-					}
+					"requirements": [
+						[
+							{
+								"id": "seal_hammerdal",
+								"type": "item"
+							}
+						]
+					]
+
 				},
 				{
 					"text": "If you do not have the Seal or do not wish to show it.",
@@ -1748,21 +1821,20 @@
 				{
 					"text": "If you have the Kai Discipline of Camouflage.",
 					"section": "179",
-					"requires": {
-						"kai_disciplines": "Camouflage"
-					}
+					"requirements": [
+						[
+							{
+								"id": "camouflage",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Camouflage"
-					},
 					"text": "If you wish to take a horse and escape.",
 					"section": "150"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Camouflage"
-					},
 					"text": "If you wish to hide in the wheelwright's shop.",
 					"section": "71"
 				}
@@ -1957,23 +2029,22 @@
 				{
 					"text": "If you have the Kai Discipline of Tracking.",
 					"section": "325",
-					"requires": {
-						"kai_disciplines": "Tracking"
-					}
+					"requirements": [
+						[
+							{
+								"id": "tracking",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you wish to take the left tunnel.",
-					"section": "64",
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					}
+					"section": "64"
 				},
 				{
 					"text": "If you wish to take the right tunnel.",
-					"section": "164",
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					}
+					"section": "164"
 				}
 			]
 		},
@@ -2045,14 +2116,16 @@
 				{
 					"text": "If you have the Kai Discipline of Healing.",
 					"section": "74",
-					"requires": {
-						"kai_disciplines": "Healing"
-					}
+					"requirements": [
+						[
+							{
+								"id": "healing",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Healing"
-					},
 					"text": "If you do not possess this skill (Healing).",
 					"section": "294"
 				}
@@ -2066,14 +2139,16 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "343",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements": [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you do not possess this skill (Sixth Sense).",
 					"section": "168"
 				}
@@ -2191,17 +2266,29 @@
 					"gold": -3,
 					"text": "Ride inside and pay the driver 3 Gold Crowns",
 					"section": "37",
-					"requires": {
-						"gold": 3
-					}
+					"requirements": [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 3
+							}
+						]
+					]
 				},
 				{
 					"gold": -1,
 					"text": "Ride on the roof and pay him 1 Gold Crown",
 					"section": "148",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
 					"text": "If you cannot pay the fare, you must let the coach continue and begin your journey on foot.",
@@ -2216,21 +2303,20 @@
 				{
 					"text": "If you have the Kai Discipline of Animal Kinship.",
 					"section": "279",
-					"requires": {
-						"kai_disciplines": "Animal Kinship"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "animal_kinship",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Animal Kinship"
-					},
 					"text": "If you wish to follow this creature.",
 					"section": "23"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Animal Kinship"
-					},
 					"text": "If you wish to ignore it and continue on your way.",
 					"section": "340"
 				}
@@ -2426,16 +2512,18 @@
 				{
 					"text": "If you have a Magic Spear.",
 					"section": "38",
-					"requires": {
-						"special_items": "Magic Spear"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "magic_spear",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not (have a Magic Spear).",
-					"section": "304",
-					"requires_not": {
-						"special_items": "Magic Spear"
-					}
+					"section": "304"
 				}
 			]
 		},
@@ -2456,9 +2544,15 @@
 					"gold": -20,
 					"text": "If you have 20 Gold Crowns and wish to purchase a ticket.",
 					"section": "10",
-					"requires": {
-						"gold": 20
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 20
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not have enough money for the fare.",
@@ -2635,9 +2729,14 @@
 					"auto": true,
 					"text": "Show him the Seal of Hammerdal.",
 					"section": "223",
-					"requires": {
-						"special_items": "Seal of Hammerdal"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "seal_hammerdal",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you would prefer not to show it, if you do not have it, or if you wish to pretend to be a merchant on your way to Port Bax.",
@@ -2784,38 +2883,63 @@
 				{
 					"text": "Demonstrate your Kai Discipline of Healing.",
 					"section": "16",
-					"requires": {
-						"kai_disciplines": "Healing"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "healing",
+								"type": "skill",
+								"amount": 3
+							}
+						]
+					]
 				},
 				{
 					"text": "Demonstrate your Kai Discipline of Mindblast.",
 					"section": "133",
-					"requires": {
-						"kai_disciplines": "Mindblast"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "mindblast",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "Carrying a Weapon and wish to demonstrate your Kai Weaponskill.",
 					"section": "255",
-					"requires": {
-						"weapons": ".+",
-						"kai_disciplines": "Weaponskill"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "weaponskill",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "Demonstrate your Kai Discipline of Animal Kinship.",
 					"section": "203",
-					"requires": {
-						"kai_disciplines": "Animal Kinship"
-					}
+					"requirements": [
+						[
+							{
+								"id": "animal_kinship",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "Demonstrate your Kai Discipline of Mind Over Matter.",
 					"section": "48",
-					"requires": {
-						"kai_disciplines": "Mind Over Matter"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "mind_over_matter",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not possess any of the above Kai skills, or if you do not wish to demonstrate your skill.",
@@ -2865,21 +2989,20 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "172",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you wish to climb the steps and investigate the platform.",
-					"section": "52",
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"section": "52"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you wish to ignore the steps and continue on your journey.",
 					"section": "256"
 				}
@@ -2925,14 +3048,17 @@
 					"gold": -1,
 					"text": "Pay for the room.",
 					"section": "314",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"gold": 1
-					},
 					"text": "If you cannot (pay for the room).",
 					"section": "25"
 				}
@@ -3048,21 +3174,20 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "322",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you wish to follow Rhygar.",
 					"section": "45"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you do not want to attack the riders.",
 					"section": "277"
 				}
@@ -3341,16 +3466,19 @@
 					"gold": -1,
 					"text": "If you have enough gold to pay the toll, do so and continue on your journey.",
 					"section": "249",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
 					"text": "If you have no money.",
-					"section": "50",
-					"requires_not": {
-						"gold": 1
-					}
+					"section": "50"
 				}
 			]
 		},
@@ -3361,14 +3489,16 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "79",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you do not possess this skill (Sixth Sense).",
 					"section": "123"
 				}
@@ -3602,9 +3732,15 @@
 					"gold": -1,
 					"text": "Pay him.",
 					"section": "199",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
 					"text": "Leave the inn now.",
@@ -3714,9 +3850,15 @@
 					"gold": -2,
 					"text": "Buy a room for the night pay the innkeeper 2 Gold Crowns",
 					"section": "56",
-					"requires": {
-						"gold": 2
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 2
+							}
+						]
+					]
 				},
 				{
 					"text": "Try your luck at winning some Gold Crowns at arm-wrestling.",
@@ -3795,7 +3937,7 @@
 					"id": "dagger"
 				},
 				{
-					"name": "seal_hammerdal",
+					"id": "seal_hammerdal",
 					"auto": true
 				}
 			],
@@ -3804,9 +3946,14 @@
 					"auto": true,
 					"text": "If you have the Kai Discipline of Tracking.",
 					"section": "182",
-					"requires": {
-						"kai_disciplines": "Tracking"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "tracking",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "Return to the tavern.",
@@ -3833,9 +3980,14 @@
 					"auto": true,
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "149",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "Say you are a merchant on your way to Port Bax.",
@@ -3848,9 +4000,14 @@
 				{
 					"text": "Show him the Seal of Hammerdal (if you still have it).",
 					"section": "223",
-					"requires": {
-						"special_items": "Seal of Hammerdal"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "seal_hammerdal",
+								"type": "item"
+							}
+						]
+					]
 				}
 			]
 		},
@@ -3861,17 +4018,29 @@
 					"gold": -3,
 					"text": "Ride inside the coach, pay the driver 3 Gold Crowns",
 					"section": "37",
-					"requires": {
-						"gold": 3
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 3
+							}
+						]
+					]
 				},
 				{
 					"gold": -1,
 					"text": "Stay on the roof, pay him one Gold Crown",
 					"section": "148",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
 					"text": "If you cannot pay the fare, you must leave the coach and walk.",
@@ -3940,14 +4109,16 @@
 				{
 					"text": "If you have the Kai Discipline of Camouflage.",
 					"section": "77",
-					"requires": {
-						"kai_disciplines": "Camouflage"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "camouflage",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Camouflage"
-					},
 					"text": "If you do not possess this skill (Camouflage), you must attack the Szalls in order to save the man's life.",
 					"section": "28"
 				}
@@ -4009,21 +4180,20 @@
 				{
 					"text": "If you have the Kai Discipline of Tracking.",
 					"section": "147",
-					"requires": {
-						"kai_disciplines": "Tracking"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "tracking",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you wish to cross the bridge.",
-					"section": "47",
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					}
+					"section": "47"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					},
 					"text": "If you wish to avoid the bridge and continue along the path.",
 					"section": "207"
 				}
@@ -4050,23 +4220,30 @@
 				{
 					"text": "If you have a White Pass.",
 					"section": "170",
-					"requires": {
-						"special_items": "White Pass"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "white_pass",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you have a Red Pass.",
 					"section": "202",
-					"requires": {
-						"special_items": "Red Pass"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "red_pass",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you do not have a pass, you will be refused entry to the harbour.",
-					"section": "327",
-					"requires_not": {
-						"special_items": "Red Pass|White Pass"
-					}
+					"section": "327"
 				}
 			]
 		},
@@ -4104,9 +4281,14 @@
 					"auto": true,
 					"text": "If you choose to reveal the Seal of Hammerdal (if you still possess it).",
 					"section": "223",
-					"requires": {
-						"special_items": "Seal of Hammerdal"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "seal_hammerdal",
+								"type": "item"
+							}
+						]
+					]
 				}
 			]
 		},
@@ -4150,21 +4332,20 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "344",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you wish to draw your weapon and prepare to fight.",
-					"section": "69",
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"section": "69"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you do not want to fight, you can evade by running into the woods before combat begins.",
 					"section": "183"
 				}
@@ -4210,21 +4391,20 @@
 				{
 					"text": "If you have the Kai Discipline of Sixth Sense.",
 					"section": "272",
-					"requires": {
-						"kai_disciplines": "Sixth Sense"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "sixth_sense",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you wish to climb through the shattered deck.",
 					"section": "17"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Sixth Sense"
-					},
 					"text": "If you wish to leave the hold through a door in the far wall.",
 					"section": "5"
 				}
@@ -4329,23 +4509,22 @@
 				{
 					"text": "If you have the Kai Discipline of Tracking.",
 					"section": "252",
-					"requires": {
-						"kai_disciplines": "Tracking"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "tracking",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					},
 					"text": "If you wish to enter the city hall.",
 					"section": "84"
 				},
 				{
 					"text": "If you wish to continue on your way towards the harbour.",
-					"section": "191",
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					}
+					"section": "191"
 				}
 			]
 		},
@@ -4466,23 +4645,22 @@
 				{
 					"text": "If you have the Kai Discipline of Camouflage.",
 					"section": "151",
-					"requires": {
-						"kai_disciplines": "Camouflage"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "camouflage",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you wish to attack him.",
-					"section": "157",
-					"requires_not": {
-						"kai_disciplines": "Camouflage"
-					}
+					"section": "157"
 				},
 				{
 					"text": "If you wish to evade him by running from the tower.",
-					"section": "65",
-					"requires_not": {
-						"kai_disciplines": "Camouflage"
-					}
+					"section": "65"
 				}
 			]
 		},
@@ -4552,9 +4730,14 @@
 					"auto": true,
 					"text": "If you have the Kai Discipline of Mindblast.",
 					"section": "14",
-					"requires": {
-						"kai_disciplines": "Mindblast"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "mindblast",
+								"type": "skill"
+							}
+						]
+					]
 				}
 			]
 		},
@@ -4739,9 +4922,14 @@
 				{
 					"text": "Accept her offer.",
 					"section": "165",
-					"requires": {
-						"special_items": "Seal of Hammerdal"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "seal_hammerdal",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "Leave the shop.",
@@ -4859,9 +5047,14 @@
 				{
 					"text": "If you possess a Magic Spear but do not wish to give it to Rhygar.",
 					"section": "102",
-					"requires": {
-						"special_items": "Magic Spear"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "magic_spear",
+								"type": "item"
+							}
+						]
+					]
 				}
 			]
 		},
@@ -5007,9 +5200,14 @@
 					"auto": true,
 					"text": "Show them the Seal of Hammerdal (if you still have it).",
 					"section": "140",
-					"requires": {
-						"special_items": "Seal of Hammerdal"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "seal_hammerdal",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you think it is safer to draw your weapon and attack.",
@@ -5088,21 +5286,20 @@
 				{
 					"text": "If you have the Kai Discipline of Hunting.",
 					"section": "290",
-					"requires": {
-						"kai_disciplines": "Hunting"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "hunting",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Hunting"
-					},
 					"text": "If you wish to eat the hot food put before you.",
 					"section": "36"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Hunting"
-					},
 					"text": "If you do not want to eat this food.",
 					"section": "178"
 				}
@@ -5116,21 +5313,20 @@
 				{
 					"text": "If you have the Kai Discipline of Mind Over Matter.",
 					"section": "287",
-					"requires": {
-						"kai_disciplines": "Mind Over Matter"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "mind_over_matter",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Mind Over Matter"
-					},
 					"text": "If you wish to prise open the lock.",
 					"section": "190"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Mind Over Matter"
-					},
 					"text": "If you wish to replace the box and join the captain on deck, before he suspects something is wrong.",
 					"section": "175"
 				}
@@ -5309,36 +5505,37 @@
 			"trim_choices": true,
 			"choices": [
 				{
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					},
 					"auto": true,
 					"text": "If you have ever been given a Crystal Star Pendant.",
 					"section": "113",
-					"requires": {
-						"special_items": "Crystal Star Pendant"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "cristal_star_pendant",
+								"type": "item"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you have the Kai Discipline of Tracking.",
 					"section": "204",
-					"requires": {
-						"kai_disciplines": "Tracking"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "tracking",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					},
 					"text": "If you wish to climb the tower and attack the hunchback.",
 					"section": "73"
 				},
 				{
 					"text": "If you wish to escape from this ship by jumping overboard.",
-					"section": "267",
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					}
+					"section": "267"
 				}
 			]
 		},
@@ -5420,21 +5617,20 @@
 				{
 					"text": "If you have the Kai Discipline of Tracking.",
 					"section": "98",
-					"requires": {
-						"kai_disciplines": "Tracking"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "tracking",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
 					"text": "If you wish to enter the forest and investigate the tower.",
-					"section": "115",
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					}
+					"section": "115"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Tracking"
-					},
 					"text": "If you wish to ignore the tower and search for a forest track.",
 					"section": "291"
 				}
@@ -5477,21 +5673,20 @@
 				{
 					"text": "If you have the Kai Discipline of Hunting.",
 					"section": "139",
-					"requires": {
-						"kai_disciplines": "Hunting"
-					}
+					"requirements":  [
+						[
+							{
+								"id": "hunting",
+								"type": "skill"
+							}
+						]
+					]
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Hunting"
-					},
 					"text": "If you wish to eat this fruit.",
 					"section": "228"
 				},
 				{
-					"requires_not": {
-						"kai_disciplines": "Hunting"
-					},
 					"text": "If you do not wish to eat this fruit, lose 3 HP points",
 					"section": "171",
 					"hp": -3
@@ -5522,16 +5717,19 @@
 					"gold": -1,
 					"text": "If you can pay the tax, do so and the coach will be allowed to go on its way.",
 					"section": "249",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
 					"text": "If you have no money.",
-					"section": "50",
-					"requires_not": {
-						"gold": 1
-					}
+					"section": "50"
 				}
 			]
 		},
@@ -5565,17 +5763,29 @@
 					"gold": -1,
 					"text": "If you wish to buy some ale, pay the innkeeper 1 Gold Crown",
 					"section": "72",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
 					"gold": -2,
 					"text": "If you wish to stay here for the night, pay the man 2 Gold Crowns",
 					"section": "56",
-					"requires": {
-						"gold": 2
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 2
+							}
+						]
+					]
 				},
 				{
 					"text": "If you want neither, but merely wish to ask him a little bit about Ragadorn.",
@@ -5622,16 +5832,19 @@
 					"gold": -1,
 					"text": "If you can afford the 1 Gold Crown for the room.",
 					"section": "280",
-					"requires": {
-						"gold": 1
-					}
+					"requirements":  [
+						[
+							{
+								"id": "gold",
+								"type": "money",
+								"amount": 1
+							}
+						]
+					]
 				},
 				{
 					"text": "If you have no money.",
-					"section": "205",
-					"requires_not": {
-						"gold": 1
-					}
+					"section": "205"
 				}
 			]
 		},
