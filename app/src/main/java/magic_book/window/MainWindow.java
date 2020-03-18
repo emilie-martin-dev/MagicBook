@@ -38,7 +38,7 @@ public class MainWindow extends Stage{
 	private Book book;
 	
 	public MainWindow() {
-		book = new Book("", null, null, null);
+		book = new Book();
 		
 		BorderPane root = new BorderPane();
 		graphPane = new GraphPane(book);
@@ -65,7 +65,7 @@ public class MainWindow extends Stage{
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		menuFileNew.setOnAction((ActionEvent e) -> {
-			changeBook(new Book("", null, null, null));
+			changeBook(new Book());
 		});
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {

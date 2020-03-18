@@ -19,7 +19,9 @@ import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.SectionJson;
+import magic_book.core.file.json.SkillJson;
 import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookSkill;
 import magic_book.core.item.BookItem;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.AbstractBookNodeWithChoices;
@@ -37,15 +39,17 @@ public class BookReader {
 	private HashMap<String, BookItem> items;
 	private HashMap<String, BookCharacter> characters;
 	private HashMap<Integer, AbstractBookNode> nodes;
+	private HashMap<String, BookSkill> skills;
 	
 	public Book read(String path) throws FileNotFoundException, BookFileException {		
 		BookJson bookJson = readFileWithGson(path);
 		
+		skills = getEverySkills(bookJson);
 		items = getEveryItems(bookJson);
 		characters = getEveryCharacters(bookJson);
 		nodes = getEveryNodes(bookJson);
 		
-		return new Book(bookJson.getPrelude(), nodes, items, characters);
+		return new Book(bookJson.getPrelude(), nodes, items, characters, skills);
 	}
 
 	private BookJson readFileWithGson(String path) throws FileNotFoundException {
@@ -56,6 +60,18 @@ public class BookReader {
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(path)); 
 		
 		return gson.fromJson(bufferedReader, BookJson.class);
+	}
+
+	private HashMap<String, BookSkill> getEverySkills(BookJson bookJson) {
+		HashMap<String, BookSkill> skills = new HashMap<>();
+		
+		for(SkillJson s : bookJson.getSetup().getSkills()) {
+			BookSkill skill = new BookSkill(s.getId(), s.getName());
+			
+			skills.put(skill.getId(), skill);
+		}
+			
+		return skills;
 	}
 
 	private HashMap<String, BookItem> getEveryItems(BookJson bookJson) throws BookFileException {

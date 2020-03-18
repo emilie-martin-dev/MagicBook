@@ -2,6 +2,7 @@ package magic_book.core;
 
 import magic_book.core.game.BookCharacter;
 import java.util.HashMap;
+import magic_book.core.game.BookSkill;
 import magic_book.core.item.BookItem;
 import magic_book.core.node.AbstractBookNode;
 
@@ -12,12 +13,18 @@ public class Book {
 	private HashMap<Integer, AbstractBookNode> nodes;
 	private HashMap<String, BookItem> items;
 	private HashMap<String, BookCharacter> characters;
+	private HashMap<String, BookSkill> skills;
 
-	public Book(String textPrelude, HashMap<Integer, AbstractBookNode> nodes, HashMap<String, BookItem> items, HashMap<String, BookCharacter> characters) {
+	public Book() {
+		this("", null, null, null, null);
+	}
+	
+	public Book(String textPrelude, HashMap<Integer, AbstractBookNode> nodes, HashMap<String, BookItem> items, HashMap<String, BookCharacter> characters, HashMap<String, BookSkill> skills) {
  		this.textPrelude = textPrelude;
 		this.nodes = nodes;
 		this.items = items;
 		this.characters = characters;
+		this.skills = skills;
 		
 		if(this.nodes == null)
 			this.nodes = new HashMap<>();
@@ -27,6 +34,9 @@ public class Book {
 		
 		if(this.characters == null)
 			this.characters = new HashMap<>();
+		
+		if(this.skills == null)
+			this.skills = new HashMap<>();
 	}
 
 	public String getTextPrelude() {
