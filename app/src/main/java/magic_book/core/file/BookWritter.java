@@ -16,10 +16,16 @@ import magic_book.core.file.json.CharacterJson;
 import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
+import magic_book.core.file.json.ItemType;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.file.json.SetupJson;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
+import magic_book.core.item.BookItemDefense;
+import magic_book.core.item.BookItemHealing;
+import magic_book.core.item.BookItemMoney;
+import magic_book.core.item.BookItemWeapon;
+import magic_book.core.item.BookItemWithDurability;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.AbstractBookNodeWithChoices;
 import magic_book.core.node.BookNodeCombat;
@@ -68,6 +74,28 @@ public class BookWritter {
 			
 			itemJson.setId(bookItem.getId());
 			itemJson.setName(bookItem.getName());
+				itemJson.setItemType(ItemType.KEY_ITEM);
+			
+			if(bookItem instanceof BookItemDefense) {
+				BookItemDefense bookItemDefense = (BookItemDefense) bookItem;
+				itemJson.setResistance(bookItemDefense.getResistance());
+				itemJson.setItemType(ItemType.DEFENSE);
+			} else if(bookItem instanceof BookItemHealing) {
+				BookItemHealing bookItemHealing = (BookItemHealing) bookItem;
+				itemJson.setHp(bookItemHealing.getHp());
+				itemJson.setItemType(ItemType.HEALING);
+			} else if(bookItem instanceof BookItemMoney) {
+				itemJson.setItemType(ItemType.MONEY);
+			} else if(bookItem instanceof BookItemWeapon) {
+				BookItemWeapon bookItemWeapon = (BookItemWeapon) bookItem;
+				itemJson.setDamage(bookItemWeapon.getDamage());
+				itemJson.setItemType(ItemType.WEAPON);
+			} 
+			
+			if(bookItem instanceof BookItemWithDurability) {
+				BookItemWithDurability bookItemWithDurability = (BookItemWithDurability) bookItem;
+				itemJson.setDurability(bookItemWithDurability.getDurability());
+			}
 			
 			items.add(itemJson);
 		}
