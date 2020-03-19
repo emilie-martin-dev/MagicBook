@@ -11,9 +11,9 @@ public class BookNodeLink {
 	private String text;
 	private AbstractBookNode destination;
 	private List<List<AbstractRequirement>> requirements;
-	private Integer hp;
-	private Integer gold;
-	private Boolean auto;
+	private int hp;
+	private int gold;
+	private boolean auto;
 	
 	public BookNodeLink() {
 		this("", null);
@@ -24,10 +24,10 @@ public class BookNodeLink {
 	}
 	
 	public BookNodeLink(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements) {
-		this(text, destination, requirements, null, null, null);
+		this(text, destination, requirements, 0, 0, false);
 	}
 	
-	public BookNodeLink(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements, Integer hp, Integer gold, Boolean auto) {
+	public BookNodeLink(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements, int hp, int gold, boolean auto) {
 		this.text = text;
 		this.destination = destination;
 		this.requirements = requirements;
@@ -80,27 +80,27 @@ public class BookNodeLink {
 		this.requirements = requirements;
 	}
 
-	public Integer getHp() {
+	public int getHp() {
 		return hp;
 	}
 
-	public void setHp(Integer hp) {
+	public void setHp(int hp) {
 		this.hp = hp;
 	}
 
-	public Integer getGold() {
+	public int getGold() {
 		return gold;
 	}
 
-	public void setGold(Integer gold) {
+	public void setGold(int gold) {
 		this.gold = gold;
 	}
 
-	public Boolean getAuto() {
+	public boolean getAuto() {
 		return auto;
 	}
 
-	public void setAuto(Boolean auto) {
+	public void setAuto(boolean auto) {
 		this.auto = auto;
 	}
 	

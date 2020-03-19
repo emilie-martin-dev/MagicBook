@@ -10,14 +10,14 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 	private BookNodeLink winBookNodeLink;
 	private BookNodeLink looseBookNodeLink;
 	private BookNodeLink evasionBookNodeLink;
-	private Integer evasionRound;
+	private int evasionRound;
 	private List<String> ennemiesId;
 	
-	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, Integer evasionRound, List<String> ennemiesId){
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionRound, List<String> ennemiesId){
 		this(text, winBookNodeLink, looseBookNodeLink, evasionBookNodeLink, evasionRound, ennemiesId, 0, null, null, null);
 	}
 	
-	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, Integer evasionTurn, List<String> ennemiesId, int nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<BookNodeLink> choices){
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionTurn, List<String> ennemiesId, int nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<BookNodeLink> choices){
 		super(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices);
 		
 		this.winBookNodeLink = winBookNodeLink;
@@ -76,11 +76,11 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		this.evasionBookNodeLink = evasionBookNodeLink;
 	}
 
-	public Integer getEvasionRound() {
+	public int getEvasionRound() {
 		return evasionRound;
 	}
 
-	public void setEvasionRound(Integer evasionRound) {
+	public void setEvasionRound(int evasionRound) {
 		this.evasionRound = evasionRound;
 	}
 

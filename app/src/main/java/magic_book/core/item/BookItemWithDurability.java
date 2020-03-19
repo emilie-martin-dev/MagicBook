@@ -3,19 +3,19 @@ package magic_book.core.item;
 
 public class BookItemWithDurability extends BookItem {
 
-	private Integer durability;
+	private int durability;
 	
-	public BookItemWithDurability(String id, String nom, Integer durability) {
+	public BookItemWithDurability(String id, String nom, int durability) {
 		super(id, nom);
 		
 		this.durability = durability;
 	}
 
-	public Integer getDurability() {
+	public int getDurability() {
 		return durability;
 	}
 
-	public void setDurability(Integer durability) {
+	public void setDurability(int durability) {
 		this.durability = durability;
 	}
 

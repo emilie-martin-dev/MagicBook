@@ -111,7 +111,7 @@ public class BookWritter {
 			
 			itemJson.setId(bookItem.getId());
 			itemJson.setName(bookItem.getName());
-				itemJson.setItemType(ItemType.KEY_ITEM);
+			itemJson.setItemType(ItemType.KEY_ITEM);
 			
 			if(bookItem instanceof BookItemDefense) {
 				BookItemDefense bookItemDefense = (BookItemDefense) bookItem;
@@ -145,15 +145,23 @@ public class BookWritter {
 				CharacterCreationItem characterCreationItem = (CharacterCreationItem) abstractCharacterCreation;
 				
 				characterCreationJson.setAmountToPick(characterCreationItem.getAmountToPick());
+				
 				characterCreationJson.setItems(new ArrayList<>());
 				for(BookItemLink itemLink : characterCreationItem.getItemLinks()) {
 					ItemLinkJson itemLinkJson = new ItemLinkJson();
 					
 					itemLinkJson.setAmount(itemLink.getAmount());
-					itemLinkJson.setAuto(itemLink.getAuto());
+					
+					if(itemLink.getAuto())
+						itemLinkJson.setAuto(true);
+					
 					itemLinkJson.setId(itemLink.getId());
-					itemLinkJson.setPrice(itemLink.getPrice());
-					itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
+					
+					if(itemLink.getPrice() != 0)
+						itemLinkJson.setPrice(itemLink.getPrice());
+					
+					if(itemLink.getSellingPrice()!= 0)
+						itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
 					
 					characterCreationJson.getItems().add(itemLinkJson);
 				}
@@ -163,6 +171,7 @@ public class BookWritter {
 				CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) abstractCharacterCreation;
 				
 				characterCreationJson.setAmountToPick(characterCreationSkill.getAmountToPick());
+				
 				characterCreationJson.setSkills(new ArrayList<>());
 				for(String skillLink : characterCreationSkill.getSkillLinks()) {
 					characterCreationJson.getSkills().add(skillLink);
@@ -189,7 +198,6 @@ public class BookWritter {
 			AbstractBookNode node = entry.getValue();
 			SectionJson sectionJson = new SectionJson();
 			sectionJson.setText(node.getText());
-			sectionJson.setChoices(new ArrayList<>());
 					
 			Set<BookNodeLink> choicesDone = new HashSet<>();
 			
@@ -200,7 +208,9 @@ public class BookWritter {
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) node;
 				CombatJson combatJson = new CombatJson();
 				
-				combatJson.setEvasionRound(bookNodeCombat.getEvasionRound());
+				if(bookNodeCombat.getEvasionRound() != 0)
+					combatJson.setEvasionRound(bookNodeCombat.getEvasionRound());
+				
 				combatJson.setEnemies(bookNodeCombat.getEnnemiesId());
 				
 				if(bookNodeCombat.getWinBookNodeLink() != null) {
@@ -233,7 +243,7 @@ public class BookWritter {
 					sectionJson.setHp(abstractBookNodeWithChoices.getHp());
 				
 				if(abstractBookNodeWithChoices.isMustEat())
-					sectionJson.setMustEat(abstractBookNodeWithChoices.isMustEat());
+					sectionJson.setMustEat(true);
 				
 				if(!abstractBookNodeWithChoices.getItemLinks().isEmpty())
 					sectionJson.setAmountToPick(abstractBookNodeWithChoices.getNbItemsAPrendre());
@@ -245,12 +255,17 @@ public class BookWritter {
 						ItemLinkJson itemLinkJson = new ItemLinkJson();
 						
 						itemLinkJson.setId(itemLink.getId());
-						itemLinkJson.setAuto(itemLink.getAuto());
+						if(itemLink.getAuto())
+							itemLinkJson.setAuto(true);
 						
 						if(itemLink.getAmount() != 1)
 							itemLinkJson.setAmount(itemLink.getAmount());
-						itemLinkJson.setPrice(itemLink.getPrice());
-						itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
+						
+						if(itemLink.getPrice() != -1)
+							itemLinkJson.setPrice(itemLink.getPrice());
+						
+						if(itemLink.getSellingPrice() != -1)
+							itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
 						
 						sectionJson.getShop().add(itemLinkJson);
 					}
@@ -263,17 +278,23 @@ public class BookWritter {
 						ItemLinkJson itemLinkJson = new ItemLinkJson();
 						
 						itemLinkJson.setId(itemLink.getId());
-						itemLinkJson.setAuto(itemLink.getAuto());
+						if(itemLink.getAuto())
+							itemLinkJson.setAuto(true);
 						
 						if(itemLink.getAmount() != 1)
 							itemLinkJson.setAmount(itemLink.getAmount());
-						itemLinkJson.setPrice(itemLink.getPrice());
-						itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
+						
+						if(itemLink.getPrice() != -1)
+							itemLinkJson.setPrice(itemLink.getPrice());
+						
+						if(itemLink.getSellingPrice() != -1)
+							itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
 						
 						sectionJson.getItems().add(itemLinkJson);
 					}
 				}
 				
+				sectionJson.setChoices(new ArrayList<>());
 				for(BookNodeLink nodeLink : (List<BookNodeLink>) abstractBookNodeWithChoices.getChoices()) {
 					if(choicesDone.contains(nodeLink)) {
 						continue;
@@ -308,9 +329,15 @@ public class BookWritter {
 		
 		//TODO requirements
 		
-		choiceJson.setAuto(nodeLink.getAuto());
-		choiceJson.setGold(nodeLink.getGold());
-		choiceJson.setHp(nodeLink.getHp());
+		if(nodeLink.getAuto())
+			choiceJson.setAuto(true);
+		
+		if(nodeLink.getGold() != 0)
+			choiceJson.setGold(nodeLink.getGold());
+		
+		if(nodeLink.getHp() != 0)
+			choiceJson.setHp(nodeLink.getHp());
+		
 		choiceJson.setText(nodeLink.getText());
 		
 		return choiceJson;

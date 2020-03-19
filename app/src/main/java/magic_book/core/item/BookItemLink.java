@@ -3,12 +3,12 @@ package magic_book.core.item;
 public class BookItemLink {
 	
 	private String id;
-	private Integer amount;
-	private Integer price;
-	private Integer sellingPrice;
-	private Boolean auto;
+	private int amount;
+	private int price;
+	private int sellingPrice;
+	private boolean auto;
 
-	public BookItemLink(String id, Integer amount, Integer price, Boolean auto, Integer selling_price) {
+	public BookItemLink(String id, int amount, int price, boolean auto, int selling_price) {
 		this.id = id;
 		this.amount = amount;
 		this.price = price;
@@ -24,35 +24,35 @@ public class BookItemLink {
 		this.id = id;
 	}
 
-	public Integer getAmount() {
+	public int getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Integer amount) {
+	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 
-	public Integer getPrice() {
+	public int getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 
-	public Integer getSellingPrice() {
+	public int getSellingPrice() {
 		return sellingPrice;
 	}
 
-	public void setSellingPrice(Integer sellingPrice) {
+	public void setSellingPrice(int sellingPrice) {
 		this.sellingPrice = sellingPrice;
 	}
 
-	public Boolean getAuto() {
+	public boolean getAuto() {
 		return auto;
 	}
 
-	public void setAuto(Boolean auto) {
+	public void setAuto(boolean auto) {
 		this.auto = auto;
 	}
 	

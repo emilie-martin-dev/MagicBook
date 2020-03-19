@@ -98,13 +98,28 @@ public class BookReader {
 			BookItem item = null;
 			
 			if(i.getItemType() == ItemType.DEFENSE) {
-				item = new BookItemDefense(i.getId(), i.getName(), i.getDurability(), i.getResistance());
+				int durability = -1;
+				if(i.getDurability() != null) {
+					durability = i.getDurability();
+				}
+				
+				item = new BookItemDefense(i.getId(), i.getName(), durability, i.getResistance());
 			} else if(i.getItemType() == ItemType.WEAPON) {
-				item = new BookItemWeapon(i.getId(), i.getName(), i.getDurability(), i.getDamage());
+				int durability = -1;
+				if(i.getDurability() != null) {
+					durability = i.getDurability();
+				}
+				
+				item = new BookItemWeapon(i.getId(), i.getName(), durability, i.getDamage());
 			} else if(i.getItemType() == ItemType.MONEY) {
 				item = new BookItemMoney(i.getId(), i.getName(), 0);
 			} else if(i.getItemType() == ItemType.HEALING) {
-				item = new BookItemHealing(i.getId(), i.getName(), i.getDurability(), i.getHp());				
+				int durability = -1;
+				if(i.getDurability() != null) {
+					durability = i.getDurability();
+				}
+				
+				item = new BookItemHealing(i.getId(), i.getName(), durability, i.getHp());				
 			} else if(i.getItemType() == ItemType.KEY_ITEM) {
 				item = new BookItem(i.getId(), i.getName());				
 			} else {
@@ -160,15 +175,11 @@ public class BookReader {
 				
 				if(characterCreationJson.getItems() != null) {
 					for(ItemLinkJson itemLinkJson : characterCreationJson.getItems()) {
-						BookItemLink bookItemLink = new BookItemLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
-						itemLinks.add(bookItemLink);
+						itemLinks.add(getBookItemLink(itemLinkJson));
 					}
 				}
 				
-				int amountToPick = -1;
-				if(characterCreationJson.getAmountToPick() != null) {
-					amountToPick = characterCreationJson.getAmountToPick();
-				}
+				int amountToPick = characterCreationJson.getAmountToPick();
 				
 				characterCreation = new CharacterCreationItem(characterCreationJson.getText(), itemLinks, amountToPick);
 			} else if(characterCreationJson.getType() == TypeJson.SKILL) {
@@ -180,10 +191,7 @@ public class BookReader {
 					}
 				}
 				
-				int amountToPick = -1;
-				if(characterCreationJson.getAmountToPick() != null) {
-					amountToPick = characterCreationJson.getAmountToPick();
-				}
+				int amountToPick = characterCreationJson.getAmountToPick();
 				
 				characterCreation = new CharacterCreationSkill(characterCreationJson.getText(), skillLinks, amountToPick);
 			}
@@ -233,7 +241,11 @@ public class BookReader {
 	}
 	
 	private BookNodeCombat createBookNodeCombat(SectionJson sectionJson) {
-		BookNodeCombat bookNodeCombat = new BookNodeCombat(sectionJson.getText(), null, null, null, sectionJson.getCombat().getEvasionRound(), null);	
+		int evasionRound = 0;
+		if(sectionJson.getCombat().getEvasionRound() != null)
+			evasionRound = sectionJson.getCombat().getEvasionRound();
+		
+		BookNodeCombat bookNodeCombat = new BookNodeCombat(sectionJson.getText(), null, null, null, evasionRound, null);	
 		bookNodeCombat = (BookNodeCombat) fillCommunNodeValues(sectionJson, bookNodeCombat);
 		
 		for(String ennemie : sectionJson.getCombat().getEnemies()) {
@@ -246,7 +258,7 @@ public class BookReader {
 	private AbstractBookNodeWithChoices fillCommunNodeValues(SectionJson section, AbstractBookNodeWithChoices node) {
 		if(section.getAmountToPick() != null)
 			node.setNbItemsAPrendre(section.getAmountToPick());
-		else if(section.getItems() != null && !section.getItems().isEmpty())
+		else
 			node.setNbItemsAPrendre(-1);
 		
 		if(section.getMustEat() == null) 
@@ -261,10 +273,7 @@ public class BookReader {
 		
 		if(section.getItems() != null) {
 			for(ItemLinkJson itemLinkJson : section.getItems()) {
-				BookItemLink bookItemsLink = new BookItemLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
-				if(bookItemsLink.getAmount() == null) {
-					bookItemsLink.setAmount(1);
-				}
+				BookItemLink bookItemsLink = getBookItemLink(itemLinkJson);
 
 				node.addItemLink(bookItemsLink);
 			}
@@ -272,10 +281,7 @@ public class BookReader {
 		
 		if(section.getShop() != null) {
 			for(ItemLinkJson itemLinkJson : section.getShop()) {
-				BookItemLink bookItemsLink = new BookItemLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
-				if(bookItemsLink.getAmount() == null) {
-					bookItemsLink.setAmount(1);
-				}
+				BookItemLink bookItemsLink = getBookItemLink(itemLinkJson);
 
 				node.addShopItemLink(bookItemsLink);
 			}
@@ -292,14 +298,8 @@ public class BookReader {
 			if(sectionJson.getChoices() != null) {
 				for(ChoiceJson choiceJson : sectionJson.getChoices()) {			
 					AbstractBookNodeWithChoices nodeWithChoices = (AbstractBookNodeWithChoices) node;
-					BookNodeLink nodeLink = null;
-
-					if(sectionJson.isRandomPick() != null && sectionJson.isRandomPick()) {
-						nodeLink = createBookNodeLink(nodes, choiceJson);
-					} else {
-						nodeLink = createBookNodeLink(nodes, choiceJson);
-					}
-
+					BookNodeLink nodeLink = createBookNodeLink(nodes, choiceJson);
+					
 					nodeWithChoices.getChoices().add(nodeLink);
 				}
 			}
@@ -334,9 +334,21 @@ public class BookReader {
 			bookNodeLink = new BookNodeLink();
 		}
 		
-		bookNodeLink.setAuto(choiceJson.getAuto());
-		bookNodeLink.setGold(choiceJson.getGold());
-		bookNodeLink.setHp(choiceJson.getHp());
+		if(choiceJson.getAuto() == null)
+			bookNodeLink.setAuto(false);
+		else
+			bookNodeLink.setAuto(choiceJson.getAuto());
+		
+		if(choiceJson.getGold() == null)
+			bookNodeLink.setGold(0);
+		else
+			bookNodeLink.setGold(choiceJson.getGold());
+		
+		if(choiceJson.getHp() == null)
+			bookNodeLink.setHp(0);
+		else
+			bookNodeLink.setHp(choiceJson.getHp());
+		
 		bookNodeLink.setDestination(nodes.get(choiceJson.getSection()));
 		bookNodeLink.setText(choiceJson.getText());
 		
@@ -369,6 +381,30 @@ public class BookReader {
 		}
 		
 		return bookNodeLink;		
+	}
+
+	private BookItemLink getBookItemLink(ItemLinkJson itemLinkJson) {
+		int amount = 1;
+		if(itemLinkJson.getAmount() != null) {
+			amount = itemLinkJson.getAmount();
+		}
+		
+		int price = -1;
+		if(itemLinkJson.getPrice()!= null) {
+			price = itemLinkJson.getPrice();
+		}
+		
+		boolean isAuto = false;
+		if(itemLinkJson.isAuto()!= null) {
+			isAuto = itemLinkJson.isAuto();
+		}
+		
+		int sellingPrice = -1;		
+		if(itemLinkJson.getSellingPrice() != null) {
+			sellingPrice = itemLinkJson.getSellingPrice();
+		}
+		
+		return new BookItemLink(itemLinkJson.getId(), amount, price, isAuto, sellingPrice);
 	}
 
 }
