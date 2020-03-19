@@ -5,6 +5,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -205,35 +206,57 @@ public class ItemDialog extends AbstractDialog {
 						|| usureTextField.getText().trim() == null
 						|| usureTextField.getText().isEmpty()){
 					return;
+				} try {
+					ItemDialog.this.item = new BookItemWeapon(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(degatTextField.getText()));
+				} catch (NumberFormatException nfe){
+					dialogInt(nfe);
+					return;
 				}
-				ItemDialog.this.item = new BookItemWeapon(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(degatTextField.getText()));
 			} else if(itemType.getValue() == DEFENSE){
 				if (defenseTextField.getText() == null
 						|| defenseTextField.getText().trim().isEmpty()
 						|| usureTextField.getText().trim() == null
 						|| usureTextField.getText().isEmpty()){
 					return;
+				} try {
+					ItemDialog.this.item = new BookItemDefense(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(defenseTextField.getText()));
+				} catch (NumberFormatException nfe){
+					dialogInt(nfe);
+					return;
 				}
-				ItemDialog.this.item = new BookItemDefense(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(defenseTextField.getText()));
 			} else if(itemType.getValue() == HEALING){
 				if (vieTextField.getText() == null
 						|| vieTextField.getText().isEmpty()
 						|| usureTextField.getText() == null
 						|| usureTextField.getText().isEmpty()){
 					return;
+				} try {
+					ItemDialog.this.item = new BookItemHealing(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(vieTextField.getText()));
+				} catch (NumberFormatException nfe){
+					dialogInt(nfe);
+					return;
 				}
-				ItemDialog.this.item = new BookItemHealing(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(vieTextField.getText()));
 			} else if(itemType.getValue() == MONEY){
 				if (moneyTextField.getText().trim().isEmpty()){
 					return;
+				} try {
+					ItemDialog.this.item = new BookItemMoney(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(moneyTextField.getText()));
+				} catch (NumberFormatException nfe){
+					dialogInt(nfe);
+					return;
 				}
-				ItemDialog.this.item = new BookItemMoney(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(moneyTextField.getText()));
 			}
 			
 			close();
 		};
 	}
 	
+	private void dialogInt(NumberFormatException nfe){
+		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+		alertDialog.setTitle("Erreur");
+		alertDialog.setContentText(nfe.getMessage() + " n'est pas un entier");
+		alertDialog.show();
+	}
 	
 	private void healingBool(boolean bool){
 		vieLabel.setVisible(bool);
