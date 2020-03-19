@@ -77,7 +77,7 @@ public class LeftPane extends ScrollPane {
 		rootPerso.setExpanded(true);
 		treeViewPerso = new TreeView<> (rootPerso);
 		
-		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Items"));
+		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Items",null));
 		rootItem.setExpanded(true);
 		
 		treeViewItem = new TreeView<> (rootItem);
@@ -152,8 +152,12 @@ public class LeftPane extends ScrollPane {
 				if(selectedItem != null) {
 					BookItem item = selectedItem.getValue();
 					String oldId = item.getId();
-					new ItemDialog(item);
-					
+					ItemDialog newItemDialog =new ItemDialog(item);
+					BookItem newItem = newItemDialog.getItem();
+					if(newItem == null){
+						return;
+					}
+					selectedItem.setValue(newItem);
 					treeViewItem.refresh();
 					
 					book.getItems().remove(oldId);	
