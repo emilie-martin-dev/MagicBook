@@ -69,6 +69,7 @@ public class ItemDialog extends AbstractDialog {
 			itemType.setValue(HEALING);
 			BookItemHealing itemHealing = (BookItemHealing) item;
 			vieTextField.setText(""+itemHealing.getHp());
+			usureTextField.setText(""+itemHealing.getDurability());
 		} else if (item instanceof BookItemMoney){
 			itemType.setValue(MONEY);
 			BookItemMoney itemMoney = (BookItemMoney) item;
@@ -116,35 +117,45 @@ public class ItemDialog extends AbstractDialog {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
 				if (itemType.getValue() == KEY_ITEM){
+					usureTextField.setText(null);
 					System.out.println("key item");
-					healingFalse(false);
-					moneyFalse(false);
-					weaponFalse(false);
-					defenseFalse(false);
+					healingBool(false);
+					moneyBool(false);
+					weaponBool(false);
+					defenseBool(false);
+					usureBool(false);
 				} else if (itemType.getValue() == WEAPON){
+					usureTextField.setText(null);
 					System.out.println("weapon");
-					healingFalse(false);
-					moneyFalse(false);
-					weaponFalse(true);
-					defenseFalse(false);
+					healingBool(false);
+					moneyBool(false);
+					weaponBool(true);
+					defenseBool(false);
+					usureBool(true);
 				} else if (itemType.getValue() == DEFENSE){
+					usureTextField.setText(null);
 					System.out.println("defense");
-					healingFalse(false);
-					moneyFalse(false);
-					weaponFalse(false);
-					defenseFalse(true);
+					healingBool(false);
+					moneyBool(false);
+					weaponBool(false);
+					defenseBool(true);
+					usureBool(true);
 				} else if (itemType.getValue() == HEALING){
+					usureTextField.setText(null);
 					System.out.println("HEALING");
-					healingFalse(true);
-					moneyFalse(false);
-					weaponFalse(false);
-					defenseFalse(false);
+					healingBool(true);
+					moneyBool(false);
+					weaponBool(false);
+					defenseBool(false);
+					usureBool(true);
 				} else if (itemType.getValue() == MONEY){
+					usureTextField.setText(null);
 					System.out.println("MONEY");
-					healingFalse(false);
-					moneyFalse(true);
-					weaponFalse(false);
-					defenseFalse(false);
+					healingBool(false);
+					moneyBool(true);
+					weaponBool(false);
+					defenseBool(false);
+					usureBool(false);
 				}
 			}
 		};
@@ -168,10 +179,11 @@ public class ItemDialog extends AbstractDialog {
 		root.add(usureLabel, 0, 4);
 		root.add(usureTextField,1,4);
 		
-		healingFalse(false);
-		moneyFalse(false);
-		weaponFalse(false);
-		defenseFalse(false);
+		healingBool(false);
+		moneyBool(false);
+		weaponBool(false);
+		defenseBool(false);
+		usureBool(false);
 		
 		return root;
 	}
@@ -188,12 +200,33 @@ public class ItemDialog extends AbstractDialog {
 			if(itemType.getValue() == KEY_ITEM){
 				ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
 			} else if(itemType.getValue() == WEAPON){
-				ItemDialog.this.item = new BookItemWeapon(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(degatTextField.getText()) , Integer.parseInt(usureTextField.getText()));
+				if (degatTextField.getText() == null
+						|| degatTextField.getText().trim().isEmpty()
+						|| usureTextField.getText().trim() == null
+						|| usureTextField.getText().isEmpty()){
+					return;
+				}
+				ItemDialog.this.item = new BookItemWeapon(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(degatTextField.getText()));
 			} else if(itemType.getValue() == DEFENSE){
-				ItemDialog.this.item = new BookItemDefense(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(defenseTextField.getText()) , Integer.parseInt(usureTextField.getText()));
+				if (defenseTextField.getText() == null
+						|| defenseTextField.getText().trim().isEmpty()
+						|| usureTextField.getText().trim() == null
+						|| usureTextField.getText().isEmpty()){
+					return;
+				}
+				ItemDialog.this.item = new BookItemDefense(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(defenseTextField.getText()));
 			} else if(itemType.getValue() == HEALING){
-				ItemDialog.this.item = new BookItemHealing(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(vieTextField.getText()) , Integer.parseInt(usureTextField.getText()));
+				if (vieTextField.getText() == null
+						|| vieTextField.getText().isEmpty()
+						|| usureTextField.getText() == null
+						|| usureTextField.getText().isEmpty()){
+					return;
+				}
+				ItemDialog.this.item = new BookItemHealing(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(vieTextField.getText()));
 			} else if(itemType.getValue() == MONEY){
+				if (moneyTextField.getText().trim().isEmpty()){
+					return;
+				}
 				ItemDialog.this.item = new BookItemMoney(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(moneyTextField.getText()));
 			}
 			
@@ -202,32 +235,33 @@ public class ItemDialog extends AbstractDialog {
 	}
 	
 	
-	private void healingFalse(boolean bool){
+	private void healingBool(boolean bool){
 		vieLabel.setVisible(bool);
 		vieTextField.setVisible(bool);
 		vieTextField.setText(null);
 	}
 	
-	private void moneyFalse(boolean bool){
+	private void moneyBool(boolean bool){
 		moneyLabel.setVisible(bool);
 		moneyTextField.setVisible(bool);
 		moneyTextField.setText(null);
 	}
 		
-	private void weaponFalse(boolean bool){
+	private void weaponBool(boolean bool){
 		degatLabel.setVisible(bool);
 		degatTextField.setVisible(bool);
-		usureLabel.setVisible(bool);
-		usureTextField.setVisible(bool);
 		degatTextField.setText(null);
-		usureTextField.setText(null);
 	}
 			
-	private void defenseFalse(boolean bool){
+	private void defenseBool(boolean bool){
 		defenseLabel.setVisible(bool);
 		defenseTextField.setVisible(bool);
 		defenseTextField.setText(null);
-		usureTextField.setText(null);
+	}
+	
+	private void usureBool(boolean bool){
+		usureLabel.setVisible(bool);
+		usureTextField.setVisible(bool);
 	}
 
 	public BookItem getItem() {
