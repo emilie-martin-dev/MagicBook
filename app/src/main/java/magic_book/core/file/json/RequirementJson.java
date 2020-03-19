@@ -4,7 +4,7 @@ package magic_book.core.file.json;
 public class RequirementJson {
 
 	private String id;
-	private String type;
+	private TypeJson type;
 	private Integer amount;
 	private Boolean not;
 
@@ -16,11 +16,11 @@ public class RequirementJson {
 		this.id = id;
 	}
 
-	public String getType() {
+	public TypeJson getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(TypeJson type) {
 		this.type = type;
 	}
 

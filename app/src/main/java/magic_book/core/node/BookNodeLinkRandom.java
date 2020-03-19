@@ -7,11 +7,15 @@ public class BookNodeLinkRandom extends BookNodeLink {
 	
 	private int chance;
 	
+	public BookNodeLinkRandom() {
+		this("", null, 1);
+	}
+	
 	public BookNodeLinkRandom(String text, AbstractBookNode destination, int chance) {
 		this(text, destination, null, chance);
 	}
 	
-	public BookNodeLinkRandom(String text, AbstractBookNode destination, List<AbstractRequirement> requirements, int chance) {
+	public BookNodeLinkRandom(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements, int chance) {
 		super(text, destination, requirements);
 		
 		this.chance = chance;

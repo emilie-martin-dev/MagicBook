@@ -306,6 +306,11 @@ public class BookWritter {
 			choiceJson.setWeight(nodeLinkRandom.getChance());
 		}
 		
+		//TODO requirements
+		
+		choiceJson.setAuto(nodeLink.getAuto());
+		choiceJson.setGold(nodeLink.getGold());
+		choiceJson.setHp(nodeLink.getHp());
 		choiceJson.setText(nodeLink.getText());
 		
 		return choiceJson;

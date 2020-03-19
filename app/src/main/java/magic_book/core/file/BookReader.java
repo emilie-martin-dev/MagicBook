@@ -22,6 +22,7 @@ import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.ItemType;
+import magic_book.core.file.json.RequirementJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.file.json.SkillJson;
 import magic_book.core.file.json.TypeJson;
@@ -46,6 +47,7 @@ import magic_book.core.node.BookNodeStatus;
 import magic_book.core.node.BookNodeTerminal;
 import magic_book.core.node.BookNodeWithChoices;
 import magic_book.core.node.BookNodeWithRandomChoices;
+import magic_book.core.requirement.AbstractRequirement;
 
 public class BookReader {
 	
@@ -293,9 +295,9 @@ public class BookReader {
 					BookNodeLink nodeLink = null;
 
 					if(sectionJson.isRandomPick() != null && sectionJson.isRandomPick()) {
-						nodeLink = new BookNodeLinkRandom(choiceJson.getText(), nodes.get(choiceJson.getSection()), choiceJson.getWeight());
+						nodeLink = createBookNodeLink(nodes, choiceJson);
 					} else {
-						nodeLink = new BookNodeLink(choiceJson.getText(), nodes.get(choiceJson.getSection()));
+						nodeLink = createBookNodeLink(nodes, choiceJson);
 					}
 
 					nodeWithChoices.getChoices().add(nodeLink);
@@ -307,17 +309,66 @@ public class BookReader {
 				BookNodeCombat nodeCombat = (BookNodeCombat) node;
 				
 				if(combatJson.getWin() != null)
-					nodeCombat.setWinBookNodeLink(new BookNodeLink(combatJson.getWin().getText(), nodes.get(combatJson.getWin().getSection())));
+					nodeCombat.setWinBookNodeLink(createBookNodeLink(nodes, combatJson.getWin()));
 			
 				if(combatJson.getLoose() != null)
-					nodeCombat.setLooseBookNodeLink(new BookNodeLink(combatJson.getLoose().getText(), nodes.get(combatJson.getLoose().getSection())));
+					nodeCombat.setLooseBookNodeLink(createBookNodeLink(nodes, combatJson.getLoose()));
 			
 				if(combatJson.getEvasion() != null)
-					nodeCombat.setEvasionBookNodeLink(new BookNodeLink(combatJson.getEvasion().getText(), nodes.get(combatJson.getEvasion().getSection())));
+					nodeCombat.setEvasionBookNodeLink(createBookNodeLink(nodes, combatJson.getEvasion()));
 			}
 		}
 		
 		return nodes;
+	}
+	
+	public BookNodeLink createBookNodeLink(HashMap<Integer, AbstractBookNode> nodes, ChoiceJson choiceJson) {
+		BookNodeLink bookNodeLink = null;
+		
+		if(choiceJson.getWeight() != null) {
+			BookNodeLinkRandom bookNodeLinkRandom = new BookNodeLinkRandom();
+			bookNodeLinkRandom.setChance(choiceJson.getWeight());
+			
+			bookNodeLink = bookNodeLinkRandom;
+		} else {
+			bookNodeLink = new BookNodeLink();
+		}
+		
+		bookNodeLink.setAuto(choiceJson.getAuto());
+		bookNodeLink.setGold(choiceJson.getGold());
+		bookNodeLink.setHp(choiceJson.getHp());
+		bookNodeLink.setDestination(nodes.get(choiceJson.getSection()));
+		bookNodeLink.setText(choiceJson.getText());
+		
+		if(choiceJson.getRequirements() != null) {
+			List<List<AbstractRequirement>> requirements = new ArrayList<>();
+			for(List<RequirementJson> requirementsJson : choiceJson.getRequirements()) {
+				List<AbstractRequirement> subrequirements = new ArrayList<>();
+				for(RequirementJson requirementJson : requirementsJson) {
+					
+					//TODO Requirements
+					
+					/*AbstractRequirement abstractRequirement = null;
+					
+					
+					if(requirementJson.getType() == TypeJson.ITEM) {
+						
+					} else if (requirementJson.getType() == TypeJson.SKILL) {
+						
+					} else if (requirementJson.getType() == TypeJson.GOLD) {
+						
+					}
+					
+					subrequirements.add(abstractRequirement);*/
+				}
+				
+				requirements.add(subrequirements);
+			}
+		
+			bookNodeLink.setRequirements(requirements);
+		}
+		
+		return bookNodeLink;		
 	}
 
 }
