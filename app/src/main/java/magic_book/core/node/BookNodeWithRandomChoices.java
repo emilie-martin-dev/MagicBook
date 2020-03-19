@@ -8,7 +8,7 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		this(text, 0, null, null, null);
 	}
 	
-	public BookNodeWithRandomChoices(String text, Integer nbItemsAPrendre, List<BookItemsLink> itemLinks, List<BookItemsLink> shopItemLinks, List<BookNodeLinkRandom> choices) {
+	public BookNodeWithRandomChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<BookNodeLinkRandom> choices) {
 		super(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices);
 	}
 }

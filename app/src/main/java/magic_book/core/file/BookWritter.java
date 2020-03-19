@@ -12,14 +12,22 @@ import java.util.Set;
 
 import magic_book.core.Book;
 import magic_book.core.file.json.BookJson;
+import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.CharacterJson;
 import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
+import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.ItemType;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.file.json.SetupJson;
+import magic_book.core.file.json.SkillJson;
+import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookSkill;
+import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemHealing;
@@ -28,6 +36,7 @@ import magic_book.core.item.BookItemWeapon;
 import magic_book.core.item.BookItemWithDurability;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.AbstractBookNodeWithChoices;
+import magic_book.core.node.BookItemLink;
 import magic_book.core.node.BookNodeCombat;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeLinkRandom;
@@ -57,6 +66,16 @@ public class BookWritter {
 		
 		List<CharacterJson> characters = new ArrayList<>();
 		List<ItemJson> items = new ArrayList<>();
+		List<SkillJson> skills = new ArrayList<>();
+		List<CharacterCreationJson> characterCreations = new ArrayList<>();
+		
+		for(Entry<String, BookSkill> entry : book.getSkills().entrySet()) {
+			SkillJson skillJson = new SkillJson();
+			skillJson.setId(entry.getValue().getId());
+			skillJson.setName(entry.getValue().getName());
+			
+			skills.add(skillJson);
+		}
 		
 		for(BookCharacter character : book.getCharacters().values()) {
 			CharacterJson characterJson = new CharacterJson();
@@ -118,8 +137,47 @@ public class BookWritter {
 			items.add(itemJson);
 		}
 		
+		for(AbstractCharacterCreation abstractCharacterCreation : book.getCharacterCreations()) {
+			CharacterCreationJson characterCreationJson = new CharacterCreationJson();
+			characterCreationJson.setText(abstractCharacterCreation.getText());
+			
+			if(abstractCharacterCreation instanceof CharacterCreationItem) {
+				CharacterCreationItem characterCreationItem = (CharacterCreationItem) abstractCharacterCreation;
+				
+				characterCreationJson.setAmountToPick(characterCreationItem.getAmountToPick());
+				characterCreationJson.setItems(new ArrayList<>());
+				for(BookItemLink itemLink : characterCreationItem.getItemLinks()) {
+					ItemLinkJson itemLinkJson = new ItemLinkJson();
+					
+					itemLinkJson.setAmount(itemLink.getAmount());
+					itemLinkJson.setAuto(itemLink.getAuto());
+					itemLinkJson.setId(itemLink.getId());
+					itemLinkJson.setPrice(itemLink.getPrice());
+					itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
+					
+					characterCreationJson.getItems().add(itemLinkJson);
+				}
+				
+				characterCreationJson.setType(TypeJson.ITEM);
+			} else if(abstractCharacterCreation instanceof CharacterCreationSkill) {
+				CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) abstractCharacterCreation;
+				
+				characterCreationJson.setAmountToPick(characterCreationSkill.getAmountToPick());
+				characterCreationJson.setSkills(new ArrayList<>());
+				for(String skillLink : characterCreationSkill.getSkillLinks()) {
+					characterCreationJson.getSkills().add(skillLink);
+				}
+				
+				characterCreationJson.setType(TypeJson.SKILL);
+			}
+			
+			characterCreations.add(characterCreationJson);
+		}
+		
 		setup.setCharacters(characters);
 		setup.setItems(items);
+		setup.setSkills(skills);
+		setup.setCharacterCreation(characterCreations);
 				
 		return setup;
 	}

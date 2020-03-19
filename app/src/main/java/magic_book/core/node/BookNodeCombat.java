@@ -15,7 +15,7 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		this(text, winBookNodeLink, looseBookNodeLink, evasionBookNodeLink, evasionRound, ennemiesId, 0, null, null, null);
 	}
 	
-	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, Integer evasionTurn, List<String> ennemiesId, int nbItemsAPrendre, List<BookItemsLink> itemLinks, List<BookItemsLink> shopItemLinks, List<BookNodeLink> choices){
+	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, Integer evasionTurn, List<String> ennemiesId, int nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<BookNodeLink> choices){
 		super(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices);
 		
 		this.winBookNodeLink = winBookNodeLink;

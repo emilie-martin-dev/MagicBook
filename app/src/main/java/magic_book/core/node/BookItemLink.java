@@ -1,6 +1,6 @@
 package magic_book.core.node;
 
-public class BookItemsLink {
+public class BookItemLink {
 	
 	private String id;
 	private Integer amount;
@@ -8,7 +8,7 @@ public class BookItemsLink {
 	private Integer sellingPrice;
 	private Boolean auto;
 
-	public BookItemsLink(String id, Integer amount, Integer price, Boolean auto, Integer selling_price) {
+	public BookItemLink(String id, Integer amount, Integer price, Boolean auto, Integer selling_price) {
 		this.id = id;
 		this.amount = amount;
 		this.price = price;

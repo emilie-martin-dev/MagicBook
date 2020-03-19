@@ -7,11 +7,11 @@ import java.util.List;
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
 	
 	private Integer nbItemsAPrendre;
-	private List<BookItemsLink> itemLinks;
-	private List<BookItemsLink> shopItemLinks;
+	private List<BookItemLink> itemLinks;
+	private List<BookItemLink> shopItemLinks;
 	private List<T> choices;
 	
-	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemsLink> itemLinks, List<BookItemsLink> shopItemLinks, List<T> choices){
+	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<T> choices){
 		super(text);
 		this.nbItemsAPrendre = nbItemsAPrendre;
 		this.itemLinks = itemLinks;
@@ -37,11 +37,11 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		this.choices.add(newChoices);
 	}
 	
-	public void addShopItemLink(BookItemsLink newShopItemLink){
+	public void addShopItemLink(BookItemLink newShopItemLink){
 		this.shopItemLinks.add(newShopItemLink);
 	}
 
-	public void addItemLink(BookItemsLink newItemLink){
+	public void addItemLink(BookItemLink newItemLink){
 		this.itemLinks.add(newItemLink);
 	}
 	
@@ -53,19 +53,19 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		this.nbItemsAPrendre = nbItemsAPrendre;
 	}
 
-	public List<BookItemsLink> getItemLinks() {
+	public List<BookItemLink> getItemLinks() {
 		return itemLinks;
 	}
 
-	public void setItemLinks(List<BookItemsLink> itemLinks) {
+	public void setItemLinks(List<BookItemLink> itemLinks) {
 		this.itemLinks = itemLinks;
 	}
 
-	public List<BookItemsLink> getShopItemLinks() {
+	public List<BookItemLink> getShopItemLinks() {
 		return shopItemLinks;
 	}
 
-	public void setShopItemLinks(List<BookItemsLink> shopItemLinks) {
+	public void setShopItemLinks(List<BookItemLink> shopItemLinks) {
 		this.shopItemLinks = shopItemLinks;
 	}
 	

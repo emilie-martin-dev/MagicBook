@@ -4,13 +4,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class CharacterCreationJson {
-
-	public static final String SKILLS = "SKILLS";
-	public static final String ITEMS = "ITEMS";
-	public static final String TEXT = "TEXT";
 	
 	private String text;
-	private String type;
+	private TypeJson type;
 	@SerializedName("amount_to_pick")
 	private Integer amountToPick;
 	private List<ItemLinkJson> items;
@@ -24,11 +20,11 @@ public class CharacterCreationJson {
 		this.text = text;
 	}
 
-	public String getType() {
+	public TypeJson getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(TypeJson type) {
 		this.type = type;
 	}
 

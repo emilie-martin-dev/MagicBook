@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import magic_book.core.Book;
 import magic_book.core.exception.BookFileException;
 import magic_book.core.file.deserializer.BookNodeStatusDeserializer;
 import magic_book.core.file.json.BookJson;
+import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.CharacterJson;
 import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.CombatJson;
@@ -22,8 +24,13 @@ import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.ItemType;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.file.json.SkillJson;
+import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookSkill;
+import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
+import magic_book.core.game.character_creation.CharacterCreationText;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemHealing;
@@ -31,7 +38,7 @@ import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.node.AbstractBookNode;
 import magic_book.core.node.AbstractBookNodeWithChoices;
-import magic_book.core.node.BookItemsLink;
+import magic_book.core.node.BookItemLink;
 import magic_book.core.node.BookNodeCombat;
 import magic_book.core.node.BookNodeLink;
 import magic_book.core.node.BookNodeLinkRandom;
@@ -46,6 +53,7 @@ public class BookReader {
 	private HashMap<String, BookCharacter> characters;
 	private HashMap<Integer, AbstractBookNode> nodes;
 	private HashMap<String, BookSkill> skills;
+	private List<AbstractCharacterCreation> characterCreations;
 	
 	public Book read(String path) throws FileNotFoundException, BookFileException {		
 		BookJson bookJson = readFileWithGson(path);
@@ -53,9 +61,10 @@ public class BookReader {
 		skills = getEverySkills(bookJson);
 		items = getEveryItems(bookJson);
 		characters = getEveryCharacters(bookJson);
+		characterCreations = getCharacterCreations(bookJson);
 		nodes = getEveryNodes(bookJson);
 		
-		return new Book(bookJson.getPrelude(), nodes, items, characters, skills);
+		return new Book(bookJson.getPrelude(), nodes, items, characters, skills, characterCreations);
 	}
 
 	private BookJson readFileWithGson(String path) throws FileNotFoundException {
@@ -136,6 +145,53 @@ public class BookReader {
 		return characters;
 	}
 	
+	private List<AbstractCharacterCreation> getCharacterCreations(BookJson bookJson) {
+		List<AbstractCharacterCreation> characterCreations = new ArrayList<>();
+		
+		for(CharacterCreationJson characterCreationJson : bookJson.getSetup().getCharacterCreation()) {
+			AbstractCharacterCreation characterCreation = null;
+			
+			if(characterCreationJson.getType() == null) {
+				characterCreation = new CharacterCreationText(characterCreationJson.getText());
+			} else if(characterCreationJson.getType() == TypeJson.ITEM) {
+				List<BookItemLink> itemLinks = new ArrayList<>();
+				
+				if(characterCreationJson.getItems() != null) {
+					for(ItemLinkJson itemLinkJson : characterCreationJson.getItems()) {
+						BookItemLink bookItemLink = new BookItemLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
+						itemLinks.add(bookItemLink);
+					}
+				}
+				
+				int amountToPick = -1;
+				if(characterCreationJson.getAmountToPick() != null) {
+					amountToPick = characterCreationJson.getAmountToPick();
+				}
+				
+				characterCreation = new CharacterCreationItem(characterCreationJson.getText(), itemLinks, amountToPick);
+			} else if(characterCreationJson.getType() == TypeJson.SKILL) {
+				List<String> skillLinks = new ArrayList<>();
+				
+				if(characterCreationJson.getSkills() != null) {
+					for(String skill : characterCreationJson.getSkills()) {
+						skillLinks.add(skill);
+					}
+				}
+				
+				int amountToPick = -1;
+				if(characterCreationJson.getAmountToPick() != null) {
+					amountToPick = characterCreationJson.getAmountToPick();
+				}
+				
+				characterCreation = new CharacterCreationSkill(characterCreationJson.getText(), skillLinks, amountToPick);
+			}
+			
+			characterCreations.add(characterCreation);
+		}
+		
+		return characterCreations;
+	}
+	
 	private HashMap<Integer, AbstractBookNode> getEveryNodes(BookJson bookJson) throws BookFileException {
 		HashMap<Integer, AbstractBookNode> nodes = new HashMap<>();
 		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
@@ -190,7 +246,7 @@ public class BookReader {
 		
 		if(section.getItems() != null) {
 			for(ItemLinkJson itemLinkJson : section.getItems()) {
-				BookItemsLink bookItemsLink = new BookItemsLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
+				BookItemLink bookItemsLink = new BookItemLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
 				if(bookItemsLink.getAmount() == null) {
 					bookItemsLink.setAmount(1);
 				}
@@ -201,7 +257,7 @@ public class BookReader {
 		
 		if(section.getShop() != null) {
 			for(ItemLinkJson itemLinkJson : section.getShop()) {
-				BookItemsLink bookItemsLink = new BookItemsLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
+				BookItemLink bookItemsLink = new BookItemLink(itemLinkJson.getId(), itemLinkJson.getAmount(), itemLinkJson.getPrice(), itemLinkJson.isAuto(), itemLinkJson.getSellingPrice());
 				if(bookItemsLink.getAmount() == null) {
 					bookItemsLink.setAmount(1);
 				}
