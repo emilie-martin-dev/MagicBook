@@ -54,22 +54,27 @@ public class ItemDialog extends AbstractDialog {
 
 		idTextField.setText(item.getId());
 		nameTextField.setText(item.getName());
-		itemType.setValue(item.getItemType());
 		
 		if(item instanceof BookItemWeapon) {
+			itemType.setValue(WEAPON);
 			BookItemWeapon itemWeapon = (BookItemWeapon) item;
 			degatTextField.setText(""+itemWeapon.getDamage());
 			usureTextField.setText(""+itemWeapon.getDurability());
 		} else if (item instanceof BookItemDefense){
+			itemType.setValue(DEFENSE);
 			BookItemDefense itemDefense = (BookItemDefense) item;
 			defenseTextField.setText(""+itemDefense.getResistance());
 			usureTextField.setText(""+itemDefense.getDurability());
 		} else if (item instanceof BookItemHealing){
+			itemType.setValue(HEALING);
 			BookItemHealing itemHealing = (BookItemHealing) item;
 			vieTextField.setText(""+itemHealing.getHp());
 		} else if (item instanceof BookItemMoney){
+			itemType.setValue(MONEY);
 			BookItemMoney itemMoney = (BookItemMoney) item;
 			moneyTextField.setText(""+itemMoney.getAmount());
+		} else {
+			itemType.setValue(KEY_ITEM);
 		}
 		
 		this.item = item;
@@ -93,7 +98,6 @@ public class ItemDialog extends AbstractDialog {
  		itemType.getItems().add(MONEY);
 		itemType.getItems().add(WEAPON);
 		itemType.getItems().add(DEFENSE);
- 		itemType.setValue(KEY_ITEM);
 		
 		degatLabel = new Label("Point d'attaque : ");
 		degatTextField = new TextField();
@@ -176,20 +180,21 @@ public class ItemDialog extends AbstractDialog {
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			if (idTextField.getText().trim().isEmpty()
-					|| nameTextField.getText().trim().isEmpty()) {
+					|| nameTextField.getText().trim().isEmpty()
+					|| itemType.getValue() == null){
 				return;
 			}
 
 			if(itemType.getValue() == KEY_ITEM){
-				ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim(), itemType.getValue().trim());
+				ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
 			} else if(itemType.getValue() == WEAPON){
-				ItemDialog.this.item = new BookItemWeapon(idTextField.getText().trim(), nameTextField.getText().trim(), itemType.getValue().trim(), Integer.parseInt(degatTextField.getText()) , Integer.parseInt(usureTextField.getText()));
+				ItemDialog.this.item = new BookItemWeapon(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(degatTextField.getText()) , Integer.parseInt(usureTextField.getText()));
 			} else if(itemType.getValue() == DEFENSE){
-				ItemDialog.this.item = new BookItemDefense(idTextField.getText().trim(), nameTextField.getText().trim(), itemType.getValue().trim(), Integer.parseInt(defenseTextField.getText()) , Integer.parseInt(usureTextField.getText()));
+				ItemDialog.this.item = new BookItemDefense(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(defenseTextField.getText()) , Integer.parseInt(usureTextField.getText()));
 			} else if(itemType.getValue() == HEALING){
-				ItemDialog.this.item = new BookItemHealing(idTextField.getText().trim(), nameTextField.getText().trim(), itemType.getValue().trim(), Integer.parseInt(vieTextField.getText()) , Integer.parseInt(usureTextField.getText()));
+				ItemDialog.this.item = new BookItemHealing(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(vieTextField.getText()) , Integer.parseInt(usureTextField.getText()));
 			} else if(itemType.getValue() == MONEY){
-				ItemDialog.this.item = new BookItemMoney(idTextField.getText().trim(), nameTextField.getText().trim(), itemType.getValue().trim(), Integer.parseInt(moneyTextField.getText()));
+				ItemDialog.this.item = new BookItemMoney(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(moneyTextField.getText()));
 			}
 			
 			close();

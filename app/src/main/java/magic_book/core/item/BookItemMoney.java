@@ -4,8 +4,8 @@ public class BookItemMoney extends BookItem {
 	
 	private int amount;
 
-	public BookItemMoney(String id, String nom, String itemTypeChoices, int amount) {
-		super(id, nom, itemTypeChoices);
+	public BookItemMoney(String id, String nom, int amount) {
+		super(id, nom);
 		
 		this.amount = amount;
 	}

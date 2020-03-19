@@ -77,7 +77,7 @@ public class LeftPane extends ScrollPane {
 		rootPerso.setExpanded(true);
 		treeViewPerso = new TreeView<> (rootPerso);
 		
-		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Items",null));
+		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Items"));
 		rootItem.setExpanded(true);
 		
 		treeViewItem = new TreeView<> (rootItem);

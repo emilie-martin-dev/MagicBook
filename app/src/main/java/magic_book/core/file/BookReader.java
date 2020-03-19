@@ -87,15 +87,15 @@ public class BookReader {
 			BookItem item = null;
 			
 			if(i.getItemType() == ItemType.DEFENSE) {
-				item = new BookItemDefense(i.getId(), i.getName(),"Defense", i.getDurability(), i.getResistance());
+				item = new BookItemDefense(i.getId(), i.getName(), i.getDurability(), i.getResistance());
 			} else if(i.getItemType() == ItemType.WEAPON) {
-				item = new BookItemWeapon(i.getId(), i.getName(),"Arme", i.getDurability(), i.getDamage());
+				item = new BookItemWeapon(i.getId(), i.getName(), i.getDurability(), i.getDamage());
 			} else if(i.getItemType() == ItemType.MONEY) {
-				item = new BookItemMoney(i.getId(), i.getName(), "Argent", 0);
+				item = new BookItemMoney(i.getId(), i.getName(), 0);
 			} else if(i.getItemType() == ItemType.HEALING) {
-				item = new BookItemHealing(i.getId(), i.getName(),"Potion", i.getDurability(), i.getHp());				
+				item = new BookItemHealing(i.getId(), i.getName(), i.getDurability(), i.getHp());				
 			} else if(i.getItemType() == ItemType.KEY_ITEM) {
-				item = new BookItem(i.getId(), i.getName(),"Normal");				
+				item = new BookItem(i.getId(), i.getName());				
 			} else {
 				throw new BookFileException("L'item avec le type " + i.getItemType() + " est invalide");
 			}

@@ -6,12 +6,10 @@ public class BookItem implements Parsable {
 
 	private String id;
 	private String name;
-	private String itemTypeChoices;
 
-	public BookItem(String id, String nom, String itemTypeChoices) {
+	public BookItem(String id, String nom) {
 		this.id = id;
 		this.name = nom;
-		this.itemTypeChoices = itemTypeChoices;
 	}
 
 	@Override
@@ -38,14 +36,6 @@ public class BookItem implements Parsable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public String getItemType() {
-		return itemTypeChoices;
-	}
-
-	public void setItemType(String itemTypeChoices) {
-		this.itemTypeChoices = itemTypeChoices;
 	}
 
 

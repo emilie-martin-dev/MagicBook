@@ -4,8 +4,8 @@ public class BookItemWeapon extends BookItemWithDurability {
 	
 	private int damage;
 
-	public BookItemWeapon(String id, String nom, String itemTypeChoices, Integer durability, int damage) {
-		super(id, nom, itemTypeChoices, durability);
+	public BookItemWeapon(String id, String nom, Integer durability, int damage) {
+		super(id, nom, durability);
 		
 		this.damage = damage;
 	}

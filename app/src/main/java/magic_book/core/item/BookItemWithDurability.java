@@ -5,8 +5,8 @@ public class BookItemWithDurability extends BookItem {
 
 	private Integer durability;
 	
-	public BookItemWithDurability(String id, String nom, String itemTypeChoices, Integer durability) {
-		super(id, nom, itemTypeChoices);
+	public BookItemWithDurability(String id, String nom, Integer durability) {
+		super(id, nom);
 		
 		this.durability = durability;
 	}

@@ -4,8 +4,8 @@ public class BookItemDefense extends BookItemWithDurability {
 	
 	private int resistance;
 
-	public BookItemDefense(String id, String nom, String itemTypeChoices, Integer durability, int resistance) {
-		super(id, nom, itemTypeChoices, durability);
+	public BookItemDefense(String id, String nom, Integer durability, int resistance) {
+		super(id, nom, durability);
 		
 		this.resistance = resistance;
 	}

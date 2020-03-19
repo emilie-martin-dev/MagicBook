@@ -4,8 +4,8 @@ public class BookItemHealing extends BookItemWithDurability {
 	
 	private int hp;
 
-	public BookItemHealing(String id, String nom, String itemTypeChoices, Integer durability, int hp) {
-		super(id, nom, itemTypeChoices, durability);
+	public BookItemHealing(String id, String nom, Integer durability, int hp) {
+		super(id, nom, durability);
 		
 		this.hp = hp;
 	}
