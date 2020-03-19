@@ -35,6 +35,8 @@ public class MainWindow extends Stage{
 	private LeftPane leftPane;
 	private RightPane rightPane;
 	
+	private String path = null;
+	
 	private Book book;
 	
 	public MainWindow() {
@@ -44,7 +46,6 @@ public class MainWindow extends Stage{
 		graphPane = new GraphPane(book);
 		leftPane = new LeftPane(graphPane, book);
 		rightPane = new RightPane(graphPane, book);
-		
 		
 		root.setTop(createMenuBar());
 		root.setLeft(leftPane);
@@ -66,6 +67,7 @@ public class MainWindow extends Stage{
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		menuFileNew.setOnAction((ActionEvent e) -> {
 			changeBook(new Book());
+			path = null;
 		});
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
@@ -85,6 +87,8 @@ public class MainWindow extends Stage{
 				BookReader reader = new BookReader();
 				Book book = reader.read(selectedFile.getAbsolutePath());
 				changeBook(book);
+				
+				path = selectedFile.getAbsolutePath();
 			} catch (FileNotFoundException ex) {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'ouverture du fichier");
@@ -100,14 +104,20 @@ public class MainWindow extends Stage{
 		});
 		MenuItem menuFileSave = new MenuItem("Enregistrer");
 		menuFileSave.setOnAction((ActionEvent e) -> {
-			BookWritter bookWritter = new BookWritter();
-			try {
-				bookWritter.write("", book);
-			} catch (FileNotFoundException ex) {
-				Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+			if(path == null) {
+				if(!changeSelectedFile())
+					return;
 			}
+			
+			saveFile();
 		});
 		MenuItem menuFileSaveAs = new MenuItem("Enregistrer sous");
+		menuFileSaveAs.setOnAction((ActionEvent e) -> {
+			if(!changeSelectedFile())
+				return;
+			
+			saveFile();			
+		});
 
 		menuFile.getItems().addAll(menuFileNew, menuFileOpen, menuFileSave, menuFileSaveAs);
 
@@ -166,6 +176,36 @@ public class MainWindow extends Stage{
 		leftPane.setBook(book);
 	
 		this.book = book;
+	}
+	
+	private boolean changeSelectedFile() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Sauvegarder le livre");
+
+		File selectedFile = fileChooser.showSaveDialog(this);
+		if(selectedFile == null)
+			return false;
+		
+		path = selectedFile.getAbsolutePath();
+		
+		return true;
+	}
+	
+	private void saveFile() {
+		File saveFile = new File(path);
+		
+		if(!saveFile.getParentFile().exists())
+			saveFile.mkdirs();
+		
+		BookWritter bookWritter = new BookWritter();
+		try {
+			bookWritter.write(path, book);
+		} catch (IOException ex) {
+			Alert a = new Alert(AlertType.ERROR);
+			a.setTitle("Erreur lors de l'écriture du fichier");
+			a.setHeaderText("Impossible d'écrire le fichier sur le disque");
+			a.show(); 
+		}
 	}
 
 }
