@@ -242,7 +242,20 @@ public class BookReader {
 	}
 	
 	private AbstractBookNodeWithChoices fillCommunNodeValues(SectionJson section, AbstractBookNodeWithChoices node) {
-		node.setNbItemsAPrendre(section.getAmountToPick());
+		if(section.getAmountToPick() != null)
+			node.setNbItemsAPrendre(section.getAmountToPick());
+		else if(section.getItems() != null && !section.getItems().isEmpty())
+			node.setNbItemsAPrendre(-1);
+		
+		if(section.getMustEat() == null) 
+			node.setMustEat(false);
+		else 
+			node.setMustEat(section.getMustEat());
+		
+		if(section.getHp()== null) 
+			node.setHp(0);
+		else 
+			node.setHp(section.getHp());
 		
 		if(section.getItems() != null) {
 			for(ItemLinkJson itemLinkJson : section.getItems()) {

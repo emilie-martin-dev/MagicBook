@@ -21,7 +21,7 @@ public class BookNodeTerminal extends AbstractBookNode {
 
 	@Override
 	public ArrayList<BookNodeLink> getChoices() {
-		return new ArrayList<BookNodeLink>();
+		return new ArrayList<>();
 	}
 
 }

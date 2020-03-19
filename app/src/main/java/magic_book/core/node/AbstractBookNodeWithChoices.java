@@ -10,13 +10,22 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	private List<BookItemLink> itemLinks;
 	private List<BookItemLink> shopItemLinks;
 	private List<T> choices;
+	private boolean mustEat;
+	private int hp;
 	
 	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<T> choices){
+		this(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices, false, 0);
+	}
+	
+	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<T> choices, boolean mustEat, int hp){
 		super(text);
+		
 		this.nbItemsAPrendre = nbItemsAPrendre;
 		this.itemLinks = itemLinks;
 		this.shopItemLinks = shopItemLinks;
 		this.choices = choices;
+		this.mustEat = mustEat;
+		this.hp = hp;
 		
 		if(this.choices == null)
 			this.choices = new ArrayList<>();
@@ -44,7 +53,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	public void addItemLink(BookItemLink newItemLink){
 		this.itemLinks.add(newItemLink);
 	}
-	
+
 	public Integer getNbItemsAPrendre() {
 		return nbItemsAPrendre;
 	}
@@ -68,9 +77,21 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	public void setShopItemLinks(List<BookItemLink> shopItemLinks) {
 		this.shopItemLinks = shopItemLinks;
 	}
-	
-	public void setChoices(List<T> choices) {
-		this.choices = choices;
+
+	public boolean isMustEat() {
+		return mustEat;
+	}
+
+	public void setMustEat(boolean mustEat) {
+		this.mustEat = mustEat;
+	}
+
+	public int getHp() {
+		return hp;
+	}
+
+	public void setHp(int hp) {
+		this.hp = hp;
 	}
 	
 }

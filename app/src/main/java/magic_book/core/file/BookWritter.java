@@ -229,14 +229,49 @@ public class BookWritter {
 			if(node instanceof AbstractBookNodeWithChoices) {
 				AbstractBookNodeWithChoices abstractBookNodeWithChoices = (AbstractBookNodeWithChoices) node;
 				
-				sectionJson.setAmountToPick(abstractBookNodeWithChoices.getNbItemsAPrendre());
+				if(abstractBookNodeWithChoices.getHp() != 0)
+					sectionJson.setHp(abstractBookNodeWithChoices.getHp());
+				
+				if(abstractBookNodeWithChoices.isMustEat())
+					sectionJson.setMustEat(abstractBookNodeWithChoices.isMustEat());
+				
+				if(!abstractBookNodeWithChoices.getItemLinks().isEmpty())
+					sectionJson.setAmountToPick(abstractBookNodeWithChoices.getNbItemsAPrendre());
 				
 				if(!abstractBookNodeWithChoices.getShopItemLinks().isEmpty()) {
+					sectionJson.setShop(new ArrayList<>());
 					
+					for(BookItemLink itemLink : (List<BookItemLink>) abstractBookNodeWithChoices.getShopItemLinks()) {
+						ItemLinkJson itemLinkJson = new ItemLinkJson();
+						
+						itemLinkJson.setId(itemLink.getId());
+						itemLinkJson.setAuto(itemLink.getAuto());
+						
+						if(itemLink.getAmount() != 1)
+							itemLinkJson.setAmount(itemLink.getAmount());
+						itemLinkJson.setPrice(itemLink.getPrice());
+						itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
+						
+						sectionJson.getShop().add(itemLinkJson);
+					}
 				}
 				
 				if(!abstractBookNodeWithChoices.getItemLinks().isEmpty()) {
+					sectionJson.setItems(new ArrayList<>());
 					
+					for(BookItemLink itemLink : (List<BookItemLink>) abstractBookNodeWithChoices.getItemLinks()) {
+						ItemLinkJson itemLinkJson = new ItemLinkJson();
+						
+						itemLinkJson.setId(itemLink.getId());
+						itemLinkJson.setAuto(itemLink.getAuto());
+						
+						if(itemLink.getAmount() != 1)
+							itemLinkJson.setAmount(itemLink.getAmount());
+						itemLinkJson.setPrice(itemLink.getPrice());
+						itemLinkJson.setSellingPrice(itemLink.getSellingPrice());
+						
+						sectionJson.getItems().add(itemLinkJson);
+					}
 				}
 				
 				for(BookNodeLink nodeLink : (List<BookNodeLink>) abstractBookNodeWithChoices.getChoices()) {

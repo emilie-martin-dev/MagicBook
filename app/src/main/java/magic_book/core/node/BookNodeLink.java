@@ -11,6 +11,10 @@ public class BookNodeLink {
 	private AbstractBookNode destination;
 	private List<AbstractRequirement> requirements;
 	
+	private Integer hp;
+	private Integer gold;
+	private Boolean auto;
+	
 	public BookNodeLink(String text, AbstractBookNode destination) {
 		this(text, destination, null);
 	}
