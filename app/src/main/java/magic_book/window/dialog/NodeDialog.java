@@ -8,10 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.ChoiceBox;
 
-import magic_book.core.node.AbstractBookNode;
-import magic_book.core.node.BookNodeStatus;
-import magic_book.core.node.BookNodeTerminal;
-import magic_book.core.node.BookNodeWithChoices;
+import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.BookNodeStatus;
+import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.graph.node.BookNodeWithChoices;
 
  public class NodeDialog extends AbstractDialog {
 

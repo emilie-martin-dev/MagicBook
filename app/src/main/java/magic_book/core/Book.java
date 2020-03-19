@@ -7,7 +7,7 @@ import java.util.List;
 import magic_book.core.game.BookSkill;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.item.BookItem;
-import magic_book.core.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNode;
 
 
 public class Book {

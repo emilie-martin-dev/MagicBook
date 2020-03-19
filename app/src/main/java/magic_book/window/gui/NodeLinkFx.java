@@ -4,7 +4,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-import magic_book.core.node.BookNodeLink;
+import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.NodeLinkFxObservable;
 import magic_book.observer.NodeLinkFxObserver;
 

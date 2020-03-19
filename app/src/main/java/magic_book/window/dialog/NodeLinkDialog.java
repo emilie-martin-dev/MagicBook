@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 
-import magic_book.core.node.BookNodeLink;
+import magic_book.core.graph.node_link.BookNodeLink;
 
 public class NodeLinkDialog extends AbstractDialog{
 	

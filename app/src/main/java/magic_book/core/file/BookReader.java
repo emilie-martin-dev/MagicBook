@@ -37,16 +37,16 @@ import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemHealing;
 import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
-import magic_book.core.node.AbstractBookNode;
-import magic_book.core.node.AbstractBookNodeWithChoices;
-import magic_book.core.node.BookItemLink;
-import magic_book.core.node.BookNodeCombat;
-import magic_book.core.node.BookNodeLink;
-import magic_book.core.node.BookNodeLinkRandom;
-import magic_book.core.node.BookNodeStatus;
-import magic_book.core.node.BookNodeTerminal;
-import magic_book.core.node.BookNodeWithChoices;
-import magic_book.core.node.BookNodeWithRandomChoices;
+import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNodeWithChoices;
+import magic_book.core.item.BookItemLink;
+import magic_book.core.graph.node.BookNodeCombat;
+import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.graph.node_link.BookNodeLinkRandom;
+import magic_book.core.graph.node.BookNodeStatus;
+import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.graph.node.BookNodeWithChoices;
+import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.requirement.AbstractRequirement;
 
 public class BookReader {

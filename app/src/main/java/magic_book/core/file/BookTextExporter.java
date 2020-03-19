@@ -11,10 +11,10 @@ import java.util.Random;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
 
-import magic_book.core.node.AbstractBookNode;
-import magic_book.core.node.BookNodeLink;
-import magic_book.core.node.BookNodeStatus;
-import magic_book.core.node.BookNodeTerminal;
+import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.graph.node.BookNodeStatus;
+import magic_book.core.graph.node.BookNodeTerminal;
 
 public class BookTextExporter {
 

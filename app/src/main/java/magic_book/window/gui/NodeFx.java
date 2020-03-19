@@ -2,7 +2,7 @@ package magic_book.window.gui;
 
 import javafx.scene.paint.Color;
 
-import magic_book.core.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNode;
 
 public class NodeFx extends RectangleFx {
 	

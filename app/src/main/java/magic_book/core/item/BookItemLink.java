@@ -1,4 +1,4 @@
-package magic_book.core.node;
+package magic_book.core.item;
 
 public class BookItemLink {
 	

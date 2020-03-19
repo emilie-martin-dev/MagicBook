@@ -1,6 +1,6 @@
 package magic_book.observer;
 
-import magic_book.core.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNode;
 
 public interface NodeObserver {
 

@@ -1,6 +1,7 @@
-package magic_book.core.node;
+package magic_book.core.graph.node;
 
 import java.util.List;
+import magic_book.core.graph.node_link.BookNodeLink;
 
 public abstract class AbstractBookNode {
 	

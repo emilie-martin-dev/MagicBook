@@ -2,7 +2,7 @@ package magic_book.core.file.json;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
-import magic_book.core.node.BookNodeStatus;
+import magic_book.core.graph.node.BookNodeStatus;
 
 public class SectionJson {
 

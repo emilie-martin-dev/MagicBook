@@ -4,10 +4,10 @@ import magic_book.core.game.player.Fourmi;
 import org.junit.Assert;
 import org.junit.Test;
 
-import magic_book.core.node.BookNodeLink;
-import magic_book.core.node.BookNodeStatus;
-import magic_book.core.node.BookNodeTerminal;
-import magic_book.core.node.BookNodeWithChoices;
+import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.graph.node.BookNodeStatus;
+import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.graph.node.BookNodeWithChoices;
 
 public class FourmiTest {
 	
