@@ -91,8 +91,8 @@ public class ItemDialog extends AbstractDialog {
 		Label nameLabel = new Label("Name: ");
 		Label itemLabel = new Label("Choix du type d'item");
 
-		idTextField = new TextField();
-		nameTextField = new TextField();
+		idTextField = new TextField("");
+		nameTextField = new TextField("");
 		itemType = new ChoiceBox<>();
 
  		itemType.getItems().add(KEY_ITEM);
@@ -102,17 +102,17 @@ public class ItemDialog extends AbstractDialog {
 		itemType.getItems().add(DEFENSE);
 		
 		degatLabel = new Label("Point d'attaque : ");
-		degatTextField = new TextField();
+		degatTextField = new TextField("");
 		moneyLabel = new Label("Monaie : ");
-		moneyTextField = new TextField();
+		moneyTextField = new TextField("");
 		vieLabel = new Label("Point de vie : ");
-		vieTextField = new TextField();
+		vieTextField = new TextField("");
 		defenseLabel = new Label("Defense : ");
-		defenseTextField = new TextField();
+		defenseTextField = new TextField("");
 		
 		
 		usureLabel = new Label("Usure du matériel : ");
-		usureTextField = new TextField();
+		usureTextField = new TextField("");
 		
 		ChangeListener<String> changeListener = new ChangeListener<String>() {
 			@Override
@@ -202,9 +202,9 @@ public class ItemDialog extends AbstractDialog {
 				ItemDialog.this.item = new BookItem(idTextField.getText().trim(), nameTextField.getText().trim());
 			} else if(itemType.getValue() == WEAPON){
 				if (degatTextField.getText() == null
-						|| degatTextField.getText().trim().isEmpty()
-						|| usureTextField.getText().trim() == null
-						|| usureTextField.getText().isEmpty()){
+					|| usureTextField.getText() == null
+					|| degatTextField.getText().isEmpty()
+					|| usureTextField.getText().isEmpty()){
 					return;
 				} try {
 					ItemDialog.this.item = new BookItemWeapon(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(degatTextField.getText()));
@@ -213,10 +213,10 @@ public class ItemDialog extends AbstractDialog {
 					return;
 				}
 			} else if(itemType.getValue() == DEFENSE){
-				if (defenseTextField.getText() == null
-						|| defenseTextField.getText().trim().isEmpty()
-						|| usureTextField.getText().trim() == null
-						|| usureTextField.getText().isEmpty()){
+				if (defenseTextField.getText()== null
+					|| usureTextField.getText() == null
+					|| defenseTextField.getText().isEmpty()
+					|| usureTextField.getText().isEmpty()){
 					return;
 				} try {
 					ItemDialog.this.item = new BookItemDefense(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(defenseTextField.getText()));
@@ -226,9 +226,9 @@ public class ItemDialog extends AbstractDialog {
 				}
 			} else if(itemType.getValue() == HEALING){
 				if (vieTextField.getText() == null
-						|| vieTextField.getText().isEmpty()
-						|| usureTextField.getText() == null
-						|| usureTextField.getText().isEmpty()){
+					|| usureTextField.getText() == null
+					|| vieTextField.getText().isEmpty()
+					|| usureTextField.getText().isEmpty()){
 					return;
 				} try {
 					ItemDialog.this.item = new BookItemHealing(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(usureTextField.getText()), Integer.parseInt(vieTextField.getText()));
@@ -237,7 +237,8 @@ public class ItemDialog extends AbstractDialog {
 					return;
 				}
 			} else if(itemType.getValue() == MONEY){
-				if (moneyTextField.getText().trim().isEmpty()){
+				if (moneyTextField.getText().trim() == null
+					|| moneyTextField.getText().trim().isEmpty()){
 					return;
 				} try {
 					ItemDialog.this.item = new BookItemMoney(idTextField.getText().trim(), nameTextField.getText().trim(), Integer.parseInt(moneyTextField.getText()));
