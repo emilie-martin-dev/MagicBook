@@ -1,9 +1,12 @@
 package magic_book.core.graph.node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import magic_book.core.Book;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.parser.TextParser;
 
 
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
@@ -38,7 +41,27 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		if(this.shopItemLinks == null)
 			this.shopItemLinks = new ArrayList<>();
 	}
-	
+
+	@Override
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getTextForBookText(book, nodesIndex));
+		
+		if(!getChoices().isEmpty()) {
+			buffer.append("\n");
+			buffer.append("Que souhaitez vous faire ?\n");
+		}
+		
+		for(BookNodeLink nl : getChoices()) {
+			buffer.append("- ");
+			if(!nl.getText().isEmpty())
+				buffer.append(TextParser.parseText(nl.getText(), book.getItems(), book.getCharacters()) + " - ");
+			buffer.append("Paragraphe suivant : " + nodesIndex.get(nl.getDestination()) + "\n");
+		}
+		
+		return buffer.toString();
+	}
 	
 	
 	public void addChoice(T nodeLink) {

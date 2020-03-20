@@ -1,9 +1,11 @@
 package magic_book.core.game.character_creation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import magic_book.core.Book;
+import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.item.BookItemLink;
-
 
 public class CharacterCreationItem extends AbstractCharacterCreation {
 
@@ -20,6 +22,24 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 			this.itemLinks = new ArrayList<>();
 	}
 	
+	@Override
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesInv) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getText());
+		buffer.append("\n");
+		buffer.append("Choisissez ");
+		buffer.append(amountToPick);
+		buffer.append(" items : \n\n");
+		
+		for(int i = 0 ; i < itemLinks.size() ; i++) {
+			buffer.append(itemLinks.get(i).getTextForBookText(book, nodesInv));
+			if(i < itemLinks.size() - 1) 
+				buffer.append("\n");
+		}
+		
+		return buffer.toString();
+	}
 	
 	public void addItemLink(BookItemLink itemLink) {
 		this.itemLinks.add(itemLink);

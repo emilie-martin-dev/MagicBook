@@ -1,7 +1,10 @@
 package magic_book.core.graph.node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import magic_book.core.Book;
+import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
 
@@ -30,6 +33,39 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 			this.ennemiesId = new ArrayList<>();
 	}
 	
+	@Override
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getText());
+		
+		buffer.append("\n\nVous entrez en combat contre :\n");
+		for(int i = 0 ; i < ennemiesId.size() ; i++) {
+			BookCharacter character = book.getCharacters().get(ennemiesId.get(i));
+			buffer.append(character.getTextForBookText(book, nodesIndex));
+			if(i < ennemiesId.size()-1)
+				buffer.append("\n");
+		}
+		
+		buffer.append("\n");
+		
+		if(winBookNodeLink != null) {
+			buffer.append("Si vous gagnez : \n");
+			
+		}
+			
+		if(looseBookNodeLink != null) {
+			buffer.append("Si vous perdez : \n");
+		}
+		
+		if(evasionBookNodeLink != null) {
+			buffer.append("Vous pouvez vous évader au tour ");
+			buffer.append(evasionRound);
+			buffer.append("\n");
+		}
+		
+		return buffer.toString();
+	}
 	
 	@Override
 	public void removeChoice(BookNodeLink nodeLink) {

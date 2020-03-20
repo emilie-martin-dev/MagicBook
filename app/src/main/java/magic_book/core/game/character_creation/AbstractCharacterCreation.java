@@ -1,5 +1,9 @@
 package magic_book.core.game.character_creation;
 
+import java.util.HashMap;
+import magic_book.core.Book;
+import magic_book.core.graph.node.AbstractBookNode;
+
 
 public abstract class AbstractCharacterCreation {
 
@@ -8,7 +12,11 @@ public abstract class AbstractCharacterCreation {
 	public AbstractCharacterCreation(String text) {
 		this.text = text;
 	}
-
+	
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesInv) {
+		return this.text + "\n";
+	}
+	
 	public String getText() {
 		return text;
 	}

@@ -148,7 +148,7 @@ public class MainWindow extends Stage{
 			}
 			
 			try {
-				BookTextExporter.generateBook(firstNodeFx.getNode(), new ArrayList<>(), new ArrayList<>(), selectedFile.getAbsolutePath());
+				BookTextExporter.generateBook(book, selectedFile.getAbsolutePath());
 			} catch (IOException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
 				a.setTitle("Erreur lors de l'export du fichier");

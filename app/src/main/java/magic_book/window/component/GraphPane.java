@@ -97,7 +97,7 @@ public class GraphPane extends Pane {
 
 		this.getChildren().add(nodeLinkFx);
 		listeNoeudLien.add(nodeLinkFx);
-			
+		
 		return nodeLinkFx;
 	}
 	
@@ -245,7 +245,7 @@ public class GraphPane extends Pane {
 						bookNodeLink.setDestination(nodeFx.getNode());
 
 						book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
-
+						
 						createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
 					}
 

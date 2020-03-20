@@ -1,6 +1,8 @@
 package magic_book.core.graph.node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import magic_book.core.Book;
 import magic_book.core.graph.node_link.BookNodeLink;
 
 public class BookNodeTerminal extends AbstractBookNode {
@@ -12,6 +14,26 @@ public class BookNodeTerminal extends AbstractBookNode {
 		
 		this.bookNodeStatus = bookNodeStatus;
 	}
+
+	@Override
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getText());
+		if(bookNodeStatus == BookNodeStatus.FAILURE) {
+			buffer.append("\n");
+			buffer.append("Vous avez perdu\n");
+		}
+
+		if(bookNodeStatus == BookNodeStatus.VICTORY) {
+			buffer.append("\n");
+			buffer.append("Félicitation vous avez gagné\n");
+		}
+		
+		return buffer.toString();
+	}
+	
+	
 	public BookNodeStatus getBookNodeStatus() {
 		return bookNodeStatus;
 	}

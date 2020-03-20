@@ -1,5 +1,8 @@
 package magic_book.core.item;
 
+import java.util.HashMap;
+import magic_book.core.Book;
+import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.parser.Parsable;
 
 public class BookItem implements Parsable {
@@ -10,6 +13,16 @@ public class BookItem implements Parsable {
 	public BookItem(String id, String nom) {
 		this.id = id;
 		this.name = nom;
+	}
+	
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesInv) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("Nom : ");
+		buffer.append(name);
+		buffer.append("\n");
+		
+		return buffer.toString();
 	}
 
 	@Override
