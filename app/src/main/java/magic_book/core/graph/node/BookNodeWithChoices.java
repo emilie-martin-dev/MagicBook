@@ -13,6 +13,6 @@ public class BookNodeWithChoices extends AbstractBookNodeWithChoices<BookNodeLin
 	public BookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<BookNodeLink> choices){
 		super(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices);
 		
-	}
+	}	
 
 }

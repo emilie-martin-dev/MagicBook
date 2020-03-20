@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.NodeLinkFxObserver;
 import magic_book.observer.RectangleFxObserver;
@@ -68,6 +69,8 @@ public class GraphPane extends Pane {
 		listeNoeud.add(nodeFx);
 		this.getChildren().add(nodeFx);
 			
+		book.appendNode(node);
+		
 		return nodeFx;
 	}
 	
@@ -94,6 +97,9 @@ public class GraphPane extends Pane {
 
 		this.getChildren().add(nodeLinkFx);
 		listeNoeudLien.add(nodeLinkFx);
+		bookNodeLink.setDestination(secondNodeFx.getNode());
+		
+		book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) firstNodeFx.getNode());
 		
 		return nodeLinkFx;
 	}
@@ -169,7 +175,9 @@ public class GraphPane extends Pane {
 			
 			if(!this.getChildren().contains(preludeFxFirstNodeLine)) {
 				this.getChildren().add(preludeFxFirstNodeLine);
-			}
+			}			
+			
+			book.changeFirstNode(newFirstNode.getNode());
 		}
 	}
 	
@@ -223,11 +231,14 @@ public class GraphPane extends Pane {
 				if(event.getClickCount() == 2) {
 					NodeDialog dialog = new NodeDialog(nodeFx.getNode());
 					if(dialog.getNode() != null) {
+						book.updateNode(nodeFx.getNode(), dialog.getNode());
 						nodeFx.setNode(dialog.getNode());
 					}
 				}
 			} else if(mode == Mode.ADD_NODE_LINK) {
-				if(selectedNodeFx == null) {
+				if(selectedNodeFx == null && !(nodeFx.getNode() instanceof AbstractBookNodeWithChoices)) {
+					return;
+				} else if(selectedNodeFx == null && nodeFx.getNode() instanceof AbstractBookNodeWithChoices) {
 					selectedNodeFx = nodeFx;
 				} else {				
 					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
@@ -244,21 +255,24 @@ public class GraphPane extends Pane {
 			} else if(mode == Mode.DELETE) {
 				if(confirmDeleteDialog()){
 					GraphPane.this.getChildren().remove(nodeFx);
-				}
-				List<NodeLinkFx> nodeFxToRemove = new ArrayList();
+				
+					List<NodeLinkFx> nodeFxToRemove = new ArrayList();
 
-				for(NodeLinkFx nodeLinkFx: listeNoeudLien){
-					NodeFx nodeFxStart = nodeLinkFx.getStart();
-					NodeFx nodeFxEnd = nodeLinkFx.getEnd();
+					for(NodeLinkFx nodeLinkFx: listeNoeudLien){
+						NodeFx nodeFxStart = nodeLinkFx.getStart();
+						NodeFx nodeFxEnd = nodeLinkFx.getEnd();
 
-					if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
-						nodeFxToRemove.add(nodeLinkFx);
-						GraphPane.this.getChildren().remove(nodeLinkFx);
+						if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
+							nodeFxToRemove.add(nodeLinkFx);
+							GraphPane.this.getChildren().remove(nodeLinkFx);
+						}
 					}
-				}
 
-				for(NodeLinkFx nodeLinkRemove:nodeFxToRemove){
-					listeNoeudLien.remove(nodeLinkRemove);
+					for(NodeLinkFx nodeLinkRemove:nodeFxToRemove){
+						listeNoeudLien.remove(nodeLinkRemove);
+					}
+
+					book.removeNode(nodeFx.getNode());
 				}
 			} else if(mode == Mode.FIRST_NODE) {
 				setFirstNode(nodeFx);
@@ -273,12 +287,18 @@ public class GraphPane extends Pane {
 		public void onNodeLinkFXClicked(NodeLinkFx nodeLinkFx, MouseEvent event) {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
-					new NodeLinkDialog(nodeLinkFx.getNodeLink());
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink());
+					if(nodeLinkDialog.getNodeLink()!= null) {
+						book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
+						nodeLinkFx.setNodeLink(nodeLinkDialog.getNodeLink());
+					}
 				}
 			} else if(mode == Mode.DELETE) {
 				if (confirmDeleteDialog()== true){
 					listeNoeudLien.remove(nodeLinkFx);
 					GraphPane.this.getChildren().remove(nodeLinkFx);
+					
+					book.removeNodeLink(nodeLinkFx.getNodeLink());
 				}
 			}
 			

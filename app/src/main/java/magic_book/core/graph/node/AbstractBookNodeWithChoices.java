@@ -39,6 +39,17 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 			this.shopItemLinks = new ArrayList<>();
 	}
 	
+	
+	
+	public void addChoice(T nodeLink) {
+		this.choices.add(nodeLink);
+	}
+
+	public void removeChoice(T nodeLink) {
+		if(this.choices.contains(nodeLink))
+			choices.remove(nodeLink);
+	}
+	
 	@Override
 	public List<T> getChoices() {
 		return choices;

@@ -124,6 +124,9 @@ public class MainWindow extends Stage{
 		// --- Menu livre
 		Menu menuBook = new Menu("Livre");
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
+		menuBookDifficulty.setOnAction((ActionEvent e) -> {
+			System.out.println("magic_book.window.MainWindow.createMenuBar()");
+		});
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
 			NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();

@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import magic_book.core.game.BookCharacter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import magic_book.core.game.BookSkill;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.item.BookItem;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNodeWithChoices;
+import magic_book.core.graph.node_link.BookNodeLink;
 
 
 public class Book {
@@ -19,6 +22,9 @@ public class Book {
 	private HashMap<String, BookSkill> skills;
 	private List<AbstractCharacterCreation> characterCreations;
 
+	private List<Integer> missingIndexes;
+	private HashMap<AbstractBookNode, Integer> nodesInv;
+	
 	public Book() {
 		this("", null, null, null, null, null);
 	}
@@ -30,6 +36,9 @@ public class Book {
 		this.characters = characters;
 		this.skills = skills;
 		this.characterCreations = characterCreations;
+		
+		this.missingIndexes = new ArrayList<>();
+		this.nodesInv = new HashMap<>();
 		
 		if(this.nodes == null)
 			this.nodes = new HashMap<>();
@@ -45,6 +54,110 @@ public class Book {
 		
 		if(this.characterCreations == null)
 			this.characterCreations = new ArrayList<>();
+	}	
+
+	public void appendNode(AbstractBookNode node) {
+		if(this.missingIndexes.isEmpty()) {
+			int offset = (this.nodes.containsKey(1)) ? 1 : 2;
+			this.nodes.put(this.nodes.size()+offset, node);
+			this.nodesInv.put(node, this.nodesInv.size()+offset);
+		} else {
+			this.nodes.put(missingIndexes.get(0), node);
+			this.nodesInv.put(node, missingIndexes.get(0));
+			this.missingIndexes.remove(0);
+		}		
+	}
+	
+	public void changeFirstNode(AbstractBookNode node) {
+		int indexOfNode = this.nodesInv.get(node);
+		AbstractBookNode oldNode = this.nodes.get(1);
+		this.nodes.put(1, node);
+		this.nodesInv.put(node, 1);
+		if(oldNode != null) {
+			this.nodes.put(indexOfNode, oldNode);
+			this.nodesInv.put(oldNode, indexOfNode);
+		} else {
+			this.missingIndexes.add(indexOfNode);
+			this.nodes.remove(indexOfNode);
+		}
+	}
+	
+	public void updateNode(AbstractBookNode oldNode, AbstractBookNode newNode) {
+		Integer indexOfNode = this.nodesInv.get(oldNode);
+		if(indexOfNode != null) {
+			this.nodes.put(indexOfNode, newNode);
+			this.nodesInv.put(newNode, indexOfNode);
+			
+			for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
+				for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
+					if(nodeLink.getDestination() == oldNode) {
+						nodeLink.setDestination(newNode);
+					}
+				}
+			}
+		} else {
+			appendNode(newNode);
+		}
+	}
+	
+	public void removeNode(AbstractBookNode node) {
+		Integer indexOfNode = this.nodesInv.get(node);
+		if(indexOfNode != null) {
+			this.missingIndexes.add(indexOfNode);
+			this.nodes.remove(indexOfNode);
+			this.nodesInv.remove(node);
+			
+			for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
+				if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
+					continue;
+			
+				AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
+				for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
+					if(nodeLink.getDestination() == node) {
+						currentChoice.removeChoice(nodeLink);
+					}
+				}
+			}
+		}
+	}
+	
+	public void addNodeLink(BookNodeLink nodeLink, AbstractBookNodeWithChoices node) {
+		node.addChoices(nodeLink);
+	}
+	
+	public void updateNodeLink(BookNodeLink oldBookNodeLink, BookNodeLink newBookNode) {
+		for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
+			if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
+				continue;
+			
+			AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
+			for(BookNodeLink nl : entry.getValue().getChoices()) {
+				if(nl == oldBookNodeLink) {
+					currentChoice.removeChoice(oldBookNodeLink);
+					currentChoice.addChoice(newBookNode);
+				}
+			}
+		}
+	}
+	
+	public void removeNodeLink(BookNodeLink nodeLink) {
+		List<AbstractBookNodeWithChoices> postRemove = new ArrayList<>();
+		
+		for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
+			if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
+				continue;
+			
+			AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
+			for(BookNodeLink nl : entry.getValue().getChoices()) {
+				if(nl == nodeLink) {
+					postRemove.add(currentChoice);
+				}
+			}
+		}
+		
+		for(AbstractBookNodeWithChoices node : postRemove) {
+			node.removeChoice(nodeLink);
+		}
 	}
 
 	public String getTextPrelude() {

@@ -29,6 +29,24 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		if(this.ennemiesId == null)
 			this.ennemiesId = new ArrayList<>();
 	}
+	
+	
+	@Override
+	public void removeChoice(BookNodeLink nodeLink) {
+		if(nodeLink == winBookNodeLink) {
+			winBookNodeLink = null;
+		} 
+		
+		if(nodeLink == looseBookNodeLink) {
+			looseBookNodeLink = null;			
+		}
+		
+		if(nodeLink == evasionBookNodeLink) {
+			evasionBookNodeLink = null;			
+		}
+		
+		super.removeChoice(nodeLink);
+	}
 
 	@Override
 	public List<BookNodeLink> getChoices() {
