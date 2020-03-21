@@ -42,8 +42,15 @@ public class BookTextExporter {
 		fileWritter.write("==================================================\n");
 		fileWritter.write("\n");
 			
-		for(AbstractBookNode node : nodes.values())
-			write(node, nodesInv, book, fileWritter);
+		for(int i = 0 ; i < nodes.size() ; i++) {
+			write(nodes.get(i+1), nodesInv, book, fileWritter);
+			
+			if(i < nodes.size() - 1){			
+				fileWritter.write("\n");
+				fileWritter.write("==================================================\n");
+				fileWritter.write("\n");
+			}
+		}
 		
 		fileWritter.close();
 	}
@@ -89,10 +96,6 @@ public class BookTextExporter {
 		fileWritter.write("\n");
 		
 		fileWritter.write(node.getTextForBookText(book, nodesIndex));
-		
-		fileWritter.write("\n");
-		fileWritter.write("==================================================\n");
-		fileWritter.write("\n");
 	}
 
 }

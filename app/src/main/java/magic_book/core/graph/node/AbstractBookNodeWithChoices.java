@@ -48,16 +48,62 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		
 		buffer.append(super.getTextForBookText(book, nodesIndex));
 		
+		if(!itemLinks.isEmpty()) {
+			buffer.append("\n");
+			buffer.append("Les items suivants sont disponibles : \n");
+
+			for(BookItemLink il : itemLinks) {
+				buffer.append("\n");
+				buffer.append(il.getTextForBookText(book, nodesIndex));
+			}
+			
+			if(nbItemsAPrendre == -1) {
+				buffer.append("\nVous pouvez prendre autant d'items que vous le voulez.\n");
+			} else {
+				buffer.append("\nVous pouvez prendre ");
+				buffer.append(nbItemsAPrendre);
+				buffer.append(" items.\n");
+			}
+		}
+		
+		if(!shopItemLinks.isEmpty()) {
+			buffer.append("\n");
+			buffer.append("Les items suivants sont en vente : \n");
+
+			for(BookItemLink il : shopItemLinks) {
+				buffer.append("\n");
+				buffer.append(il.getTextForBookText(book, nodesIndex));
+			}
+		}
+		
+		if(mustEat) {
+			buffer.append("\n");
+			buffer.append("Vous devez manger pour continuer.\n");
+		}
+		
+		if(hp < 0) {
+			buffer.append("\n");
+			buffer.append("Vous venez de perdre ");
+			buffer.append(Math.abs(hp));
+			buffer.append(" HP.\n");
+		} if(hp > 0) {
+			buffer.append("\n");
+			buffer.append("Vous venez de gagner ");
+			buffer.append(hp);
+			buffer.append(" HP.\n");
+		}
+		
 		if(!getChoices().isEmpty()) {
 			buffer.append("\n");
 			buffer.append("Que souhaitez vous faire ?\n");
-		}
-		
-		for(BookNodeLink nl : getChoices()) {
-			buffer.append("- ");
-			if(!nl.getText().isEmpty())
-				buffer.append(TextParser.parseText(nl.getText(), book.getItems(), book.getCharacters()) + " - ");
-			buffer.append("Paragraphe suivant : " + nodesIndex.get(nl.getDestination()) + "\n");
+
+
+			for(BookNodeLink nl : getChoices()) {
+				buffer.append("- ");
+				if(!nl.getText().isEmpty())
+					buffer.append(TextParser.parseText(nl.getText(), book.getItems(), book.getCharacters()) + " - ");
+				buffer.append("Paragraphe suivant : " + nodesIndex.get(nl.getDestination()) + "\n");
+			}
 		}
 		
 		return buffer.toString();
