@@ -1,48 +1,47 @@
 package magic_book.core.game.player;
 
 import java.util.Random;
+import magic_book.core.game.BookState;
 
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.graph.node.BookNodeWithRandomChoices;
+import magic_book.core.graph.node_link.BookNodeLinkRandom;
 
-public class Fourmi {
+public class Fourmi implements InterfacePlayerFourmis{
 
-	private AbstractBookNode currentNode;
-	
-	public Fourmi(AbstractBookNode node){
-		this.currentNode = node;
+	private AbstractBookNode bookNodeChoice;
+
+	public Fourmi(AbstractBookNode bookNodeChoice){
+		this.bookNodeChoice = bookNodeChoice;
 	}
 	
-	public void faireUnChoix() {
-		Random rand = new Random();
-		
-		int nb = rand.nextInt(currentNode.getChoices().size()); 		
-		this.currentNode = currentNode.getChoices().get(nb).getDestination(); 
-	}
-
-	public AbstractBookNode getCurrentNode() {
-		return currentNode;
+	private void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state){
+		BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNodeChoice;
+		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
+		this.bookNodeChoice = randomChoices.getDestination();
 	}
 	
-	public static float estimerDifficulteLivre(AbstractBookNode node, int nbFourmi){
-		int victory = 0;
-		
-		for(int i = 0 ; i < nbFourmi ; i++){
-			Fourmi f = new Fourmi(node);
-			
-			while(!(f.getCurrentNode() instanceof BookNodeTerminal)){
-				f.faireUnChoix();
-			}	
-			
-			BookNodeTerminal nodeTerminal = (BookNodeTerminal) f.getCurrentNode();
-			
-			if(nodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY){
-				victory += 1;
-			}
-		}	
-		
-		return ((float)victory / (float)nbFourmi) * 100f;
+	@Override
+	public void execNodeCombat(BookNodeCombat node, BookState state) {
+		Random random = new Random();
+		BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNodeChoice;
+		int nbChoices = random.nextInt(bookNodeCombat.getChoices().size());
+		this.bookNodeChoice = bookNodeCombat.getChoices().get(nbChoices).getDestination();
+	}
+
+	@Override
+	public void execNodeTerminal(BookNodeTerminal node, BookState state) {
+		/*
+		Question:
+		//Je pense mettre cette methode en Bool
+		//False si failure
+		//True si victory
+		*/
+		if(node.getBookNodeStatus().VICTORY == BookNodeStatus.VICTORY){	
+		}
 	}
 	
 }
