@@ -19,14 +19,14 @@ public class BookNodeTerminal extends AbstractBookNode {
 	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(super.getText());
+		buffer.append(super.getTextForBookText(book, nodesIndex));
+		buffer.append("\n");
+		
 		if(bookNodeStatus == BookNodeStatus.FAILURE) {
-			buffer.append("\n");
 			buffer.append("Vous avez perdu\n");
 		}
 
 		if(bookNodeStatus == BookNodeStatus.VICTORY) {
-			buffer.append("\n");
 			buffer.append("Félicitation vous avez gagné\n");
 		}
 		

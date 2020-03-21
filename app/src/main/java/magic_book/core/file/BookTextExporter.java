@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import magic_book.core.Book;
-import magic_book.core.game.character_creation.AbstractCharacterCreation;
 
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.BookNodeStatus;
+import magic_book.core.graph.node.BookNodeTerminal;
 
 public class BookTextExporter {
 
@@ -55,15 +56,28 @@ public class BookTextExporter {
 			usedNumber.add(i);
 		}
 		
+		List<AbstractBookNode> postNodes = new ArrayList();
+		
 		Random rand = new Random();
 		for(Map.Entry<Integer, AbstractBookNode> entry : nodes.entrySet()) {
 			if(entry.getKey() == 1) {
 				shuffle.put(1, entry.getValue());
 				continue;
+			} else if(entry.getValue() instanceof BookNodeTerminal) {
+				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) entry.getValue();
+				if(bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY) {
+					shuffle.put(usedNumber.get(usedNumber.size() - 1) + 1, bookNodeTerminal);
+					usedNumber.remove(usedNumber.size() - 1);
+					continue;
+				}
 			}
 			
+			postNodes.add(entry.getValue());
+		}
+		
+		for(AbstractBookNode bookNode : postNodes) {
 			int index = rand.nextInt(usedNumber.size());
-			shuffle.put(usedNumber.get(index)+1, entry.getValue());
+			shuffle.put(usedNumber.get(index)+1, bookNode);
 			usedNumber.remove(index);
 		}
 		
