@@ -40,6 +40,9 @@ public class BookNodeLink {
 	}
 	
 	public boolean isAvailable(BookState state) {
+		if(requirements.isEmpty()) 
+			return true;
+		
 		for(List<AbstractRequirement> groupRequirement : requirements) {
 			boolean satisfied = true;
 			for(AbstractRequirement r : groupRequirement) {
