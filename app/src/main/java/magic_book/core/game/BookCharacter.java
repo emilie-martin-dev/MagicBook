@@ -2,6 +2,7 @@ package magic_book.core.game;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import magic_book.core.parser.Parsable;
 
 public class BookCharacter implements Parsable { 
@@ -14,6 +15,7 @@ public class BookCharacter implements Parsable {
 	private List<String> skills;
 	private List<String> immunes;
 	private List<String> items;
+	private HashMap<String, Integer> moneys;
 	private int itemsMax;
 	private boolean doubleDamage;
 
@@ -32,6 +34,7 @@ public class BookCharacter implements Parsable {
 		this.items = listItems;
 		this.itemsMax = itemsMax;
 		this.doubleDamage = doubleDamage;
+		this.moneys = new HashMap<>();
 		
 		if(this.skills == null) {
 			this.skills = new ArrayList<>();
@@ -63,6 +66,24 @@ public class BookCharacter implements Parsable {
 		if (hp > hpMax) {
 			this.hp = hpMax;
 		}
+	}
+	
+	public int getMoney(String moneyId) {
+		if(moneys.get(moneyId) != null) {
+			return moneys.get(moneyId);
+		} else {
+			return 0;
+		}
+	}
+	
+	public void changeMoneyAmount(String moneyId, int amount) {
+		int newAmount = amount;
+		
+		if(moneys.get(id) != null) {
+			newAmount += moneys.get(moneyId);
+		}
+		
+		moneys.put(moneyId, newAmount);
 	}
 	
 	@Override
