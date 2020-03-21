@@ -86,23 +86,24 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 			buffer.append("Vous venez de perdre ");
 			buffer.append(Math.abs(hp));
 			buffer.append(" HP.\n");
-		} if(hp > 0) {
+		} else if(hp > 0) {
 			buffer.append("\n");
 			buffer.append("Vous venez de gagner ");
 			buffer.append(hp);
 			buffer.append(" HP.\n");
 		}
 		
-		if(!getChoices().isEmpty()) {
+		if(!choices.isEmpty()) {
 			buffer.append("\n");
-			buffer.append("Que souhaitez vous faire ?\n");
+			buffer.append("Que souhaitez vous faire ?\n\n");
 
 
-			for(BookNodeLink nl : getChoices()) {
-				buffer.append("- ");
-				if(!nl.getText().isEmpty())
-					buffer.append(TextParser.parseText(nl.getText(), book.getItems(), book.getCharacters()) + " - ");
-				buffer.append("Paragraphe suivant : " + nodesIndex.get(nl.getDestination()) + "\n");
+			for(int i = 0 ; i < choices.size() ; i++) {
+				buffer.append(choices.get(i).getTextForBookText(book, nodesIndex));
+				
+				if(i < choices.size() - 1) {
+					buffer.append("\n");
+				}
 			}
 		}
 		

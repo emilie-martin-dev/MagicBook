@@ -37,9 +37,9 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(super.getText());
+		buffer.append(super.getTextForBookText(book, nodesIndex));
 		
-		buffer.append("\n\nVous entrez en combat contre :\n");
+		buffer.append("\nVous entrez en combat contre :\n\n");
 		for(int i = 0 ; i < ennemiesId.size() ; i++) {
 			BookCharacter character = book.getCharacters().get(ennemiesId.get(i));
 			buffer.append(character.getTextForBookText(book, nodesIndex));
@@ -47,18 +47,21 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 				buffer.append("\n");
 		}
 		
-		buffer.append("\n");
-		
 		if(winBookNodeLink != null) {
-			buffer.append("Si vous gagnez : \n");
-			
+			buffer.append("\nSi vous gagnez : \n\n");
+			buffer.append(winBookNodeLink.getTextForBookText(book, nodesIndex));
 		}
 			
 		if(looseBookNodeLink != null) {
-			buffer.append("Si vous perdez : \n");
+			buffer.append("\nSi vous perdez : \n\n");
+			buffer.append(looseBookNodeLink.getTextForBookText(book, nodesIndex));
 		}
 		
 		if(evasionBookNodeLink != null) {
+			buffer.append("\nSi vous souhaitez vous évader : \n\n");
+			buffer.append(evasionBookNodeLink.getTextForBookText(book, nodesIndex));
+				
+			buffer.append("\n");
 			buffer.append("Vous pouvez vous évader au tour ");
 			buffer.append(evasionRound);
 			buffer.append("\n");

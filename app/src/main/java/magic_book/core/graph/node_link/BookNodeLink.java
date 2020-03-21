@@ -2,8 +2,11 @@ package magic_book.core.graph.node_link;
 
 import magic_book.core.graph.node.AbstractBookNode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import magic_book.core.Book;
 import magic_book.core.game.BookState;
+import magic_book.core.parser.TextParser;
 import magic_book.core.requirement.AbstractRequirement;
 
 public class BookNodeLink {
@@ -59,6 +62,46 @@ public class BookNodeLink {
 		return false;
 	}
 
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+		StringBuffer buffer = new StringBuffer();
+		
+		if(!text.isEmpty()) {
+			buffer.append("- ");
+			buffer.append(TextParser.parseText(text, book.getItems(), book.getCharacters()));
+			buffer.append("\n");
+		}
+		
+		if(hp < 0) {
+			buffer.append("Vous perdrez ");
+			buffer.append(Math.abs(hp));
+			buffer.append(" HP.\n");
+		} else if(hp > 0) {
+			buffer.append("Vous gagnerez ");
+			buffer.append(hp);
+			buffer.append(" HP.\n");
+		}
+		
+		if(gold < 0) {
+			buffer.append("Vous perdrez ");
+			buffer.append(Math.abs(gold));
+			buffer.append(" gold.\n");
+		} else if(gold > 0) {
+			buffer.append("Vous gagnerez ");
+			buffer.append(gold);
+			buffer.append(" gold.\n");
+		}
+		
+		if(auto) {
+			buffer.append("Ce choix est obligatoire si vous remplissez les prérequis.\n");
+		}
+		
+		buffer.append("Paragraphe suivant : ");
+		buffer.append(nodesIndex.get(destination));
+		buffer.append("\n");
+		
+		return buffer.toString();
+	}
+	
 	public String getText() {
 		return text;
 	}
