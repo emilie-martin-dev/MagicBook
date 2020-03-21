@@ -11,7 +11,7 @@ import magic_book.core.graph.node.BookNodeWithChoices;
 
 public class FourmiTest {
 	
-	@Test
+	/*@Test
 	public void estimerDifficulteLivre_test(){	
 		BookNodeTerminal end = new BookNodeTerminal("Vous sentez le pain chaud et les croissants.", BookNodeStatus.VICTORY);
 		BookNodeWithChoices root = new BookNodeWithChoices("Vous avez faim, vous cherchez une boulangerie.");
@@ -33,6 +33,6 @@ public class FourmiTest {
 
 		fourmi.faireUnChoix();
 		Assert.assertTrue(fourmi.getCurrentNode() != root);
-	}
+	}*/
 	
 }

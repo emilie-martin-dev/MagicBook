@@ -2,7 +2,6 @@ package magic_book.core.game.player;
 
 import java.util.Random;
 import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.core.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
