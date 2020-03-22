@@ -48,6 +48,9 @@ import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.requirement.AbstractRequirement;
+import magic_book.core.requirement.RequirementItem;
+import magic_book.core.requirement.RequirementMoney;
+import magic_book.core.requirement.RequirementSkills;
 
 public class BookReader {
 	
@@ -357,21 +360,17 @@ public class BookReader {
 			for(List<RequirementJson> requirementsJson : choiceJson.getRequirements()) {
 				List<AbstractRequirement> subrequirements = new ArrayList<>();
 				for(RequirementJson requirementJson : requirementsJson) {
-					
-					//TODO Requirements
-					
-					/*AbstractRequirement abstractRequirement = null;
-					
+					AbstractRequirement abstractRequirement = null;
 					
 					if(requirementJson.getType() == TypeJson.ITEM) {
-						
+						abstractRequirement = new RequirementItem(requirementJson.getId());
 					} else if (requirementJson.getType() == TypeJson.SKILL) {
-						
-					} else if (requirementJson.getType() == TypeJson.GOLD) {
-						
+						abstractRequirement = new RequirementSkills(requirementJson.getId());						
+					} else if (requirementJson.getType() == TypeJson.MONEY) {
+						abstractRequirement = new RequirementMoney(requirementJson.getId(), requirementJson.getAmount());						
 					}
 					
-					subrequirements.add(abstractRequirement);*/
+					subrequirements.add(abstractRequirement);
 				}
 				
 				requirements.add(subrequirements);

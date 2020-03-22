@@ -4,12 +4,12 @@ import magic_book.core.game.BookState;
 
 public class RequirementMoney extends AbstractRequirement {
 
-	private int amount;
 	private String moneyId;
+	private int amount;
 	
-	public RequirementMoney(int amount, String moneyId) {
-		this.amount = amount;
+	public RequirementMoney(String moneyId, int amount) {
 		this.moneyId = moneyId;
+		this.amount = amount;
 	}
 	
 	@Override

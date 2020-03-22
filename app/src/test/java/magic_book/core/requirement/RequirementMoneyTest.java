@@ -15,9 +15,9 @@ public class RequirementMoneyTest {
 		BookState bookState = new BookState();
 		bookState.setMainCharacter(mainChar);
 		
-		AbstractRequirement requirementEnough = new RequirementMoney(1, "gold");
-		AbstractRequirement requirementNotEnough = new RequirementMoney(100, "gold");
-		AbstractRequirement requirementEquals = new RequirementMoney(5, "gold");
+		AbstractRequirement requirementEnough = new RequirementMoney("gold", 1);
+		AbstractRequirement requirementNotEnough = new RequirementMoney("gold", 100);
+		AbstractRequirement requirementEquals = new RequirementMoney("gold", 5);
 		
 		Assert.assertTrue(requirementEnough.isSatisfied(bookState));
 		Assert.assertTrue(requirementEquals.isSatisfied(bookState));
