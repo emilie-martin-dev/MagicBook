@@ -48,7 +48,7 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
 import magic_book.core.requirement.RequirementMoney;
-import magic_book.core.requirement.RequirementSkills;
+import magic_book.core.requirement.RequirementSkill;
 
 public class BookWritter {
 	
@@ -348,8 +348,8 @@ public class BookWritter {
 						
 						requirementJson.setId(requirementItem.getItemId());
 						requirementJson.setType(TypeJson.ITEM);
-					} else if(requirement instanceof RequirementSkills) {
-						RequirementSkills requirementSkill = (RequirementSkills) requirement;
+					} else if(requirement instanceof RequirementSkill) {
+						RequirementSkill requirementSkill = (RequirementSkill) requirement;
 						
 						requirementJson.setId(requirementSkill.getSkillId());
 						requirementJson.setType(TypeJson.SKILL);

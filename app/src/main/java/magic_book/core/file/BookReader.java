@@ -50,7 +50,7 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
 import magic_book.core.requirement.RequirementMoney;
-import magic_book.core.requirement.RequirementSkills;
+import magic_book.core.requirement.RequirementSkill;
 
 public class BookReader {
 	
@@ -365,7 +365,7 @@ public class BookReader {
 					if(requirementJson.getType() == TypeJson.ITEM) {
 						abstractRequirement = new RequirementItem(requirementJson.getId());
 					} else if (requirementJson.getType() == TypeJson.SKILL) {
-						abstractRequirement = new RequirementSkills(requirementJson.getId());						
+						abstractRequirement = new RequirementSkill(requirementJson.getId());						
 					} else if (requirementJson.getType() == TypeJson.MONEY) {
 						abstractRequirement = new RequirementMoney(requirementJson.getId(), requirementJson.getAmount());						
 					}

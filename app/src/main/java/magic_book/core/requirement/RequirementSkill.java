@@ -2,11 +2,11 @@ package magic_book.core.requirement;
 
 import magic_book.core.game.BookState;
 
-public class RequirementSkills extends AbstractRequirement{
+public class RequirementSkill extends AbstractRequirement{
 		
 	private String skillId;
 	
-	public RequirementSkills(String skillId){
+	public RequirementSkill(String skillId){
 		this.skillId = skillId;
 	}
 	

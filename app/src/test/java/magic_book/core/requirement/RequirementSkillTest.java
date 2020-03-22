@@ -15,8 +15,8 @@ public class RequirementSkillTest {
 		BookState bookState = new BookState();
 		bookState.setMainCharacter(bookCharacter);
 
-		AbstractRequirement requirementOwn = new RequirementSkills("eclair");
-		AbstractRequirement requirementNotOwn = new RequirementSkills("feu");
+		AbstractRequirement requirementOwn = new RequirementSkill("eclair");
+		AbstractRequirement requirementNotOwn = new RequirementSkill("feu");
 
 		Assert.assertTrue(requirementOwn.isSatisfied(bookState));
 		Assert.assertFalse(requirementNotOwn.isSatisfied(bookState));
