@@ -16,5 +16,21 @@ public class RequirementMoney extends AbstractRequirement {
 	public boolean isSatisfied(BookState state) {
 		return state.getMainCharacter().getMoney(moneyId) >= amount;
 	}
-	
+
+	public String getMoneyId() {
+		return moneyId;
+	}
+
+	public void setMoneyId(String moneyId) {
+		this.moneyId = moneyId;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
 }

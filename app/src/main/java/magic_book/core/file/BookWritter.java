@@ -21,6 +21,7 @@ import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.ItemType;
+import magic_book.core.file.json.RequirementJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.file.json.SetupJson;
 import magic_book.core.file.json.SkillJson;
@@ -44,6 +45,10 @@ import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
+import magic_book.core.requirement.AbstractRequirement;
+import magic_book.core.requirement.RequirementItem;
+import magic_book.core.requirement.RequirementMoney;
+import magic_book.core.requirement.RequirementSkills;
 
 public class BookWritter {
 	
@@ -331,7 +336,37 @@ public class BookWritter {
 			choiceJson.setWeight(nodeLinkRandom.getChance());
 		}
 		
-		//TODO requirements
+		if(!nodeLink.getRequirements().isEmpty()) {
+			choiceJson.setRequirements(new ArrayList<>());
+			for(List<AbstractRequirement> subrequirement : nodeLink.getRequirements()) {
+				List<RequirementJson> subrequirementsJson = new ArrayList<>();
+				for(AbstractRequirement requirement : subrequirement) {
+					RequirementJson requirementJson = new RequirementJson();
+					
+					if(requirement instanceof RequirementItem) {
+						RequirementItem requirementItem = (RequirementItem) requirement;
+						
+						requirementJson.setId(requirementItem.getItemId());
+						requirementJson.setType(TypeJson.ITEM);
+					} else if(requirement instanceof RequirementSkills) {
+						RequirementSkills requirementSkill = (RequirementSkills) requirement;
+						
+						requirementJson.setId(requirementSkill.getSkillId());
+						requirementJson.setType(TypeJson.SKILL);
+					} else if(requirement instanceof RequirementMoney) {
+						RequirementMoney requirementMoney = (RequirementMoney) requirement;
+						
+						requirementJson.setId(requirementMoney.getMoneyId());
+						requirementJson.setAmount(requirementMoney.getAmount());
+						requirementJson.setType(TypeJson.MONEY);
+					}
+					
+					subrequirementsJson.add(requirementJson);
+				}
+				
+				choiceJson.getRequirements().add(subrequirementsJson);
+			}
+		}
 		
 		if(nodeLink.getAuto())
 			choiceJson.setAuto(true);

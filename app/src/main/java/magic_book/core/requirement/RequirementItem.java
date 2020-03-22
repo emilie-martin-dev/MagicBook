@@ -20,4 +20,13 @@ public class RequirementItem extends AbstractRequirement{
 		
 		return false;
 	}
+
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
+	
 }

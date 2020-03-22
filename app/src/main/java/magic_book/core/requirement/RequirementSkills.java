@@ -20,4 +20,13 @@ public class RequirementSkills extends AbstractRequirement{
 		
 		return false;
 	}
+
+	public String getSkillId() {
+		return skillId;
+	}
+
+	public void setSkillId(String skillId) {
+		this.skillId = skillId;
+	}
+	
 }
