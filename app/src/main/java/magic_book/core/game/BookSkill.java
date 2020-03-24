@@ -16,7 +16,7 @@ public class BookSkill implements Descriptible {
 
 	@Override
 	public String getDescription(Book book) {
-		return this.name;
+		return this.name+"\n";
 	}
 
 	public String getId() {

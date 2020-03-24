@@ -29,27 +29,17 @@ public class BookTextExporter {
 		fileWritter.write(book.getTextPrelude());
 		fileWritter.write("\n");
 		
-		fileWritter.write("\n");
-		fileWritter.write("==================================================\n");
-		fileWritter.write("\n");
+		writeSeparator(fileWritter);
 		
-		for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
-			fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
-			if(i < book.getCharacterCreations().size() - 1)
-				fileWritter.write("\n");
-		}
+		writeCharacterCreation(book, fileWritter);
 		
-		fileWritter.write("\n");
-		fileWritter.write("==================================================\n");
-		fileWritter.write("\n");
+		writeSeparator(fileWritter);
 			
 		for(int i = 0 ; i < nodes.size() ; i++) {
-			write(nodes.get(i+1), nodesInv, book, fileWritter);
+			writeNode(nodes.get(i+1), nodesInv, book, fileWritter);
 			
-			if(i < nodes.size() - 1){			
-				fileWritter.write("\n");
-				fileWritter.write("==================================================\n");
-				fileWritter.write("\n");
+			if(i < nodes.size() - 1){
+				writeSeparator(fileWritter);
 			}
 		}
 		
@@ -92,7 +82,22 @@ public class BookTextExporter {
 		return shuffle;
 	}
 
-	private static void write(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter fileWritter) throws IOException {
+	private static void writeSeparator(FileWriter fileWritter) throws IOException {
+		fileWritter.write("\n");
+		fileWritter.write("==================================================\n");
+		fileWritter.write("\n");
+	}
+
+	private static void writeCharacterCreation(Book book, FileWriter fileWritter) throws IOException {
+		for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
+			fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
+			if(i < book.getCharacterCreations().size() - 1)
+				fileWritter.write("\n");
+		}
+	}
+
+	
+	private static void writeNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter fileWritter) throws IOException {
 		fileWritter.write("Paragraphe " + nodesIndex.get(node) + " :\n");
 		fileWritter.write("\n");
 		
