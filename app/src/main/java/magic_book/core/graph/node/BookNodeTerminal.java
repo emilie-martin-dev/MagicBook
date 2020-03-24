@@ -2,12 +2,17 @@ package magic_book.core.graph.node;
 
 import java.util.ArrayList;
 import magic_book.core.Book;
+import magic_book.core.file.json.SectionJson;
 import magic_book.core.graph.node_link.BookNodeLink;
 
 public class BookNodeTerminal extends AbstractBookNode {
 
 	private BookNodeStatus bookNodeStatus;
 
+	public BookNodeTerminal() {
+		this("", null);
+	}
+	
 	public BookNodeTerminal(String texte, BookNodeStatus bookNodeStatus){
 		super(texte);
 		
@@ -31,6 +36,23 @@ public class BookNodeTerminal extends AbstractBookNode {
 		
 		return buffer.toString();
 	}
+
+	@Override
+	public SectionJson toJson() {
+		SectionJson sectionJson = super.toJson();
+		
+		sectionJson.setEndType(bookNodeStatus);
+		
+		return sectionJson;
+	}
+
+	@Override
+	public void fromJson(SectionJson json) {
+		super.fromJson(json);
+		
+		this.setBookNodeStatus(json.getEndType());
+	}
+	
 	
 	
 	public BookNodeStatus getBookNodeStatus() {

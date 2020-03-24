@@ -1,9 +1,10 @@
 package magic_book.core.graph.node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import magic_book.core.Book;
+import magic_book.core.file.json.ItemLinkJson;
+import magic_book.core.file.json.SectionJson;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
 
@@ -131,7 +132,81 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		
 		return buffer.toString();
 	}
-	
+
+	@Override
+	public SectionJson toJson() {
+		SectionJson sectionJson = super.toJson();
+		
+		if(hp != 0)
+			sectionJson.setHp(hp);
+
+		if(isMustEat())
+			sectionJson.setMustEat(true);
+
+		if(!itemLinks.isEmpty())
+			sectionJson.setAmountToPick(nbItemsAPrendre);
+
+		if(!shopItemLinks.isEmpty()) {
+			sectionJson.setShop(new ArrayList<>());
+
+			for(BookItemLink itemLink : shopItemLinks) {
+				sectionJson.getShop().add(itemLink.toJson());
+			}
+		}
+
+		if(!itemLinks.isEmpty()) {
+			sectionJson.setItems(new ArrayList<>());
+
+			for(BookItemLink itemLink : itemLinks) {
+				sectionJson.getItems().add(itemLink.toJson());
+			}
+		}
+
+		sectionJson.setChoices(new ArrayList<>());
+		for(BookNodeLink nodeLink : choices) {
+			sectionJson.getChoices().add(nodeLink.toJson());
+		}
+		
+		return sectionJson;
+	}
+
+	@Override
+	public void fromJson(SectionJson json) {
+		super.fromJson(json);
+		
+		if(json.getAmountToPick() != null)
+			nbItemsAPrendre = json.getAmountToPick();
+		else
+			nbItemsAPrendre = -1;
+		
+		if(json.getMustEat() == null) 
+			mustEat = false;
+		else 
+			mustEat = json.getMustEat();
+		
+		if(json.getHp()== null) 
+			hp = 0;
+		else 
+			hp = json.getHp();
+		
+		if(json.getItems() != null) {
+			for(ItemLinkJson itemLinkJson : json.getItems()) {
+				BookItemLink bookItemsLink = new BookItemLink();
+				bookItemsLink.fromJson(itemLinkJson);
+
+				itemLinks.add(bookItemsLink);
+			}
+		}
+		
+		if(json.getShop() != null) {
+			for(ItemLinkJson itemLinkJson : json.getShop()) {
+				BookItemLink bookItemsLink = new BookItemLink();
+				bookItemsLink.fromJson(itemLinkJson);
+
+				shopItemLinks.add(bookItemsLink);
+			}
+		}
+	}
 	
 	public void addChoice(T nodeLink) {
 		this.choices.add(nodeLink);

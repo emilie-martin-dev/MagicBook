@@ -1,6 +1,7 @@
 package magic_book.core.item;
 
 import magic_book.core.Book;
+import magic_book.core.file.json.ItemJson;
 import magic_book.core.parser.Descriptible;
 
 public class BookItemWithDurability extends BookItem implements Descriptible {
@@ -29,6 +30,26 @@ public class BookItemWithDurability extends BookItem implements Descriptible {
 		return buffer.toString();
 	}
 
+	@Override
+	public ItemJson toJson() {
+		ItemJson itemJson = super.toJson();
+		
+		itemJson.setDurability(durability);
+		
+		return itemJson;
+	}
+
+	@Override
+	public void fromJson(ItemJson json) {
+		super.fromJson(json);
+		
+		if(json.getDurability() != null) {
+			durability = json.getDurability();
+		} else {
+			durability = -1;
+		}
+	}
+	
 	public int getDurability() {
 		return durability;
 	}

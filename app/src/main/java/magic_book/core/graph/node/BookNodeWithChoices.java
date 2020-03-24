@@ -6,6 +6,10 @@ import magic_book.core.graph.node_link.BookNodeLink;
 
 public class BookNodeWithChoices extends AbstractBookNodeWithChoices<BookNodeLink> {
 	
+	public BookNodeWithChoices() {
+		this("");
+	}
+	
 	public BookNodeWithChoices(String text) {
 		super(text, 0, null, null, null);
 	}
@@ -14,5 +18,6 @@ public class BookNodeWithChoices extends AbstractBookNodeWithChoices<BookNodeLin
 		super(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices);
 		
 	}	
+
 
 }

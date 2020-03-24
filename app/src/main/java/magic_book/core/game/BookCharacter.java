@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import magic_book.core.Book;
-import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.file.JsonExportable;
+import magic_book.core.file.json.CharacterJson;
 import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.Parsable;
 
-public class BookCharacter implements Parsable, Descriptible{ 
+public class BookCharacter implements Parsable, Descriptible, JsonExportable<CharacterJson> {
 
 	private String id;
 	private String name;
@@ -22,6 +23,10 @@ public class BookCharacter implements Parsable, Descriptible{
 	private HashMap<String, Integer> moneys;
 	private int itemsMax;
 	private boolean doubleDamage;
+	
+	public BookCharacter() {
+		this("", "", 0, 0, null, null, 0);
+	}
 
 	public BookCharacter(String id, String name, int baseDamage, int hpMax, List<String> listSkills, List<String> listItems, int itemsMax) {
 		this(id, name, baseDamage, hpMax, listSkills, null, listItems, itemsMax, false);
@@ -51,6 +56,57 @@ public class BookCharacter implements Parsable, Descriptible{
 		if(this.items == null) {
 			this.items = new ArrayList<>();
 		}
+	}
+
+	@Override
+	public CharacterJson toJson() {
+		CharacterJson characterJson = new CharacterJson();
+		
+		characterJson.setId(id);
+		characterJson.setName(name);
+		characterJson.setCombatSkill(baseDamage);
+		characterJson.setHp(hp);
+		
+		if(doubleDamage)
+			characterJson.setDoubleDamage(true);
+		
+		if(!immunes.isEmpty())
+			characterJson.setImmune(immunes);
+		
+		if(!skills.isEmpty())
+			characterJson.setSkills(skills);
+		
+		return characterJson;
+	}
+
+	@Override
+	public void fromJson(CharacterJson json) {
+		this.id = json.getId();
+		this.name = json.getName();
+		this.baseDamage = json.getCombatSkill();
+		this.hp = json.getHp();
+		this.hpMax = json.getHp();
+		
+		this.skills.clear();
+		if(json.getSkills() != null) {
+			for(String skill : json.getSkills()) {
+				this.skills.add(skill);
+			}
+		}
+		
+		this.items.clear();
+		
+		this.immunes.clear();
+		if(json.getImmune() != null) {
+			for(String immune : json.getImmune()) {
+				immunes.add(immune);
+			}
+		}
+		
+		this.itemsMax = 0;
+		
+		if(json.getDoubleDamage() != null)
+			this.doubleDamage = json.getDoubleDamage();
 	}
 	
 	@Override

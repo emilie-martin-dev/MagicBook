@@ -2,13 +2,21 @@ package magic_book.core.game.character_creation;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import magic_book.core.Book;
+import magic_book.core.file.json.CharacterCreationJson;
+import magic_book.core.file.json.ItemLinkJson;
+import magic_book.core.file.json.TypeJson;
 import magic_book.core.item.BookItemLink;
 
 public class CharacterCreationItem extends AbstractCharacterCreation {
 
 	private int amountToPick;
 	private List<BookItemLink> itemLinks;
+	
+	public CharacterCreationItem() {
+		this("", null, -1);
+	}
 	
 	public CharacterCreationItem(String text, List<BookItemLink> itemLinks, int amountToPick) {
 		super(text);
@@ -37,6 +45,39 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 		}
 		
 		return buffer.toString();
+	}
+	
+	public CharacterCreationJson toJson() {
+		CharacterCreationJson characterCreationJson = super.toJson();
+		
+		characterCreationJson.setAmountToPick(amountToPick);
+		
+		characterCreationJson.setItems(new ArrayList<>());
+		for(BookItemLink itemLink : itemLinks) {
+			characterCreationJson.getItems().add(itemLink.toJson());
+		}
+		
+		characterCreationJson.setType(TypeJson.ITEM);
+		
+		return characterCreationJson;
+	}
+
+	@Override
+	public void fromJson(CharacterCreationJson json) {
+		super.fromJson(json);
+		
+		this.itemLinks.clear();
+		
+		if(json.getItems() != null) {
+			for(ItemLinkJson itemLinkJson : json.getItems()) {
+				BookItemLink bookItemsLink = new BookItemLink();
+				bookItemsLink.fromJson(itemLinkJson);
+
+				itemLinks.add(bookItemsLink);
+			}
+		}
+
+		amountToPick = json.getAmountToPick();
 	}
 	
 	public void addItemLink(BookItemLink itemLink) {

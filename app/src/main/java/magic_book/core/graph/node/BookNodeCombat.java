@@ -1,9 +1,10 @@
 package magic_book.core.graph.node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import magic_book.core.Book;
+import magic_book.core.file.json.CombatJson;
+import magic_book.core.file.json.SectionJson;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
@@ -15,6 +16,10 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 	private BookNodeLink evasionBookNodeLink;
 	private int evasionRound;
 	private List<String> ennemiesId;
+	
+	public BookNodeCombat(){
+		this("", null, null, null, 0, null, 0, null, null, null);
+	}
 	
 	public BookNodeCombat(String text, BookNodeLink winBookNodeLink, BookNodeLink looseBookNodeLink, BookNodeLink evasionBookNodeLink, int evasionRound, List<String> ennemiesId){
 		this(text, winBookNodeLink, looseBookNodeLink, evasionBookNodeLink, evasionRound, ennemiesId, 0, null, null, null);
@@ -76,6 +81,46 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		}
 		
 		return buffer.toString();
+	}
+
+	@Override
+	public SectionJson toJson() {
+		SectionJson sectionJson = super.toJson();
+		CombatJson combatJson = new CombatJson();
+				
+		if(evasionRound != 0)
+			combatJson.setEvasionRound(evasionRound);
+
+		combatJson.setEnemies(ennemiesId);
+
+		if(winBookNodeLink != null) {
+			combatJson.setWin(winBookNodeLink.toJson());
+		}
+
+		if(looseBookNodeLink != null) {
+			combatJson.setLoose(looseBookNodeLink.toJson());
+		}
+
+		if(evasionBookNodeLink != null) {
+			combatJson.setEvasion(evasionBookNodeLink.toJson());
+		}
+
+		sectionJson.setCombat(combatJson);
+		return sectionJson;
+	}
+
+	@Override
+	public void fromJson(SectionJson json) {
+		super.fromJson(json);
+		
+		this.evasionRound = 0;
+		
+		if(json.getCombat().getEvasionRound() != null)
+			evasionRound = json.getCombat().getEvasionRound();
+		
+		for(String ennemie : json.getCombat().getEnemies()) {
+			addEnnemieId(ennemie);
+		}
 	}
 	
 	@Override

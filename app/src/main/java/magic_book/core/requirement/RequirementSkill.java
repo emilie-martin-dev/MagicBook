@@ -2,6 +2,8 @@ package magic_book.core.requirement;
 
 import java.util.HashMap;
 import magic_book.core.Book;
+import magic_book.core.file.json.RequirementJson;
+import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.parser.Descriptible;
@@ -9,6 +11,10 @@ import magic_book.core.parser.Descriptible;
 public class RequirementSkill extends AbstractRequirement implements Descriptible {
 		
 	private String skillId;
+	
+	public RequirementSkill() {
+		this("");
+	}
 	
 	public RequirementSkill(String skillId){
 		this.skillId = skillId;
@@ -33,6 +39,21 @@ public class RequirementSkill extends AbstractRequirement implements Descriptibl
 		buffer.append("\n");
 		
 		return buffer.toString();		
+	}
+	
+	@Override
+	public RequirementJson toJson() {
+		RequirementJson requirementJson = new RequirementJson();
+		
+		requirementJson.setId(skillId);
+		requirementJson.setType(TypeJson.SKILL);
+		
+		return requirementJson;
+	}
+
+	@Override
+	public void fromJson(RequirementJson json) {
+		skillId = json.getId();
 	}
 
 	public String getSkillId() {

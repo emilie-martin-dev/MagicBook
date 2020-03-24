@@ -1,13 +1,19 @@
 package magic_book.core.item;
 
 import magic_book.core.Book;
+import magic_book.core.file.json.ItemJson;
+import magic_book.core.file.json.ItemType;
 import magic_book.core.parser.Descriptible;
 
 public class BookItemHealing extends BookItemWithDurability implements Descriptible {
 	
 	private int hp;
+	
+	public BookItemHealing() {
+		this("", "", 0, 0);
+	}
 
-	public BookItemHealing(String id, String nom, Integer durability, int hp) {
+	public BookItemHealing(String id, String nom, int durability, int hp) {
 		super(id, nom, durability);
 		
 		this.hp = hp;
@@ -24,6 +30,23 @@ public class BookItemHealing extends BookItemWithDurability implements Descripti
 		buffer.append("\n");
 		
 		return buffer.toString();
+	}
+
+	@Override
+	public ItemJson toJson() {
+		ItemJson itemJson = super.toJson();
+		
+		itemJson.setHp(hp);
+		itemJson.setItemType(ItemType.HEALING);
+		
+		return itemJson;
+	}
+
+	@Override
+	public void fromJson(ItemJson json) {
+		super.fromJson(json);
+
+		hp = json.getHp();
 	}
 	
 	public int getHp() {
