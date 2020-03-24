@@ -91,6 +91,23 @@ public class BookNodeLink {
 			buffer.append(" gold.\n");
 		}
 		
+		
+		if(!requirements.isEmpty()) {
+			buffer.append("Pour faire ce choix vous devez remplir les coditions suivantes : \n");
+		}
+		
+		for(int i = 0 ; i < requirements.size() ; i++) {
+			List<AbstractRequirement> subrequirements = requirements.get(i);
+			for(int j = 0 ; j < subrequirements.size() ; j++) {
+				buffer.append(subrequirements.get(j).getTextForBookText(book, nodesIndex));
+				if(j < subrequirements.size() - 1)
+					buffer.append("et\n");
+			}
+			
+			if(i < requirements.size() - 1)
+				buffer.append("ou\n");
+		}
+		 
 		if(auto) {
 			buffer.append("Ce choix est obligatoire si vous remplissez les prérequis.\n");
 		}

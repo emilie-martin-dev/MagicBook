@@ -1,6 +1,9 @@
 package magic_book.core.requirement;
 
+import java.util.HashMap;
+import magic_book.core.Book;
 import magic_book.core.game.BookState;
+import magic_book.core.graph.node.AbstractBookNode;
 
 public class RequirementItem extends AbstractRequirement{
 	
@@ -20,6 +23,18 @@ public class RequirementItem extends AbstractRequirement{
 		
 		return false;
 	}
+	
+	@Override
+	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("Vous devez posséder l'item ");
+		buffer.append(book.getItems().get(itemId).getName());
+		buffer.append("\n");
+		
+		return buffer.toString();
+	}
+	
 
 	public String getItemId() {
 		return itemId;
@@ -28,5 +43,5 @@ public class RequirementItem extends AbstractRequirement{
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
-	
+
 }
