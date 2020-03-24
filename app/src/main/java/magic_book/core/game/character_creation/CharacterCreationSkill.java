@@ -1,11 +1,8 @@
 package magic_book.core.game.character_creation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import magic_book.core.Book;
-import magic_book.core.graph.node.AbstractBookNode;
-
 
 public class CharacterCreationSkill extends AbstractCharacterCreation {
 	
@@ -23,7 +20,7 @@ public class CharacterCreationSkill extends AbstractCharacterCreation {
 	}
 
 	@Override
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesInv) {
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append(super.getText());

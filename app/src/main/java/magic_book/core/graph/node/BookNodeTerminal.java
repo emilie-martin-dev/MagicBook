@@ -1,7 +1,6 @@
 package magic_book.core.graph.node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import magic_book.core.Book;
 import magic_book.core.graph.node_link.BookNodeLink;
 
@@ -16,10 +15,10 @@ public class BookNodeTerminal extends AbstractBookNode {
 	}
 
 	@Override
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(super.getTextForBookText(book, nodesIndex));
+		buffer.append(super.getDescription(book));
 		buffer.append("\n");
 		
 		if(bookNodeStatus == BookNodeStatus.FAILURE) {

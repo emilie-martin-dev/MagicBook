@@ -2,14 +2,14 @@ package magic_book.core.graph.node_link;
 
 import magic_book.core.graph.node.AbstractBookNode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import magic_book.core.Book;
 import magic_book.core.game.BookState;
+import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.TextParser;
 import magic_book.core.requirement.AbstractRequirement;
 
-public class BookNodeLink {
+public class BookNodeLink implements Descriptible {
 
 	private String text;
 	private AbstractBookNode destination;
@@ -62,7 +62,8 @@ public class BookNodeLink {
 		return false;
 	}
 
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+	@Override
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
 		if(!text.isEmpty()) {
@@ -99,7 +100,7 @@ public class BookNodeLink {
 		for(int i = 0 ; i < requirements.size() ; i++) {
 			List<AbstractRequirement> subrequirements = requirements.get(i);
 			for(int j = 0 ; j < subrequirements.size() ; j++) {
-				buffer.append(subrequirements.get(j).getTextForBookText(book, nodesIndex));
+				buffer.append(subrequirements.get(j).getDescription(book));
 				if(j < subrequirements.size() - 1)
 					buffer.append("et\n");
 			}
@@ -111,10 +112,6 @@ public class BookNodeLink {
 		if(auto) {
 			buffer.append("Ce choix est obligatoire si vous remplissez les prérequis.\n");
 		}
-		
-		buffer.append("Paragraphe suivant : ");
-		buffer.append(nodesIndex.get(destination));
-		buffer.append("\n");
 		
 		return buffer.toString();
 	}

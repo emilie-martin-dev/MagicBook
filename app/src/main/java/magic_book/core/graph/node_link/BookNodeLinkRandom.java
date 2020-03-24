@@ -24,10 +24,11 @@ public class BookNodeLinkRandom extends BookNodeLink {
 		this.chance = chance;
 	}
 	
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+	@Override
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(super.getTextForBookText(book, nodesIndex));
+		buffer.append(super.getDescription(book));
 		buffer.append("Ce noeud a ");
 		buffer.append(chance);
 		buffer.append(" chances d'être sélectionné.\n");

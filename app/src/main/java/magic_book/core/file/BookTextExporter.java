@@ -12,6 +12,7 @@ import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.graph.node_link.BookNodeLink;
 
 public class BookTextExporter {
 
@@ -33,7 +34,7 @@ public class BookTextExporter {
 		fileWritter.write("\n");
 		
 		for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
-			fileWritter.write(book.getCharacterCreations().get(i).getTextForBookText(book, nodesInv));
+			fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
 			if(i < book.getCharacterCreations().size() - 1)
 				fileWritter.write("\n");
 		}
@@ -95,7 +96,23 @@ public class BookTextExporter {
 		fileWritter.write("Paragraphe " + nodesIndex.get(node) + " :\n");
 		fileWritter.write("\n");
 		
-		fileWritter.write(node.getTextForBookText(book, nodesIndex));
+		fileWritter.write(node.getDescription(book));
+		
+		if(!node.getChoices().isEmpty()) {
+			fileWritter.write("\nCorrespondance entre les choix et les paragraphes : \n\n");
+
+			for(BookNodeLink nodeLink : node.getChoices()) {
+				if(!nodeLink.getText().isEmpty()) {
+					fileWritter.write("- ");
+					fileWritter.write(nodeLink.getText());
+					fileWritter.write(" ");
+				}
+				
+				fileWritter.write("- Paragraphe suivant : ");
+				fileWritter.write(""+nodesIndex.get(nodeLink.getDestination()));
+				fileWritter.write("\n");
+			}
+		}
 	}
 
 }

@@ -1,10 +1,9 @@
 package magic_book.core.item;
 
-import java.util.HashMap;
 import magic_book.core.Book;
-import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
 
-public class BookItemHealing extends BookItemWithDurability {
+public class BookItemHealing extends BookItemWithDurability implements Descriptible {
 	
 	private int hp;
 
@@ -14,10 +13,11 @@ public class BookItemHealing extends BookItemWithDurability {
 		this.hp = hp;
 	}
 
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesInv) {
+	@Override
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(super.getTextForBookText(book, nodesInv));
+		buffer.append(super.getDescription(book));
 		
 		buffer.append("Quantité de soins : ");
 		buffer.append(hp);

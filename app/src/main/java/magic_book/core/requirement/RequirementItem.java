@@ -4,8 +4,9 @@ import java.util.HashMap;
 import magic_book.core.Book;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
 
-public class RequirementItem extends AbstractRequirement{
+public class RequirementItem extends AbstractRequirement implements Descriptible {
 	
 	private String itemId;
 	
@@ -23,9 +24,9 @@ public class RequirementItem extends AbstractRequirement{
 		
 		return false;
 	}
-	
+
 	@Override
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("Vous devez posséder l'item ");
@@ -35,7 +36,6 @@ public class RequirementItem extends AbstractRequirement{
 		return buffer.toString();
 	}
 	
-
 	public String getItemId() {
 		return itemId;
 	}

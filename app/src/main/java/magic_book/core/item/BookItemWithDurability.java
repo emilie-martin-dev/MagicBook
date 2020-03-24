@@ -1,11 +1,9 @@
 package magic_book.core.item;
 
-import java.util.HashMap;
 import magic_book.core.Book;
-import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
 
-
-public class BookItemWithDurability extends BookItem {
+public class BookItemWithDurability extends BookItem implements Descriptible {
 
 	private int durability;
 	
@@ -15,10 +13,11 @@ public class BookItemWithDurability extends BookItem {
 		this.durability = durability;
 	}
 	
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesInv) {
+	@Override
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(super.getTextForBookText(book, nodesInv));
+		buffer.append(super.getDescription(book));
 		
 		buffer.append("Durabilité : ");
 		if(durability != -1)

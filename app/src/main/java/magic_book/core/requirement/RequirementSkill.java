@@ -4,8 +4,9 @@ import java.util.HashMap;
 import magic_book.core.Book;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
 
-public class RequirementSkill extends AbstractRequirement{
+public class RequirementSkill extends AbstractRequirement implements Descriptible {
 		
 	private String skillId;
 	
@@ -23,18 +24,17 @@ public class RequirementSkill extends AbstractRequirement{
 		
 		return false;
 	}
-
-	@Override
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+	
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append("Vous devez posséder la compétence ");
 		buffer.append(book.getSkills().get(skillId).getName());
 		buffer.append("\n");
 		
-		return buffer.toString();
+		return buffer.toString();		
 	}
-	
+
 	public String getSkillId() {
 		return skillId;
 	}

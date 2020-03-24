@@ -6,9 +6,10 @@ import java.util.HashMap;
 
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.Parsable;
 
-public class BookCharacter implements Parsable { 
+public class BookCharacter implements Parsable, Descriptible{ 
 
 	private String id;
 	private String name;
@@ -52,7 +53,8 @@ public class BookCharacter implements Parsable {
 		}
 	}
 	
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+	@Override
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
 		buffer.append(name);

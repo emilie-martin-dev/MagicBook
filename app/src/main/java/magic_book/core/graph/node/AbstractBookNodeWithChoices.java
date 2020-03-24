@@ -6,8 +6,6 @@ import java.util.List;
 import magic_book.core.Book;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.core.parser.TextParser;
-
 
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
 	
@@ -41,12 +39,9 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		if(this.shopItemLinks == null)
 			this.shopItemLinks = new ArrayList<>();
 	}
-
-	@Override
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesIndex) {
+	
+	public String getItemDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
-		
-		buffer.append(super.getTextForBookText(book, nodesIndex));
 		
 		if(!itemLinks.isEmpty()) {
 			buffer.append("\n");
@@ -54,7 +49,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 
 			for(BookItemLink il : itemLinks) {
 				buffer.append("\n");
-				buffer.append(il.getTextForBookText(book, nodesIndex));
+				buffer.append(il.getDescription(book));
 			}
 			
 			if(nbItemsAPrendre == -1) {
@@ -66,15 +61,27 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 			}
 		}
 		
+		return buffer.toString();
+	}
+	
+	public String getShopDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
 		if(!shopItemLinks.isEmpty()) {
 			buffer.append("\n");
 			buffer.append("Les items suivants sont en vente : \n");
 
 			for(BookItemLink il : shopItemLinks) {
 				buffer.append("\n");
-				buffer.append(il.getTextForBookText(book, nodesIndex));
+				buffer.append(il.getDescription(book));
 			}
 		}
+		
+		return buffer.toString();
+	}
+	
+	public String getMiscellaneousDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
 		
 		if(mustEat) {
 			buffer.append("\n");
@@ -91,7 +98,22 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 			buffer.append("Vous venez de gagner ");
 			buffer.append(hp);
 			buffer.append(" HP.\n");
-		}
+		}	
+		
+		return buffer.toString();
+	}
+
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getDescription(book));
+		
+		buffer.append(getItemDescription(book));
+		
+		buffer.append(getShopDescription(book));
+		
+		buffer.append(getMiscellaneousDescription(book));
 		
 		if(!choices.isEmpty()) {
 			buffer.append("\n");
@@ -99,7 +121,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 
 
 			for(int i = 0 ; i < choices.size() ; i++) {
-				buffer.append(choices.get(i).getTextForBookText(book, nodesIndex));
+				buffer.append(choices.get(i).getDescription(book));
 				
 				if(i < choices.size() - 1) {
 					buffer.append("\n");

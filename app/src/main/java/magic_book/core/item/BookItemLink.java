@@ -3,8 +3,9 @@ package magic_book.core.item;
 import java.util.HashMap;
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
 
-public class BookItemLink {
+public class BookItemLink implements Descriptible {
 	
 	private String id;
 	private int amount;
@@ -20,10 +21,11 @@ public class BookItemLink {
 		this.sellingPrice = selling_price;
 	}
 
-	public String getTextForBookText(Book book, HashMap<AbstractBookNode, Integer> nodesInv) {
+	@Override
+	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
-		buffer.append(book.getItems().get(id).getTextForBookText(book, nodesInv));
+		buffer.append(book.getItems().get(id).getDescription(book));
 		if(amount != 1)  {
 			buffer.append("Nombre : ");
 			buffer.append(amount);

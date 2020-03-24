@@ -115,7 +115,7 @@ public class BookReader {
 				
 				item = new BookItemWeapon(i.getId(), i.getName(), durability, i.getDamage());
 			} else if(i.getItemType() == ItemType.MONEY) {
-				item = new BookItemMoney(i.getId(), i.getName(), 0);
+				item = new BookItemMoney(i.getId(), i.getName());
 			} else if(i.getItemType() == ItemType.HEALING) {
 				int durability = -1;
 				if(i.getDurability() != null) {
