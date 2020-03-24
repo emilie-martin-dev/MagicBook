@@ -1,7 +1,9 @@
 package magic_book.core.graph.node_link;
 
+import java.util.HashMap;
 import magic_book.core.graph.node.AbstractBookNode;
 import java.util.List;
+import magic_book.core.Book;
 import magic_book.core.requirement.AbstractRequirement;
 
 public class BookNodeLinkRandom extends BookNodeLink {
@@ -20,6 +22,18 @@ public class BookNodeLinkRandom extends BookNodeLink {
 		super(text, destination, requirements);
 		
 		this.chance = chance;
+	}
+	
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getDescription(book));
+		buffer.append("Ce noeud a ");
+		buffer.append(chance);
+		buffer.append(" chances d'être sélectionné.\n");
+		
+		return buffer.toString();
 	}
 
 	public int getChance() {

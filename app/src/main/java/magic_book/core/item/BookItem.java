@@ -1,8 +1,10 @@
 package magic_book.core.item;
 
+import magic_book.core.Book;
+import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.Parsable;
 
-public class BookItem implements Parsable {
+public class BookItem implements Parsable, Descriptible {
 
 	private String id;
 	private String name;
@@ -10,6 +12,17 @@ public class BookItem implements Parsable {
 	public BookItem(String id, String nom) {
 		this.id = id;
 		this.name = nom;
+	}
+	
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append("Nom : ");
+		buffer.append(name);
+		buffer.append("\n");
+		
+		return buffer.toString();
 	}
 
 	@Override

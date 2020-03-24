@@ -1,6 +1,9 @@
 package magic_book.core.item;
 
-public class BookItemDefense extends BookItemWithDurability {
+import magic_book.core.Book;
+import magic_book.core.parser.Descriptible;
+
+public class BookItemDefense extends BookItemWithDurability implements Descriptible {
 	
 	private int resistance;
 
@@ -8,6 +11,19 @@ public class BookItemDefense extends BookItemWithDurability {
 		super(id, nom, durability);
 		
 		this.resistance = resistance;
+	}
+	
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getDescription(book));
+		
+		buffer.append("Défense : ");
+		buffer.append(resistance);
+		buffer.append("\n");
+		
+		return buffer.toString();
 	}
 
 	public int getResistance() {

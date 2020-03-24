@@ -1,6 +1,11 @@
 package magic_book.core.item;
 
-public class BookItemLink {
+import java.util.HashMap;
+import magic_book.core.Book;
+import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
+
+public class BookItemLink implements Descriptible {
 	
 	private String id;
 	private int amount;
@@ -16,6 +21,36 @@ public class BookItemLink {
 		this.sellingPrice = selling_price;
 	}
 
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(book.getItems().get(id).getDescription(book));
+		if(amount != 1)  {
+			buffer.append("Nombre : ");
+			buffer.append(amount);
+			buffer.append("\n");
+		}
+		
+		if(price != -1)  {
+			buffer.append("Prix d'achat : ");
+			buffer.append(price);
+			buffer.append("\n");
+		}
+		
+		if(sellingPrice != -1)  {
+			buffer.append("Prix de vente : ");
+			buffer.append(sellingPrice);
+			buffer.append("\n");
+		}
+		
+		if(auto)  {
+			buffer.append("Obligation de prendre l'item\n");
+		}
+		
+		return buffer.toString();
+	}
+	
 	public String getId() {
 		return id;
 	}

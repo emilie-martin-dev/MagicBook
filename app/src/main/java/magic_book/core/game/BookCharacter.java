@@ -3,9 +3,13 @@ package magic_book.core.game;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import magic_book.core.Book;
+import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.Parsable;
 
-public class BookCharacter implements Parsable { 
+public class BookCharacter implements Parsable, Descriptible{ 
 
 	private String id;
 	private String name;
@@ -47,6 +51,44 @@ public class BookCharacter implements Parsable {
 		if(this.items == null) {
 			this.items = new ArrayList<>();
 		}
+	}
+	
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(name);
+		buffer.append("\n");
+		buffer.append("HP : ");
+		buffer.append(hp);
+		buffer.append("\n");
+		buffer.append("Dégats : ");
+		buffer.append(baseDamage);
+		buffer.append("\n");
+		
+		if(!skills.isEmpty()) {
+			buffer.append("Skills : \n");
+			for(String skillId : skills) {
+				buffer.append("- ");
+				buffer.append(book.getSkills().get(skillId).getName());
+				buffer.append("\n");
+			}
+		}
+		
+		if(!immunes.isEmpty()) {
+			buffer.append("Immunisé : \n");
+			for(String skillId : immunes) {
+				buffer.append("- ");
+				buffer.append(book.getSkills().get(skillId).getName());
+				buffer.append("\n");
+			}
+		}
+		
+		if(doubleDamage) {
+			buffer.append("Modifications : Double dégats\n");
+		}
+		
+		return buffer.toString();
 	}
 	
 	public boolean isAlive(int hp) {

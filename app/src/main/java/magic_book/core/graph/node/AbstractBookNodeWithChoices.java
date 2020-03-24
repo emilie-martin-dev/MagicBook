@@ -1,10 +1,11 @@
 package magic_book.core.graph.node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import magic_book.core.Book;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
-
 
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
 	
@@ -39,6 +40,97 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 			this.shopItemLinks = new ArrayList<>();
 	}
 	
+	public String getItemDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		if(!itemLinks.isEmpty()) {
+			buffer.append("\n");
+			buffer.append("Les items suivants sont disponibles : \n");
+
+			for(BookItemLink il : itemLinks) {
+				buffer.append("\n");
+				buffer.append(il.getDescription(book));
+			}
+			
+			if(nbItemsAPrendre == -1) {
+				buffer.append("\nVous pouvez prendre autant d'items que vous le voulez.\n");
+			} else {
+				buffer.append("\nVous pouvez prendre ");
+				buffer.append(nbItemsAPrendre);
+				buffer.append(" items.\n");
+			}
+		}
+		
+		return buffer.toString();
+	}
+	
+	public String getShopDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		if(!shopItemLinks.isEmpty()) {
+			buffer.append("\n");
+			buffer.append("Les items suivants sont en vente : \n");
+
+			for(BookItemLink il : shopItemLinks) {
+				buffer.append("\n");
+				buffer.append(il.getDescription(book));
+			}
+		}
+		
+		return buffer.toString();
+	}
+	
+	public String getMiscellaneousDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		if(mustEat) {
+			buffer.append("\n");
+			buffer.append("Vous devez manger pour continuer.\n");
+		}
+		
+		if(hp < 0) {
+			buffer.append("\n");
+			buffer.append("Vous venez de perdre ");
+			buffer.append(Math.abs(hp));
+			buffer.append(" HP.\n");
+		} else if(hp > 0) {
+			buffer.append("\n");
+			buffer.append("Vous venez de gagner ");
+			buffer.append(hp);
+			buffer.append(" HP.\n");
+		}	
+		
+		return buffer.toString();
+	}
+
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getDescription(book));
+		
+		buffer.append(getItemDescription(book));
+		
+		buffer.append(getShopDescription(book));
+		
+		buffer.append(getMiscellaneousDescription(book));
+		
+		if(!choices.isEmpty()) {
+			buffer.append("\n");
+			buffer.append("Que souhaitez vous faire ?\n\n");
+
+
+			for(int i = 0 ; i < choices.size() ; i++) {
+				buffer.append(choices.get(i).getDescription(book));
+				
+				if(i < choices.size() - 1) {
+					buffer.append("\n");
+				}
+			}
+		}
+		
+		return buffer.toString();
+	}
 	
 	
 	public void addChoice(T nodeLink) {

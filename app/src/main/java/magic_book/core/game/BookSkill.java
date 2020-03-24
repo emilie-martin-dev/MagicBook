@@ -1,7 +1,10 @@
 package magic_book.core.game;
 
+import magic_book.core.Book;
+import magic_book.core.parser.Descriptible;
 
-public class BookSkill {
+
+public class BookSkill implements Descriptible {
 	
 	private String id;
 	private String name;
@@ -9,6 +12,11 @@ public class BookSkill {
 	public BookSkill(String id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	@Override
+	public String getDescription(Book book) {
+		return this.name+"\n";
 	}
 
 	public String getId() {

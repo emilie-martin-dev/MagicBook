@@ -1,6 +1,9 @@
 package magic_book.core.item;
 
-public class BookItemWeapon extends BookItemWithDurability {
+import magic_book.core.Book;
+import magic_book.core.parser.Descriptible;
+
+public class BookItemWeapon extends BookItemWithDurability implements Descriptible {
 	
 	private int damage;
 
@@ -9,7 +12,20 @@ public class BookItemWeapon extends BookItemWithDurability {
 		
 		this.damage = damage;
 	}
-
+		
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getDescription(book));
+		
+		buffer.append("Dégats : ");
+		buffer.append(damage);
+		buffer.append("\n");
+		
+		return buffer.toString();
+	}
+	
 	public int getDamage() {
 		return damage;
 	}

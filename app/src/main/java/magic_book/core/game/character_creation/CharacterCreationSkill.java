@@ -2,7 +2,7 @@ package magic_book.core.game.character_creation;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import magic_book.core.Book;
 
 public class CharacterCreationSkill extends AbstractCharacterCreation {
 	
@@ -18,12 +18,29 @@ public class CharacterCreationSkill extends AbstractCharacterCreation {
 		if(this.skillLinks == null)
 			this.skillLinks = new ArrayList<>();
 	}
-	
+
+	@Override
+	public String getDescription(Book book) {
+		StringBuffer buffer = new StringBuffer();
+		
+		buffer.append(super.getText());
+		buffer.append("\n");
+		buffer.append("Choisissez ");
+		buffer.append(amountToPick);
+		buffer.append(" compétences : \n\n");
+		
+		for(int i = 0 ; i < skillLinks.size() ; i++) {
+			buffer.append("- ");
+			buffer.append(book.getSkills().get(skillLinks.get(i)).getName());
+			buffer.append("\n");
+		}
+		
+		return buffer.toString();
+	}
 	
 	public void addSkillLink(String skillLink) {
 		this.skillLinks.add(skillLink);
 	}
-
 	
 	public List<String> getSkillLinks() {
 		return skillLinks;
