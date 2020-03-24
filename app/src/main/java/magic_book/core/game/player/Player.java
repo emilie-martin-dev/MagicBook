@@ -9,8 +9,6 @@ import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.core.node.AbstractBookNodeWithChoice;
-import magic_book.core.node.BookNodeWithChoice;
 import magic_book.core.requirement.AbstractRequirement;
 
 public class Player implements InterfacePlayerFourmis {
@@ -46,7 +44,6 @@ public class Player implements InterfacePlayerFourmis {
 					for(List<AbstractRequirement> listRequirement : bookNodeWithChoices.getChoices().get(str).getRequirements()) {
 						for(AbstractRequirement requirement : listRequirement) {
 							System.out.println("- "+requirement.toString());
-					
 						}
 					}
 				}
