@@ -14,8 +14,9 @@ import magic_book.core.graph.node_link.BookNodeLinkRandom;
 public class Fourmi implements InterfacePlayerFourmis{
 
 	private AbstractBookNode bookNodeChoice;
+	private int victoire;
 
-	public Fourmi(AbstractBookNode bookNodeChoice){
+	public Fourmi(){
 		this.bookNodeChoice = bookNodeChoice;
 	}
 	
@@ -25,7 +26,7 @@ public class Fourmi implements InterfacePlayerFourmis{
 		return bookCharacter;
 	}
 	
-	private void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state){
+	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state){
 		BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNodeChoice;
 		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
 		this.bookNodeChoice = randomChoices.getDestination();
@@ -41,14 +42,19 @@ public class Fourmi implements InterfacePlayerFourmis{
 
 	@Override
 	public void execNodeTerminal(BookNodeTerminal node, BookState state) {
-		/*
-		Question:
-		//Je pense mettre cette methode en Bool
-		//False si failure
-		//True si victory
-		*/
 		if(node.getBookNodeStatus().VICTORY == BookNodeStatus.VICTORY){	
+			this.victoire = 1;
 		}
 	}
+
+	public AbstractBookNode getBookNodeChoice() {
+		return bookNodeChoice;
+	}
+
+	public int getVictoire() {
+		return victoire;
+	}
+	
+	
 	
 }
