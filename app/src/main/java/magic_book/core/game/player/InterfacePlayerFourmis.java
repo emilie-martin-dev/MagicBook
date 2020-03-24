@@ -10,7 +10,5 @@ public interface InterfacePlayerFourmis {
 	
 	public void execNodeCombat(BookNodeCombat node, BookState state);
 	
-	//public void execNodeRandom(BookNode, BookState state);
-	
 	public void execNodeTerminal(BookNodeTerminal node, BookState state);	
 }
