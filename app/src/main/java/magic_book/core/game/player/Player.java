@@ -13,14 +13,14 @@ import magic_book.core.requirement.AbstractRequirement;
 
 public class Player implements InterfacePlayerFourmis {
 	
-	AbstractBookNode bookNodeChoice;
-	Scanner sc = new Scanner(System.in);
+	private AbstractBookNode bookNodeChoice;
+	private Scanner sc = new Scanner(System.in);
 	
 	public Player(){
 		this.bookNodeChoice = bookNodeChoice;
 	}
 	
-	private void execNodeWithChoices(BookNodeWithChoices node, BookState state){
+	public void execNodeWithChoices(BookNodeWithChoices node, BookState state){
 		for(BookNodeLink bookNodeLink : node.getChoices()){
 			System.out.println(""+bookNodeLink.getText());
 		}
@@ -54,6 +54,8 @@ public class Player implements InterfacePlayerFourmis {
 		}
 			
 	}
+	
+	//Changer toute les méthode pour enelever de bookNode... et ca va être le this qui va prend le relais
 
 	@Override
 	public void execNodeCombat(BookNodeCombat node, BookState state) {
@@ -69,7 +71,7 @@ public class Player implements InterfacePlayerFourmis {
 			System.out.println(""+bookNodeLink.getText());
 		}
 		//transformer le bookNodeChoice
-		BookNodeCombat bookNodeWithRandomChoices = (BookNodeCombat) bookNodeChoice;
+		BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNodeChoice;
 		
 		//avoir le nombre de tour avant evasion
 		int evasionRound = node.getEvasionRound();
