@@ -39,6 +39,7 @@ public class LeftPane extends ScrollPane {
 		this.book = book;
 		
 		this.setMaxWidth(250);
+		this.setMinWidth(250);
 		this.setPadding(new Insets(5, 5, 5, 5));
 		this.setFitToWidth(true);
 				

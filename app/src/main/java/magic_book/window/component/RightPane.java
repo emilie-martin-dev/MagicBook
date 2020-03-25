@@ -20,8 +20,8 @@ public class RightPane extends ScrollPane implements BookNodeObserver {
 	public RightPane(Book book){		
 		nodeCount = 0;
 		
-		this.setMaxWidth(250);
-		this.setWidth(250d);
+		this.setMaxWidth(200);
+		this.setMinWidth(200);
 		this.setPadding(new Insets(5, 5, 5, 5));
 		this.setFitToWidth(true);
 				
