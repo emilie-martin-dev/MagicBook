@@ -1,6 +1,5 @@
 package magic_book.core.graph.node_link;
 
-import magic_book.core.graph.node.AbstractBookNode;
 import java.util.List;
 import magic_book.core.Book;
 import magic_book.core.file.json.ChoiceJson;
@@ -11,14 +10,14 @@ public class BookNodeLinkRandom extends BookNodeLink {
 	private int chance;
 	
 	public BookNodeLinkRandom() {
-		this("", null, 1);
+		this("", -1, 1);
 	}
 	
-	public BookNodeLinkRandom(String text, AbstractBookNode destination, int chance) {
+	public BookNodeLinkRandom(String text, int destination, int chance) {
 		this(text, destination, null, chance);
 	}
 	
-	public BookNodeLinkRandom(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements, int chance) {
+	public BookNodeLinkRandom(String text, int destination, List<List<AbstractRequirement>> requirements, int chance) {
 		super(text, destination, requirements);
 		
 		this.chance = chance;

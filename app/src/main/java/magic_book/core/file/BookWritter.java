@@ -101,7 +101,6 @@ public class BookWritter {
 
 				if(bookNodeCombat.getWinBookNodeLink() != null) {
 					ChoiceJson winChoiceJson = bookNodeCombat.getWinBookNodeLink().toJson();
-					winChoiceJson.setSection();
 					combatJson.setWin(winChoiceJson);
 					choicesDone.add(bookNodeCombat.getWinBookNodeLink());
 				}

@@ -20,25 +20,25 @@ import magic_book.core.requirement.RequirementSkill;
 public class BookNodeLink implements Descriptible, JsonExportable<ChoiceJson> {
 
 	private String text;
-	private AbstractBookNode destination;
+	private int destination;
 	private List<List<AbstractRequirement>> requirements;
 	private int hp;
 	private int gold;
 	private boolean auto;
 	
 	public BookNodeLink() {
-		this("", null);
+		this("", -1);
 	}
 	
-	public BookNodeLink(String text, AbstractBookNode destination) {
+	public BookNodeLink(String text, int destination) {
 		this(text, destination, null);
 	}
 	
-	public BookNodeLink(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements) {
+	public BookNodeLink(String text, int destination, List<List<AbstractRequirement>> requirements) {
 		this(text, destination, requirements, 0, 0, false);
 	}
 	
-	public BookNodeLink(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements, int hp, int gold, boolean auto) {
+	public BookNodeLink(String text, int destination, List<List<AbstractRequirement>> requirements, int hp, int gold, boolean auto) {
 		this.text = text;
 		this.destination = destination;
 		this.requirements = requirements;
@@ -152,6 +152,8 @@ public class BookNodeLink implements Descriptible, JsonExportable<ChoiceJson> {
 		if(hp != 0)
 			choiceJson.setHp(hp);
 		
+		choiceJson.setSection(destination);
+		
 		return choiceJson;
 	}
 
@@ -173,6 +175,8 @@ public class BookNodeLink implements Descriptible, JsonExportable<ChoiceJson> {
 			hp = json.getHp();
 		
 		text = json.getText();
+		
+		destination = json.getSection();
 		
 		if(json.getRequirements() != null) {
 			for(List<RequirementJson> requirementsJson : json.getRequirements()) {
@@ -206,11 +210,11 @@ public class BookNodeLink implements Descriptible, JsonExportable<ChoiceJson> {
 		this.text = text;
 	}
 
-	public AbstractBookNode getDestination() {
+	public int getDestination() {
 		return destination;
 	}
 
-	public void setDestination(AbstractBookNode destination) {
+	public void setDestination(int destination) {
 		this.destination = destination;
 	}
 

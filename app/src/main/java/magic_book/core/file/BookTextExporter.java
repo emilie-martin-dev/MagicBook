@@ -96,7 +96,6 @@ public class BookTextExporter {
 		}
 	}
 
-	
 	private static void writeNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter fileWritter) throws IOException {
 		fileWritter.write("Paragraphe " + nodesIndex.get(node) + " :\n");
 		fileWritter.write("\n");
@@ -114,7 +113,7 @@ public class BookTextExporter {
 				}
 				
 				fileWritter.write("- Paragraphe suivant : ");
-				fileWritter.write(""+nodesIndex.get(nodeLink.getDestination()));
+				fileWritter.write(""+nodesIndex.get(book.getNodes().get(nodeLink.getDestination())));
 				fileWritter.write("\n");
 			}
 		}

@@ -219,8 +219,6 @@ public class BookReader {
 		} else {
 			bookNodeLink = new BookNodeLink();
 		}
-		
-		bookNodeLink.setDestination(nodes.get(choiceJson.getSection()));
 
 		bookNodeLink.fromJson(choiceJson);
 		

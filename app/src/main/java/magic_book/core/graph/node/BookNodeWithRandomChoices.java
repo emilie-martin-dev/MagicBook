@@ -33,9 +33,10 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 			}
 		}
 		if(listNodeLinkDisponible.isEmpty()){
-			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
+			/*BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
 			BookNodeLinkRandom bookNodeLinkTerminal = new BookNodeLinkRandom("C'est la voie de la raison", bookNodeTerminalFail, null, 0);
-			return bookNodeLinkTerminal;
+			*/
+			return null;
 		} else {
 			Random random = new Random();
 			int nbrRandomChoice = random.nextInt(somme);
