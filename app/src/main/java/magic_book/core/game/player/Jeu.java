@@ -7,11 +7,15 @@ import magic_book.core.Book;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
+import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
+import magic_book.core.item.BookItemLink;
+import magic_book.core.requirement.AbstractRequirement;
+import magic_book.core.requirement.RequirementItem;
 import magic_book.window.gui.NodeFx;
 
 
@@ -19,7 +23,7 @@ public class Jeu {
 	
 	private BookState state;
 	private List<NodeFx> listeNoeud;
-	private Player player = new Player();
+	private Player player;
 	private Fourmi fourmi;
 	private AbstractBookNode bookNode;
 	private boolean end;
@@ -32,29 +36,76 @@ public class Jeu {
 	}
 	
 	public void play(){
+		player = new Player();
 		end = false;
-		AbstractBookNode bookNode = listeNoeud.get(0).getNode();
-		System.out.println(bookNode.getText());
-		while(end = false){
+		//bookNode = book.getRootNode();
+		this.state.getMainCharacter().addItem("potion");
+	/*	BookItemLink armeItemsLink = new BookItemLink("arme", 10, 10, false, 2);
+		BookItemLink potionItemsLink = new BookItemLink("potion", 10, 10, false, 2);
+		List<BookItemLink> itemLinks = new ArrayList();
+		itemLinks.add(armeItemsLink);
+		itemLinks.add(potionItemsLink);
+		
+		BookNodeTerminal bt = new BookNodeTerminal("fin", BookNodeStatus.VICTORY);
+		List<BookNodeLink> choices = new ArrayList();
+		List<List<AbstractRequirement>> requirements = new ArrayList();
+		List<AbstractRequirement> r = new ArrayList();
+		RequirementItem ar = new RequirementItem("potion");
+		r.add(ar);
+		requirements.add(r);
+		BookNodeLink bl = new BookNodeLink("C'est un noeud terminal", bt, requirements, 20, 10, false);
+		List<BookNodeLink> listbl = new ArrayList();
+		listbl.add(bl);
+		bookNode = new BookNodeWithChoices("Test", 2, itemLinks, null, listbl);*/
+	
+		BookItemLink armeItemsLink = new BookItemLink("arme", 10, 10, false, 2);
+		BookItemLink potionItemsLink = new BookItemLink("potion", 10, 10, false, 2);
+		List<BookItemLink> itemLinks = new ArrayList();
+		itemLinks.add(armeItemsLink);
+		itemLinks.add(potionItemsLink);
+		
+		BookNodeTerminal bt = new BookNodeTerminal("fin", BookNodeStatus.VICTORY);
+		List<BookNodeLink> choices = new ArrayList();
+		List<List<AbstractRequirement>> requirements = new ArrayList();
+		List<AbstractRequirement> r = new ArrayList();
+		RequirementItem ar = new RequirementItem("potion");
+		r.add(ar);
+		requirements.add(r);
+		BookNodeLink winBookNodeLink = new BookNodeLink("combat win", bt, requirements, 20, 10, false);
+		BookNodeLink looseBookNodeLink = new BookNodeLink("combat loose", bt, requirements, 20, 10, false);
+		BookNodeLink evasionBookNodeLink = new BookNodeLink("combat evasion", bt, requirements, 20, 10, false);
+		List<BookNodeLink> listbl = new ArrayList();
+		listbl.add(winBookNodeLink);
+		listbl.add(looseBookNodeLink);
+		listbl.add(evasionBookNodeLink);
+		List<String> ennemiesId = new ArrayList();
+		ennemiesId.add("Vache");
+		ennemiesId.add("Serpend");
+		
+		bookNode = new BookNodeCombat("Rentre dans le noeud de combat", winBookNodeLink, looseBookNodeLink, evasionBookNodeLink, 5, ennemiesId, 3, itemLinks, itemLinks, listbl);
+	
+		while(end == false){
+			System.out.println("Rentre dans la while");
 			if(bookNode instanceof BookNodeCombat){
-				BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
-				player.execNodeCombat(bookNodeCombat, state);
-			}
-			else if(bookNode instanceof BookNodeCombat){
+				System.out.println("Combat");
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
 				player.execNodeCombat(bookNodeCombat, state);
 			}
 			else if(bookNode instanceof BookNodeWithChoices){
+				System.out.println("Choix");
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
 				player.execNodeWithChoices(bookNodeWithChoices, state);
 			}
 			else if(bookNode instanceof BookNodeTerminal){
+				System.out.println("Term");
 				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) bookNode;
 				player.execNodeTerminal(bookNodeTerminal, state);
 				end = true;
 			}
+			System.out.println("OK");
 			this.bookNode = player.getBookNodeChoice();
 		}
+		System.out.println("Fin");
 	}
 	
 	public float fourmis(int nbrFourmis){
