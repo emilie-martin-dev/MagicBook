@@ -27,9 +27,7 @@ public class Fourmi implements InterfacePlayerFourmis{
 	}
 	
 	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state){
-		System.out.println("exec Random ");
 		BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNodeChoice;
-		System.out.println("Transformation ");
 		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
 		this.bookNodeChoice = randomChoices.getDestination();
 	}
