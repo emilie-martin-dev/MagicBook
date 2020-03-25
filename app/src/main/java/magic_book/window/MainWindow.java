@@ -163,9 +163,9 @@ public class MainWindow extends Stage{
 
 		// --- Menu affichage
 		Menu menuShow = new Menu("Affichage");
-		CheckMenuItem menuShowItemsCharacters = new CheckMenuItem("Items et personnage");
+		CheckMenuItem menuShowItemsCharacters = new CheckMenuItem("Mode, Items et personnages");
 		
-		CheckMenuItem menuShowStats = new CheckMenuItem("Stats");
+		CheckMenuItem menuShowStats = new CheckMenuItem("Statistiques");
 		menuShowStats.setOnAction((ActionEvent e) -> {
 			if(menuShowStats.isSelected()) {
 				root.setRight(rightPane);
