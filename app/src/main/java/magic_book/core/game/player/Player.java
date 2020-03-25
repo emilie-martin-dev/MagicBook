@@ -106,4 +106,8 @@ public class Player implements InterfacePlayerFourmis {
 			System.out.println(""+bookNodeLink.getText());
 		}
 	}
+
+	public AbstractBookNode getBookNodeChoice() {
+		return bookNodeChoice;
+	}
 }
