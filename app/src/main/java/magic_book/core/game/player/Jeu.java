@@ -44,7 +44,6 @@ public class Jeu {
 	public void play(){
 		player = new Player();
 		end = false;
-		this.state.getMainCharacter().addItem("potion");
 		
 		try{
 		BookReader reader = new BookReader();
@@ -97,6 +96,23 @@ public class Jeu {
 	}
 	
 	public float fourmis(int nbrFourmis){
+		try{
+		BookReader reader = new BookReader();
+		book = reader.read("./test_aure");
+		}
+		catch(FileNotFoundException ex) {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors de l'ouverture du fichier");
+				a.setHeaderText("Le fichier n'existe pas");
+				a.show(); 
+			} catch (BookFileException ex) {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors de l'ouverture du fichier");
+				a.setHeaderText("Le fichier n'est pas bien formé");
+				a.setContentText(ex.getMessage());
+				a.show();
+			}
+		
 		victoire = 0;
 		List<Integer> listChoicesRandomChances = new ArrayList();
 		for ( int i = 0 ; i < nbrFourmis ; i++){
