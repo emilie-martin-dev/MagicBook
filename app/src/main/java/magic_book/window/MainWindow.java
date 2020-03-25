@@ -72,7 +72,7 @@ public class MainWindow extends Stage{
 			BookState state = new BookState();
 			state.setMainCharacter(bookCharacter);
 			Jeu jeu = new Jeu(state , book);
-			jeu.fourmis(10000);
+			jeu.play();
 		});
 		
 		
