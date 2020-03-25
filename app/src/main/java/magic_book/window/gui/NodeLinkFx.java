@@ -5,8 +5,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.observer.NodeLinkFxObservable;
-import magic_book.observer.NodeLinkFxObserver;
+import magic_book.observer.fx.NodeLinkFxObservable;
+import magic_book.observer.fx.NodeLinkFxObserver;
 
 public class NodeLinkFx extends Line {
 	

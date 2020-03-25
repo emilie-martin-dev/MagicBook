@@ -15,8 +15,8 @@ import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.observer.NodeLinkFxObserver;
-import magic_book.observer.RectangleFxObserver;
+import magic_book.observer.fx.NodeLinkFxObserver;
+import magic_book.observer.fx.RectangleFxObserver;
 import magic_book.window.Mode;
 import magic_book.window.dialog.NodeDialog;
 import magic_book.window.dialog.NodeLinkDialog;
@@ -68,8 +68,6 @@ public class GraphPane extends Pane {
 		
 		listeNoeud.add(nodeFx);
 		this.getChildren().add(nodeFx);
-			
-		book.appendNode(node);
 		
 		return nodeFx;
 	}
@@ -78,8 +76,11 @@ public class GraphPane extends Pane {
 		NodeDialog nodeDialog = new NodeDialog();
 		AbstractBookNode node = nodeDialog.getNode();
 		
-		if(node != null) 
-			return createNode(node, (int) event.getX(), (int) event.getY());
+		if(node != null) {
+			createNode(node, (int) event.getX(), (int) event.getY());
+			
+			book.appendNode(node);
+		}
 		
 		return null;
 	}
@@ -139,7 +140,9 @@ public class GraphPane extends Pane {
 		listeNoeud.clear();
 		listeNoeudLien.clear();
 		selectedNodeFx = null;
-		this.getChildren().clear();		
+		this.getChildren().clear();	
+		
+		this.book = book;	
 		
 		createNodePrelude();
 		preludeFx.setText(book.getTextPrelude());

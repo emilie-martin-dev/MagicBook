@@ -1,4 +1,4 @@
-package magic_book.observer;
+package magic_book.observer.fx;
 
 import javafx.scene.input.MouseEvent;
 import magic_book.window.gui.NodeLinkFx;

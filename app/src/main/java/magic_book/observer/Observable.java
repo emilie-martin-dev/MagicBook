@@ -5,21 +5,30 @@ import java.util.List;
 
 public abstract class Observable<T> {
 
-	List<T> listObservers;
+	private List<T> observers;
 
 	public Observable() {
-		listObservers = new ArrayList<>();
+		observers = new ArrayList<>();
 	}
 
 	public void addObserver(T observer) {
-		listObservers.add(observer);
+		observers.add(observer);
 	}
 
 	public void removeObserver(T observer) {
-		listObservers.remove(observer);
+		observers.remove(observer);
 	}
 
 	public void clearObserver() {
-		listObservers.clear();
+		observers.clear();
 	}
+
+	public List<T> getObservers() {
+		return observers;
+	}
+
+	public void setObservers(List<T> observers) {
+		this.observers = observers;
+	}
+	
 }

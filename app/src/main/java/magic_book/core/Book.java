@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import magic_book.core.game.BookCharacter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import magic_book.core.game.BookSkill;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
@@ -11,6 +12,8 @@ import magic_book.core.item.BookItem;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.observer.book.BookNodeObservable;
+import magic_book.observer.book.BookNodeObserver;
 
 
 public class Book {
@@ -21,6 +24,8 @@ public class Book {
 	private HashMap<String, BookCharacter> characters;
 	private HashMap<String, BookSkill> skills;
 	private List<AbstractCharacterCreation> characterCreations;
+	
+	private BookNodeObservable bookNodeObservable;
 
 	private List<Integer> missingIndexes;
 	private HashMap<AbstractBookNode, Integer> nodesInv;
@@ -54,6 +59,13 @@ public class Book {
 		
 		if(this.characterCreations == null)
 			this.characterCreations = new ArrayList<>();
+		
+		for(Map.Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()){
+			nodesInv.put(entry.getValue(), entry.getKey());
+		}
+		
+		
+		this.bookNodeObservable = new BookNodeObservable();
 	}	
 
 	public void appendNode(AbstractBookNode node) {
@@ -65,7 +77,9 @@ public class Book {
 			this.nodes.put(missingIndexes.get(0), node);
 			this.nodesInv.put(node, missingIndexes.get(0));
 			this.missingIndexes.remove(0);
-		}		
+		}
+		
+		bookNodeObservable.notifyNodeAdded(node);
 	}
 	
 	public void changeFirstNode(AbstractBookNode node) {
@@ -87,6 +101,8 @@ public class Book {
 		if(indexOfNode != null) {
 			this.nodes.put(indexOfNode, newNode);
 			this.nodesInv.put(newNode, indexOfNode);
+			
+			bookNodeObservable.notifyNodeEdited(oldNode, newNode);
 		} else {
 			appendNode(newNode);
 		}
@@ -98,6 +114,8 @@ public class Book {
 			this.missingIndexes.add(indexOfNode);
 			this.nodes.remove(indexOfNode);
 			this.nodesInv.remove(node);
+			
+			bookNodeObservable.notifyNodeDeleted(node);
 			
 			HashMap<AbstractBookNodeWithChoices, BookNodeLink> postRemove = new HashMap<>();
 			for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
@@ -168,6 +186,14 @@ public class Book {
 
 	public int getNodeIndex(AbstractBookNode node) {
 		return nodesInv.containsKey(node) ? nodesInv.get(node) : -1;
+	}
+	
+	public void addNodeObserver(BookNodeObserver observer) {
+		bookNodeObservable.addObserver(observer);
+	}
+	
+	public void removeNodeObserver(BookNodeObserver observer) {
+		bookNodeObservable.removeObserver(observer);
 	}
 
 	public String getTextPrelude() {
