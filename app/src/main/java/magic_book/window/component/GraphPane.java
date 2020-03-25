@@ -7,6 +7,7 @@ import java.util.Optional;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -26,7 +27,7 @@ import magic_book.window.gui.NodeLinkFx;
 import magic_book.window.gui.PreludeFx;
 import magic_book.window.gui.RectangleFx;
 
-public class GraphPane extends Pane {
+public class GraphPane extends ScrollPane {
 	
 	private List<NodeFx> listeNoeud;
 	private List<NodeLinkFx> listeNoeudLien;
@@ -38,18 +39,27 @@ public class GraphPane extends Pane {
 	private PreludeFx preludeFx;	
 	private Book book;
 	
+	private Pane rootPane;
+	
 	public GraphPane(Book book){
 		listeNoeud = new ArrayList<>();
 		listeNoeudLien = new ArrayList<>();
-		this.book = book;
 		
 		preludeFxFirstNodeLine = new Line();
 		preludeFxFirstNodeLine.setStrokeWidth(3);
 		preludeFxFirstNodeLine.setStroke(Color.BLACK);
 		
-		this.setStyle("-fx-background-color: #dddddd;");
-		this.setCursor(Cursor.CLOSED_HAND);
-		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
+		rootPane = new Pane();
+		
+		this.setContent(rootPane);
+		rootPane.setMinSize(10000, 10000);
+		this.setFitToWidth(true);
+		this.setFitToHeight(true);
+		this.setPannable(true);
+		
+		rootPane.setStyle("-fx-background-color: #dddddd;");
+		rootPane.setCursor(Cursor.CLOSED_HAND);
+		rootPane.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			selectedNodeFx = null;
 			
 			if (mode == Mode.ADD_NODE) {
@@ -58,6 +68,7 @@ public class GraphPane extends Pane {
 		});
 		
 		createNodePrelude();
+		setBook(book);
 	}
 	
 	public NodeFx createNode(AbstractBookNode node, int x, int y) {
@@ -67,7 +78,7 @@ public class GraphPane extends Pane {
 		nodeFx.addNodeFxObserver(new NodeFxListener());
 		
 		listeNoeud.add(nodeFx);
-		this.getChildren().add(nodeFx);
+		rootPane.getChildren().add(nodeFx);
 		
 		return nodeFx;
 	}
@@ -96,7 +107,7 @@ public class GraphPane extends Pane {
 		nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
 		nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
 
-		this.getChildren().add(nodeLinkFx);
+		rootPane.getChildren().add(nodeLinkFx);
 		listeNoeudLien.add(nodeLinkFx);
 		
 		return nodeLinkFx;
@@ -132,7 +143,7 @@ public class GraphPane extends Pane {
 		preludeFxFirstNodeLine.startXProperty().bind(preludeFx.xProperty().add(preludeFx.widthProperty().divide(2)));
 		preludeFxFirstNodeLine.startYProperty().bind(preludeFx.yProperty().add(preludeFx.heightProperty().divide(2)));
 
-		this.getChildren().add(preludeFx);
+		rootPane.getChildren().add(preludeFx);
 		this.setPreludeFx(preludeFx);
 	}
 	
@@ -140,7 +151,7 @@ public class GraphPane extends Pane {
 		listeNoeud.clear();
 		listeNoeudLien.clear();
 		selectedNodeFx = null;
-		this.getChildren().clear();	
+		rootPane.getChildren().clear();	
 		
 		this.book = book;	
 		
@@ -173,8 +184,8 @@ public class GraphPane extends Pane {
 			
 			preludeFxFirstNodeLine.setVisible(true);
 			
-			if(!this.getChildren().contains(preludeFxFirstNodeLine)) {
-				this.getChildren().add(preludeFxFirstNodeLine);
+			if(!rootPane.getChildren().contains(preludeFxFirstNodeLine)) {
+				rootPane.getChildren().add(preludeFxFirstNodeLine);
 			}			
 			
 			book.changeFirstNode(newFirstNode.getNode());
@@ -258,7 +269,7 @@ public class GraphPane extends Pane {
 				
 			} else if(mode == Mode.DELETE) {
 				if(confirmDeleteDialog()){
-					GraphPane.this.getChildren().remove(nodeFx);
+					GraphPane.this.rootPane.getChildren().remove(nodeFx);
 				
 					List<NodeLinkFx> nodeFxToRemove = new ArrayList();
 
@@ -268,7 +279,7 @@ public class GraphPane extends Pane {
 
 						if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
 							nodeFxToRemove.add(nodeLinkFx);
-							GraphPane.this.getChildren().remove(nodeLinkFx);
+							GraphPane.this.rootPane.getChildren().remove(nodeLinkFx);
 						}
 					}
 
@@ -300,7 +311,7 @@ public class GraphPane extends Pane {
 			} else if(mode == Mode.DELETE) {
 				if (confirmDeleteDialog()== true){
 					listeNoeudLien.remove(nodeLinkFx);
-					GraphPane.this.getChildren().remove(nodeLinkFx);
+					GraphPane.this.rootPane.getChildren().remove(nodeLinkFx);
 					
 					book.removeNodeLink(nodeLinkFx.getNodeLink());
 				}

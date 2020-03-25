@@ -15,6 +15,7 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -24,12 +25,14 @@ import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.core.file.BookWritter;
+import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.observer.book.BookNodeObserver;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
 import magic_book.window.gui.NodeFx;
 
-public class MainWindow extends Stage{
+public class MainWindow extends Stage {
 
 	private GraphPane graphPane;
 	private LeftPane leftPane;
@@ -68,7 +71,7 @@ public class MainWindow extends Stage{
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		menuFileNew.setOnAction((ActionEvent e) -> {
-			changeBook(new Book());
+			setBook(new Book());
 			path = null;
 		});
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
@@ -88,7 +91,7 @@ public class MainWindow extends Stage{
 			try {
 				BookReader reader = new BookReader();
 				Book book = reader.read(selectedFile.getAbsolutePath());
-				changeBook(book);
+				setBook(book);
 				
 				path = selectedFile.getAbsolutePath();
 			} catch (FileNotFoundException ex) {
@@ -184,12 +187,12 @@ public class MainWindow extends Stage{
 		return menuBar;
 	}
 	
-	private void changeBook(Book book) {
+	private void setBook(Book book) {		
+		this.book = book;
+		
 		leftPane.setBook(book);
 		rightPane.setBook(book);
 		graphPane.setBook(book);
-	
-		this.book = book;
 	}
 	
 	private boolean changeSelectedFile() {
