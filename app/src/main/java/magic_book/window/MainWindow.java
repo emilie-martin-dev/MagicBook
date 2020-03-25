@@ -38,6 +38,7 @@ public class MainWindow extends Stage{
 	private LeftPane leftPane;
 	private RightPane rightPane;
 	
+	private CheckMenuItem menuShowItemsCharacters;
 	private String path = null;
 	
 	private Book book;
@@ -60,6 +61,8 @@ public class MainWindow extends Stage{
 		this.setTitle("Magic Book");
 		this.setScene(scene);
 		this.show();
+	
+
 	}
 
 	private MenuBar createMenuBar() {
@@ -72,7 +75,7 @@ public class MainWindow extends Stage{
 			BookState state = new BookState();
 			state.setMainCharacter(bookCharacter);
 			Jeu jeu = new Jeu(state , book);
-			jeu.play();
+			System.out.println(jeu.fourmis(50));
 		});
 		
 		

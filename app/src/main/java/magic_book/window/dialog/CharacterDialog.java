@@ -51,18 +51,12 @@ public class CharacterDialog extends AbstractDialog {
 			
 		
 		persoType = new ChoiceBox<>();
-
- 		persoType.getItems().add(PRINCIPAL);
- 		persoType.getItems().add(ENNEMIES);
- 		persoType.getItems().add(AMIS);
- 		persoType.setValue(AUTRE);
 		
 		root.setHgap(10);
 		root.setVgap(10);
 		
 		Label idLabel = new Label("Id : ");
 		Label nameLabel = new Label("Name: ");
-		Label typeLabel = new Label("Type de personnage : ");
 		Label raceLabel = new Label("Race : ");
 		
 		idTextField = new TextField();
@@ -73,10 +67,8 @@ public class CharacterDialog extends AbstractDialog {
 		root.add(idTextField, 1, 0);
 		root.add(nameLabel, 0, 1);
 		root.add(nameTextField, 1, 1);
-	/*	root.add(typeLabel, 0, 2);
-		root.add(persoType, 1, 2);
-		root.add(raceLabel, 0, 3);
-		root.add(raceTextField, 1, 3);*/
+	/*	root.add(raceLabel, 0, 2);
+		root.add(raceTextField, 1, 2);*/
 		
 		return root;
 	}
