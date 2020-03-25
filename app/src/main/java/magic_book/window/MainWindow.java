@@ -24,6 +24,9 @@ import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.core.file.BookWritter;
+import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookState;
+import magic_book.core.game.player.Jeu;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
@@ -63,6 +66,17 @@ public class MainWindow extends Stage{
 		MenuBar menuBar = new MenuBar();
 
 		// --- Menu fichier
+		MenuItem testFileNew = new MenuItem("Test");
+		testFileNew.setOnAction((ActionEvent e) -> {
+			BookCharacter bookCharacter = new BookCharacter("", "Fourmis", 20, 20, null, null, null, 0, false);
+			BookState state = new BookState();
+			state.setMainCharacter(bookCharacter);
+			Jeu jeu = new Jeu(state , book);
+			jeu.fourmis(10000);
+		});
+		
+		
+		
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		menuFileNew.setOnAction((ActionEvent e) -> {
@@ -119,7 +133,7 @@ public class MainWindow extends Stage{
 			saveFile();			
 		});
 
-		menuFile.getItems().addAll(menuFileNew, menuFileOpen, menuFileSave, menuFileSaveAs);
+		menuFile.getItems().addAll(testFileNew, menuFileNew, menuFileOpen, menuFileSave, menuFileSaveAs);
 
 		// --- Menu livre
 		Menu menuBook = new Menu("Livre");
