@@ -3,6 +3,7 @@ package magic_book.core.graph.node;
 import java.util.ArrayList;
 import java.util.List;
 import magic_book.core.Book;
+import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.item.BookItemLink;

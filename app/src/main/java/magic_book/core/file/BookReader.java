@@ -176,53 +176,7 @@ public class BookReader {
 			nodes.put(entry.getKey(), node);
 		}
 		
-		return linkEveryNodes(bookJson, nodes);
-	}
-	
-	private HashMap<Integer, AbstractBookNode> linkEveryNodes(BookJson bookJson, HashMap<Integer, AbstractBookNode> nodes) {
-		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {
-			SectionJson sectionJson = entry.getValue();
-			AbstractBookNode node = nodes.get(entry.getKey());
-			
-			if(sectionJson.getChoices() != null) {
-				for(ChoiceJson choiceJson : sectionJson.getChoices()) {			
-					AbstractBookNodeWithChoices nodeWithChoices = (AbstractBookNodeWithChoices) node;
-					BookNodeLink nodeLink = createBookNodeLink(nodes, choiceJson);
-					
-					nodeWithChoices.addChoice(nodeLink);
-				}
-			}
-			
-			if(sectionJson.getCombat() != null) {
-				CombatJson combatJson = sectionJson.getCombat();
-				BookNodeCombat nodeCombat = (BookNodeCombat) node;
-				
-				if(combatJson.getWin() != null)
-					nodeCombat.setWinBookNodeLink(createBookNodeLink(nodes, combatJson.getWin()));
-			
-				if(combatJson.getLoose() != null)
-					nodeCombat.setLooseBookNodeLink(createBookNodeLink(nodes, combatJson.getLoose()));
-			
-				if(combatJson.getEvasion() != null)
-					nodeCombat.setEvasionBookNodeLink(createBookNodeLink(nodes, combatJson.getEvasion()));
-			}
-		}
-		
 		return nodes;
-	}
-	
-	public BookNodeLink createBookNodeLink(HashMap<Integer, AbstractBookNode> nodes, ChoiceJson choiceJson) {
-		BookNodeLink bookNodeLink = null;
-		
-		if(choiceJson.getWeight() != null) {			
-			bookNodeLink = new BookNodeLinkRandom();
-		} else {
-			bookNodeLink = new BookNodeLink();
-		}
-
-		bookNodeLink.fromJson(choiceJson);
-		
-		return bookNodeLink;		
 	}
 
 }

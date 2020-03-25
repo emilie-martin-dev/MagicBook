@@ -89,44 +89,10 @@ public class BookWritter {
 
 	private Map<Integer, SectionJson> convertIntoSectionJson(Book book) {
 		HashMap<Integer, SectionJson> sections = new HashMap<>();
-		Set<BookNodeLink> choicesDone = new HashSet<>();
 
 		for(Map.Entry<Integer, AbstractBookNode> entry : book.getNodes().entrySet()) {
 			AbstractBookNode node = entry.getValue();
 			SectionJson sectionJson = node.toJson();
-			
-			if(node instanceof BookNodeCombat) {
-				BookNodeCombat bookNodeCombat = (BookNodeCombat) node;
-				CombatJson combatJson = new CombatJson();
-
-				if(bookNodeCombat.getWinBookNodeLink() != null) {
-					ChoiceJson winChoiceJson = bookNodeCombat.getWinBookNodeLink().toJson();
-					combatJson.setWin(winChoiceJson);
-					choicesDone.add(bookNodeCombat.getWinBookNodeLink());
-				}
-
-				if(bookNodeCombat.getLooseBookNodeLink()!= null) {
-					ChoiceJson looseChoiceJson = bookNodeCombat.getLooseBookNodeLink().toJson();
-					combatJson.setLoose(looseChoiceJson);
-					choicesDone.add(bookNodeCombat.getLooseBookNodeLink());
-				}
-
-				if(bookNodeCombat.getEvasionBookNodeLink()!= null) {
-					ChoiceJson evasionChoiceJson = bookNodeCombat.getEvasionBookNodeLink().toJson();
-					combatJson.setEvasion(evasionChoiceJson);
-					choicesDone.add(bookNodeCombat.getEvasionBookNodeLink());
-				}
-			}
-			
-			sectionJson.setChoices(new ArrayList<>());
-			for(BookNodeLink nodeLink : (List<BookNodeLink>) node.getChoices()) {
-				if(choicesDone.contains(nodeLink)) {
-					continue;
-				}
-
-				ChoiceJson choiceJson = nodeLink.toJson();
-				sectionJson.getChoices().add(choiceJson);
-			}
 			
 			sections.put(entry.getKey(), sectionJson);
 		}

@@ -121,6 +121,27 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		for(String ennemie : json.getCombat().getEnemies()) {
 			addEnnemieId(ennemie);
 		}
+		
+		if(json.getCombat().getWin() != null) {
+			BookNodeLink bookNodeLink = new BookNodeLink();
+			bookNodeLink.fromJson(json.getCombat().getWin());
+			
+			winBookNodeLink = bookNodeLink;
+		}
+
+		if(json.getCombat().getLoose() != null){
+			BookNodeLink bookNodeLink = new BookNodeLink();
+			bookNodeLink.fromJson(json.getCombat().getLoose());
+			
+			looseBookNodeLink = bookNodeLink;
+		}
+
+		if(json.getCombat().getEvasion() != null){
+			BookNodeLink bookNodeLink = new BookNodeLink();
+			bookNodeLink.fromJson(json.getCombat().getEvasion());
+			
+			evasionBookNodeLink = bookNodeLink;
+		}
 	}
 	
 	@Override

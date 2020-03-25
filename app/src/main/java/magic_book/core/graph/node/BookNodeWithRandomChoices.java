@@ -3,6 +3,7 @@ package magic_book.core.graph.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.game.BookState;
 import magic_book.core.item.BookItemLink;
@@ -55,8 +56,23 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		SectionJson sectionJson = super.toJson();
 	
 		sectionJson.setIsRandomPick(true);
+	
 		
 		return sectionJson;
+	}
+
+	@Override
+	public void fromJson(SectionJson json) {
+		super.fromJson(json);
+		
+		if(json.getChoices() != null) {
+			for(ChoiceJson choiceJson : json.getChoices()) {		
+				BookNodeLinkRandom nodeLinkRandom = new BookNodeLinkRandom();
+				nodeLinkRandom.fromJson(choiceJson);
+				
+				addChoice(nodeLinkRandom);
+			}
+		}
 	}
 	
 }
