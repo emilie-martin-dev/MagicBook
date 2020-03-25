@@ -4,7 +4,7 @@ import magic_book.core.Book;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.parser.Descriptible;
 
-public class BookItemWithDurability extends BookItem implements Descriptible {
+public class BookItemWithDurability extends BookItem {
 
 	private int durability;
 	

@@ -8,7 +8,7 @@ import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.parser.Descriptible;
 
-public class RequirementMoney extends AbstractRequirement implements Descriptible {
+public class RequirementMoney extends AbstractRequirement {
 
 	private String moneyId;
 	private int amount;

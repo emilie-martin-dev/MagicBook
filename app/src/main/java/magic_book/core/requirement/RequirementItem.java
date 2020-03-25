@@ -6,7 +6,7 @@ import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookState;
 import magic_book.core.parser.Descriptible;
 
-public class RequirementItem extends AbstractRequirement implements Descriptible {
+public class RequirementItem extends AbstractRequirement {
 	
 	private String itemId;
 	

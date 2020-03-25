@@ -8,7 +8,7 @@ import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.parser.Descriptible;
 
-public class RequirementSkill extends AbstractRequirement implements Descriptible {
+public class RequirementSkill extends AbstractRequirement {
 		
 	private String skillId;
 	

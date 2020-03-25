@@ -8,7 +8,7 @@ import magic_book.core.file.JsonExportable;
 import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.TypeJson;
 
-public class CharacterCreationSkill extends AbstractCharacterCreation implements JsonExportable<CharacterCreationJson> {
+public class CharacterCreationSkill extends AbstractCharacterCreation {
 	
 	private int amountToPick;
 	private List<String> skillLinks;
@@ -52,7 +52,6 @@ public class CharacterCreationSkill extends AbstractCharacterCreation implements
 		
 		characterCreationJson.setAmountToPick(amountToPick);
 		characterCreationJson.setSkills(skillLinks);
-		characterCreationJson.setText(getText());
 		characterCreationJson.setType(TypeJson.SKILL);
 		
 		return characterCreationJson;
@@ -62,7 +61,6 @@ public class CharacterCreationSkill extends AbstractCharacterCreation implements
 	public void fromJson(CharacterCreationJson json) {
 		super.fromJson(json);
 		
-		this.setText(json.getText());
 		this.setAmountToPick(json.getAmountToPick());
 		this.setSkillLinks(json.getSkills());
 	}

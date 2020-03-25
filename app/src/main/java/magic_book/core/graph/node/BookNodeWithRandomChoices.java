@@ -57,7 +57,6 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 	
 		sectionJson.setIsRandomPick(true);
 	
-		
 		return sectionJson;
 	}
 

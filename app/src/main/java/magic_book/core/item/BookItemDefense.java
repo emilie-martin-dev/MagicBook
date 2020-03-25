@@ -5,7 +5,7 @@ import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.ItemType;
 import magic_book.core.parser.Descriptible;
 
-public class BookItemDefense extends BookItemWithDurability implements Descriptible {
+public class BookItemDefense extends BookItemWithDurability {
 	
 	private int resistance;
 
