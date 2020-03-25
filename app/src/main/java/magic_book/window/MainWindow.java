@@ -35,6 +35,8 @@ public class MainWindow extends Stage{
 	private LeftPane leftPane;
 	private RightPane rightPane;
 	
+	private BorderPane root;
+	
 	private String path = null;
 	
 	private Book book;
@@ -42,7 +44,7 @@ public class MainWindow extends Stage{
 	public MainWindow() {
 		book = new Book();
 		
-		BorderPane root = new BorderPane();
+		root = new BorderPane();
 		graphPane = new GraphPane(book);
 		leftPane = new LeftPane(graphPane, book);
 		rightPane = new RightPane(book);
@@ -164,6 +166,14 @@ public class MainWindow extends Stage{
 		CheckMenuItem menuShowItemsCharacters = new CheckMenuItem("Items et personnage");
 		
 		CheckMenuItem menuShowStats = new CheckMenuItem("Stats");
+		menuShowStats.setOnAction((ActionEvent e) -> {
+			if(menuShowStats.isSelected()) {
+				root.setRight(rightPane);
+			} else {
+				root.setRight(null);
+			}
+		});
+
 		menuShowItemsCharacters.setSelected(true);
 		menuShowStats.setSelected(true);
 
