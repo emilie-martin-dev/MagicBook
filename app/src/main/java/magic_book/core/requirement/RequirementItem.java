@@ -1,14 +1,18 @@
 package magic_book.core.requirement;
 
-import java.util.HashMap;
 import magic_book.core.Book;
+import magic_book.core.file.json.RequirementJson;
+import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookState;
-import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.parser.Descriptible;
 
-public class RequirementItem extends AbstractRequirement implements Descriptible {
+public class RequirementItem extends AbstractRequirement {
 	
 	private String itemId;
+	
+	public RequirementItem() {
+		this("");
+	}
 	
 	public RequirementItem(String itemId){
 		this.itemId = itemId;
@@ -34,6 +38,21 @@ public class RequirementItem extends AbstractRequirement implements Descriptible
 		buffer.append("\n");
 		
 		return buffer.toString();
+	}
+
+	@Override
+	public RequirementJson toJson() {
+		RequirementJson requirementJson = new RequirementJson();
+		
+		requirementJson.setId(itemId);
+		requirementJson.setType(TypeJson.ITEM);
+		
+		return requirementJson;
+	}
+
+	@Override
+	public void fromJson(RequirementJson json) {
+		itemId = json.getId();
 	}
 	
 	public String getItemId() {

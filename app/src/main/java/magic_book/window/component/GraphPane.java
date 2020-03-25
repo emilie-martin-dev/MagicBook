@@ -152,7 +152,7 @@ public class GraphPane extends Pane {
 		
 		for(AbstractBookNode node : book.getNodes().values()) {
 			for(BookNodeLink choice : node.getChoices()) {
-				createNodeLink(choice, nodeNodeFxMapping.get(node), nodeNodeFxMapping.get(choice.getDestination()));
+				createNodeLink(choice, nodeNodeFxMapping.get(node), nodeNodeFxMapping.get(book.getNodes().get(choice.getDestination())));
 			}
 		}
 		
@@ -242,7 +242,7 @@ public class GraphPane extends Pane {
 					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
 					if(bookNodeLink != null) {
-						bookNodeLink.setDestination(nodeFx.getNode());
+						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
 
 						book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
 						

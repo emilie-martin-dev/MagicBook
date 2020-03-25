@@ -2,12 +2,20 @@ package magic_book.core.game.character_creation;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import magic_book.core.Book;
+import magic_book.core.file.JsonExportable;
+import magic_book.core.file.json.CharacterCreationJson;
+import magic_book.core.file.json.TypeJson;
 
 public class CharacterCreationSkill extends AbstractCharacterCreation {
 	
 	private int amountToPick;
 	private List<String> skillLinks;
+	
+	public CharacterCreationSkill() {
+		this("", null, -1);
+	}
 	
 	public CharacterCreationSkill(String text, List<String> skillLinks, int amountToPick) {
 		super(text);
@@ -36,6 +44,25 @@ public class CharacterCreationSkill extends AbstractCharacterCreation {
 		}
 		
 		return buffer.toString();
+	}
+	
+	@Override
+	public CharacterCreationJson toJson() {
+		CharacterCreationJson characterCreationJson = super.toJson();
+		
+		characterCreationJson.setAmountToPick(amountToPick);
+		characterCreationJson.setSkills(skillLinks);
+		characterCreationJson.setType(TypeJson.SKILL);
+		
+		return characterCreationJson;
+	}
+
+	@Override
+	public void fromJson(CharacterCreationJson json) {
+		super.fromJson(json);
+		
+		this.setAmountToPick(json.getAmountToPick());
+		this.setSkillLinks(json.getSkills());
 	}
 	
 	public void addSkillLink(String skillLink) {

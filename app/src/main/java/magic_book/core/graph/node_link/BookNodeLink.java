@@ -3,34 +3,42 @@ package magic_book.core.graph.node_link;
 import magic_book.core.graph.node.AbstractBookNode;
 import java.util.ArrayList;
 import java.util.List;
+
 import magic_book.core.Book;
+import magic_book.core.file.JsonExportable;
+import magic_book.core.file.json.ChoiceJson;
+import magic_book.core.file.json.RequirementJson;
+import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookState;
 import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.TextParser;
 import magic_book.core.requirement.AbstractRequirement;
+import magic_book.core.requirement.RequirementItem;
+import magic_book.core.requirement.RequirementMoney;
+import magic_book.core.requirement.RequirementSkill;
 
-public class BookNodeLink implements Descriptible {
+public class BookNodeLink implements Descriptible, JsonExportable<ChoiceJson> {
 
 	private String text;
-	private AbstractBookNode destination;
+	private int destination;
 	private List<List<AbstractRequirement>> requirements;
 	private int hp;
 	private int gold;
 	private boolean auto;
 	
 	public BookNodeLink() {
-		this("", null);
+		this("", -1);
 	}
 	
-	public BookNodeLink(String text, AbstractBookNode destination) {
+	public BookNodeLink(String text, int destination) {
 		this(text, destination, null);
 	}
 	
-	public BookNodeLink(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements) {
+	public BookNodeLink(String text, int destination, List<List<AbstractRequirement>> requirements) {
 		this(text, destination, requirements, 0, 0, false);
 	}
 	
-	public BookNodeLink(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements, int hp, int gold, boolean auto) {
+	public BookNodeLink(String text, int destination, List<List<AbstractRequirement>> requirements, int hp, int gold, boolean auto) {
 		this.text = text;
 		this.destination = destination;
 		this.requirements = requirements;
@@ -116,6 +124,84 @@ public class BookNodeLink implements Descriptible {
 		return buffer.toString();
 	}
 	
+	public ChoiceJson toJson() {
+		ChoiceJson choiceJson = new ChoiceJson();
+		
+		choiceJson.setText(text);
+		
+		if(!requirements.isEmpty()) {
+			choiceJson.setRequirements(new ArrayList<>());
+			for(List<AbstractRequirement> subrequirement : requirements) {
+				List<RequirementJson> subrequirementsJson = new ArrayList<>();
+				for(AbstractRequirement requirement : subrequirement) {
+					RequirementJson requirementJson = requirement.toJson();
+					
+					subrequirementsJson.add(requirementJson);
+				}
+				
+				choiceJson.getRequirements().add(subrequirementsJson);
+			}
+		}
+		
+		if(auto)
+			choiceJson.setAuto(true);
+		
+		if(gold != 0)
+			choiceJson.setGold(gold);
+		
+		if(hp != 0)
+			choiceJson.setHp(hp);
+		
+		choiceJson.setSection(destination);
+		
+		return choiceJson;
+	}
+
+	@Override
+	public void fromJson(ChoiceJson json) {		
+		if(json.getAuto() == null)
+			auto = false;
+		else
+			auto = json.getAuto();
+		
+		if(json.getGold() == null)
+			gold = 0;
+		else
+			gold = json.getGold();
+		
+		if(json.getHp() == null)
+			hp = 0;
+		else
+			hp = json.getHp();
+		
+		text = json.getText();
+		
+		destination = json.getSection();
+		
+		if(json.getRequirements() != null) {
+			for(List<RequirementJson> requirementsJson : json.getRequirements()) {
+				List<AbstractRequirement> subrequirements = new ArrayList<>();
+				for(RequirementJson requirementJson : requirementsJson) {
+					AbstractRequirement abstractRequirement = null;
+					
+					if(requirementJson.getType() == TypeJson.ITEM) {
+						abstractRequirement = new RequirementItem();
+					} else if (requirementJson.getType() == TypeJson.SKILL) {
+						abstractRequirement = new RequirementSkill();						
+					} else if (requirementJson.getType() == TypeJson.MONEY) {
+						abstractRequirement = new RequirementMoney();						
+					}
+					
+					abstractRequirement.fromJson(requirementJson);
+					
+					subrequirements.add(abstractRequirement);
+				}
+				
+				requirements.add(subrequirements);
+			}
+		}
+	}
+	
 	public String getText() {
 		return text;
 	}
@@ -124,11 +210,11 @@ public class BookNodeLink implements Descriptible {
 		this.text = text;
 	}
 
-	public AbstractBookNode getDestination() {
+	public int getDestination() {
 		return destination;
 	}
 
-	public void setDestination(AbstractBookNode destination) {
+	public void setDestination(int destination) {
 		this.destination = destination;
 	}
 
@@ -163,6 +249,5 @@ public class BookNodeLink implements Descriptible {
 	public void setAuto(boolean auto) {
 		this.auto = auto;
 	}
-	
 		
 }

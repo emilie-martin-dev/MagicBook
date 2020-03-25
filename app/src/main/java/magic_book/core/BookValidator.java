@@ -125,7 +125,7 @@ public class BookValidator {
 			return false;
 		}
 		
-		if(bookNodeLink.getDestination() == null) {
+		if(bookNodeLink.getDestination() == -1) {
 			return false;
 		}
 		

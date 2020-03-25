@@ -1,9 +1,8 @@
 package magic_book.core.graph.node_link;
 
-import java.util.HashMap;
-import magic_book.core.graph.node.AbstractBookNode;
 import java.util.List;
 import magic_book.core.Book;
+import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.requirement.AbstractRequirement;
 
 public class BookNodeLinkRandom extends BookNodeLink {
@@ -11,14 +10,14 @@ public class BookNodeLinkRandom extends BookNodeLink {
 	private int chance;
 	
 	public BookNodeLinkRandom() {
-		this("", null, 1);
+		this("", -1, 1);
 	}
 	
-	public BookNodeLinkRandom(String text, AbstractBookNode destination, int chance) {
+	public BookNodeLinkRandom(String text, int destination, int chance) {
 		this(text, destination, null, chance);
 	}
 	
-	public BookNodeLinkRandom(String text, AbstractBookNode destination, List<List<AbstractRequirement>> requirements, int chance) {
+	public BookNodeLinkRandom(String text, int destination, List<List<AbstractRequirement>> requirements, int chance) {
 		super(text, destination, requirements);
 		
 		this.chance = chance;
@@ -36,6 +35,22 @@ public class BookNodeLinkRandom extends BookNodeLink {
 		return buffer.toString();
 	}
 
+	@Override
+	public ChoiceJson toJson() {
+		ChoiceJson choiceJson = super.toJson();
+		
+		choiceJson.setWeight(chance);
+		
+		return choiceJson;
+	}
+
+	@Override
+	public void fromJson(ChoiceJson json) {
+		super.fromJson(json);
+		
+		chance = json.getWeight();
+	}
+	
 	public int getChance() {
 		return chance;
 	}

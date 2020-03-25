@@ -1,14 +1,21 @@
 package magic_book.core.item;
 
 import magic_book.core.Book;
+import magic_book.core.file.JsonExportable;
+import magic_book.core.file.json.ItemJson;
+import magic_book.core.file.json.ItemType;
 import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.Parsable;
 
-public class BookItem implements Parsable, Descriptible {
+public class BookItem implements Parsable, Descriptible, JsonExportable<ItemJson> {
 
 	private String id;
 	private String name;
 
+	public BookItem() {
+		this("", "");
+	}
+	
 	public BookItem(String id, String nom) {
 		this.id = id;
 		this.name = nom;
@@ -23,6 +30,23 @@ public class BookItem implements Parsable, Descriptible {
 		buffer.append("\n");
 		
 		return buffer.toString();
+	}
+
+	@Override
+	public ItemJson toJson() {
+		ItemJson itemJson = new ItemJson();
+		
+		itemJson.setId(id);
+		itemJson.setName(name);
+		itemJson.setItemType(ItemType.KEY_ITEM);
+		
+		return itemJson;
+	}
+
+	@Override
+	public void fromJson(ItemJson json) {
+		id = json.getId();
+		name = json.getName();
 	}
 
 	@Override

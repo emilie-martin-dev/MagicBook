@@ -18,7 +18,7 @@ public class Fourmi {
 		Random rand = new Random();
 		
 		int nb = rand.nextInt(currentNode.getChoices().size()); 		
-		this.currentNode = currentNode.getChoices().get(nb).getDestination(); 
+		//this.currentNode = currentNode.getChoices().get(nb).getDestination(); 
 	}
 
 	public AbstractBookNode getCurrentNode() {

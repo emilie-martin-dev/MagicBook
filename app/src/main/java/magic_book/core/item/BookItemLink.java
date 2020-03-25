@@ -1,11 +1,11 @@
 package magic_book.core.item;
 
-import java.util.HashMap;
 import magic_book.core.Book;
-import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.file.JsonExportable;
+import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.parser.Descriptible;
 
-public class BookItemLink implements Descriptible {
+public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> {
 	
 	private String id;
 	private int amount;
@@ -13,12 +13,62 @@ public class BookItemLink implements Descriptible {
 	private int sellingPrice;
 	private boolean auto;
 
-	public BookItemLink(String id, int amount, int price, boolean auto, int selling_price) {
+	public BookItemLink() {
+		this("", 0, -1, false, -1);
+	}
+	
+	public BookItemLink(String id, int amount, int price, boolean auto, int sellingPrice) {
 		this.id = id;
 		this.amount = amount;
 		this.price = price;
 		this.auto = auto;
-		this.sellingPrice = selling_price;
+		this.sellingPrice = sellingPrice;
+	}
+	
+	@Override
+	public ItemLinkJson toJson() {
+		ItemLinkJson itemLinkJson = new ItemLinkJson();
+		
+		itemLinkJson.setId(id);
+		
+		if(amount != 1) 
+			itemLinkJson.setAmount(amount);
+		
+		if(price != -1)
+			itemLinkJson.setPrice(price);
+		
+		if(sellingPrice != -1)
+			itemLinkJson.setSellingPrice(sellingPrice);
+		
+		if(auto)
+			itemLinkJson.setAuto(true);
+		
+		return itemLinkJson;
+	}
+
+	@Override
+	public void fromJson(ItemLinkJson json) {
+		this.id = json.getId();
+		
+		this.amount = 1;
+		if(json.getAmount() != null) {
+			this.amount = json.getAmount();
+		}
+		
+		this.price = -1;
+		if(json.getPrice()!= null) {
+			this.price = json.getPrice();
+		}
+		
+		this.auto = false;
+		if(json.isAuto()!= null) {
+			this.auto = json.isAuto();
+		}
+		
+		this.sellingPrice = -1;		
+		if(json.getSellingPrice() != null) {
+			this.sellingPrice = json.getSellingPrice();
+		}
 	}
 
 	@Override
@@ -90,5 +140,5 @@ public class BookItemLink implements Descriptible {
 	public void setAuto(boolean auto) {
 		this.auto = auto;
 	}
-	
+
 }

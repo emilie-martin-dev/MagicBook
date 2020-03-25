@@ -52,7 +52,7 @@ public class NodeLinkDialog extends AbstractDialog{
 			String texteHistoire = (String) texte.getText();
 			
 			if(NodeLinkDialog.this.nodeLink == null) {
-				NodeLinkDialog.this.nodeLink = new BookNodeLink(texteHistoire, null);
+				NodeLinkDialog.this.nodeLink = new BookNodeLink(texteHistoire, -1);
 			} else {
 				NodeLinkDialog.this.nodeLink.setText(texteHistoire);
 			}

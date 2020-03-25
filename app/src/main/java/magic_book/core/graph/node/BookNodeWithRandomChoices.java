@@ -3,11 +3,17 @@ package magic_book.core.graph.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import magic_book.core.file.json.ChoiceJson;
+import magic_book.core.file.json.SectionJson;
 import magic_book.core.game.BookState;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 
 public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookNodeLinkRandom>{
+	
+	public BookNodeWithRandomChoices() {
+		this("");
+	}
 	
 	public BookNodeWithRandomChoices(String text) {
 		this(text, 0, null, null, null);
@@ -28,9 +34,10 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 			}
 		}
 		if(listNodeLinkDisponible.isEmpty()){
-			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
+			/*BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
 			BookNodeLinkRandom bookNodeLinkTerminal = new BookNodeLinkRandom("C'est la voie de la raison", bookNodeTerminalFail, null, 0);
-			return bookNodeLinkTerminal;
+			*/
+			return null;
 		} else {
 			Random random = new Random();
 			int nbrRandomChoice = random.nextInt(somme);
@@ -43,4 +50,28 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		}
 		return this.getChoices().get(nbrChoice) ;
 	}
+
+	@Override
+	public SectionJson toJson() {
+		SectionJson sectionJson = super.toJson();
+	
+		sectionJson.setIsRandomPick(true);
+	
+		return sectionJson;
+	}
+
+	@Override
+	public void fromJson(SectionJson json) {
+		super.fromJson(json);
+		
+		if(json.getChoices() != null) {
+			for(ChoiceJson choiceJson : json.getChoices()) {		
+				BookNodeLinkRandom nodeLinkRandom = new BookNodeLinkRandom();
+				nodeLinkRandom.fromJson(choiceJson);
+				
+				addChoice(nodeLinkRandom);
+			}
+		}
+	}
+	
 }

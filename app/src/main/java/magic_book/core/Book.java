@@ -87,14 +87,6 @@ public class Book {
 		if(indexOfNode != null) {
 			this.nodes.put(indexOfNode, newNode);
 			this.nodesInv.put(newNode, indexOfNode);
-			
-			for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
-				for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
-					if(nodeLink.getDestination() == oldNode) {
-						nodeLink.setDestination(newNode);
-					}
-				}
-			}
 		} else {
 			appendNode(newNode);
 		}
@@ -107,16 +99,22 @@ public class Book {
 			this.nodes.remove(indexOfNode);
 			this.nodesInv.remove(node);
 			
+			HashMap<AbstractBookNodeWithChoices, BookNodeLink> postRemove = new HashMap<>();
 			for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
 				if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
 					continue;
 			
 				AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
 				for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
-					if(nodeLink.getDestination() == node) {
-						currentChoice.removeChoice(nodeLink);
+					if(nodeLink.getDestination() == indexOfNode) {
+						postRemove.put(currentChoice, nodeLink);
+						break;
 					}
 				}
+			}
+			
+			for(Entry<AbstractBookNodeWithChoices, BookNodeLink> entry : postRemove.entrySet()) {
+				entry.getKey().removeChoice(entry.getValue());
 			}
 		}
 	}
@@ -126,6 +124,8 @@ public class Book {
 	}
 	
 	public void updateNodeLink(BookNodeLink oldBookNodeLink, BookNodeLink newBookNode) {
+		List<AbstractBookNodeWithChoices> postUpdate = new ArrayList<>();
+		
 		for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
 			if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
 				continue;
@@ -133,10 +133,15 @@ public class Book {
 			AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
 			for(BookNodeLink nl : entry.getValue().getChoices()) {
 				if(nl == oldBookNodeLink) {
-					currentChoice.removeChoice(oldBookNodeLink);
-					currentChoice.addChoice(newBookNode);
+					postUpdate.add(currentChoice);
+					break;
 				}
 			}
+		}
+		
+		for(AbstractBookNodeWithChoices node : postUpdate) {
+			node.removeChoice(oldBookNodeLink);
+			node.addChoice(newBookNode);
 		}
 	}
 	
@@ -151,6 +156,7 @@ public class Book {
 			for(BookNodeLink nl : entry.getValue().getChoices()) {
 				if(nl == nodeLink) {
 					postRemove.add(currentChoice);
+					break;
 				}
 			}
 		}
@@ -158,6 +164,10 @@ public class Book {
 		for(AbstractBookNodeWithChoices node : postRemove) {
 			node.removeChoice(nodeLink);
 		}
+	}
+
+	public int getNodeIndex(AbstractBookNode node) {
+		return nodesInv.containsKey(node) ? nodesInv.get(node) : -1;
 	}
 
 	public String getTextPrelude() {
