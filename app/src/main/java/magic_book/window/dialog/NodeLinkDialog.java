@@ -33,8 +33,8 @@ public class NodeLinkDialog extends AbstractDialog{
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
 		
-		root.setHgap(10);
-		root.setVgap(10);
+		root.setHgap(5);
+		root.setVgap(5);
 		
 		Label textLabel = new Label("Texte choix :");
 		texte = new TextArea();

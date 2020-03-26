@@ -4,6 +4,10 @@ public class BookItemDefense extends BookItemWithDurability {
 	
 	private int resistance;
 
+	public BookItemDefense() {
+		this("", "", 0, 0);
+	}
+	
 	public BookItemDefense(String id, String nom, Integer durability, int resistance) {
 		super(id, nom, durability);
 		

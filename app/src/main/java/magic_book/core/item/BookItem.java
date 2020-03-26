@@ -7,6 +7,10 @@ public class BookItem implements Parsable {
 	private String id;
 	private String name;
 
+	public BookItem() {
+		this("", "");
+	}
+
 	public BookItem(String id, String nom) {
 		this.id = id;
 		this.name = nom;

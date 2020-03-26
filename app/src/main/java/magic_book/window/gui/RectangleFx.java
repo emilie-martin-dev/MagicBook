@@ -21,9 +21,15 @@ public class RectangleFx extends Rectangle {
 		
 		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent select) {
-				if ((select.getX()-RectangleFx.this.getWidth()/2)>0 && (select.getY()-RectangleFx.this.getHeight()/2)>0){
-					RectangleFx.this.setX(select.getX()-RectangleFx.this.getWidth()/2);
-					RectangleFx.this.setY(select.getY()-RectangleFx.this.getHeight()/2);
+				RectangleFx.this.setX(select.getX()-RectangleFx.this.getWidth()/2);
+				RectangleFx.this.setY(select.getY()-RectangleFx.this.getHeight()/2);
+				
+				if (RectangleFx.this.getX() < 0){
+					RectangleFx.this.setX(0);
+				}
+				
+				if(RectangleFx.this.getY() < 0){
+					RectangleFx.this.setY(0);
 				}
 			}
 		});

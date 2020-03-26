@@ -4,6 +4,10 @@ public class BookItemHealing extends BookItemWithDurability {
 	
 	private int hp;
 
+	public BookItemHealing() {
+		this("", "", 0, 0);
+	}
+	
 	public BookItemHealing(String id, String nom, Integer durability, int hp) {
 		super(id, nom, durability);
 		

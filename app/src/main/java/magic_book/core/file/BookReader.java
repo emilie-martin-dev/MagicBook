@@ -91,7 +91,7 @@ public class BookReader {
 			} else if(i.getItemType() == ItemType.WEAPON) {
 				item = new BookItemWeapon(i.getId(), i.getName(), i.getDurability(), i.getDamage());
 			} else if(i.getItemType() == ItemType.MONEY) {
-				item = new BookItemMoney(i.getId(), i.getName(), 0);
+				item = new BookItemMoney(i.getId(), i.getName());
 			} else if(i.getItemType() == ItemType.HEALING) {
 				item = new BookItemHealing(i.getId(), i.getName(), i.getDurability(), i.getHp());				
 			} else if(i.getItemType() == ItemType.KEY_ITEM) {
