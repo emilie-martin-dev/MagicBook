@@ -107,8 +107,9 @@ public class GraphPane extends ScrollPane {
 		nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
 		nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
 
-		rootPane.getChildren().add(nodeLinkFx);
 		listeNoeudLien.add(nodeLinkFx);
+		
+		nodeLinkFx.registerComponent(rootPane);
 		
 		return nodeLinkFx;
 	}

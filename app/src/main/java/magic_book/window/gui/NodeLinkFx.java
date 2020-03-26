@@ -1,7 +1,9 @@
 package magic_book.window.gui;
 
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 import magic_book.core.graph.node_link.BookNodeLink;
@@ -14,6 +16,8 @@ public class NodeLinkFx extends Line {
 	private NodeFx startNode;
 	private NodeFx endNode;
 	
+	private Circle endCircle;
+	
 	private NodeLinkFxObservable nodeLinkFxObservable;
 
 	public NodeLinkFx(BookNodeLink nodeLink, NodeFx startNode, NodeFx endNode) {
@@ -24,11 +28,25 @@ public class NodeLinkFx extends Line {
 		this.setStrokeWidth(3);
 		this.setStroke(Color.BLACK);
 		
+		endCircle = new Circle(4);
+		endCircle.setStroke(Color.BLACK);
+		endCircle.centerXProperty().bind(endXProperty());
+		endCircle.centerYProperty().bind(endYProperty());
+		
 		nodeLinkFxObservable = new NodeLinkFxObservable();
 		
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			nodeLinkFxObservable.notifyOnNodeLinkFXClicked(NodeLinkFx.this, event);
-		});				
+		});	
+		
+		endCircle.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
+			nodeLinkFxObservable.notifyOnNodeLinkFXClicked(NodeLinkFx.this, event);
+		});	
+	}
+	
+	public void registerComponent(Pane rootPane) {
+		rootPane.getChildren().add(this);
+		rootPane.getChildren().add(endCircle);
 	}
 	
 	public void addNodeLinkFxObserver(NodeLinkFxObserver observer) {
