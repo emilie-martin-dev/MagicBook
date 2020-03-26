@@ -6,7 +6,6 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-
 import magic_book.window.MainWindow;
 
 public class Main extends Application {

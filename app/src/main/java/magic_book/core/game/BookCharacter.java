@@ -65,7 +65,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		characterJson.setId(id);
 		characterJson.setName(name);
 		characterJson.setCombatSkill(baseDamage);
-		characterJson.setHp(hp);
+		characterJson.setHp(hpMax);
 		
 		if(doubleDamage)
 			characterJson.setDoubleDamage(true);

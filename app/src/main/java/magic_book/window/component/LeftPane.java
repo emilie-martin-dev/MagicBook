@@ -107,12 +107,18 @@ public class LeftPane extends ScrollPane {
 				if(selectedItem != null) {
 					BookCharacter character = selectedItem.getValue();
 					String oldId = character.getId();
-					new CharacterDialog(character);
+					CharacterDialog characterDialog = new CharacterDialog(character);
 					
-					treeViewPerso.refresh();
+					if(characterDialog.getCharacter() == null)
+						return;
+					
+					character = characterDialog.getCharacter();
 					
 					book.getCharacters().remove(oldId);	
 					book.getCharacters().put(character.getId(), character);
+					selectedItem.setValue(character);
+					
+					treeViewPerso.refresh();
 				}
 			}
 		});
