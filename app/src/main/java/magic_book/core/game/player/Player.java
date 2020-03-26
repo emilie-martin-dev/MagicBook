@@ -3,6 +3,7 @@ package magic_book.core.game.player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
@@ -15,7 +16,11 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.item.BookItem;
+import magic_book.core.item.BookItemDefense;
+import magic_book.core.item.BookItemHealing;
 import magic_book.core.item.BookItemLink;
+import magic_book.core.item.BookItemMoney;
+import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
 import magic_book.core.requirement.RequirementMoney;
@@ -25,117 +30,186 @@ public class Player implements InterfacePlayerFourmis {
 	
 	private BookState state;
 	private HashMap<String, BookItem> mapBookItem;
+	HashMap<String, BookCharacter> mapCharacter;
 	private AbstractBookNode bookNodeChoice;
 	private int str;
 	private Scanner scanner;
 	private boolean choix;
+	private boolean mort;
+	private BookItemWeapon bookItemArme;
+	private boolean useItemArme;
 
 	
-	public Player(BookState state, HashMap<String, BookItem> mapBookItem){
+	public Player(BookState state, HashMap<String, BookItem> mapBookItem, HashMap<String, BookCharacter> mapCharacter){
 		this.state = state;
 		this.mapBookItem = mapBookItem;
+		this.mapCharacter = mapCharacter;
 		this.bookNodeChoice = bookNodeChoice;
+		this.mort = mort;
 	}
 	
 	public void execNodeWithChoices(BookNodeWithChoices node){
-		
+		System.out.println("execNodeWithChoice"+ mort);
 		verifGetNodeHp(node);
-		
-		System.out.println(node.getText());
-		int lienValide = 0;
-		for (BookNodeLink bookNodeLink : node.getChoices()){
-			if(bookNodeLink.isAvailable(state))
-				lienValide += 1;
-		}
-		
-		if (lienValide != 0){
-			boolean choixValide = false;
-			BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNodeChoice;
-			
-			verifGetNodeItem(node);
-			
-			System.out.println("Voici vos choix : ");
-			for (BookNodeLink bookNodeLink : node.getChoices()){
-				System.out.println(""+bookNodeLink.getText());
-			}
-			System.out.println();
-			while (choixValide == false){
-				System.out.println("Que choisissez-vous ?");
-				scanner = new Scanner(System.in);
-				str = scanner.nextInt();
-				
-				if(str <= node.getChoices().size() && str >= 0){
-					if(node.getChoices().get(str).isAvailable(state)){
-						this.bookNodeChoice = node.getChoices().get(str).getDestination();
-						System.out.println(""+node.getChoices().get(str).getDestination());
-						choixValide = true;
-					} else {
-						System.out.println("Vous ne possédez pas : ");
-						System.out.println(""+node.getChoices().get(str).getRequirements());
-					}
-					verifGetChoicesItem(node, str);
-				}
-				else {
-					System.out.println("vous ne pouvez pas effectuer ce choix");
-				}
-			}
+		if(mort == true){
+			BookNodeTerminal bookTerminal = new BookNodeTerminal("Vous n'avez plus de vie", BookNodeStatus.FAILURE);
+			this.bookNodeChoice = bookTerminal;
 		} else {
-			System.out.println("pas d'item adéquat, dommage");
-			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Vous ne pouvez plus continuer, vous n'avez pas les items adéquats", BookNodeStatus.FAILURE);
-			this.bookNodeChoice = bookNodeTerminalFail;
+			System.out.println(node.getText());
+			int lienValide = 0;
+			for (BookNodeLink bookNodeLink : node.getChoices()){
+				if(bookNodeLink.isAvailable(state))
+					lienValide += 1;
+			}
+
+			if (lienValide != 0){
+				boolean choixValide = false;
+
+				verifGetNodeItem(node);
+
+				System.out.println("Voici vos choix : ");
+				for (BookNodeLink bookNodeLink : node.getChoices()){
+					System.out.println(""+bookNodeLink.getText());
+				}
+				System.out.println();
+				while (choixValide == false){
+					System.out.println("Que choisissez-vous ?");
+					scanner = new Scanner(System.in);
+					str = scanner.nextInt();
+
+					if(str <= node.getChoices().size() && str >= 0){
+						System.out.println("requirement "+node.getChoices().get(str).isAvailable(state));
+						if(node.getChoices().get(str).isAvailable(state)){
+							this.bookNodeChoice = node.getChoices().get(str).getDestination();
+							System.out.println(""+node.getChoices().get(str).getDestination());
+							choixValide = true;
+						} else {
+							System.out.println("Vous ne possédez pas : ");
+							System.out.println(""+node.getChoices().get(str).getRequirements());
+						}
+						verifGetChoicesItem(node, str);
+					}
+					else {
+						System.out.println("vous ne pouvez pas effectuer ce choix");
+					}
+				}
+			} else {
+				BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Vous ne pouvez plus continuer, vous n'avez pas les items adéquats", BookNodeStatus.FAILURE);
+				this.bookNodeChoice = bookNodeTerminalFail;
+			}
 		}
-			
 	}
 	
 
 	@Override
 	public void execNodeCombat(BookNodeCombat node) {
-		BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNodeChoice;
-		System.out.println(node.getText());
-		
-		//afficher les choix
-		for(BookNodeLink bookNodeLink : node.getChoices()){
-			System.out.println(""+bookNodeLink.getText());
-		}		
-		
-		//avoir le nombre de tour avant evasion
+		this.mort = false;
 		int evasionRound = node.getEvasionRound();
-		
-		//enlever evasion
-		int choix = 0;
 		int str = 0;
-		while(evasionRound != 0 && choix == 0){
-			//afficher les choix
-
-			System.out.println("Choix : ");
-			scanner = new Scanner(System.in);
-			str = scanner.nextInt();
-			
-			if(str <= node.getChoices().size() && str >= 0){
-				if(node.getChoices().get(str) == node.getEvasionBookNodeLink())
-					System.out.println("Vous ne pouvez pas encore vous échaper");
-				else
-					choix = 1;
-				
-				evasionRound -= 1;
-			}
-			else {
-				System.out.println("vous ne pouvez pas effectuer ce choix");
-			}
+		boolean finCombat = false;
+		List<String> listEnnemi=  new ArrayList();
+		
+		System.out.println(node.getText());
+		System.out.println("Il y a "+node.getEnnemiesId().size() + " ennemies !");
+		
+		for(String ennemi : node.getEnnemiesId()){
+			listEnnemi.add(ennemi);
 		}
 		
-		if (evasionRound == 0 && choix == 0){
-			while(choix == 0){
+		
+		while(finCombat == false){
+			choix = false;
+			while(choix == false){
+				System.out.println("Vos choix : ");
+				System.out.println("Attaque");
+				System.out.println("Inventaire");
+				System.out.println("Evasion - reste "+evasionRound+" tours");
 				System.out.println("Choix : ");
+
 				scanner = new Scanner(System.in);
 				str = scanner.nextInt();
-				if(str <= node.getChoices().size() && str >= 0){
-					choix = 1;
-				} else 
+
+				if(str ==2 || str == 0){
+					choix = true;
+					break;
+				} else if (str != 1){
 					System.out.println("vous ne pouvez pas effectuer ce choix");
+				}
+				//Si inventaire, il choisis puis reviens sur le choix
+				if (str == 1){
+					if(!state.getMainCharacter().getItems().isEmpty())
+						useInventaire();
+					else
+						System.out.println("Votre inventaire est vide");
+				}
+			}
+			//Si attaque
+			if (str == 0){
+				for(String ennemi : node.getEnnemiesId()){
+					BookCharacter ennemiCharacter = mapCharacter.get(ennemi);
+					if(useItemArme)
+						ennemiCharacter.setHp(ennemiCharacter.getHp()-(state.getMainCharacter().getBaseDamage()+bookItemArme.getDamage()));
+					else
+						ennemiCharacter.setHp(ennemiCharacter.getHp()-(state.getMainCharacter().getBaseDamage()));
+					if(ennemiCharacter.getHp()<=0){
+						System.out.println(ennemi+" est mort");
+						listEnnemi.remove(ennemi);
+						break;
+					} else {
+						System.out.println(ennemi+" a "+ennemiCharacter.getHp()+" hp");
+					}
+				}
+				node.setEnnemiesId(listEnnemi);
+				if(node.getEnnemiesId().isEmpty())
+					finCombat = true;
+				if(useItemArme){
+					/*bookItemArme.setDurability(bookItemArme.getDurability()-1);
+					if(bookItemArme.getDurability()<=0){
+						state.getMainCharacter().getItems().remove(bookItemArme.getId());
+						System.out.println("La durabilité de l'arme "+bookItemArme.getName()+"est arrivé à terme");
+						System.out.println("Arme détruite");
+					}
+					mapBookItem.put(bookItemArme.getId(), bookItemArme);*/
+					useItemArme = false;
+					bookItemArme = null;
+				}
+			}
+
+			if (str == 2 && evasionRound == 0){
+				finCombat = true;
+			} else if (str == 2 && evasionRound != 0){
+				System.out.println("vous ne pouvez pas encore vous evader");
+			}
+			if(str != 2){
+				for(String ennemi : node.getEnnemiesId()){
+					int doubleDamage = 1;
+					BookCharacter ennemiCharacter = mapCharacter.get(ennemi);
+					if(ennemiCharacter.isDoubleDamage()){
+						Random random = new Random();
+						int r = random.nextInt(5);
+						if (r > 3){
+							System.out.println("Coup critique de "+ennemi+" !");
+							doubleDamage = 2;
+						}
+					}
+					state.getMainCharacter().setHp(state.getMainCharacter().getHp()-(ennemiCharacter.getBaseDamage()*doubleDamage));
+					System.out.println(ennemi + " a attaquer, il vous reste" + state.getMainCharacter().getHp()+" hp");
+					if(state.getMainCharacter().getHp() <= 0){
+						mort = true;
+						finCombat = true;
+					}
+				}
+				evasionRound -= 1;
 			}
 		}
-		this.bookNodeChoice = node.getChoices().get(str).getDestination();
+		BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNodeChoice;
+		if(mort == false && str != 2){
+			this.bookNodeChoice = node.getWinBookNodeLink().getDestination();
+		} else if(mort == false && str == 2){
+			this.bookNodeChoice = node.getEvasionBookNodeLink().getDestination();
+		} else {
+			this.bookNodeChoice = node.getLooseBookNodeLink().getDestination();
+		}
 	}
 
 	@Override
@@ -152,13 +226,23 @@ public class Player implements InterfacePlayerFourmis {
 	}
 	
 	private void verifGetNodeHp(BookNodeWithChoices node){
+		this.mort = false;
 		if(node.getHp() != 0){
-			state.getMainCharacter().setHp(node.getHp());
-			System.out.println("Vous avez pris "+ node.getHp() + " hp");
+			if(state.getMainCharacter().getHpMax() <= (state.getMainCharacter().getHp()+node.getHp())){
+				System.out.println("Vos HP sont au max");
+				state.getMainCharacter().setHp(state.getMainCharacter().getHpMax());
+			} else {
+				state.getMainCharacter().setHp(state.getMainCharacter().getHp()+node.getHp());
+				System.out.println("Vous avez pris "+ node.getHp() + " hp");
+				System.out.println("Vos hp : "+ state.getMainCharacter().getHp());
+			}
+			if ((state.getMainCharacter().getHp()+node.getHp())<= 0)
+				mort = true;
 		}
 	}
 	
 	private void verifGetNodeItem(BookNodeWithChoices node){
+		List<String> listItemState = state.getMainCharacter().getItems();
 		if (!node.getItemLinks().isEmpty()){
 			int nbItemDispo = node.getItemLinks().size();
 			while(nbItemDispo != 0){
@@ -175,13 +259,14 @@ public class Player implements InterfacePlayerFourmis {
 				
 				if(itemOui == 0){
 					int itemMax = state.getMainCharacter().getItemsMax();
-					List<String> listItemState = state.getMainCharacter().getItems();
 					if(listItemState.size() == itemMax && itemMax!= 0){
 						
 						System.out.println("Votre inventaire est plein");
 						System.out.println("Voulez vous supprimer un item ?");
 						System.out.println("Vos Item: ");
-						
+						for(String itemState : listItemState){
+							System.out.println("- "+itemState);
+						}
 						
 						System.out.println("Voici vos choix:");
 						System.out.println("0 pour oui");
@@ -200,10 +285,6 @@ public class Player implements InterfacePlayerFourmis {
 							nbItemDispo = 0;
 						}
 						else if (str == 0){
-							System.out.println("Vos item:");
-							for(String itemState : listItemState){
-								System.out.println("- "+itemState);
-							}
 
 							System.out.println("Quel item voulez-vous supprimer ?");
 							choix = false;
@@ -262,5 +343,46 @@ public class Player implements InterfacePlayerFourmis {
 		return bookNodeChoice;
 	}
 
+	
+	public void useInventaire(){
+		List<String> listItemState = state.getMainCharacter().getItems();
+		System.out.println("Vos Item: ");
+		for(String itemState : listItemState){
+			System.out.println("- "+itemState);
+		}
+		choix = false;
+		BookItem bookItem ;
+		while(choix == false){
+			scanner = new Scanner(System.in);
+			str = scanner.nextInt();
+			bookItem = mapBookItem.get(listItemState.get(str));
+
+			if(str <= 2 && str >= 0){
+				choix = true;
+				break;
+			}
+			else {
+				System.out.println("vous ne pouvez pas effectuer ce choix");
+			}
+		}
+		bookItem = mapBookItem.get(listItemState.get(str));
+		if(bookItem instanceof BookItemDefense){
+
+		} else if(bookItem instanceof BookItemHealing){
+			state.getMainCharacter().setHp((state.getMainCharacter().getHp()+((BookItemHealing) bookItem).getHp()));
+			System.out.println("Vous avez "+state.getMainCharacter().getHp()+ " hp");
+			state.getMainCharacter().getItems().remove(listItemState.get(str));
+		} else if(bookItem instanceof BookItemWeapon){
+			BookItemWeapon bookItemArmeTrans = (BookItemWeapon) bookItem;
+			useItemArme = true;
+			bookItemArme = bookItemArmeTrans;
+		} else if(bookItem instanceof BookItemMoney){
+				str = -1;
+				System.out.println("Cette objet n'est pas utilisable en combat");
+		} else{//si c'est juste un bookItem
+			System.out.println("Cette objet n'est pas utilisable en combat");
+		}
+		choix = false;
+	}
 
 }
