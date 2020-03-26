@@ -8,11 +8,32 @@ import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 
 public class Fourmi implements InterfacePlayerFourmis{
 
+	@Override
+	public void execNodeCombat(BookNodeCombat node) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void execNodeWithChoices(BookNodeWithChoices node) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void execNodeTerminal(BookNodeTerminal node) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+/*
 	private AbstractBookNode bookNodeChoice;
 	private int victoire;
 
@@ -58,6 +79,6 @@ public class Fourmi implements InterfacePlayerFourmis{
 		return victoire;
 	}
 	
-	
+	*/
 	
 }
