@@ -37,7 +37,7 @@ public class Player implements InterfacePlayerFourmis {
 	private boolean choix;
 	private boolean mort;
 	private BookItemWeapon bookItemArme;
-	private boolean useItemArme;
+	private BookItemDefense bookItemDefense;
 
 	
 	public Player(BookState state, HashMap<String, BookItem> mapBookItem, HashMap<String, BookCharacter> mapCharacter){
@@ -78,7 +78,7 @@ public class Player implements InterfacePlayerFourmis {
 					str = scanner.nextInt();
 
 					if(str <= node.getChoices().size() && str >= 0){
-						System.out.println("requirement "+node.getChoices().get(str).isAvailable(state));
+						System.out.println("requirement "+node.getChoices());
 						if(node.getChoices().get(str).isAvailable(state)){
 							this.bookNodeChoice = node.getChoices().get(str).getDestination();
 							System.out.println(""+node.getChoices().get(str).getDestination());
@@ -147,7 +147,7 @@ public class Player implements InterfacePlayerFourmis {
 			if (str == 0){
 				for(String ennemi : node.getEnnemiesId()){
 					BookCharacter ennemiCharacter = mapCharacter.get(ennemi);
-					if(useItemArme)
+					if(bookItemArme != null)
 						ennemiCharacter.setHp(ennemiCharacter.getHp()-(state.getMainCharacter().getBaseDamage()+bookItemArme.getDamage()));
 					else
 						ennemiCharacter.setHp(ennemiCharacter.getHp()-(state.getMainCharacter().getBaseDamage()));
@@ -162,7 +162,7 @@ public class Player implements InterfacePlayerFourmis {
 				node.setEnnemiesId(listEnnemi);
 				if(node.getEnnemiesId().isEmpty())
 					finCombat = true;
-				if(useItemArme){
+				if(bookItemArme != null){
 					/*bookItemArme.setDurability(bookItemArme.getDurability()-1);
 					if(bookItemArme.getDurability()<=0){
 						state.getMainCharacter().getItems().remove(bookItemArme.getId());
@@ -170,7 +170,6 @@ public class Player implements InterfacePlayerFourmis {
 						System.out.println("Arme détruite");
 					}
 					mapBookItem.put(bookItemArme.getId(), bookItemArme);*/
-					useItemArme = false;
 					bookItemArme = null;
 				}
 			}
@@ -192,12 +191,24 @@ public class Player implements InterfacePlayerFourmis {
 							doubleDamage = 2;
 						}
 					}
-					state.getMainCharacter().setHp(state.getMainCharacter().getHp()-(ennemiCharacter.getBaseDamage()*doubleDamage));
+					if(bookItemDefense !=null)
+						state.getMainCharacter().setHp(state.getMainCharacter().getHp()-(ennemiCharacter.getBaseDamage()*doubleDamage-bookItemDefense.getResistance()));
+					else
+						state.getMainCharacter().setHp(state.getMainCharacter().getHp()-(ennemiCharacter.getBaseDamage()*doubleDamage));
 					System.out.println(ennemi + " a attaquer, il vous reste" + state.getMainCharacter().getHp()+" hp");
 					if(state.getMainCharacter().getHp() <= 0){
 						mort = true;
 						finCombat = true;
 					}
+					/*if(bookItemDefense != null){
+					bookItemDefense.setDurability(bookItemDefense.getDurability()-1);
+					if(bookItemDefense.getDurability()<=0){
+						state.getMainCharacter().getItems().remove(bookItemDefense.getId());
+						System.out.println("La durabilité de l'arme "+bookItemDefense.getName()+"est arrivé à terme");
+						System.out.println("Arme détruite");
+					}
+					mapBookItem.put(bookItemDefense.getId(), bookItemDefense);
+					bookItemDefense = null;*/
 				}
 				evasionRound -= 1;
 			}
@@ -366,22 +377,23 @@ public class Player implements InterfacePlayerFourmis {
 			}
 		}
 		bookItem = mapBookItem.get(listItemState.get(str));
+		
 		if(bookItem instanceof BookItemDefense){
-
+			BookItemDefense bookItemDefenseTrans = (BookItemDefense) bookItem;
+			bookItemDefense = bookItemDefenseTrans;
 		} else if(bookItem instanceof BookItemHealing){
 			state.getMainCharacter().setHp((state.getMainCharacter().getHp()+((BookItemHealing) bookItem).getHp()));
 			System.out.println("Vous avez "+state.getMainCharacter().getHp()+ " hp");
 			state.getMainCharacter().getItems().remove(listItemState.get(str));
 		} else if(bookItem instanceof BookItemWeapon){
 			BookItemWeapon bookItemArmeTrans = (BookItemWeapon) bookItem;
-			useItemArme = true;
 			bookItemArme = bookItemArmeTrans;
 		} else if(bookItem instanceof BookItemMoney){
-				str = -1;
 				System.out.println("Cette objet n'est pas utilisable en combat");
 		} else{//si c'est juste un bookItem
 			System.out.println("Cette objet n'est pas utilisable en combat");
 		}
+		
 		choix = false;
 	}
 
