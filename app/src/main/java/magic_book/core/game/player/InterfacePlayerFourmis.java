@@ -9,9 +9,11 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 
 public interface InterfacePlayerFourmis {
 	
-	public void execNodeCombat(BookNodeCombat node, BookState state);
+	public void execNodeCombat(BookNodeCombat node);
 	
-	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state);
+	public void execNodeWithChoices(BookNodeWithChoices node);
 	
-	public void execNodeTerminal(BookNodeTerminal node, BookState state);	
+	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node);
+	
+	public void execNodeTerminal(BookNodeTerminal node);	
 }
