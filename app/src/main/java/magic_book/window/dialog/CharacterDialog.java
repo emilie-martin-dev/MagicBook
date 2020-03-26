@@ -42,8 +42,8 @@ public class CharacterDialog extends AbstractDialog {
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
 		
-		root.setHgap(10);
-		root.setVgap(10);
+		root.setHgap(5);
+		root.setVgap(5);
 		
 		Label idLabel = new Label("Id : ");
 		Label nameLabel = new Label("Name: ");

@@ -103,7 +103,7 @@ public class BookReader {
 			} else if(itemJson.getItemType() == ItemType.HEALING) {
 				item = new BookItemHealing();				
 			} else if(itemJson.getItemType() == ItemType.KEY_ITEM) {
-				item = new BookItem();				
+				item = new BookItem();
 			} else {
 				throw new BookFileException("L'item avec le type " + itemJson.getItemType() + " est invalide");
 			}
