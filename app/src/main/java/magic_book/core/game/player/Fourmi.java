@@ -1,5 +1,6 @@
 package magic_book.core.game.player;
 
+import java.util.List;
 import java.util.Random;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
@@ -10,44 +11,39 @@ import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
+import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 
 public class Fourmi implements InterfacePlayerFourmis{
 
-	@Override
-	public void execNodeCombat(BookNodeCombat node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void execNodeWithChoices(BookNodeWithChoices node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void execNodeTerminal(BookNodeTerminal node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-/*
 	private AbstractBookNode bookNodeChoice;
 	private int victoire;
+	private BookState state;
 
-	public Fourmi(){
+	public Fourmi(BookState state){
+		this.state = state;
 		this.bookNodeChoice = bookNodeChoice;
+		
 	}
 	
-	public BookCharacter execBookState(){
+	public void execBookState(){
 		BookCharacter bookCharacter = new BookCharacter("", "Fourmis", 20, 20, null, null, null, 0, false);
 		bookCharacter.changeMoneyAmount("money",100);
-		return bookCharacter;
+		state.setMainCharacter(bookCharacter);
 	}
 	
-	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state){
+	@Override
+	public void execNodeWithChoices(BookNodeWithChoices node){
+		System.out.println("nodeWithChoice");
+		BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNodeChoice;
+		List<BookNodeLink> linkChoices = node.getChoices();
+		Random random = new Random();
+		int nbChoices = random.nextInt(linkChoices.size());
+		this.bookNodeChoice = linkChoices.get(nbChoices).getDestination();
+	}
+	
+	@Override
+	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node){
 		System.out.println("nodeWithChoiceRandom");
 		BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNodeChoice;
 		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
@@ -55,7 +51,7 @@ public class Fourmi implements InterfacePlayerFourmis{
 	}
 	
 	@Override
-	public void execNodeCombat(BookNodeCombat node, BookState state) {
+	public void execNodeCombat(BookNodeCombat node) {
 		Random random = new Random();
 		BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNodeChoice;
 		int nbChoices = random.nextInt(bookNodeCombat.getChoices().size());
@@ -63,7 +59,7 @@ public class Fourmi implements InterfacePlayerFourmis{
 	}
 
 	@Override
-	public void execNodeTerminal(BookNodeTerminal node, BookState state) {
+	public void execNodeTerminal(BookNodeTerminal node) {
 		if(node.getBookNodeStatus() == BookNodeStatus.VICTORY){	
 			this.victoire = 1;
 		} else {
@@ -78,7 +74,5 @@ public class Fourmi implements InterfacePlayerFourmis{
 	public int getVictoire() {
 		return victoire;
 	}
-	
-	*/
 	
 }

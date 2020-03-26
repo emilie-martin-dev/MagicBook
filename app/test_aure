@@ -86,6 +86,14 @@
            "text": "Gagner",
            "section": 5
          },
+        "evasion": {
+           "text": "Evader",
+           "section": 5
+         },
+         "loose": {
+           "text": "Perdu",
+           "section": 4
+         },
          "enemies": [
            "zombie_crew",
            "zombie_crew"
