@@ -67,7 +67,7 @@ public class Book {
 		this.bookNodeObservable = new BookNodeObservable();
 	}	
 
-	public void appendNode(AbstractBookNode node) {
+	public void addNode(AbstractBookNode node) {
 		if(this.missingIndexes.isEmpty()) {
 			int offset = (this.nodes.containsKey(1)) ? 1 : 2;
 			this.nodes.put(this.nodes.size()+offset, node);
@@ -82,6 +82,11 @@ public class Book {
 	}
 	
 	public void changeFirstNode(AbstractBookNode node) {
+		if(!this.nodes.containsValue(node)) {
+			addNode(node);
+			changeFirstNode(node);
+		} 
+		
 		int indexOfNode = this.nodesInv.get(node);
 		AbstractBookNode oldNode = this.nodes.get(1);
 		this.nodes.put(1, node);
@@ -103,7 +108,7 @@ public class Book {
 			
 			bookNodeObservable.notifyNodeEdited(oldNode, newNode);
 		} else {
-			appendNode(newNode);
+			addNode(newNode);
 		}
 	}
 	
@@ -247,4 +252,8 @@ public class Book {
 		this.characterCreations = characterCreations;
 	}
 
+	public List<Integer> getMissingIndexes() {
+		return missingIndexes;
+	}
+	
 }

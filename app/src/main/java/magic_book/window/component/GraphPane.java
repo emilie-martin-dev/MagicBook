@@ -118,7 +118,7 @@ public class GraphPane extends ScrollPane {
 		if(node != null) {
 			createNode(node, (int) event.getX(), (int) event.getY());
 			
-			book.appendNode(node);
+			book.addNode(node);
 		}
 		
 		return null;

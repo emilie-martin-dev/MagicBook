@@ -10,10 +10,7 @@ import magic_book.core.requirement.RequirementMoney;
 import magic_book.core.requirement.RequirementSkill;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public class BookNodeLinkTest {
 	
 	@Test
