@@ -10,6 +10,8 @@ import magic_book.observer.fx.RectangleFxObserver;
 
 public class RectangleFx extends Rectangle {
 
+	public static final int WIDTH = 50;
+	
 	private RectangleFxObservable nodeFxObservable;
 
 	public RectangleFx(Color color) {	
@@ -36,8 +38,8 @@ public class RectangleFx extends Rectangle {
 			}
 		});
 		
-		this.setWidth(50);
-		this.setHeight(50);
+		this.setWidth(WIDTH);
+		this.setHeight(WIDTH);
 		this.setFill(color);
 	}
 	
