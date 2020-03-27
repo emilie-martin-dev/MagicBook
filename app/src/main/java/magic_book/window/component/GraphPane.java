@@ -136,7 +136,11 @@ public class GraphPane extends ScrollPane {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
 					PreludeDialog dialog = new PreludeDialog(preludeFx.getText());
-					preludeFx.setText(dialog.getTextePrelude());
+					
+					if(dialog.getTextePrelude() != null) {
+						book.setTextPrelude(dialog.getTextePrelude());
+						preludeFx.setText(dialog.getTextePrelude());
+					}
 				}
 			}
 		});

@@ -23,7 +23,6 @@ import javafx.scene.layout.GridPane;
  		super("Edition du Prelude");
 	
 		texte.setText(textePrelude);
-		this.textePrelude = textePrelude;
 		
 		this.showAndWait();
  	}
