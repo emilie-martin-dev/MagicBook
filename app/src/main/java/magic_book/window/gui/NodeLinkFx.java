@@ -1,5 +1,6 @@
 package magic_book.window.gui;
 
+import javafx.beans.property.FloatProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -20,12 +21,12 @@ public class NodeLinkFx extends Line {
 	
 	private NodeLinkFxObservable nodeLinkFxObservable;
 
-	public NodeLinkFx(BookNodeLink nodeLink, NodeFx startNode, NodeFx endNode) {
+	public NodeLinkFx(BookNodeLink nodeLink, NodeFx startNode, NodeFx endNode, FloatProperty zoom) {
 		this.nodeLink = nodeLink;
 		this.startNode = startNode;
 		this.endNode = endNode;
 		
-		this.setStrokeWidth(3);
+		this.strokeWidthProperty().bind(zoom.multiply(3));
 		this.setStroke(Color.BLACK);
 		
 		endCircle = new Circle(4);
