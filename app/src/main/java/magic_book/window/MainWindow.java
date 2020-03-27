@@ -48,11 +48,11 @@ public class MainWindow extends Stage {
 	private String path = null;
 	
 	private Book book;
-	private BookState state;
+	private Book booktest;
 	
 	public MainWindow() {
-		book = book;
-		state = state;
+		book = new Book();
+		booktest = booktest;
 		
 		root = new BorderPane();
 		graphPane = new GraphPane(book);
@@ -79,34 +79,29 @@ public class MainWindow extends Stage {
 		// --- Menu fichier
 		MenuItem testFileNew = new MenuItem("Test");
 		testFileNew.setOnAction((ActionEvent e) -> {
-					try{
-						BookReader reader = new BookReader();
-						book = reader.read("./test_aure");
-					}
-					catch(FileNotFoundException ex) {
-						Alert a = new Alert(Alert.AlertType.ERROR);
-						a.setTitle("Erreur lors de l'ouverture du fichier");
-						a.setHeaderText("Le fichier n'existe pas");
-						a.show(); 
-					} catch (BookFileException ex) {
-						Alert a = new Alert(Alert.AlertType.ERROR);
-						a.setTitle("Erreur lors de l'ouverture du fichier");
-						a.setHeaderText("Le fichier n'est pas bien formé");
-						a.setContentText(ex.getMessage());
-						a.show();
-					}
-					state = new BookState();
-					AbstractBookNode bookNode = book.getRootNode();
-					BookCharacter bookCharacter = new BookCharacter("", "Fourmis", 20, 100, null, null, null, 100, false);
-					state.setMainCharacter(bookCharacter);
-					BookItemWeapon arme = new BookItemWeapon("arme","La meilleur arme :) ", 5, 3);
-					List<String> items = new ArrayList();
-					items.add(arme.getId());
-					book.getItems().put(arme.getId(), arme);
-					state.getMainCharacter().setItems(items);
-			Jeu jeu = new Jeu(state , book);
-			System.out.println(jeu.fourmis(10000));
+			try{
+				BookReader reader = new BookReader();
+				booktest = reader.read("./test_aure");
+			}
+			catch(FileNotFoundException ex) {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors de l'ouverture du fichier");
+				a.setHeaderText("Le fichier n'existe pas");
+				a.show(); 
+			} catch (BookFileException ex) {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors de l'ouverture du fichier");
+				a.setHeaderText("Le fichier n'est pas bien formé");
+				a.setContentText(ex.getMessage());
+				a.show();
+			}
+			BookState state = new BookState();
+			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+			state.setMainCharacter(bookCharacter);
 			
+			
+			Jeu jeu = new Jeu(state , booktest);
+			System.out.println(jeu.fourmis(10));
 			jeu.play();
 			System.out.println(jeu.fourmis(10000));
 		});
