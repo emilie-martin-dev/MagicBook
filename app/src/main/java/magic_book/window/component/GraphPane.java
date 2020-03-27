@@ -54,15 +54,9 @@ public class GraphPane extends ScrollPane {
 	public GraphPane(Book book){
 		listeNoeud = new ArrayList<>();
 		listeNoeudLien = new ArrayList<>();
-		
-		preludeFxFirstNodeLine = new Line();
-		preludeFxFirstNodeLine.setStrokeWidth(3);
-		preludeFxFirstNodeLine.setStroke(Color.BLACK);
-		
 		rootPane = new Pane();
 		
 		this.setContent(rootPane);
-		rootPane.setMinSize(10000, 10000);
 		this.setFitToWidth(true);
 		this.setFitToHeight(true);
 		this.setPannable(true);
@@ -91,6 +85,14 @@ public class GraphPane extends ScrollPane {
 				createNodeFxDialog(event);
 			}
 		});
+		
+		preludeFxFirstNodeLine = new Line();
+		preludeFxFirstNodeLine.strokeWidthProperty().bind(zoom.multiply(3));
+		preludeFxFirstNodeLine.setStroke(Color.BLACK);
+		
+		
+		rootPane.minHeightProperty().bind(zoom.multiply(10000));
+		rootPane.minWidthProperty().bind(zoom.multiply(10000));
 		
 		createNodePrelude();
 		setBook(book);
