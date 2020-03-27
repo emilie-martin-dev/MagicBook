@@ -51,11 +51,11 @@ public class Jeu {
 		BookState statePlayer = getState();
 
 		bookNode = book.getRootNode();
-		
 
 		player = new Player(statePlayer, book.getItems(), book.getCharacters());
 		end = false;
 
+		System.out.println(book.getTextPrelude());
 		while(end == false){
 			if(bookNode instanceof BookNodeCombat){
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
@@ -63,8 +63,6 @@ public class Jeu {
 			}
 			else if(bookNode instanceof BookNodeWithChoices){
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
-				System.out.println(bookNodeWithChoices.getItemLinks().size());
-				System.out.println(book.getRootNode().getChoices().get(1).isAvailable(statePlayer));
 				player.execNodeWithChoices(bookNodeWithChoices);
 				
 			}
@@ -84,9 +82,8 @@ public class Jeu {
 	
 	public float fourmis(int nbrFourmis){
 		victoire = 0;
-		System.out.println("5"+state.getMainCharacter().getItems());
 		for ( int i = 0 ; i < nbrFourmis ; i++){
-			System.out.println("7"+state.getMainCharacter().getItems());
+
 			end = false;
 			
 			bookNode = book.getRootNode();
