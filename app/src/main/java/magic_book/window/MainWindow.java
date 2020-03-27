@@ -172,17 +172,17 @@ public class MainWindow extends Stage {
                 menuShowItemsCharacters.setOnAction((ActionEvent e) -> {
                     if(menuShowItemsCharacters.isSelected()){
                         root.setLeft(leftPane);
-                    }
-                    else{
-                        root.setLeft(null);
+                    }else {
+                               root.setLeft(null);
                     }
                 });
 
-		CheckMenuItem menuShowStats = new CheckMenuItem("Statistiques");
+		
+                CheckMenuItem menuShowStats = new CheckMenuItem("Statistiques");
 		menuShowStats.setOnAction((ActionEvent e) -> {
 			if(menuShowStats.isSelected()) {
 				root.setRight(rightPane);
-			} else {
+			}else {
 				root.setRight(null);
 			}
 		});
