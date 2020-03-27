@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.FloatPropertyBase;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -29,6 +33,10 @@ import magic_book.window.gui.RectangleFx;
 
 public class GraphPane extends ScrollPane {
 	
+	private static final float SCROLL_RATIO = 400f;
+	private static final float MIN_ZOOM = 0.2f;
+	private static final float MAX_ZOOM = 4f;
+	
 	private List<NodeFx> listeNoeud;
 	private List<NodeLinkFx> listeNoeudLien;
 	private NodeFx selectedNodeFx;
@@ -40,6 +48,8 @@ public class GraphPane extends ScrollPane {
 	private Book book;
 	
 	private Pane rootPane;
+	
+	private SimpleFloatProperty zoom;
 	
 	public GraphPane(Book book){
 		listeNoeud = new ArrayList<>();
@@ -57,6 +67,21 @@ public class GraphPane extends ScrollPane {
 		this.setFitToHeight(true);
 		this.setPannable(true);
 		
+		zoom = new SimpleFloatProperty(1);
+		
+		rootPane.setOnScroll((ScrollEvent event) -> {
+			float newZoomLevel = ((float)event.getDeltaY() / SCROLL_RATIO) + zoom.getValue();
+			if(newZoomLevel < MIN_ZOOM) {
+				newZoomLevel = MIN_ZOOM;
+			} else if(newZoomLevel > MAX_ZOOM) {
+				newZoomLevel = MAX_ZOOM;
+			}
+			
+			zoom.set(newZoomLevel);
+			
+			event.consume();
+		});
+		
 		rootPane.setStyle("-fx-background-color: #dddddd;");
 		rootPane.setCursor(Cursor.CLOSED_HAND);
 		rootPane.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
@@ -72,9 +97,10 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	public NodeFx createNode(AbstractBookNode node, double x, double y) {
-		NodeFx nodeFx = new NodeFx(node);
-		nodeFx.setX(x);
-		nodeFx.setY(y);
+		NodeFx nodeFx = new NodeFx(node, zoom);
+		nodeFx.setRealX(x);
+		nodeFx.setRealY(y);
+		
 		nodeFx.addNodeFxObserver(new NodeFxListener());
 		
 		listeNoeud.add(nodeFx);
@@ -98,7 +124,7 @@ public class GraphPane extends ScrollPane {
 	
 
 	public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
-		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx);
+		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
 		nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
 
 		nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
@@ -128,9 +154,9 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	private void createNodePrelude() {
-		PreludeFx preludeFx = new PreludeFx(null);
-		preludeFx.setX(10);
-		preludeFx.setY(10);
+		PreludeFx preludeFx = new PreludeFx(null, zoom);
+		preludeFx.setRealX(10);
+		preludeFx.setRealY(10);
 		
 		preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
 			if(mode == Mode.SELECT) {
