@@ -78,12 +78,67 @@ public class BookTest {
 		Assert.assertEquals("Test taille par changement - inv", 3, book.getNodes().size());
 		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
 		
+		// Test un livre où l'on change successivement le premier noeud par des noeuds non ajoutés
+		book = new Book();
+		book.changeFirstNode(node); // 1
+		book.changeFirstNode(node2); // 2
+		Assert.assertTrue("Test index 1 par changement - normal", book.getNodes().get(1) == node2);
+		Assert.assertEquals("Test index 1 par changement - inv", 1, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 2 par changement - normal", book.getNodes().get(2) == node);
+		Assert.assertEquals("Test index 2 par changement - inv", 2, book.getNodeIndex(node));
+		Assert.assertEquals("Test taille par changement - normal", 2, book.getNodes().size());
+		Assert.assertEquals("Test taille par changement - inv", 2, book.getNodes().size());
+		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+	}
+	
+	@Test
+	public void addNode() {
+		BookNodeTerminal node = new BookNodeTerminal();
+		BookNodeTerminal node2 = new BookNodeTerminal();
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		
+		// Vérifie l'ajout simple de 2 noeuds
+		Book book = new Book();
+		book.addNode(node2); // 2
+		book.addNode(node3); // 3
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node2);
+		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 3 - normal", book.getNodes().get(3) == node3);
+		Assert.assertEquals("Test index 3 - inv", 3, book.getNodeIndex(node3));
+		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 2, book.getNodes().size());
+		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		
+		// Vérifie l'ajout avec un index manquant
+		int missingIndex = 25;
+		book.getMissingIndexes().add(missingIndex);
+		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().size() == 1);
+		
+		book.addNode(node); // 25
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node2);
+		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 3 - normal", book.getNodes().get(3) == node3);
+		Assert.assertEquals("Test index 3 - inv", 3, book.getNodeIndex(node3));
+		Assert.assertTrue("Test index " + missingIndex + " - normal", book.getNodes().get(missingIndex) == node);
+		Assert.assertEquals("Test index " + missingIndex + " - inv", missingIndex, book.getNodeIndex(node));
+		Assert.assertEquals("Test taille - normal", 3, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 3, book.getNodes().size());
+		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		
+		// Vérifie si un noeud "1" existe, si un ajout sera bien en "2"
+		book = new Book();
+		book.changeFirstNode(node); // 1 
+		book.addNode(node2); // 2
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node2);
+		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 3 - normal", book.getNodes().get(1) == node);
+		Assert.assertEquals("Test index 3 - inv", 1, book.getNodeIndex(node));
+		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 2, book.getNodes().size());
+		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
 	}
 	
 	/*
-	public void appendNode(AbstractBookNode node) {
-	}
-	
 	public void updateNode(AbstractBookNode oldNode, AbstractBookNode newNode) {
 	}
 	
