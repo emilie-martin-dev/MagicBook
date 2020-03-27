@@ -44,6 +44,7 @@ public class MainWindow extends Stage {
 	
 	private Book book;
 	
+
 	public MainWindow() {
 		book = new Book();
 		
@@ -168,6 +169,15 @@ public class MainWindow extends Stage {
 		Menu menuShow = new Menu("Affichage");
 		CheckMenuItem menuShowItemsCharacters = new CheckMenuItem("Mode, Items et personnages");
 		
+                menuShowItemsCharacters.setOnAction((ActionEvent e) -> {
+                    if(menuShowItemsCharacters.isSelected()){
+                        root.setLeft(leftPane);
+                    }
+                    else{
+                        root.setLeft(null);
+                    }
+                });
+
 		CheckMenuItem menuShowStats = new CheckMenuItem("Statistiques");
 		menuShowStats.setOnAction((ActionEvent e) -> {
 			if(menuShowStats.isSelected()) {
