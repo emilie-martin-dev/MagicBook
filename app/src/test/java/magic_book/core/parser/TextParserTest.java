@@ -1,4 +1,4 @@
-package magic_book.core.utils;
+package magic_book.core.parser;
 
 import magic_book.core.parser.TextParser;
 import magic_book.core.game.BookCharacter;

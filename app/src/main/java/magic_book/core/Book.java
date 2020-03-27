@@ -15,7 +15,6 @@ import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.book.BookNodeObservable;
 import magic_book.observer.book.BookNodeObserver;
 
-
 public class Book {
 	
 	private String textPrelude;
