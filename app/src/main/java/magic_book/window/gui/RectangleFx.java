@@ -1,6 +1,7 @@
 package magic_book.window.gui;
 
 import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -12,6 +13,11 @@ import magic_book.observer.fx.RectangleFxObserver;
 public class RectangleFx extends Rectangle {
 
 	private RectangleFxObservable nodeFxObservable;
+	
+	private SimpleFloatProperty realX;
+	private SimpleFloatProperty realY;
+	
+	private FloatProperty zoom;
 
 	public RectangleFx(Color color, FloatProperty zoom) {	
 		nodeFxObservable = new RectangleFxObservable();
@@ -22,27 +28,52 @@ public class RectangleFx extends Rectangle {
 		
 		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				RectangleFx.this.setX(event.getX()-RectangleFx.this.getWidth()/2);
-				RectangleFx.this.setY(event.getY()-RectangleFx.this.getHeight()/2);
+				RectangleFx.this.setRealX(event.getX() / zoom.get() - RectangleFx.this.getWidth() / 2);
+				RectangleFx.this.setRealY(event.getY() / zoom.get() - RectangleFx.this.getHeight() / 2);
 				
-				if (RectangleFx.this.getX() < 0){
-					RectangleFx.this.setX(0);
+				if (RectangleFx.this.getRealX() < 0){
+					RectangleFx.this.setRealX(0);
 				}
 				
-				if(RectangleFx.this.getY() < 0){
-					RectangleFx.this.setY(0);
+				if(RectangleFx.this.getRealY() < 0){
+					RectangleFx.this.setRealY(0);
 				}
 				
 				event.consume();
 			}
 		});
 		
+		realX = new SimpleFloatProperty();
+		realY = new SimpleFloatProperty();
+		this.zoom = zoom;
+		
 		this.widthProperty().bind(zoom.multiply(50));
 		this.heightProperty().bind(zoom.multiply(50));
+		
+		this.xProperty().bind(zoom.multiply(realX));
+		this.yProperty().bind(zoom.multiply(realY));
+		
 		this.setFill(color);
 	}
 	
 	public void addNodeFxObserver(RectangleFxObserver observer) {
 		nodeFxObservable.addObserver(observer);
 	}
+
+	public double getRealX() {
+		return realX.get();
+	}
+
+	public void setRealX(double realX) {
+		this.realX.set((float) realX);
+	}
+
+	public double getRealY() {
+		return realY.get();
+	}
+
+	public void setRealY(double realY) {
+		this.realY.set((float) realY);
+	}
+	
 }

@@ -29,7 +29,8 @@ public class NodeLinkFx extends Line {
 		this.strokeWidthProperty().bind(zoom.multiply(3));
 		this.setStroke(Color.BLACK);
 		
-		endCircle = new Circle(4);
+		endCircle = new Circle();
+		endCircle.radiusProperty().bind(zoom.multiply(4));
 		endCircle.setStroke(Color.BLACK);
 		endCircle.centerXProperty().bind(endXProperty());
 		endCircle.centerYProperty().bind(endYProperty());

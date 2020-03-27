@@ -33,7 +33,9 @@ import magic_book.window.gui.RectangleFx;
 
 public class GraphPane extends ScrollPane {
 	
-	private static final double SCROLL_RATIO = 400d;
+	private static final float SCROLL_RATIO = 400f;
+	private static final float MIN_ZOOM = 0.2f;
+	private static final float MAX_ZOOM = 4f;
 	
 	private List<NodeFx> listeNoeud;
 	private List<NodeLinkFx> listeNoeudLien;
@@ -68,7 +70,15 @@ public class GraphPane extends ScrollPane {
 		zoom = new SimpleFloatProperty(1);
 		
 		rootPane.setOnScroll((ScrollEvent event) -> {
-			zoom.set((float) ((event.getDeltaY() / SCROLL_RATIO) + zoom.getValue()));
+			float newZoomLevel = ((float)event.getDeltaY() / SCROLL_RATIO) + zoom.getValue();
+			if(newZoomLevel < MIN_ZOOM) {
+				newZoomLevel = MIN_ZOOM;
+			} else if(newZoomLevel > MAX_ZOOM) {
+				newZoomLevel = MAX_ZOOM;
+			}
+			
+			zoom.set(newZoomLevel);
+			
 			event.consume();
 		});
 		
@@ -88,8 +98,8 @@ public class GraphPane extends ScrollPane {
 	
 	public NodeFx createNode(AbstractBookNode node, int x, int y) {
 		NodeFx nodeFx = new NodeFx(node, zoom);
-		nodeFx.setX(x);
-		nodeFx.setY(y);
+		nodeFx.setRealX(x);
+		nodeFx.setRealY(y);
 		nodeFx.addNodeFxObserver(new NodeFxListener());
 		
 		listeNoeud.add(nodeFx);
@@ -144,8 +154,8 @@ public class GraphPane extends ScrollPane {
 	
 	private void createNodePrelude() {
 		PreludeFx preludeFx = new PreludeFx(null, zoom);
-		preludeFx.setX(10);
-		preludeFx.setY(10);
+		preludeFx.setRealX(10);
+		preludeFx.setRealY(10);
 		
 		preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
 			if(mode == Mode.SELECT) {
