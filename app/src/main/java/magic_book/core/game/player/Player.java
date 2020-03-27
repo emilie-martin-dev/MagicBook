@@ -77,8 +77,7 @@ public class Player implements InterfacePlayerFourmis {
 					scanner = new Scanner(System.in);
 					str = scanner.nextInt();
 
-					if(str <= node.getChoices().size() && str >= 0){
-						System.out.println("requirement "+node.getChoices());
+					if(str <= (node.getChoices().size()-1) && str >= 0){
 						if(node.getChoices().get(str).isAvailable(state)){
 							this.bookNodeChoice = node.getChoices().get(str).getDestination();
 							System.out.println(""+node.getChoices().get(str).getDestination());
@@ -270,7 +269,7 @@ public class Player implements InterfacePlayerFourmis {
 				
 				if(itemOui == 0){
 					int itemMax = state.getMainCharacter().getItemsMax();
-					if(listItemState.size() == itemMax && itemMax!= 0){
+					if((listItemState.size()-1) == itemMax && itemMax!= 0){
 						
 						System.out.println("Votre inventaire est plein");
 						System.out.println("Voulez vous supprimer un item ?");
@@ -302,7 +301,7 @@ public class Player implements InterfacePlayerFourmis {
 							while(choix != true){
 								scanner = new Scanner(System.in);
 								str = scanner.nextInt();
-								if(str <= listItemState.size() && str >= 0){
+								if(str <= (listItemState.size()-1) && str >= 0){
 									choix = true;
 								}
 								System.out.println("vous ne pouvez pas effectuer ce choix");
@@ -316,7 +315,7 @@ public class Player implements InterfacePlayerFourmis {
 						while(choix != true){
 							scanner = new Scanner(System.in);
 							str = scanner.nextInt();
-							if(str <= node.getItemLinks().size() && str >= 0){
+							if(str <= (node.getItemLinks().size()-1) && str >= 0){
 								choix = true;
 							}
 							System.out.println("vous ne pouvez pas effectuer ce choix");

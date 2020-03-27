@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +28,8 @@ import magic_book.core.file.BookWritter;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 import magic_book.core.game.player.Jeu;
+import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.item.BookItemWeapon;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
@@ -42,9 +45,11 @@ public class MainWindow extends Stage{
 	private String path = null;
 	
 	private Book book;
+	private BookState state;
 	
 	public MainWindow() {
-		book = new Book();
+		book = book;
+		state = state;
 		
 		BorderPane root = new BorderPane();
 		graphPane = new GraphPane(book);
@@ -71,12 +76,36 @@ public class MainWindow extends Stage{
 		// --- Menu fichier
 		MenuItem testFileNew = new MenuItem("Test");
 		testFileNew.setOnAction((ActionEvent e) -> {
-			BookCharacter bookCharacter = new BookCharacter("", "Fourmis", 20, 20, null, null, null, 0, false);
-			BookState state = new BookState();
-			state.setMainCharacter(bookCharacter);
+					try{
+						BookReader reader = new BookReader();
+						book = reader.read("./test_aure");
+					}
+					catch(FileNotFoundException ex) {
+						Alert a = new Alert(Alert.AlertType.ERROR);
+						a.setTitle("Erreur lors de l'ouverture du fichier");
+						a.setHeaderText("Le fichier n'existe pas");
+						a.show(); 
+					} catch (BookFileException ex) {
+						Alert a = new Alert(Alert.AlertType.ERROR);
+						a.setTitle("Erreur lors de l'ouverture du fichier");
+						a.setHeaderText("Le fichier n'est pas bien formé");
+						a.setContentText(ex.getMessage());
+						a.show();
+					}
+					state = new BookState();
+					AbstractBookNode bookNode = book.getRootNode();
+					BookCharacter bookCharacter = new BookCharacter("", "Fourmis", 20, 100, null, null, null, 100, false);
+					state.setMainCharacter(bookCharacter);
+					BookItemWeapon arme = new BookItemWeapon("arme","La meilleur arme :) ", 5, 3);
+					List<String> items = new ArrayList();
+					items.add(arme.getId());
+					book.getItems().put(arme.getId(), arme);
+					state.getMainCharacter().setItems(items);
 			Jeu jeu = new Jeu(state , book);
-			//System.out.println(jeu.fourmis(50));
+			System.out.println(jeu.fourmis(10000));
+			
 			jeu.play();
+			System.out.println(jeu.fourmis(10000));
 		});
 		
 		
