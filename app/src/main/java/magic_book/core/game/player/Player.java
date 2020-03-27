@@ -57,6 +57,7 @@ public class Player implements InterfacePlayerFourmis {
 	
 	public void execNodeWithChoices(BookNodeWithChoices node){
 		System.out.println("execNodeWithChoice"+ mort);
+		System.out.println(node.getChoices().get(1).getRequirements().size());
 		verifGetNodeHp(node);
 		if(mort == true){
 			BookNodeTerminal bookTerminal = new BookNodeTerminal("Vous n'avez plus de vie", BookNodeStatus.FAILURE);
@@ -85,6 +86,7 @@ public class Player implements InterfacePlayerFourmis {
 					str = scanner.nextInt();
 
 					if(str <= (node.getChoices().size()) && str >= 0){
+
 						if(node.getChoices().get(str).isAvailable(state)){
 							this.bookNodeChoice = node.getChoices().get(str).getDestination();
 							System.out.println(""+node.getChoices().get(str).getDestination());
