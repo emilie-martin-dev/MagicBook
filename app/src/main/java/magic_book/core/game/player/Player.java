@@ -45,6 +45,8 @@ public class Player implements InterfacePlayerFourmis {
 	private int doubleDamage;
 
 	private int destination;
+	private List<BookItem> listItemNode;
+	private List<String> listItemState;
 	
 	private HashMap<String, BookItem>  mapBookItem;
 	private HashMap<String, BookCharacter>  mapCharacter;
@@ -56,6 +58,8 @@ public class Player implements InterfacePlayerFourmis {
 
 		this.bookNodeChoice = bookNodeChoice;
 		this.mort = mort;
+		this.listItemNode = listItemNode;
+		this.listItemState = listItemState;
 	}
 	
 	
@@ -110,7 +114,7 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("Que choisissez-vous ?");
 	}
 	
-	private void itemPlein(List<String> listItemState){
+	private void itemPlein(){
 		System.out.println("Votre inventaire est plein");
 		System.out.println("Voulez vous supprimer un item ?");
 		System.out.println("Vos Item: ");
@@ -119,7 +123,7 @@ public class Player implements InterfacePlayerFourmis {
 		}
 	}
 	
-	private void itemSupp(List<String> listItemState){
+	private void itemSupp(){
 		System.out.println("Quel item voulez-vous supprimer ?");
 		choix = false;
 		while(choix != true){
@@ -135,23 +139,28 @@ public class Player implements InterfacePlayerFourmis {
 		}
 	}
 		
-	private void itemAdd(List<BookItem> listItemNode, List<String> listItemState){
+	private void itemAdd(){
 		System.out.println("Quel item voulez-vous ?");
 		choix = false;
 		while(choix != true){
 			scanner = new Scanner(System.in);
 			str = scanner.nextInt();
-			if(str <= (listItemNode.size()) && str >= 0){
+			System.out.println(str);
+			if(str <= (listItemNode.size()-1) && str >= 0){
 				choix = true;
+			} else {
+				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
-			System.out.println("vous ne pouvez pas effectuer ce choix");
 		}
-
+		System.out.println("L'item "+listItemNode.get(str).getName()+" a été rajouté");
 		listItemState.add(listItemNode.get(str).getId());							
 		listItemNode.remove(listItemNode.get(str));
+		state.getMainCharacter().setItems(listItemState);
 	}
 	
 	public BookState verifGetNodeItem(List<String> listItemState, List<BookItem> listItemNode, int nbItemDispo){
+		this.listItemNode = listItemNode;
+		this.listItemState = listItemState;
 		while(nbItemDispo != 0){
 			for(BookItem itemName : listItemNode){
 				System.out.println("Les items suivant sont disponible:");
@@ -166,7 +175,7 @@ public class Player implements InterfacePlayerFourmis {
 				int itemMax = state.getMainCharacter().getItemsMax();
 
 				if((listItemState.size()-1) == itemMax && itemMax!= 0){
-					itemPlein(listItemState);
+					itemPlein();
 
 
 					System.out.println("Voici vos choix:");
@@ -184,10 +193,10 @@ public class Player implements InterfacePlayerFourmis {
 					if(str == 1)
 						nbItemDispo = 0;			
 					else if (str == 0)
-						itemSupp(listItemState);
+						itemSupp();
 
 				} else {
-					itemAdd(listItemNode, listItemState);
+					itemAdd();
 				}
 				nbItemDispo -= 1;
 			} else if (itemOui == 1){
@@ -196,8 +205,6 @@ public class Player implements InterfacePlayerFourmis {
 		}
 		return state;
 	}
-	
-
 
 	
 	public void useInventaire(){

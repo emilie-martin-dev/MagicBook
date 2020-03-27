@@ -61,6 +61,7 @@ public class Jeu {
 		this.book = book;
 		
 		this.destination = destination;
+		this.finCombat = finCombat;
 
 	}
 	
@@ -168,7 +169,8 @@ public class Jeu {
 			if (lienValide != 0){
 				boolean choixValide = false;
 
-
+				verifGetNodeItem(node);
+				
 				if (statePlay){
 					System.out.println("Voici vos choix : ");
 					for (BookNodeLink bookNodeLink : node.getChoices()){
@@ -176,7 +178,7 @@ public class Jeu {
 					}
 					System.out.println();
 				}
-				verifGetNodeItem(node);
+				
 				choixValide = false;
 				while (choixValide == false){
 					
@@ -197,8 +199,11 @@ public class Jeu {
 							choixValide = true;
 						} else {
 							if(statePlay){
-								System.out.println("Vous ne possédez pas : ");
-								System.out.println(""+node.getChoices().get(str).getRequirements());
+								for(List<AbstractRequirement> abstractRequirements : node.getChoices().get(str).getRequirements()) {
+									for(AbstractRequirement requirement : abstractRequirements) {
+										System.out.println(requirement.getDescription(book));
+									}
+								}
 							}
 						}
 						verifGetChoicesItem(node, str);
@@ -236,15 +241,19 @@ public class Jeu {
 		while(finCombat == false){
 			
 			if (statePlay)
-				player.execNodeCombat(evasionRound);
+				str = player.execNodeCombat(evasionRound);
 			else
-				fourmi.execNodeCombat(listEnnemis.size());
+				str = fourmi.execNodeCombat(listEnnemis.size());
 			
-			if (str == 1)
+			if (str == 0)
 				attaque(listEnnemis);
+			finCombat = this.finCombat;
+			System.out.println(str);
 			if (str == 2)
 				evasion(listEnnemis, evasionRound);
+			finCombat = this.finCombat;
 			ennemiTour(listEnnemis);
+			finCombat = this.finCombat;
 			evasionRound -= 1;
 		}
 
@@ -258,51 +267,49 @@ public class Jeu {
 	}
 
 	private void attaque(List<BookCharacter> listEnnemis){
-		if (str == 0){
-			for(BookCharacter ennemi : listEnnemis){
-				int attaque = 0;
-				if(bookItemArme != null)
-					attaque = bookItemArme.getDamage();
-				doubleDamage = 1;
-				if(state.getMainCharacter().isDoubleDamage()){
-					Random random = new Random();
-					int r = random.nextInt(5);
-					if (r > 3){
-						if (statePlay)
-							System.out.println("Coup critique !");
-						doubleDamage = 2;
-					}
-				}
-				ennemi.damage(state.getMainCharacter().getBaseDamage()*doubleDamage+attaque);
-				System.out.println(ennemi.getHp());
-				if(ennemi.getHp()<=0){
+		for(BookCharacter ennemi : listEnnemis){
+			int attaque = 0;
+			if(bookItemArme != null)
+				attaque = bookItemArme.getDamage();
+			doubleDamage = 1;
+			if(state.getMainCharacter().isDoubleDamage()){
+				Random random = new Random();
+				int r = random.nextInt(5);
+				if (r > 3){
 					if (statePlay)
-						System.out.println(ennemi+" est mort");
-					listEnnemis.remove(ennemi);
-					break;
-				} else {
-					if (statePlay)
-						System.out.println(ennemi+" a "+ennemi.getHp()+" hp");
+						System.out.println("Coup critique !");
+					doubleDamage = 2;
 				}
 			}
-			if(listEnnemis.isEmpty())
-				finCombat = true;
-			if(bookItemArme != null){
-				/*bookItemArme.setDurability(bookItemArme.getDurability()-1);
-				if(bookItemArme.getDurability()<=0){
-					state.getMainCharacter().getItems().remove(bookItemArme.getId());
-					System.out.println("La durabilité de l'arme "+bookItemArme.getName()+"est arrivé à terme");
-					System.out.println("Arme détruite");
-				}
-				mapBookItem.put(bookItemArme.getId(), bookItemArme);*/
-				bookItemArme = null;
+			ennemi.damage(state.getMainCharacter().getBaseDamage()*doubleDamage+attaque);
+			if(ennemi.getHp()<=0){
+				if (statePlay)
+					System.out.println(ennemi+" est mort");
+				listEnnemis.remove(ennemi);
+				break;
+			} else {
+				if (statePlay)
+					System.out.println(ennemi+" a "+ennemi.getHp()+" hp");
 			}
 		}
-	}
+		if(listEnnemis.isEmpty())
+			this.finCombat = true;
+		if(bookItemArme != null){
+			/*bookItemArme.setDurability(bookItemArme.getDurability()-1);
+			if(bookItemArme.getDurability()<=0){
+				state.getMainCharacter().getItems().remove(bookItemArme.getId());
+				System.out.println("La durabilité de l'arme "+bookItemArme.getName()+"est arrivé à terme");
+				System.out.println("Arme détruite");
+			}
+			mapBookItem.put(bookItemArme.getId(), bookItemArme);*/
+			bookItemArme = null;
+		}
+
+}
 	private void evasion(List<BookCharacter> listEnnemis, int evasionRound){
-		if (str == 2 && evasionRound == 0){
-			finCombat = true;
-		} else if (str == 2 && evasionRound != 0){
+		if ( evasionRound <= 0){
+			this.finCombat = true;
+		} else if (evasionRound > 0){
 			if (statePlay)
 				System.out.println("vous ne pouvez pas encore vous evader");
 		}
@@ -329,7 +336,7 @@ public class Jeu {
 				System.out.println(ennemi + " a attaquer, il vous reste" + state.getMainCharacter().getHp()+" hp");
 			if(state.getMainCharacter().getHp() <= 0){
 				mort = true;
-				finCombat = true;
+				this.finCombat = true;
 			}
 			/*if(bookItemDefense != null){
 			bookItemDefense.setDurability(bookItemDefense.getDurability()-1);
@@ -390,7 +397,7 @@ public class Jeu {
 			for(BookItemLink itemLink : node.getItemLinks()){
 				listItemNode.add(book.getItems().get(itemLink.getId()));
 			}
-			
+			System.out.println("listItemNode "+listItemNode);
 			if(statePlay)
 				state = player.verifGetNodeItem(listItemState, listItemNode, nbItemDispo);
 			else
