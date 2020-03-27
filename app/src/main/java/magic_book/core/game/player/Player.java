@@ -3,6 +3,7 @@ package magic_book.core.game.player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import magic_book.core.game.BookCharacter;
@@ -29,8 +30,7 @@ import magic_book.core.requirement.RequirementSkills;
 public class Player implements InterfacePlayerFourmis {
 	
 	private BookState state;
-	private HashMap<String, BookItem> mapBookItem;
-	HashMap<String, BookCharacter> mapCharacter;
+
 	private AbstractBookNode bookNodeChoice;
 	private int str;
 	private Scanner scanner;
@@ -38,12 +38,19 @@ public class Player implements InterfacePlayerFourmis {
 	private boolean mort;
 	private BookItemWeapon bookItemArme;
 	private BookItemDefense bookItemDefense;
+	
+	private int resistance;
+	private int attaque;
+	private int doubleDamage;
 
+	private HashMap<String, BookItem>  mapBookItem;
+	private HashMap<String, BookCharacter>  mapCharacter;
 	
 	public Player(BookState state, HashMap<String, BookItem> mapBookItem, HashMap<String, BookCharacter> mapCharacter){
 		this.state = state;
 		this.mapBookItem = mapBookItem;
 		this.mapCharacter = mapCharacter;
+
 		this.bookNodeChoice = bookNodeChoice;
 		this.mort = mort;
 	}
@@ -77,7 +84,7 @@ public class Player implements InterfacePlayerFourmis {
 					scanner = new Scanner(System.in);
 					str = scanner.nextInt();
 
-					if(str <= (node.getChoices().size()-1) && str >= 0){
+					if(str <= (node.getChoices().size()) && str >= 0){
 						if(node.getChoices().get(str).isAvailable(state)){
 							this.bookNodeChoice = node.getChoices().get(str).getDestination();
 							System.out.println(""+node.getChoices().get(str).getDestination());
@@ -106,13 +113,14 @@ public class Player implements InterfacePlayerFourmis {
 		int evasionRound = node.getEvasionRound();
 		int str = 0;
 		boolean finCombat = false;
-		List<String> listEnnemi=  new ArrayList();
+		List<BookCharacter> listEnnemis=  new ArrayList();
+
 		
 		System.out.println(node.getText());
 		System.out.println("Il y a "+node.getEnnemiesId().size() + " ennemies !");
-		
-		for(String ennemi : node.getEnnemiesId()){
-			listEnnemi.add(ennemi);
+
+		for(String ennemieNode : node.getEnnemiesId()){
+			listEnnemis.add(mapCharacter.get(ennemieNode));
 		}
 		
 		
@@ -144,22 +152,31 @@ public class Player implements InterfacePlayerFourmis {
 			}
 			//Si attaque
 			if (str == 0){
-				for(String ennemi : node.getEnnemiesId()){
-					BookCharacter ennemiCharacter = mapCharacter.get(ennemi);
+				for(BookCharacter ennemi : listEnnemis){
+					
+					attaque = 0;
 					if(bookItemArme != null)
-						ennemiCharacter.setHp(ennemiCharacter.getHp()-(state.getMainCharacter().getBaseDamage()+bookItemArme.getDamage()));
-					else
-						ennemiCharacter.setHp(ennemiCharacter.getHp()-(state.getMainCharacter().getBaseDamage()));
-					if(ennemiCharacter.getHp()<=0){
+						attaque = bookItemArme.getDamage();
+					doubleDamage = 1;
+					if(state.getMainCharacter().isDoubleDamage()){
+						Random random = new Random();
+						int r = random.nextInt(5);
+						if (r > 3){
+							System.out.println("Coup critique !");
+							doubleDamage = 2;
+						}
+					}
+					ennemi.damage(state.getMainCharacter().getBaseDamage()*doubleDamage+attaque);
+					System.out.println(ennemi.getHp());
+					if(ennemi.getHp()<=0){
 						System.out.println(ennemi+" est mort");
-						listEnnemi.remove(ennemi);
+						listEnnemis.remove(ennemi);
 						break;
 					} else {
-						System.out.println(ennemi+" a "+ennemiCharacter.getHp()+" hp");
+						System.out.println(ennemi+" a "+ennemi.getHp()+" hp");
 					}
 				}
-				node.setEnnemiesId(listEnnemi);
-				if(node.getEnnemiesId().isEmpty())
+				if(listEnnemis.isEmpty())
 					finCombat = true;
 				if(bookItemArme != null){
 					/*bookItemArme.setDurability(bookItemArme.getDurability()-1);
@@ -179,10 +196,9 @@ public class Player implements InterfacePlayerFourmis {
 				System.out.println("vous ne pouvez pas encore vous evader");
 			}
 			if(str != 2){
-				for(String ennemi : node.getEnnemiesId()){
-					int doubleDamage = 1;
-					BookCharacter ennemiCharacter = mapCharacter.get(ennemi);
-					if(ennemiCharacter.isDoubleDamage()){
+				for(BookCharacter ennemi : listEnnemis){
+					doubleDamage = 1;
+					if(ennemi.isDoubleDamage()){
 						Random random = new Random();
 						int r = random.nextInt(5);
 						if (r > 3){
@@ -190,10 +206,12 @@ public class Player implements InterfacePlayerFourmis {
 							doubleDamage = 2;
 						}
 					}
-					if(bookItemDefense !=null)
-						state.getMainCharacter().setHp(state.getMainCharacter().getHp()-(ennemiCharacter.getBaseDamage()*doubleDamage-bookItemDefense.getResistance()));
-					else
-						state.getMainCharacter().setHp(state.getMainCharacter().getHp()-(ennemiCharacter.getBaseDamage()*doubleDamage));
+					resistance = 0;
+					if(bookItemDefense != null)
+						resistance = bookItemDefense.getResistance();
+
+					state.getMainCharacter().damage(ennemi.getBaseDamage()*doubleDamage-resistance);
+					
 					System.out.println(ennemi + " a attaquer, il vous reste" + state.getMainCharacter().getHp()+" hp");
 					if(state.getMainCharacter().getHp() <= 0){
 						mort = true;
@@ -240,9 +258,12 @@ public class Player implements InterfacePlayerFourmis {
 		if(node.getHp() != 0){
 			if(state.getMainCharacter().getHpMax() <= (state.getMainCharacter().getHp()+node.getHp())){
 				System.out.println("Vos HP sont au max");
-				state.getMainCharacter().setHp(state.getMainCharacter().getHpMax());
+				state.getMainCharacter().heal(str);
 			} else {
-				state.getMainCharacter().setHp(state.getMainCharacter().getHp()+node.getHp());
+				if(node.getHp()>0)
+					state.getMainCharacter().heal(node.getHp());
+				else 
+					state.getMainCharacter().damage(-node.getHp());
 				System.out.println("Vous avez pris "+ node.getHp() + " hp");
 				System.out.println("Vos hp : "+ state.getMainCharacter().getHp());
 			}
@@ -253,12 +274,20 @@ public class Player implements InterfacePlayerFourmis {
 	
 	private void verifGetNodeItem(BookNodeWithChoices node){
 		List<String> listItemState = state.getMainCharacter().getItems();
+		List<BookItem> listItemNode = new ArrayList();
+		System.out.println("verifGetNodeItem");
 		if (!node.getItemLinks().isEmpty()){
+			System.out.println("pasempty");
 			int nbItemDispo = node.getItemLinks().size();
+			System.out.println("nbItemDispo "+node.getItemLinks().size());
+			
+			
 			while(nbItemDispo != 0){
+
 				for(BookItemLink itemLink : node.getItemLinks()){
 					System.out.println("Les items suivant sont disponible:");
 					System.out.println(""+itemLink.getId());
+					listItemNode.add(mapBookItem.get(itemLink.getId()));
 				}
 				System.out.println("Voulez vous un item ?");
 				System.out.println("0 pour oui");
@@ -315,18 +344,14 @@ public class Player implements InterfacePlayerFourmis {
 						while(choix != true){
 							scanner = new Scanner(System.in);
 							str = scanner.nextInt();
-							if(str <= (node.getItemLinks().size()-1) && str >= 0){
+							if(str <= (node.getItemLinks().size()) && str >= 0){
 								choix = true;
 							}
 							System.out.println("vous ne pouvez pas effectuer ce choix");
 						}
 
 						listItemState.add(node.getItemLinks().get(str).getId());							
-						List<BookItemLink> itemLinl = node.getItemLinks();
-						itemLinl.remove(str);
-
-						node.setItemLinks(itemLinl);
-						node.setNbItemsAPrendre(node.getNbItemsAPrendre()-1);
+						listItemNode.remove(node.getItemLinks().get(str));
 					}
 					nbItemDispo -= 1;
 				} else if (itemOui == 1){
