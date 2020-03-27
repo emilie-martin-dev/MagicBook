@@ -37,7 +37,22 @@ public class Jeu {
 	private AbstractBookNode bookNode;
 	private boolean end;
 	private int victoire;
+	private int defaite;
 	private Book book;
+	
+	private int baseDamage;
+	private int hp;
+	private int hpMax;
+	private String iD;
+	private List<String> immunes;
+	private List<String> items;
+	private int itemsMax;
+	private int money;
+	private String name;
+	private String parsableId;
+	private String parsableText;
+	private List<String> skills;
+	private boolean doubleDamage;
 	
 	public Jeu(BookState state, Book book){
 		this.state = state;
@@ -45,35 +60,9 @@ public class Jeu {
 	}
 	
 	public void play(){
-		
-		
-		try{
-		BookReader reader = new BookReader();
-		book = reader.read("./test_aure");
-		}
-		catch(FileNotFoundException ex) {
-				Alert a = new Alert(Alert.AlertType.ERROR);
-				a.setTitle("Erreur lors de l'ouverture du fichier");
-				a.setHeaderText("Le fichier n'existe pas");
-				a.show(); 
-			} catch (BookFileException ex) {
-				Alert a = new Alert(Alert.AlertType.ERROR);
-				a.setTitle("Erreur lors de l'ouverture du fichier");
-				a.setHeaderText("Le fichier n'est pas bien formé");
-				a.setContentText(ex.getMessage());
-				a.show();
-			}
-		
+		//BookState statePlayer = getState();
 		bookNode = book.getRootNode();
-		state.getMainCharacter().setHp(100);
-		state.getMainCharacter().setHpMax(100);
-		state.getMainCharacter().setBaseDamage(10);
-		BookItemWeapon arme = new BookItemWeapon("arme","La meilleur arme :) ", 5, 3);
-		List<String> items = new ArrayList();
-		items.add(arme.getId());
-		book.getItems().put(arme.getId(), arme);
-		state.getMainCharacter().setItems(items);
-		System.out.println(state.getMainCharacter().getHp());
+			
 		player = new Player(state, book.getItems(), book.getCharacters());
 		end = false;
 	
@@ -101,95 +90,63 @@ public class Jeu {
 		}
 	}
 	
-	/*public float fourmis(int nbrFourmis){
-		try{
-		BookReader reader = new BookReader();
-		book = reader.read("./test_aure");
-		}
-		catch(FileNotFoundException ex) {
-				Alert a = new Alert(Alert.AlertType.ERROR);
-				a.setTitle("Erreur lors de l'ouverture du fichier");
-				a.setHeaderText("Le fichier n'existe pas");
-				a.show(); 
-			} catch (BookFileException ex) {
-				Alert a = new Alert(Alert.AlertType.ERROR);
-				a.setTitle("Erreur lors de l'ouverture du fichier");
-				a.setHeaderText("Le fichier n'est pas bien formé");
-				a.setContentText(ex.getMessage());
-				a.show();
-			}
-		
+	public float fourmis(int nbrFourmis){
 		victoire = 0;
-		List<Integer> listChoicesRandomChances = new ArrayList();
 		for ( int i = 0 ; i < nbrFourmis ; i++){
+			
 			end = false;
 			bookNode = book.getRootNode();
-			System.out.println("for "+i);
-			if(book.getCharacterCreations().get(i)
-			fourmi = new Fourmi(state);
-			fourmi.execBookState();
-			int r = 0;
-			while(end == false ){
-				System.out.println("Node WithChoice "+i);
+			BookState stateFourmis = getState();
+			
+			if(stateFourmis != null)
+				fourmi = new Fourmi(stateFourmis, book.getItems(), book.getCharacters());
+			 else 
+				fourmi = new Fourmi(book.getItems(), book.getCharacters());
+			
+			while(end == false){
 				if(bookNode instanceof BookNodeCombat){
 					BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
-					fourmi.execNodeCombat(bookNodeCombat, state);
+					fourmi.execNodeCombat(bookNodeCombat);
 				}
 				else if(bookNode instanceof BookNodeWithChoices){
-					
-					List<BookNodeLinkRandom> listChoices = new ArrayList();
-					for(int y = 0; y < bookNode.getChoices().size() ; y++){
-						BookNodeLink bookNodeLink = bookNode.getChoices().get(y);
-						Random random = new Random();
-						if(i == 0){
-							r = random.nextInt(10);
-							listChoicesRandomChances.add(r);
-						} else {
-							r = listChoicesRandomChances.get(y);
-						}
-						BookNodeLinkRandom bookNodeLinkRandom = new BookNodeLinkRandom(bookNodeLink.getText(), bookNodeLink.getDestination(), bookNodeLink.getRequirements(), r);
-						listChoices.add(bookNodeLinkRandom);
-						if(i == 0)
-							listChoicesRandomChances.add(r);
-					}
-					System.out.println("Sort liste "+i);
-					BookNodeWithChoices bookNodeWithChoices = new BookNodeWithChoices(bookNode.getText(), ((bookNodeWithChoices) bookNode).getNbItemsAPrendre(),
-							((bookNodeWithChoices) bookNode).getItemLinks(), ((bookNodeWithChoices) bookNode).getShopItemLinks(), listChoices);
-					fourmi.execNodeWithRandomChoices(bookNodeWithChoices, state);
+					BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
+					fourmi.execNodeWithChoices(bookNodeWithChoices);
 				}
 				else if(bookNode instanceof BookNodeWithRandomChoices){
-					List<BookNodeLinkRandom> listChoices = new ArrayList();
-					for(int y = 0; y < bookNode.getChoices().size() ; y++){
-						BookNodeLink bookNodeLink = bookNode.getChoices().get(y);
-						Random random = new Random();
-						if(i == 0){
-							r = random.nextInt(10);
-							listChoicesRandomChances.add(r);
-						} else {
-							r = listChoicesRandomChances.get(y);
-						}
-						BookNodeLinkRandom bookNodeLinkRandom = new BookNodeLinkRandom(bookNodeLink.getText(), bookNodeLink.getDestination(), bookNodeLink.getRequirements(), r);
-						listChoices.add(bookNodeLinkRandom);
-						if(i == 0)
-							listChoicesRandomChances.add(r);
-					}
-					System.out.println("Sort liste "+i);
-					BookNodeWithRandomChoices bookNodeWithRandomChoices = new BookNodeWithRandomChoices(bookNode.getText(), ((BookNodeWithRandomChoices) bookNode).getNbItemsAPrendre(),
-							((BookNodeWithRandomChoices) bookNode).getItemLinks(), ((BookNodeWithRandomChoices) bookNode).getShopItemLinks(), listChoices);
-					fourmi.execNodeWithRandomChoices(bookNodeWithChoices, state);
+					BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNode;
+					fourmi.execNodeWithRandomChoices(bookNodeWithRandomChoices);
 				}
 				else if(bookNode instanceof BookNodeTerminal){
-					System.out.println("Node terminal "+i);
 					BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) bookNode;
-					fourmi.execNodeTerminal(bookNodeTerminal, state);
+					fourmi.execNodeTerminal(bookNodeTerminal);
+					this.victoire += fourmi.getVictoire();
+					this.defaite += fourmi.getDefaite();
 					end = true;
 				}
 				this.bookNode = fourmi.getBookNodeChoice();
 			}
-			victoire += fourmi.getVictoire();
 		}
-		System.out.println("victoire : "+victoire+" nbr fourmis : "+nbrFourmis+ "  %  "+((float)victoire / (float)nbrFourmis) * 100f);
-		
 		return ((float)victoire / (float)nbrFourmis) * 100f;
-	}*/
+	}
+	
+	private BookState getState(){
+		BookState getState = new BookState();
+		baseDamage = state.getMainCharacter().getBaseDamage();
+		hp = state.getMainCharacter().getHp();
+		hpMax = state.getMainCharacter().getHpMax();
+		iD = state.getMainCharacter().getId();
+		immunes = state.getMainCharacter().getImmunes();
+		items = state.getMainCharacter().getItems();
+		itemsMax = state.getMainCharacter().getItemsMax();
+		money = state.getMainCharacter().getMoney("gold");
+		skills = state.getMainCharacter().getSkills();
+		name = state.getMainCharacter().getName();
+		doubleDamage = state.getMainCharacter().isDoubleDamage();
+		
+		BookCharacter bookCharacter = new BookCharacter(iD, name, baseDamage, hpMax, skills, immunes, items, itemsMax, doubleDamage);
+		bookCharacter.setHp(hp);
+		bookCharacter.changeMoneyAmount("gold", money);
+		getState.setMainCharacter(bookCharacter);
+		return getState;
+	}
 }
