@@ -28,8 +28,8 @@ public class RectangleFx extends Rectangle {
 		
 		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				RectangleFx.this.setRealX(event.getX() / zoom.get() - RectangleFx.this.getWidth() / 2);
-				RectangleFx.this.setRealY(event.getY() / zoom.get() - RectangleFx.this.getHeight() / 2);
+				RectangleFx.this.setRealX((event.getX() - RectangleFx.this.getWidth() / 2) / zoom.get());
+				RectangleFx.this.setRealY((event.getY() - RectangleFx.this.getHeight() / 2) / zoom.get());
 				
 				if (RectangleFx.this.getRealX() < 0){
 					RectangleFx.this.setRealX(0);
