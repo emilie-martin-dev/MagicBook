@@ -84,6 +84,7 @@ public class Jeu {
 			}
 			else if(bookNode instanceof BookNodeWithChoices){
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
+				System.out.println(book.getRootNode().getChoices().get(1).isAvailable(state));
 				player.execNodeWithChoices(bookNodeWithChoices);
 			}
 			else if(bookNode instanceof BookNodeWithRandomChoices){
