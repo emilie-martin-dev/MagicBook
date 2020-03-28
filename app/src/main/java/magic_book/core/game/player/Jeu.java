@@ -151,7 +151,6 @@ public class Jeu {
 	
 	public void execNodeWithChoices(BookNodeWithChoices node){
 		verifGetNodeHp(node);
-		
 		if(mort == true){
 			BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 			execNodeTerminal(nodeTerminal);
@@ -360,35 +359,59 @@ public class Jeu {
 		end = true;
 	}
 	
-	private void verifGetNodeHp(BookNodeWithChoices node){
+	private void verifGetNodeHp(AbstractBookNode node){
 		this.mort = false;
-		if(node.getHp() != 0){
-			if(state.getMainCharacter().getHpMax() <= (state.getMainCharacter().getHp()+node.getHp())){
+		int getNodehp = 0;
+		if(node instanceof BookNodeWithChoices){
+			BookNodeWithChoices bookNodeGet = (BookNodeWithChoices) node;
+			getNodehp = bookNodeGet.getHp();
+		} else if(node instanceof BookNodeCombat){
+			BookNodeCombat bookNodeGet = (BookNodeCombat) node;
+			getNodehp = bookNodeGet.getHp();
+		} else if(node instanceof BookNodeWithRandomChoices){
+			BookNodeWithRandomChoices bookNodeGet = (BookNodeWithRandomChoices) node;
+			getNodehp = bookNodeGet.getHp();
+		}
+		if(getNodehp != 0){
+			if(state.getMainCharacter().getHpMax() <= (state.getMainCharacter().getHp()+getNodehp)){
 				if(statePlay)
 					System.out.println("Vos HP sont au max");
 				state.getMainCharacter().heal(str);
 			} else {
-				if(node.getHp()>0)
-					state.getMainCharacter().heal(node.getHp());
+				if(getNodehp > 0)
+					state.getMainCharacter().heal(getNodehp);
 				else 
-					state.getMainCharacter().damage(-node.getHp());
+					state.getMainCharacter().damage(-getNodehp);
 				if(statePlay){
-					System.out.println("Vous avez pris "+ node.getHp() + " hp");
+					System.out.println("Vous avez pris "+ getNodehp + " hp");
 					System.out.println("Vos hp : "+ state.getMainCharacter().getHp());
 				}
 			}
-			if ((state.getMainCharacter().getHp()+node.getHp())<= 0)
+			if ((state.getMainCharacter().getHp()+getNodehp)<= 0)
 				mort = true;
 		}
 	}
 	
-	private void verifGetNodeItem(BookNodeWithChoices node){
+	private void verifGetNodeItem(AbstractBookNode node){
 		List<String> listItemState = state.getMainCharacter().getItems();
 		List<BookItem> listItemNode = new ArrayList();
-		if (!node.getItemLinks().isEmpty()){
-			int nbItemDispo = node.getItemLinks().size();
+		
+		List<BookItemLink> getNodeItem = null;
+		if(node instanceof BookNodeWithChoices){
+			BookNodeWithChoices bookNodeGet = (BookNodeWithChoices) node;
+			getNodeItem = bookNodeGet.getItemLinks();
+		} else if(node instanceof BookNodeCombat){
+			BookNodeCombat bookNodeGet = (BookNodeCombat) node;
+			getNodeItem = bookNodeGet.getItemLinks();
+		} else if(node instanceof BookNodeWithRandomChoices){
+			BookNodeWithRandomChoices bookNodeGet = (BookNodeWithRandomChoices) node;
+			getNodeItem = bookNodeGet.getItemLinks();
+		}
+		
+		if (!getNodeItem.isEmpty()){
+			int nbItemDispo = getNodeItem.size();
 			
-			for(BookItemLink itemLink : node.getItemLinks()){
+			for(BookItemLink itemLink : getNodeItem){
 				listItemNode.add(book.getItems().get(itemLink.getId()));
 			}
 			if(statePlay)
@@ -399,7 +422,7 @@ public class Jeu {
 	}
 
 	
-	private void verifGetChoicesItem(BookNodeWithChoices node, int str){
+	private void verifGetChoicesItem(AbstractBookNode node, int str){
 		if(node.getChoices().get(str).getGold() != 0){
 			BookItem bookItem = book.getItems().get("gold");
 			state.getMainCharacter().changeMoneyAmount(bookItem.getId(), node.getChoices().get(str).getGold());
