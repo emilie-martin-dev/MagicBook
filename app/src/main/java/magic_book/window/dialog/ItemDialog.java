@@ -244,14 +244,6 @@ public class ItemDialog extends AbstractDialog {
 		};
 	}
 	
-	private void notANumberAlertDialog(NumberFormatException ex){
-		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
-		
-		alertDialog.setTitle("Erreur");
-		alertDialog.setContentText(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
-		alertDialog.show();
-	}
-	
 	private void setHealingFieldsShown(boolean shown){
 		vieLabel.setVisible(shown);
 		vieTextField.setVisible(shown);
