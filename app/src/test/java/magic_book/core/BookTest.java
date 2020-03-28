@@ -106,13 +106,13 @@ public class BookTest {
 		book.changeFirstNode(node); // 1
 		book.changeFirstNode(node2); // 1
 		
-		Assert.assertTrue("Test index 1 par changement - normal", book.getNodes().get(1) == node2);
-		Assert.assertEquals("Test index 1 par changement - inv", 1, book.getNodeIndex(node2));
-		Assert.assertTrue("Test index 2 par changement - normal", book.getNodes().get(2) == node);
-		Assert.assertEquals("Test index 2 par changement - inv", 2, book.getNodeIndex(node));
-		Assert.assertEquals("Test taille par changement - normal", 2, book.getNodes().size());
-		Assert.assertEquals("Test taille par changement - inv", 2, book.getNodesInv().size());
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		Assert.assertTrue("Test index 1 - normal", book.getNodes().get(1) == node2);
+		Assert.assertEquals("Test index 1 - inv", 1, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node);
+		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node));
+		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 2, book.getNodesInv().size());
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
 	}
 	
 	@Test
@@ -133,7 +133,7 @@ public class BookTest {
 		Assert.assertEquals("Test index 3 - inv", 3, book.getNodeIndex(node3));
 		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
 		Assert.assertEquals("Test taille - inv", 2, book.getNodesInv().size());
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
 	}
 	
 	@Test
@@ -151,11 +151,11 @@ public class BookTest {
 		book.addNode(node3); // 3
 		//Mockito.verify(bookNodeObservable).notifyNodeAdded(node3);
 		book.changeFirstNode(node); // 1
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().size() == 1);
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().get(0) == missingIndex);
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().size() == 1);
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().get(0) == missingIndex);
 		book.addNode(node2); // 2
 		//Mockito.verify(bookNodeObservable).notifyNodeAdded(node2);
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
 		book.addNode(node4); // 4
 		
 		Assert.assertTrue("Test index " + missingIndex + " - normal", book.getNodes().get(missingIndex) == node2);
@@ -182,7 +182,7 @@ public class BookTest {
 		Assert.assertEquals("Test index 1 - inv", 1, book.getNodeIndex(node));
 		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
 		Assert.assertEquals("Test taille - inv", 2, book.getNodesInv().size());
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
 	}
 	
 	@Test
@@ -203,7 +203,7 @@ public class BookTest {
 		Assert.assertEquals("Test index trashNode - inv", -1, book.getNodeIndex(trashNode));
 		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
 		Assert.assertEquals("Test taille - inv", 2, book.getNodesInv().size());
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
 	}
 	
 	@Test	
@@ -215,7 +215,7 @@ public class BookTest {
 		book.addNode(trashNode);
 		book.addNode(node3);
 		book.updateNode(trashNode, node2);
-		//Mockito.verify(bookNodeObservable).notifyNodeEdited(trashNode, node);
+		//Mockito.verify(bookNodeObservable).notifyNodeEdited(trashNode, node2);
 		
 		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node2);
 		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node2));
@@ -225,13 +225,46 @@ public class BookTest {
 		Assert.assertEquals("Test index trashNode - inv", -1, book.getNodeIndex(trashNode));
 		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
 		Assert.assertEquals("Test taille - inv", 2, book.getNodesInv().size());
-		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
+	}
+	
+	@Test
+	public void removeNode_exist() {
+		BookNodeTerminal node2 = new BookNodeTerminal();
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		
+		book.addNode(node2);
+		book.addNode(node3);
+		book.removeNode(node2);
+		
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == null);
+		Assert.assertEquals("Test index 2 - inv", -1, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 3 - normal", book.getNodes().get(3) == node3);
+		Assert.assertEquals("Test index 3 - inv", 3, book.getNodeIndex(node3));
+		Assert.assertEquals("Test taille - normal", 1, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 1, book.getNodesInv().size());
+		Assert.assertEquals("Test taille index libre", 1, book.getMissingIndexes().size());
+		Assert.assertTrue("Test taille valeur libre", book.getMissingIndexes().get(0) == 2);
+	}
+	
+	@Test
+	public void removeNode_doesntExist() {
+		BookNodeTerminal node2 = new BookNodeTerminal();
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		
+		book.addNode(node2);
+		book.removeNode(node3);
+		
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node2);
+		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 3 - normal", book.getNodes().get(3) == null);
+		Assert.assertEquals("Test index 3 - inv", -1, book.getNodeIndex(node3));
+		Assert.assertEquals("Test taille - normal", 1, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 1, book.getNodesInv().size());
+		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
 	}
 	
 	/*
-	public void removeNode(AbstractBookNode node) {
-	}
-	
 	public void addNodeLink(BookNodeLink nodeLink, AbstractBookNodeWithChoices node) {
 	}
 	
