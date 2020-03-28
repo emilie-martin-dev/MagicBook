@@ -68,6 +68,9 @@ public class Book {
 	}	
 
 	public void addNode(AbstractBookNode node) {
+		if(this.nodes.containsValue(node))
+			return;
+		
 		if(this.missingIndexes.isEmpty()) {
 			int offset = (this.nodes.containsKey(1)) ? 1 : 2;
 			this.nodes.put(this.nodes.size()+offset, node);
@@ -255,5 +258,9 @@ public class Book {
 	public List<Integer> getMissingIndexes() {
 		return missingIndexes;
 	}
-	
+
+	public HashMap<AbstractBookNode, Integer> getNodesInv() {
+		return nodesInv;
+	}
+
 }
