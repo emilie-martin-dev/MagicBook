@@ -27,7 +27,9 @@ public class Fourmi implements InterfacePlayerFourmis{
 	}
 	
 	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state){
+		System.out.println("exec Random ");
 		BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNodeChoice;
+		System.out.println("Transformation ");
 		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
 		this.bookNodeChoice = randomChoices.getDestination();
 	}
@@ -42,8 +44,10 @@ public class Fourmi implements InterfacePlayerFourmis{
 
 	@Override
 	public void execNodeTerminal(BookNodeTerminal node, BookState state) {
-		if(node.getBookNodeStatus().VICTORY == BookNodeStatus.VICTORY){	
+		if(node.getBookNodeStatus() == BookNodeStatus.VICTORY){	
 			this.victoire = 1;
+		} else {
+			this.victoire = 0;
 		}
 	}
 

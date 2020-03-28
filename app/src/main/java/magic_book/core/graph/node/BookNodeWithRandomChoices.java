@@ -24,6 +24,7 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 	}
 	
 	public BookNodeLinkRandom getRandomChoices(BookState state){
+		System.out.println("Rentre dans le get ");
 		List<BookNodeLinkRandom> listNodeLinkDisponible = new ArrayList();
 		int somme = 0;
 		int nbrChoice = 0;
@@ -33,6 +34,7 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 				somme += this.getChoices().get(i).getChance();
 			}
 		}
+		
 		if(listNodeLinkDisponible.isEmpty()){
 			/*BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
 			BookNodeLinkRandom bookNodeLinkTerminal = new BookNodeLinkRandom("C'est la voie de la raison", bookNodeTerminalFail, null, 0);
@@ -41,13 +43,16 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		} else {
 			Random random = new Random();
 			int nbrRandomChoice = random.nextInt(somme);
+			int n = 0;
 			for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){
-				nbrRandomChoice -= this.getChoices().get(i).getChance();
-				if(nbrRandomChoice <= 0)
+				nbrRandomChoice = this.getChoices().get(i).getChance();
+				if(nbrRandomChoice <= 0){
 					nbrChoice = i;
 					break;
+				}
 			}
 		}
+		System.out.println("BYE BYE");
 		return this.getChoices().get(nbrChoice) ;
 	}
 
