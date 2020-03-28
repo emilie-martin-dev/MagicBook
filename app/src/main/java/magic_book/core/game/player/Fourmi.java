@@ -1,25 +1,17 @@
 package magic_book.core.game.player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 
 import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
-import magic_book.core.graph.node.BookNodeWithChoices;
-import magic_book.core.graph.node.BookNodeWithRandomChoices;
-import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemHealing;
-import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
 
@@ -32,16 +24,11 @@ public class Fourmi implements InterfacePlayerFourmis{
 	private AbstractBookNode bookNodeChoice;
 	private int str;
 	
-	private int defaite;
 	private int victoire;
 	private boolean mort;
 	private boolean choix;
 	private BookItemWeapon bookItemArme;
 	private BookItemDefense bookItemDefense;
-	
-	private int attaque;
-	private int resistance;
-	private int doubleDamage;
 
 	private Random random = new Random();
 	

@@ -3,10 +3,6 @@ package magic_book.window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -16,7 +12,6 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -29,8 +24,6 @@ import magic_book.core.file.BookWritter;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 import magic_book.core.game.player.Jeu;
-import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.core.item.BookItemWeapon;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
@@ -44,15 +37,12 @@ public class MainWindow extends Stage {
 	
 	private BorderPane root;
 	
-	private CheckMenuItem menuShowItemsCharacters;
 	private String path = null;
 	
 	private Book book;
-	private Book booktest;
 	
 	public MainWindow() {
 		book = new Book();
-		booktest = booktest;
 		
 		root = new BorderPane();
 		graphPane = new GraphPane(book);
@@ -69,8 +59,6 @@ public class MainWindow extends Stage {
 		this.setTitle("Magic Book");
 		this.setScene(scene);
 		this.show();
-	
-
 	}
 
 	private MenuBar createMenuBar() {
@@ -145,7 +133,6 @@ public class MainWindow extends Stage {
 			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
 			state.setMainCharacter(bookCharacter);
 			
-			
 			Jeu jeu = new Jeu(state , book);
 			jeu.play();
 		});
@@ -158,7 +145,7 @@ public class MainWindow extends Stage {
 			
 			Jeu jeu = new Jeu(state , book);
 			float difficulte = jeu.fourmis(10000);
-			rightPane.difficulteAdded(difficulte);
+			rightPane.difficultyChanged(difficulte);
 
 		});
 		

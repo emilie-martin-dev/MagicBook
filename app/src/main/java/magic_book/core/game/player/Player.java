@@ -1,32 +1,17 @@
 package magic_book.core.game.player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
-import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.core.graph.node.BookNodeCombat;
-import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
-import magic_book.core.graph.node.BookNodeWithChoices;
-import magic_book.core.graph.node.BookNodeWithRandomChoices;
-import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemHealing;
-import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
-import magic_book.core.requirement.AbstractRequirement;
-import magic_book.core.requirement.RequirementItem;
-import magic_book.core.requirement.RequirementMoney;
-import magic_book.core.requirement.RequirementSkill;
 
 public class Player implements InterfacePlayerFourmis {
 	
@@ -40,11 +25,6 @@ public class Player implements InterfacePlayerFourmis {
 	private BookItemWeapon bookItemArme;
 	private BookItemDefense bookItemDefense;
 	
-	private int resistance;
-	private int attaque;
-	private int doubleDamage;
-
-	private int destination;
 	private List<BookItem> listItemNode;
 	private List<String> listItemState;
 	
@@ -55,21 +35,13 @@ public class Player implements InterfacePlayerFourmis {
 		this.state = state;
 		this.mapBookItem = mapBookItem;
 		this.mapCharacter = mapCharacter;
-
-		this.bookNodeChoice = bookNodeChoice;
-		this.mort = mort;
-		this.listItemNode = listItemNode;
-		this.listItemState = listItemState;
 	}
-	
 	
 	public int stateChoices(){
 		scanner = new Scanner(System.in);
 		str = scanner.nextInt();
 		return str;
 	}
-
-
 
 	@Override
 	public int execNodeCombat(int evasionRound) {
@@ -100,8 +72,6 @@ public class Player implements InterfacePlayerFourmis {
 		}
 		return str;
 	}
-		
-
 
 	@Override
 	public void execNodeTerminal(BookNodeTerminal node) {
