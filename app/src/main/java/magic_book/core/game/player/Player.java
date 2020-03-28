@@ -1,221 +1,237 @@
 package magic_book.core.game.player;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
-import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.game.player.Jeu.ChoixCombat;
+import magic_book.core.graph.node.AbstractBookNodeWithChoices;
+import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemHealing;
+import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
 
 public class Player implements InterfacePlayerFourmis {
 	
-	private BookState state;
-
-	private AbstractBookNode bookNodeChoice;
-	private int str;
-	private Scanner scanner;
-	private boolean choix;
-	private boolean mort;
-	private BookItemWeapon bookItemArme;
-	private BookItemDefense bookItemDefense;
-	
-	private List<BookItem> listItemNode;
-	private List<String> listItemState;
-	
-	private HashMap<String, BookItem>  mapBookItem;
-	private HashMap<String, BookCharacter>  mapCharacter;
-	
-	public Player(BookState state, HashMap<String, BookItem> mapBookItem, HashMap<String, BookCharacter> mapCharacter){
-		this.state = state;
-		this.mapBookItem = mapBookItem;
-		this.mapCharacter = mapCharacter;
-	}
-	
-	public int stateChoices(){
-		scanner = new Scanner(System.in);
-		str = scanner.nextInt();
-		return str;
+	public Player(){
 	}
 
 	@Override
-	public int execNodeCombat(int evasionRound) {
-		choix = false;
-		while(choix == false){
+	public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
+		boolean choixValide = false;
+		ChoixCombat choixCombat = null;
+				
+		while(!choixValide){
 			System.out.println("Vos choix : ");
-			System.out.println("Attaque");
-			System.out.println("Inventaire");
-			System.out.println("Evasion - reste "+evasionRound+" tours");
+			System.out.println("1 - Attaque");
+			System.out.println("2 - Inventaire");
+			System.out.println("3 - Evasion - reste " + remainingRoundBeforeEvasion + " tours");
 			System.out.println("Choix : ");
 
-			scanner = new Scanner(System.in);
-			str = scanner.nextInt();
-
-			if(str ==2 || str == 0){
-				choix = true;
-				break;
-			} else if (str != 1){
-				System.out.println("vous ne pouvez pas effectuer ce choix");
+			Scanner scanner = new Scanner(System.in);
+			int choix = scanner.nextInt();
+			
+			if(choix < 1 || choix > 3) {
+				System.out.println("Le choix est invalide");
+				continue;
 			}
+			
+			choixCombat = ChoixCombat.values()[choix];
+			
 			//Si inventaire, il choisis puis reviens sur le choix
-			if (str == 1){
+			if (choixCombat == ChoixCombat.INVENTAIRE){
 				if(!state.getMainCharacter().getItems().isEmpty())
-					useInventaire();
-				else
-					System.out.println("Votre inventaire est vide");
+					if(!state.getMainCharacter().getItems().isEmpty())
+						useInventaire(state);
+					else
+						System.out.println("Votre inventaire est vide");
+			} else {
+				choixValide = true;
 			}
 		}
-		return str;
-	}
-
-	@Override
-	public void execNodeTerminal(BookNodeTerminal node) {
-		System.out.println(""+node.getText());
+		
+		return choixCombat;
 	}
 	
-	private void choixYesNo(){
+	private boolean choixYesNo(){
 		System.out.println("0 pour oui");
 		System.out.println("1 pour non");
 		System.out.println("Que choisissez-vous ?");
+		
+		Scanner scanner = new Scanner(System.in);
+		int choix = -1;
+		
+		while(choix != 0 && choix != 1) {
+			choix = scanner.nextInt();
+		}
+		
+		return choix == 0;
 	}
 	
-	private void itemPlein(){
+	private void itemPlein(BookState state){
 		System.out.println("Votre inventaire est plein");
 		System.out.println("Voulez vous supprimer un item ?");
 		System.out.println("Vos Item: ");
-		for(String itemState : listItemState){
-			System.out.println("- "+itemState);
+		
+		int i = 0;
+		for(String itemState : state.getMainCharacter().getItems()){
+			System.out.println(i + " - "+state.getBook().getItems().get(itemState));
+			i++;
 		}
+		System.out.println("-1 - Annuler");
 	}
 	
-	private void itemSupp(){
+	private void itemSupp(BookState state){
 		System.out.println("Quel item voulez-vous supprimer ?");
-		choix = false;
-		while(choix != true){
-		scanner = new Scanner(System.in);
-		str = scanner.nextInt();
-		if(str <= (listItemState.size()-1) && str >= 0){
-			choix = true;
-		} else {
-			System.out.println("vous ne pouvez pas effectuer ce choix");
-		}
-		listItemState.remove(listItemState.get(str));
-		state.getMainCharacter().setItems(listItemState);
-		}
-	}
+		boolean choixValide = false;
 		
-	private void itemAdd(){
-		System.out.println("Quel item voulez-vous ?");
-		choix = false;
-		while(choix != true){
-			scanner = new Scanner(System.in);
-			str = scanner.nextInt();
-			if(str <= (listItemNode.size()-1) && str >= 0){
-				choix = true;
+		while(!choixValide){
+			Scanner scanner = new Scanner(System.in);
+			int choix = scanner.nextInt();
+			
+			if(choix >= 0 && choix <= (state.getMainCharacter().getItems().size()-1)){				
+				state.getMainCharacter().getItems().remove(choix);
+				choixValide = true;
+			} else if(choix == -1) {
+				choixValide = true;
 			} else {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
-		System.out.println("L'item "+listItemNode.get(str).getName()+" a été rajouté");
-		listItemState.add(listItemNode.get(str).getId());							
-		listItemNode.remove(listItemNode.get(str));
-		state.getMainCharacter().setItems(listItemState);
+		
 	}
-	
-	public BookState verifGetNodeItem(List<String> listItemState, List<BookItem> listItemNode, int nbItemDispo){
-		this.listItemNode = listItemNode;
-		this.listItemState = listItemState;
-		while(nbItemDispo != 0){
-			for(BookItem itemName : listItemNode){
-				System.out.println("Les items suivant sont disponible:");
-				System.out.println("- "+itemName.getName());
-			}
-			System.out.println("Voulez vous un item ?");
-			choixYesNo();
-			scanner = new Scanner(System.in);
-			int itemOui = scanner.nextInt();
-
-			if(itemOui == 0){
-				int itemMax = state.getMainCharacter().getItemsMax();
-
-				if((listItemState.size()-1) == itemMax && itemMax!= 0){
-					itemPlein();
-
-
-					System.out.println("Voici vos choix:");
-					choixYesNo();
-					choix = false;
-					while(choix != true){
-						scanner = new Scanner(System.in);
-						str = scanner.nextInt();
-						if(str == 0 || str == 1){
-							choix = true;
-						}
-						System.out.println("vous ne pouvez pas effectuer ce choix");
-					}
-
-					if(str == 1)
-						nbItemDispo = 0;			
-					else if (str == 0)
-						itemSupp();
-
-				} else {
-					itemAdd();
-				}
-				nbItemDispo -= 1;
-			} else if (itemOui == 1){
-				nbItemDispo = 0;
-			}
-		}
-		return state;
-	}
-
-	
-	public void useInventaire(){
-		List<String> listItemState = state.getMainCharacter().getItems();
-		System.out.println("Vos Item: ");
-		for(String itemState : listItemState){
-			System.out.println("- "+itemState);
-		}
-		choix = false;
-		BookItem bookItem ;
-		while(choix == false){
-			scanner = new Scanner(System.in);
-			str = scanner.nextInt();
-			bookItem = mapBookItem.get(listItemState.get(str));
-
-			if(str <= 2 && str >= 0){
-				choix = true;
-				break;
-			}
-			else {
+		
+	private void itemAdd(BookState state, List<BookItemLink> bookItemLinks){
+		System.out.println("Quel item voulez-vous ?");
+		boolean choixValide = false;
+		int choix = -1;
+		
+		while(!choixValide){
+			Scanner scanner = new Scanner(System.in);
+			choix = scanner.nextInt();
+			
+			if(choix >= 0 && choix <= (bookItemLinks.size()-1)){
+				choixValide = true;
+			} else {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
-		bookItem = mapBookItem.get(listItemState.get(str));
+		
+		BookItemLink itemLink = bookItemLinks.get(choix);
+		System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
+		state.getMainCharacter().getItems().add(itemLink.getId());	
+		
+		itemLink.setAmount(itemLink.getAmount()-1);
+				
+		if(itemLink.getAmount() == 0)
+			bookItemLinks.remove(itemLink);
+	}
+	
+	@Override
+	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
+		while(nbItemMax != 0){
+			for(BookItemLink itemLink : bookItemLinks){
+				System.out.println("Les items suivant sont disponible:");
+				System.out.println("- " + state.getBook().getItems().get(itemLink.getId()).getDescription(state.getBook()));
+			}
+			
+			System.out.println("Voulez vous un item ?");
+			if(choixYesNo()){
+				int itemMax = state.getMainCharacter().getItemsMax();
+
+				if(itemMax == state.getMainCharacter().getItems().size()){
+					itemPlein(state);
+
+					System.out.println("Voici vos choix:");
+
+					if(choixYesNo())
+						nbItemMax = 0;			
+					else
+						itemSupp(state);
+				} else {
+					itemAdd(state, bookItemLinks);
+					nbItemMax -= 1;
+				}
+			} else {
+				nbItemMax = 0;
+			}
+		}
+	}
+
+	
+	public void useInventaire(BookState state){
+		List<String> itemsPerso = state.getMainCharacter().getItems();
+		
+		System.out.println("Vos Item: ");
+		int i = 0;
+		for(String itemState : itemsPerso){
+			System.out.println(i + " - "+itemState);
+			i++;
+		}
+		
+		boolean choixValide = false;
+		BookItem bookItem = null;
+		int choix = -1;
+		while(!choixValide){
+			Scanner scanner = new Scanner(System.in);
+			choix = scanner.nextInt();
+			
+			if(choix >= 0 && choix <= 2){
+				choixValide = true;
+			} else {
+				System.out.println("vous ne pouvez pas effectuer ce choix");
+			}
+		}
+		
+		bookItem = state.getBook().getItems().get(itemsPerso.get(choix));
 		
 		if(bookItem instanceof BookItemDefense){
-			BookItemDefense bookItemDefenseTrans = (BookItemDefense) bookItem;
-			bookItemDefense = bookItemDefenseTrans;
+			state.setBookItemDefense((BookItemDefense) bookItem);
 		} else if(bookItem instanceof BookItemHealing){
 			state.getMainCharacter().setHp((state.getMainCharacter().getHp()+((BookItemHealing) bookItem).getHp()));
 			System.out.println("Vous avez "+state.getMainCharacter().getHp()+ " hp");
-			state.getMainCharacter().getItems().remove(listItemState.get(str));
+			state.getMainCharacter().getItems().remove(itemsPerso.get(choix));
 		} else if(bookItem instanceof BookItemWeapon){
-			BookItemWeapon bookItemArmeTrans = (BookItemWeapon) bookItem;
-			bookItemArme = bookItemArmeTrans;
-		} else if(bookItem instanceof BookItemMoney){
-				System.out.println("Cette objet n'est pas utilisable en combat");
-		} else{//si c'est juste un bookItem
+			state.setBookItemArme((BookItemWeapon) bookItem);
+		} else {
 			System.out.println("Cette objet n'est pas utilisable en combat");
 		}
+	}
+
+	@Override
+	public BookCharacter execPlayerCreation(Book book) {
+		return new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+	}
+
+	@Override
+	public int makeAChoice(AbstractBookNodeWithChoices node) {
+		Scanner scanner = new Scanner(System.in);
 		
-		choix = false;
+		return scanner.nextInt();
+	}
+
+	@Override
+	public BookCharacter chooseEnnemi(List<BookCharacter> listEnnemis) {
+		System.out.println("Qui voulez vous attaquer ?");
+		int choix = -1;
+		boolean choixValide = false;
+		
+		while(!choixValide){
+			Scanner scanner = new Scanner(System.in);
+			choix = scanner.nextInt();
+			if(choix >= 0 && choix <= (listEnnemis.size()-1)){
+				choixValide = true;
+			} else {
+				System.out.println("vous ne pouvez pas effectuer ce choix");
+			}
+		}
+		
+		return listEnnemis.get(choix);
 	}
 
 }

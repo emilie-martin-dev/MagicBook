@@ -3,6 +3,7 @@ package magic_book.core.game;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import magic_book.core.Book;
 import magic_book.core.file.JsonExportable;
@@ -56,6 +57,37 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		if(this.items == null) {
 			this.items = new ArrayList<>();
 		}
+	}
+
+	public BookCharacter(BookCharacter bookCharacter) {
+		this.id = bookCharacter.id;
+		this.name = bookCharacter.name;
+		this.baseDamage = bookCharacter.baseDamage;
+		this.hp = bookCharacter.hp;
+		this.hpMax = bookCharacter.hpMax;
+		
+		this.skills = new ArrayList<>();
+		for(String s : bookCharacter.skills) {
+			this.skills.add(s);
+		}
+		
+		this.immunes = new ArrayList<>();
+		for(String i : bookCharacter.immunes) {
+			this.immunes.add(i);
+		}
+		
+		this.items = new ArrayList<>();
+		for(String i : bookCharacter.skills) {
+			this.items.add(i);
+		}
+		
+		this.moneys = new HashMap<>();
+		for(Entry<String, Integer> entry : bookCharacter.moneys.entrySet()) {
+			this.moneys.put(entry.getKey(), entry.getValue().intValue());
+		}
+		
+		this.itemsMax = bookCharacter.itemsMax;
+		this.doubleDamage = bookCharacter.doubleDamage;
 	}
 
 	@Override
@@ -147,7 +179,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		return buffer.toString();
 	}
 	
-	public boolean isAlive(int hp) {
+	public boolean isAlive() {
 		return this.hp > 0;
 	}
 	
