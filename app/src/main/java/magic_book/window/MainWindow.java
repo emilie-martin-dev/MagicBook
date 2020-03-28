@@ -39,12 +39,9 @@ public class MainWindow extends Stage {
 	private LeftPane leftPane;
 	private RightPane rightPane;
 	
-<<<<<<< HEAD
 	private BorderPane root;
 	
-=======
 	private CheckMenuItem menuShowItemsCharacters;
->>>>>>> feat : configuration de la jouabilité du player
 	private String path = null;
 	
 	private Book book;

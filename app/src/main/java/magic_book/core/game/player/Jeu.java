@@ -22,6 +22,7 @@ import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemLink;
+import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
 import magic_book.window.gui.NodeFx;
@@ -64,9 +65,16 @@ public class Jeu {
 			}
 		
 		bookNode = book.getRootNode();
-		HashMap<String, BookItem> mapItem = book.getItems();
-		
-		player = new Player(state, book.getItems());
+		state.getMainCharacter().setHp(100);
+		state.getMainCharacter().setHpMax(100);
+		state.getMainCharacter().setBaseDamage(10);
+		BookItemWeapon arme = new BookItemWeapon("arme","La meilleur arme :) ", 5, 3);
+		List<String> items = new ArrayList();
+		items.add(arme.getId());
+		book.getItems().put(arme.getId(), arme);
+		state.getMainCharacter().setItems(items);
+		System.out.println(state.getMainCharacter().getHp());
+		player = new Player(state, book.getItems(), book.getCharacters());
 		end = false;
 	
 		while(end == false){
@@ -91,8 +99,8 @@ public class Jeu {
 			this.bookNode = player.getBookNodeChoice();
 		}
 	}
-	/*
-	public float fourmis(int nbrFourmis){
+	
+	/*public float fourmis(int nbrFourmis){
 		try{
 		BookReader reader = new BookReader();
 		book = reader.read("./test_aure");
@@ -116,7 +124,8 @@ public class Jeu {
 			end = false;
 			bookNode = book.getRootNode();
 			System.out.println("for "+i);
-			fourmi = new Fourmi();
+			if(book.getCharacterCreations().get(i)
+			fourmi = new Fourmi(state);
 			fourmi.execBookState();
 			int r = 0;
 			while(end == false ){
