@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -14,13 +15,21 @@ public class CharacterDialog extends AbstractDialog {
 	
 	private BookCharacter character;
 	
+	private static final String PRINCIPAL = "Principal";
+	private static final String ENNEMIES = "Ennemies";
+	private static final String AMIS = "Amis";
+	private static final String AUTRE = "Autre";
+	
 	private TextField idTextField;
 	private TextField nameTextField;
 	private TextField hpTextField;
 	private TextField combatSkillTextField;
 	private CheckBox doubleDamageCheckBox;
 	
+	private ChoiceBox persoType;
+	
 	public CharacterDialog() {
+		
 		super("Ajout d'un personnage");
 		
 		this.showAndWait();
@@ -41,6 +50,14 @@ public class CharacterDialog extends AbstractDialog {
 	@Override
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
+			
+		
+		persoType = new ChoiceBox<>();
+
+ 		persoType.getItems().add(PRINCIPAL);
+ 		persoType.getItems().add(ENNEMIES);
+ 		persoType.getItems().add(AMIS);
+ 		persoType.setValue(AUTRE);
 		
 		root.setHgap(5);
 		root.setVgap(5);
@@ -56,15 +73,27 @@ public class CharacterDialog extends AbstractDialog {
 		combatSkillTextField = new TextField();
 		doubleDamageCheckBox = new CheckBox("Double dégats");
 		
+		Label typeLabel = new Label("Type de personnage : ");
+		Label raceLabel = new Label("Race : ");
+		
+		idTextField = new TextField();
+		nameTextField = new TextField();
+		raceTextField = new TextField();
+		
 		root.add(idLabel, 0, 0);
 		root.add(idTextField, 1, 0);
 		root.add(nameLabel, 0, 1);
 		root.add(nameTextField, 1, 1);
+		
 		root.add(hpLabel, 0, 2);
 		root.add(hpTextField, 1, 2);
 		root.add(combatSkillLabel, 0, 3);
 		root.add(combatSkillTextField, 1, 3);
 		root.add(doubleDamageCheckBox, 0, 4, 2, 1);
+	/*	root.add(typeLabel, 0, 2);
+		root.add(persoType, 1, 2);
+		root.add(raceLabel, 0, 3);
+		root.add(raceTextField, 1, 3);*/
 		
 		return root;
 	}
