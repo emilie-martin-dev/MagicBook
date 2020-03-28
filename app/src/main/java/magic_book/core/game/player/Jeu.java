@@ -1,16 +1,10 @@
 package magic_book.core.game.player;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import javafx.scene.control.Alert;
 import magic_book.core.Book;
-import magic_book.core.exception.BookFileException;
-import magic_book.core.file.BookReader;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
@@ -26,20 +20,15 @@ import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
-import magic_book.core.requirement.RequirementItem;
-import magic_book.window.gui.NodeFx;
-
 
 public class Jeu {
 	
 	private BookState state;
-	private List<NodeFx> listeNoeud;
 	private Player player;
 	private Fourmi fourmi;
 	private AbstractBookNode bookNode;
 	private boolean end;
 	private int victoire;
-	private int defaite;
 	private Book book;
 	private boolean statePlay;
 	private boolean mort;
@@ -52,16 +41,9 @@ public class Jeu {
 	private BookItemWeapon bookItemArme;
 	private BookItemDefense bookItemDefense;
 	
-	private Random random = new Random();
-	
-	
 	public Jeu(BookState state, Book book){
 		this.state = state;
 		this.book = book;
-		
-		this.destination = destination;
-		this.finCombat = finCombat;
-
 	}
 	
 	public void play(){

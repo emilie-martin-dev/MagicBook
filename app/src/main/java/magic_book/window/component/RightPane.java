@@ -17,12 +17,10 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	private int nodeCount;
 	private Label nodeCountLabel;
 	
-	private float difficulte;
 	private Label difficultePourcentageLabel;
 	
 	public RightPane(Book book){		
 		nodeCount = 0;
-		difficulte = 0;
 		
 		this.setMaxWidth(200);
 		this.setMinWidth(200);
@@ -42,7 +40,7 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		
 		HBox difficulteBox = new HBox();
 		Label difficulteLabel = new Label("Difficulte du livre : ");
-		difficultePourcentageLabel = new Label(""+difficulte);
+		difficultePourcentageLabel = new Label("?");
 		difficulteBox.getChildren().addAll(difficulteLabel, difficultePourcentageLabel);
 		
 		VBox statsLayout = new VBox();
@@ -76,12 +74,9 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		updateStats();
 	}
 	
-	public void difficulteAdded(float difficulte) {
-		System.out.println("oki");
-		this.difficulte = difficulte;
+	public void difficultyChanged(float difficulte) {
 		difficultePourcentageLabel.setText(""+difficulte);
-	}
-	
+	}	
 	
 	public void setBook(Book book) {
 		if(this.book != null)
