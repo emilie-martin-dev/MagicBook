@@ -185,10 +185,50 @@ public class BookTest {
 		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
 	}
 	
-	/*
-	public void updateNode(AbstractBookNode oldNode, AbstractBookNode newNode) {
+	@Test
+	public void updateNode_ajout() {
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		BookNodeTerminal trashNode = new BookNodeTerminal();
+		BookNodeTerminal node2 = new BookNodeTerminal();
+		
+		book.addNode(node2);
+		book.updateNode(trashNode, node3);
+		//Mockito.verify(bookNodeObservable).notifyNodeAdded(node);
+		
+		Assert.assertTrue("Test index 3 - normal", book.getNodes().get(3) == node3);
+		Assert.assertEquals("Test index 3 - inv", 3, book.getNodeIndex(node3));
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node2);
+		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node2));
+		Assert.assertFalse("Test contains trashNode - normal", book.getNodes().containsValue(trashNode));
+		Assert.assertEquals("Test index trashNode - inv", -1, book.getNodeIndex(trashNode));
+		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 2, book.getNodesInv().size());
+		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
 	}
 	
+	@Test	
+	public void updateNode_update() {
+		BookNodeTerminal node2 = new BookNodeTerminal();
+		BookNodeTerminal trashNode = new BookNodeTerminal();
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		
+		book.addNode(trashNode);
+		book.addNode(node3);
+		book.updateNode(trashNode, node2);
+		//Mockito.verify(bookNodeObservable).notifyNodeEdited(trashNode, node);
+		
+		Assert.assertTrue("Test index 2 - normal", book.getNodes().get(2) == node2);
+		Assert.assertEquals("Test index 2 - inv", 2, book.getNodeIndex(node2));
+		Assert.assertTrue("Test index 3 - normal", book.getNodes().get(3) == node3);
+		Assert.assertEquals("Test index 3 - inv", 3, book.getNodeIndex(node3));
+		Assert.assertFalse("Test contains trashNode - normal", book.getNodes().containsValue(trashNode));
+		Assert.assertEquals("Test index trashNode - inv", -1, book.getNodeIndex(trashNode));
+		Assert.assertEquals("Test taille - normal", 2, book.getNodes().size());
+		Assert.assertEquals("Test taille - inv", 2, book.getNodesInv().size());
+		Assert.assertTrue("Test taille index libre changement", book.getMissingIndexes().isEmpty());
+	}
+	
+	/*
 	public void removeNode(AbstractBookNode node) {
 	}
 	

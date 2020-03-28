@@ -108,6 +108,7 @@ public class Book {
 		if(indexOfNode != null) {
 			this.nodes.put(indexOfNode, newNode);
 			this.nodesInv.put(newNode, indexOfNode);
+			this.nodesInv.remove(oldNode);
 			
 			bookNodeObservable.notifyNodeEdited(oldNode, newNode);
 		} else {
