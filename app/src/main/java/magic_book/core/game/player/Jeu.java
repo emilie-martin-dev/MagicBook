@@ -40,32 +40,22 @@ public class Jeu {
 	private int defaite;
 	private Book book;
 	
-	private int baseDamage;
-	private int hp;
-	private int hpMax;
-	private String iD;
-	private List<String> immunes;
-	private List<String> items;
-	private int itemsMax;
-	private int money;
-	private String name;
-	private String parsableId;
-	private String parsableText;
-	private List<String> skills;
-	private boolean doubleDamage;
 	
 	public Jeu(BookState state, Book book){
 		this.state = state;
 		this.book = book;
+
 	}
 	
 	public void play(){
-		//BookState statePlayer = getState();
+		BookState statePlayer = getState();
+
 		bookNode = book.getRootNode();
-			
-		player = new Player(state, book.getItems(), book.getCharacters());
+		
+
+		player = new Player(statePlayer, book.getItems(), book.getCharacters());
 		end = false;
-	
+
 		while(end == false){
 			if(bookNode instanceof BookNodeCombat){
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
@@ -73,8 +63,10 @@ public class Jeu {
 			}
 			else if(bookNode instanceof BookNodeWithChoices){
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
-				System.out.println(book.getRootNode().getChoices().get(1).isAvailable(state));
+				System.out.println(bookNodeWithChoices.getItemLinks().size());
+				System.out.println(book.getRootNode().getChoices().get(1).isAvailable(statePlayer));
 				player.execNodeWithChoices(bookNodeWithChoices);
+				
 			}
 			else if(bookNode instanceof BookNodeWithRandomChoices){
 				BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNode;
@@ -92,10 +84,13 @@ public class Jeu {
 	
 	public float fourmis(int nbrFourmis){
 		victoire = 0;
+		System.out.println("5"+state.getMainCharacter().getItems());
 		for ( int i = 0 ; i < nbrFourmis ; i++){
-			
+			System.out.println("7"+state.getMainCharacter().getItems());
 			end = false;
+			
 			bookNode = book.getRootNode();
+			
 			BookState stateFourmis = getState();
 			
 			if(stateFourmis != null)
@@ -120,7 +115,6 @@ public class Jeu {
 					BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) bookNode;
 					fourmi.execNodeTerminal(bookNodeTerminal);
 					this.victoire += fourmi.getVictoire();
-					this.defaite += fourmi.getDefaite();
 					end = true;
 				}
 				this.bookNode = fourmi.getBookNodeChoice();
@@ -130,22 +124,8 @@ public class Jeu {
 	}
 	
 	private BookState getState(){
+		BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
 		BookState getState = new BookState();
-		baseDamage = state.getMainCharacter().getBaseDamage();
-		hp = state.getMainCharacter().getHp();
-		hpMax = state.getMainCharacter().getHpMax();
-		iD = state.getMainCharacter().getId();
-		immunes = state.getMainCharacter().getImmunes();
-		items = state.getMainCharacter().getItems();
-		itemsMax = state.getMainCharacter().getItemsMax();
-		money = state.getMainCharacter().getMoney("gold");
-		skills = state.getMainCharacter().getSkills();
-		name = state.getMainCharacter().getName();
-		doubleDamage = state.getMainCharacter().isDoubleDamage();
-		
-		BookCharacter bookCharacter = new BookCharacter(iD, name, baseDamage, hpMax, skills, immunes, items, itemsMax, doubleDamage);
-		bookCharacter.setHp(hp);
-		bookCharacter.changeMoneyAmount("gold", money);
 		getState.setMainCharacter(bookCharacter);
 		return getState;
 	}
