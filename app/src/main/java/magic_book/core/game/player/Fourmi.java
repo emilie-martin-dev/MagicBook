@@ -1,6 +1,7 @@
 package magic_book.core.game.player;
 
 import java.util.Random;
+import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 
 import magic_book.core.graph.node.AbstractBookNode;
@@ -16,6 +17,12 @@ public class Fourmi implements InterfacePlayerFourmis{
 
 	public Fourmi(AbstractBookNode bookNodeChoice){
 		this.bookNodeChoice = bookNodeChoice;
+	}
+	
+	public BookCharacter execBookState(){
+		BookCharacter bookCharacter = new BookCharacter("", "Fourmis", 20, 20, null, null, null, 0, false);
+		bookCharacter.changeMoneyAmount("money",100);
+		return bookCharacter;
 	}
 	
 	private void execNodeWithRandomChoices(BookNodeWithRandomChoices node, BookState state){
