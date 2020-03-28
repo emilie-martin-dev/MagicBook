@@ -41,9 +41,13 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 			Random random = new Random();
 			int nbrRandomChoice = random.nextInt(somme);
 			for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){
+				if(!this.getChoices().get(i).isAvailable(state)){
+					continue;
+				}
+				
 				nbrRandomChoice -= this.getChoices().get(i).getChance();
 
-				if(nbrRandomChoice <= 0){
+				if(nbrRandomChoice < 0){
 					nbrChoice = i;
 					break;
 				}
