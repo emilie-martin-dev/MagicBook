@@ -70,7 +70,6 @@ public class Fourmi implements InterfacePlayerFourmis{
 		choix = false;
 		while(choix == false){
 			str = random.nextInt(nbr);
-
 			if(str ==2 || str == 0){
 				choix = true;
 			}
