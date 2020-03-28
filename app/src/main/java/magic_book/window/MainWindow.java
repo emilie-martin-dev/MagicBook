@@ -167,30 +167,29 @@ public class MainWindow extends Stage {
 
 		// --- Menu affichage
 		Menu menuShow = new Menu("Affichage");
-		CheckMenuItem menuShowItemsCharacters = new CheckMenuItem("Mode, Items et personnages");
-		
-                menuShowItemsCharacters.setOnAction((ActionEvent e) -> {
-                    if(menuShowItemsCharacters.isSelected()){
-                        root.setLeft(leftPane);
-                    }else {
-                               root.setLeft(null);
-                    }
-                });
+		CheckMenuItem menuShowLeftPanel = new CheckMenuItem("Mode, Items et personnages");
+		menuShowLeftPanel.setOnAction((ActionEvent e) -> {
+			if(menuShowLeftPanel.isSelected()){
+				root.setLeft(leftPane);
+			} else {
+				root.setLeft(null);
+			}
+		});
 
-		
-                CheckMenuItem menuShowStats = new CheckMenuItem("Statistiques");
-		menuShowStats.setOnAction((ActionEvent e) -> {
-			if(menuShowStats.isSelected()) {
+
+		CheckMenuItem menuShowStatsPanel = new CheckMenuItem("Statistiques");
+		menuShowStatsPanel.setOnAction((ActionEvent e) -> {
+			if(menuShowStatsPanel.isSelected()) {
 				root.setRight(rightPane);
-			}else {
+			} else {
 				root.setRight(null);
 			}
 		});
 
-		menuShowItemsCharacters.setSelected(true);
-		menuShowStats.setSelected(true);
+		menuShowLeftPanel.setSelected(true);
+		menuShowStatsPanel.setSelected(true);
 
-		menuShow.getItems().addAll(menuShowItemsCharacters, menuShowStats);
+		menuShow.getItems().addAll(menuShowLeftPanel, menuShowStatsPanel);
 
 		menuBar.getMenus().addAll(menuFile, menuBook, menuShow);
 
