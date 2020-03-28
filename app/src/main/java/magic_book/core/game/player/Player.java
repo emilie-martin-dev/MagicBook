@@ -14,18 +14,18 @@ import magic_book.core.requirement.AbstractRequirement;
 public class Player implements InterfacePlayerFourmis {
 	
 	private AbstractBookNode bookNodeChoice;
-	private Scanner sc = new Scanner(System.in);
+	private int str;
+	private Scanner scanner;
+
 	
 	public Player(){
 		this.bookNodeChoice = bookNodeChoice;
 	}
 	
 	public void execNodeWithChoices(BookNodeWithChoices node, BookState state){
-		for(BookNodeLink bookNodeLink : node.getChoices()){
-			System.out.println(""+bookNodeLink.getText());
-		}
 		int lienValide = 0;
 		for (BookNodeLink bookNodeLink : node.getChoices()){
+			System.out.println("Voici les choix : "+bookNodeLink.getText());
 			if(bookNodeLink.isAvailable(state))
 				lienValide += 1;
 		}
@@ -33,15 +33,16 @@ public class Player implements InterfacePlayerFourmis {
 			boolean choixValide = false;
 			while (choixValide == false){
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNodeChoice;
-				
+				scanner = new Scanner(System.in);
 				System.out.println("Choix : ");
-				int str = sc.nextInt();
-				if(bookNodeWithChoices.getChoices().get(str).isAvailable(state)){
-					this.bookNodeChoice = bookNodeWithChoices.getChoices().get(str).getDestination();
+				str = 0;
+				if(node.getChoices().get(str).isAvailable(state)){
+					System.out.println("IS AVALIBE OKKKKK");
+					this.bookNodeChoice = node.getChoices().get(str).getDestination();
 					break;
 				} else {
 					System.out.println("Vous ne possédez pas : ");
-					for(List<AbstractRequirement> listRequirement : bookNodeWithChoices.getChoices().get(str).getRequirements()) {
+					for(List<AbstractRequirement> listRequirement : node.getChoices().get(str).getRequirements()) {
 						for(AbstractRequirement requirement : listRequirement) {
 							System.out.println("- "+requirement.toString());
 						}
@@ -49,6 +50,7 @@ public class Player implements InterfacePlayerFourmis {
 				}
 			}
 		} else {
+			System.out.println("pas d'item adéquat, dommage");
 			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Vous ne pouvez plus continuer, vous n'avez pas les items adéquats", BookNodeStatus.FAILURE);
 			this.bookNodeChoice = bookNodeTerminalFail;
 		}
@@ -66,10 +68,6 @@ public class Player implements InterfacePlayerFourmis {
 			--> alors on regade les items a prendre ? genre c'est shopItemLinks ?
 		*/
 		
-		//afficher les choix
-		for(BookNodeLink bookNodeLink : node.getChoices()){
-			System.out.println(""+bookNodeLink.getText());
-		}
 		//transformer le bookNodeChoice
 		BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNodeChoice;
 		
@@ -80,8 +78,16 @@ public class Player implements InterfacePlayerFourmis {
 		int choix = 0;
 		int str = 0;
 		while(evasionRound != 0 && choix == 0){
+			//afficher les choix
+			for(BookNodeLink bookNodeLink : node.getChoices()){
+				if(bookNodeLink.getText() != "combat evasion")
+					System.out.println(""+bookNodeLink.getText());
+			}
 			System.out.println("Choix : ");
-			str = sc.nextInt();
+			scanner = new Scanner(System.in);
+			
+			str = scanner.nextInt();
+			
 			evasionRound -= 1;
 			if(node.getChoices().get(str) == node.getEvasionBookNodeLink()){
 				System.out.println("Vous ne pouvez pas encore vous échaper");
@@ -91,9 +97,13 @@ public class Player implements InterfacePlayerFourmis {
 		}
 		
 		if (evasionRound == 0 && choix == 0){
+			//afficher les choix
+			for(BookNodeLink bookNodeLink : node.getChoices()){
+				System.out.println(""+bookNodeLink.getText());
+			}
 			while(choix == 0){
 				System.out.println("Choix : ");
-				str = sc.nextInt();
+				//str = scanner.nextInt();
 			}
 		}
 		this.bookNodeChoice = node.getChoices().get(str).getDestination();
