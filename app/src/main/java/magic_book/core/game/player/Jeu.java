@@ -115,7 +115,7 @@ public class Jeu {
 		showMessage(node.getText());
 		
 		execNodeHp(node);
-		if(state.getMainCharacter().isAlive()){
+		if(!state.getMainCharacter().isAlive()){
 			BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 			nodeTerminal.setText("Vous êtes morts...");
 			nodeTerminal.setBookNodeStatus(BookNodeStatus.FAILURE);
@@ -223,7 +223,7 @@ public class Jeu {
 					showMessage(ennemi.getName() + " a " +ennemi.getHp() + " hp");
 				}
 			} else if(choixCombat == ChoixCombat.EVASION) {
-				if(evasionRound <= 0) {
+				if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null) {
 					execBookNodeLink(node.getEvasionBookNodeLink());
 					return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
 				}

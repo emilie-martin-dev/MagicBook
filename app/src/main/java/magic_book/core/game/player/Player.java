@@ -83,7 +83,6 @@ public class Player implements InterfacePlayerFourmis {
 			System.out.println(i + " - "+state.getBook().getItems().get(itemState));
 			i++;
 		}
-		System.out.println("-1 - Annuler");
 	}
 	
 	private void itemSupp(BookState state){

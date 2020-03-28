@@ -23,7 +23,7 @@ public class Fourmi implements InterfacePlayerFourmis{
 	@Override
 	public int makeAChoice(AbstractBookNodeWithChoices node) {
 		Random random = new Random();
-		return random.nextInt(node.getChoices().size());
+		return random.nextInt(node.getChoices().size())+1;
 	}
 	
 	@Override
@@ -69,10 +69,10 @@ public class Fourmi implements InterfacePlayerFourmis{
 	@Override
 	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 		int choix = 0;
-		while(nbItemMax != 0 || choix != -1){
+		while(nbItemMax != 0){
 			int itemMax = state.getMainCharacter().getItemsMax();
 			
-			if(state.getMainCharacter().getItems().size() < itemMax){
+			if(state.getMainCharacter().getItems().size() < itemMax && !bookItemLinks.isEmpty()){
 				Random random = new Random();
 				choix = random.nextInt(bookItemLinks.size());
 				
@@ -83,12 +83,12 @@ public class Fourmi implements InterfacePlayerFourmis{
 				
 				if(itemLink.getAmount() == 0)
 					bookItemLinks.remove(itemLink);
+				
+				if(nbItemMax != -1)
+					nbItemMax--;
 			} else {
-				choix = -1;
+				nbItemMax = 0;
 			}
-			
-			if(nbItemMax != -1)
-				nbItemMax--;
 		}
 	}
 	

@@ -3,6 +3,8 @@ package magic_book.window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -128,15 +130,33 @@ public class MainWindow extends Stage {
 		
 		MenuItem menuBookJouer = new MenuItem("Jouer");
 		menuBookJouer.setOnAction((ActionEvent e) -> {
-			Jeu jeu = new Jeu(book);
-			jeu.play();
+			Book bookCopy = createBookCopy();
+			
+			if(bookCopy != null) {
+				Jeu jeu = new Jeu(bookCopy);
+				jeu.play();
+			} else {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors du chargement du jeu");
+				a.setHeaderText("Impossible de jouer au livre");
+				a.show(); 
+			}
 		});
 		
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		menuBookDifficulty.setOnAction((ActionEvent e) -> {
-			Jeu jeu = new Jeu(book);
-			float difficulte = jeu.fourmis(10000);
-			rightPane.difficultyChanged(difficulte);
+			Book bookCopy = createBookCopy();
+			
+			if(bookCopy != null) {
+				Jeu jeu = new Jeu(book);
+				float difficulte = jeu.fourmis(10000);
+				rightPane.difficultyChanged(difficulte);
+			} else {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors de l'estimation");
+				a.setHeaderText("Impossible d'estimer la difficulté du livre");
+				a.show(); 
+			}
 		});
 		
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
@@ -232,4 +252,23 @@ public class MainWindow extends Stage {
 		}
 	}
 
+	private Book createBookCopy() {
+		try {
+			String tmpPath = ".livreTmpGame";
+			BookWritter bookWritter = new BookWritter();
+			bookWritter.write(tmpPath, book);
+
+			BookReader bookReader = new BookReader();
+			Book bookCopy = bookReader.read(tmpPath);
+			File file = new File(tmpPath);
+			file.delete();
+			
+			return bookCopy;
+		} catch (IOException ex) {
+			return null;
+		} catch (BookFileException ex) {
+			return null;
+		}
+	}
+	
 }
