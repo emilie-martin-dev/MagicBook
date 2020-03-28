@@ -145,7 +145,6 @@ public class Player implements InterfacePlayerFourmis {
 		while(choix != true){
 			scanner = new Scanner(System.in);
 			str = scanner.nextInt();
-			System.out.println(str);
 			if(str <= (listItemNode.size()-1) && str >= 0){
 				choix = true;
 			} else {

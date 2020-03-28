@@ -103,7 +103,7 @@ public class MainWindow extends Stage {
 			Jeu jeu = new Jeu(state , booktest);
 			System.out.println(jeu.fourmis(10));
 			jeu.play();
-			//System.out.println(jeu.fourmis(10000));
+			System.out.println(jeu.fourmis(10000));
 		});
 		
 		

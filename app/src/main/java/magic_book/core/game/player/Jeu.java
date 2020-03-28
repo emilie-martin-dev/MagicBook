@@ -42,7 +42,6 @@ public class Jeu {
 	private int defaite;
 	private Book book;
 	private boolean statePlay;
-	private boolean fourmisPlay;
 	private boolean mort;
 	
 	private int str;
@@ -67,10 +66,11 @@ public class Jeu {
 	
 	public void play(){
 		BookState statePlayer = getState();
-
+		this.state = getState();
 		bookNode = book.getRootNode();
 
 		player = new Player(statePlayer, book.getItems(), book.getCharacters());
+		
 		end = false;
 		statePlay = true;
 		
@@ -107,13 +107,14 @@ public class Jeu {
 			end = false;
 			
 			bookNode = book.getRootNode();
-			
+			this.state = getState();
 			BookState stateFourmis = getState();
 			
 			if(stateFourmis != null)
 				fourmi = new Fourmi(stateFourmis, book.getItems(), book.getCharacters());
 			 else 
 				fourmi = new Fourmi(getState(), book.getItems(), book.getCharacters());
+			
 			
 			while(end == false){
 				if(bookNode instanceof BookNodeCombat){
@@ -131,9 +132,9 @@ public class Jeu {
 				else if(bookNode instanceof BookNodeTerminal){
 					BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) bookNode;
 					execNodeTerminal(bookNodeTerminal);
-					this.victoire += fourmi.getVictoire();
 					end = true;
 				}
+				this.victoire += fourmi.getVictoire();
 				bookNode = book.getNodes().get(destination);
 			}
 		}
@@ -149,8 +150,6 @@ public class Jeu {
 	
 	
 	public void execNodeWithChoices(BookNodeWithChoices node){
-		System.out.println("execNodeWithChoice"+ mort);
-
 		verifGetNodeHp(node);
 		
 		if(mort == true){
@@ -185,17 +184,12 @@ public class Jeu {
 					if(statePlay){
 						System.out.println("Que choisissez-vous ?");
 						str = player.stateChoices();
-					}
-					if(fourmisPlay){
+					} else{
 						str = fourmi.fourmisChoices(node.getChoices().size());
 					}
-					
-					if(str <= (node.getChoices().size()) && str >= 0){
-
+					if(str <= (node.getChoices().size()-1) && str >= 0){
 						if(node.getChoices().get(str).isAvailable(state)){
 							destination = node.getChoices().get(str).getDestination();
-							if(statePlay)
-								System.out.println("Texte : "+node.getChoices().get(str).getDestination());
 							choixValide = true;
 						} else {
 							if(statePlay){
@@ -206,6 +200,7 @@ public class Jeu {
 								}
 							}
 						}
+						
 						verifGetChoicesItem(node, str);
 					}
 					else {
@@ -248,7 +243,6 @@ public class Jeu {
 			if (str == 0)
 				attaque(listEnnemis);
 			finCombat = this.finCombat;
-			System.out.println(str);
 			if (str == 2)
 				evasion(listEnnemis, evasionRound);
 			finCombat = this.finCombat;
@@ -397,7 +391,6 @@ public class Jeu {
 			for(BookItemLink itemLink : node.getItemLinks()){
 				listItemNode.add(book.getItems().get(itemLink.getId()));
 			}
-			System.out.println("listItemNode "+listItemNode);
 			if(statePlay)
 				state = player.verifGetNodeItem(listItemState, listItemNode, nbItemDispo);
 			else
