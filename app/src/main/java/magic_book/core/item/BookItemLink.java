@@ -24,6 +24,14 @@ public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> 
 		this.auto = auto;
 		this.sellingPrice = sellingPrice;
 	}
+
+	public BookItemLink(BookItemLink bookItemLink) {
+		this.id = bookItemLink.id;
+		this.amount = bookItemLink.amount;
+		this.price = bookItemLink.price;
+		this.sellingPrice = bookItemLink.sellingPrice;
+		this.auto = bookItemLink.auto;
+	}
 	
 	@Override
 	public ItemLinkJson toJson() {

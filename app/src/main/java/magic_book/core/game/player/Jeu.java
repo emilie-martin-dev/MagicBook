@@ -8,6 +8,7 @@ import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
@@ -23,253 +24,237 @@ import magic_book.core.requirement.AbstractRequirement;
 
 public class Jeu {
 	
+	public enum ChoixCombat {
+		ATTAQUER, INVENTAIRE, EVASION;
+	}
+	
 	private BookState state;
-	private Player player;
-	private Fourmi fourmi;
-	private AbstractBookNode bookNode;
-	private boolean end;
-	private int victoire;
+	private InterfacePlayerFourmis player;
 	private Book book;
-	private boolean statePlay;
-	private boolean mort;
+	private boolean showMessages;
 	
-	private int str;
-	private int destination;
-	private int doubleDamage;
-	private boolean finCombat;
-	
-	private BookItemWeapon bookItemArme;
-	private BookItemDefense bookItemDefense;
-	
-	public Jeu(BookState state, Book book){
-		this.state = state;
+	public Jeu(Book book){
 		this.book = book;
 	}
 	
 	public void play(){
-		BookState statePlayer = getState();
-		this.state = getState();
-		bookNode = book.getRootNode();
-
-		player = new Player(statePlayer, book.getItems(), book.getCharacters());
+		player = new Player();
 		
-		end = false;
-		statePlay = true;
+		showMessages = true;
 		
-		System.out.println(book.getTextPrelude());
-		
-		while(end == false){
-			if(bookNode instanceof BookNodeCombat){
-				BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
-				execNodeCombat(bookNodeCombat);
-			}
-			else if(bookNode instanceof BookNodeWithChoices){
-				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
-				execNodeWithChoices(bookNodeWithChoices);
-			}
-			else if(bookNode instanceof BookNodeWithRandomChoices){
-				BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNode;
-				execNodeWithRandomChoices(bookNodeWithRandomChoices);
-			}
-			else if(bookNode instanceof BookNodeTerminal){
-				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) bookNode;
-				execNodeTerminal(bookNodeTerminal);		
-				end = true;
-			}
-
-			bookNode = book.getNodes().get(destination);
-		}
-		statePlay = false;
+		runGame();
 	}
 	
 	public float fourmis(int nbrFourmis){
-		victoire = 0;
-		for ( int i = 0 ; i < nbrFourmis ; i++){
-
-			end = false;
+		showMessages = false;
+		
+		int victoire = 0;
+		for(int i = 0 ; i < nbrFourmis ; i++){			
+			player = new Fourmi();
 			
-			bookNode = book.getRootNode();
-			this.state = getState();
-			BookState stateFourmis = getState();
-			
-			if(stateFourmis != null)
-				fourmi = new Fourmi(stateFourmis, book.getItems(), book.getCharacters());
-			 else 
-				fourmi = new Fourmi(getState(), book.getItems(), book.getCharacters());
-			
-			
-			while(end == false){
-				if(bookNode instanceof BookNodeCombat){
-					BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
-					execNodeCombat(bookNodeCombat);
-				}
-				else if(bookNode instanceof BookNodeWithChoices){
-					BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
-					execNodeWithChoices(bookNodeWithChoices);
-				}
-				else if(bookNode instanceof BookNodeWithRandomChoices){
-					BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNode;
-					execNodeWithRandomChoices(bookNodeWithRandomChoices);
-				}
-				else if(bookNode instanceof BookNodeTerminal){
-					BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) bookNode;
-					execNodeTerminal(bookNodeTerminal);
-					end = true;
-				}
-				this.victoire += fourmi.getVictoire();
-				bookNode = book.getNodes().get(destination);
+			if(runGame()) {
+				victoire++;
 			}
 		}
+		
 		return ((float)victoire / (float)nbrFourmis) * 100f;
 	}
 	
-	private BookState getState(){
-		BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
-		BookState getState = new BookState();
-		getState.setMainCharacter(bookCharacter);
-		return getState;
+	private boolean runGame() {
+		boolean gameFinish = false;
+		boolean win = false;
+		
+		showMessage(book.getTextPrelude());
+		this.state = createNewState(book);
+		
+		AbstractBookNode currentNode = book.getRootNode();
+		
+		while(!gameFinish){
+			if(currentNode instanceof BookNodeCombat){
+				BookNodeCombat bookNodeCombat = (BookNodeCombat) currentNode;
+				currentNode = execNodeCombat(bookNodeCombat);
+			}
+			else if(currentNode instanceof BookNodeWithChoices){
+				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) currentNode;
+				currentNode = execNodeWithChoices(bookNodeWithChoices);
+			}
+			else if(currentNode instanceof BookNodeWithRandomChoices){
+				BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) currentNode;
+				currentNode = execNodeWithRandomChoices(bookNodeWithRandomChoices);
+			}
+			else if(currentNode instanceof BookNodeTerminal){
+				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) currentNode;
+				execNodeTerminal(bookNodeTerminal);
+				
+				gameFinish = true;
+				
+				if(bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY)
+					win = true;
+			} else {
+				// Noeud inconnu ou possiblement null, on stop le jeu
+				BookNodeTerminal nodeTerminal = new BookNodeTerminal();
+				nodeTerminal.setText("Vous êtes morts...");
+				nodeTerminal.setBookNodeStatus(BookNodeStatus.FAILURE);
+				currentNode = nodeTerminal;
+			}
+		}
+		
+		return win;
 	}
 	
+	private BookState createNewState(Book book){
+		BookCharacter bookCharacter = player.execPlayerCreation(book);
+		BookState newState = new BookState();
+		newState.setMainCharacter(bookCharacter);
+		newState.setBook(book);
+		
+		return newState;
+	}
 	
-	public void execNodeWithChoices(BookNodeWithChoices node){
-		verifGetNodeHp(node);
-		if(mort == true){
+	public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
+		showMessage(node.getText());
+		
+		execNodeHp(node);
+		if(state.getMainCharacter().isAlive()){
 			BookNodeTerminal nodeTerminal = new BookNodeTerminal();
-			execNodeTerminal(nodeTerminal);
-		} else {
-			if (statePlay)
-				System.out.println(node.getText());
+			nodeTerminal.setText("Vous êtes morts...");
+			nodeTerminal.setBookNodeStatus(BookNodeStatus.FAILURE);
+
+			return nodeTerminal;
+		}
+		
+		if(!node.getItemLinks().isEmpty())
+			chooseItems(node);
+		
+		return null;
+	}
+	
+	public AbstractBookNode execNodeWithChoices(BookNodeWithChoices node){
+		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
+		
+		if(returnedNode != null) 
+			return returnedNode;
+		
+		int lienValide = 0;
+		for (BookNodeLink bookNodeLink : node.getChoices()){
+			if(bookNodeLink.isAvailable(state))
+				lienValide += 1;
+		}
+
+		if (lienValide != 0){
+			showMessage("Voici vos choix : ");
 			
-			int lienValide = 0;
+			int i = 1;
 			for (BookNodeLink bookNodeLink : node.getChoices()){
-				if(bookNodeLink.isAvailable(state))
-					lienValide += 1;
+				showMessage(i + " - "+bookNodeLink.getText());
 			}
-
-			if (lienValide != 0){
-				boolean choixValide = false;
-
-				verifGetNodeItem(node);
+			
+			showMessage();
+			
+			boolean choixValide = false;
+			BookNodeLink selectedBookNodeLink = null;
+			while (!choixValide){
+				showMessage("Que choisissez-vous ?");
+				int choice = player.makeAChoice(node);
 				
-				if (statePlay){
-					System.out.println("Voici vos choix : ");
-					for (BookNodeLink bookNodeLink : node.getChoices()){
-						System.out.println("- "+bookNodeLink.getText());
-					}
-					System.out.println();
-				}
-				
-				choixValide = false;
-				while (choixValide == false){
-					
-					if(statePlay){
-						System.out.println("Que choisissez-vous ?");
-						str = player.stateChoices();
-					} else{
-						str = fourmi.fourmisChoices(node.getChoices().size());
-					}
-					if(str <= (node.getChoices().size()-1) && str >= 0){
-						if(node.getChoices().get(str).isAvailable(state)){
-							destination = node.getChoices().get(str).getDestination();
-							choixValide = true;
-						} else {
-							if(statePlay){
-								for(List<AbstractRequirement> abstractRequirements : node.getChoices().get(str).getRequirements()) {
-									for(AbstractRequirement requirement : abstractRequirements) {
-										System.out.println(requirement.getDescription(book));
-									}
-								}
+				if(choice > 0 && choice <= node.getChoices().size()){
+					selectedBookNodeLink = node.getChoices().get(choice-1);
+					if(selectedBookNodeLink.isAvailable(state)){
+						choixValide = true;
+					} else {
+						for(List<AbstractRequirement> abstractRequirements : selectedBookNodeLink.getRequirements()) {
+							for(AbstractRequirement requirement : abstractRequirements) {
+								showMessage(requirement.getDescription(book));
 							}
 						}
-						
-						verifGetChoicesItem(node, str);
 					}
-					else {
-						if(statePlay)
-							System.out.println("vous ne pouvez pas effectuer ce choix");
-					}
+				} else {
+					showMessage("vous ne pouvez pas effectuer ce choix");
 				}
-			}else {
-				BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Vous ne pouvez plus continuer, vous n'avez pas les items adéquats", BookNodeStatus.FAILURE);
-				execNodeTerminal(bookNodeTerminalFail);
 			}
+			
+			execBookNodeLink(selectedBookNodeLink);
+			return book.getNodes().get(selectedBookNodeLink.getDestination());
+		} else {
+			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Vous ne pouvez plus continuer, vous n'avez pas les items / compétences /argent adéquats", BookNodeStatus.FAILURE);
+			return bookNodeTerminalFail;
 		}
 	}
 	
+	public void execNodeTerminal(BookNodeTerminal node){
+		showMessage(node.getText());
+		
+		if(node.getBookNodeStatus() == BookNodeStatus.VICTORY)
+			showMessage("Vous avez gagné");
+		else
+			showMessage("Vous avez perdu");
+	}
 
-	public void execNodeCombat(BookNodeCombat node){
-		this.mort = false;
+	public AbstractBookNode execNodeCombat(BookNodeCombat node){
+		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
+		
+		if(returnedNode != null) 
+			return returnedNode;
+		
 		int evasionRound = node.getEvasionRound();
-		int str = 0;
 		boolean finCombat = false;
-		List<BookCharacter> listEnnemis=  new ArrayList();
-
-		if(statePlay){
-			System.out.println(node.getText());
-			System.out.println("Il y a "+node.getEnnemiesId().size() + " ennemies !");
-		}
+		
+		List<BookCharacter> listEnnemis = new ArrayList();
+		showMessage("Il y a "+node.getEnnemiesId().size() + " ennemies !");
 		
 		for(String ennemieNode : node.getEnnemiesId()){
-			listEnnemis.add(book.getCharacters().get(ennemieNode));
+			listEnnemis.add(new BookCharacter(book.getCharacters().get(ennemieNode)));
 		}
 		
-		
-		while(finCombat == false){
+		while(!finCombat){
+			for(BookCharacter ennemi : listEnnemis)
+				showMessage(ennemi.getDescription(book));
 			
-			if (statePlay)
-				str = player.execNodeCombat(evasionRound);
-			else
-				str = fourmi.execNodeCombat(listEnnemis.size());
+			ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
 			
-			if (str == 0)
-				attaque(listEnnemis);
-			finCombat = this.finCombat;
-			if (str == 2)
-				evasion(listEnnemis, evasionRound);
-			finCombat = this.finCombat;
+			if (choixCombat == ChoixCombat.ATTAQUER) {
+				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
+				attaque(ennemi);
+				
+				if(ennemi.isAlive()){
+					showMessage(ennemi.getName() + " est mort");
+					listEnnemis.remove(ennemi);
+				} else {
+					showMessage(ennemi.getName() + " a " +ennemi.getHp() + " hp");
+				}
+			} else if(choixCombat == ChoixCombat.EVASION) {
+				if(evasionRound <= 0) {
+					execBookNodeLink(node.getEvasionBookNodeLink());
+					return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
+				}
+				else
+					showMessage("vous ne pouvez pas encore vous evader");
+			}
+			
 			ennemiTour(listEnnemis);
-			finCombat = this.finCombat;
+			
+			if(!state.getMainCharacter().isAlive()) {
+				if(node.getLooseBookNodeLink() != null)  {
+					execBookNodeLink(node.getLooseBookNodeLink());
+					return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
+				} else 
+					return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
+			}
+			
+			if(listEnnemis.isEmpty())
+				finCombat = true;
+			
 			evasionRound -= 1;
 		}
 
-		if(mort == false && str != 2){
-			destination = node.getWinBookNodeLink().getDestination();
-		} else if(mort == false && str == 2){
-			destination = node.getEvasionBookNodeLink().getDestination();
-		} else {
-			destination = node.getLooseBookNodeLink().getDestination();
-		}
+		execBookNodeLink(node.getWinBookNodeLink());
+		return book.getNodes().get(node.getWinBookNodeLink().getDestination());
 	}
 
-	private void attaque(List<BookCharacter> listEnnemis){
-		for(BookCharacter ennemi : listEnnemis){
-			int attaque = 0;
-			if(bookItemArme != null)
-				attaque = bookItemArme.getDamage();
-			doubleDamage = 1;
-			if(state.getMainCharacter().isDoubleDamage()){
-				Random random = new Random();
-				int r = random.nextInt(5);
-				if (r > 3){
-					if (statePlay)
-						System.out.println("Coup critique !");
-					doubleDamage = 2;
-				}
-			}
-			ennemi.damage(state.getMainCharacter().getBaseDamage()*doubleDamage+attaque);
-			if(ennemi.getHp()<=0){
-				if (statePlay)
-					System.out.println(ennemi+" est mort");
-				listEnnemis.remove(ennemi);
-				break;
-			} else {
-				if (statePlay)
-					System.out.println(ennemi+" a "+ennemi.getHp()+" hp");
-			}
-		}
-		if(listEnnemis.isEmpty())
-			this.finCombat = true;
-		if(bookItemArme != null){
+	private int getDamageAmount(BookCharacter attaquant, BookItemWeapon weapon, BookItemDefense bookItemDefense) {
+		int attaque = 0;
+		if(weapon != null) {
+			attaque = weapon.getDamage();
 			/*bookItemArme.setDurability(bookItemArme.getDurability()-1);
 			if(bookItemArme.getDurability()<=0){
 				state.getMainCharacter().getItems().remove(bookItemArme.getId());
@@ -277,44 +262,24 @@ public class Jeu {
 				System.out.println("Arme détruite");
 			}
 			mapBookItem.put(bookItemArme.getId(), bookItemArme);*/
-			bookItemArme = null;
+		}
+		
+		int damageMultiplicator = 1;
+		if(attaquant.isDoubleDamage()){
+			damageMultiplicator = 2;
 		}
 
-}
-	private void evasion(List<BookCharacter> listEnnemis, int evasionRound){
-		if ( evasionRound <= 0){
-			this.finCombat = true;
-		} else if (evasionRound > 0){
-			if (statePlay)
-				System.out.println("vous ne pouvez pas encore vous evader");
+		Random random = new Random();
+		int r = random.nextInt(5);
+		if (r > 3){
+			showMessage("Coup critique !");
+			damageMultiplicator += 0.25;
 		}
-	}
-	
-	private void ennemiTour(List<BookCharacter> listEnnemis){
-		for(BookCharacter ennemi : listEnnemis){
-			doubleDamage = 1;
-			if(ennemi.isDoubleDamage()){
-				Random random = new Random();
-				int r = random.nextInt(5);
-				if (r > 3){
-					if (statePlay)
-						System.out.println("Coup critique de "+ennemi+" !");
-					doubleDamage = 2;
-				}
-			}
-			int resistance = 0;
-			if(bookItemDefense != null)
-				resistance = bookItemDefense.getResistance();
-
-			state.getMainCharacter().damage(ennemi.getBaseDamage()*doubleDamage-resistance);
-			if (statePlay)
-				System.out.println(ennemi + " a attaquer, il vous reste" + state.getMainCharacter().getHp()+" hp");
-			if(state.getMainCharacter().getHp() <= 0){
-				mort = true;
-				this.finCombat = true;
-			}
-			/*if(bookItemDefense != null){
-			bookItemDefense.setDurability(bookItemDefense.getDurability()-1);
+		
+		int resistance = 0;
+		if(bookItemDefense != null) {
+			resistance = bookItemDefense.getResistance();
+			/*bookItemDefense.setDurability(bookItemDefense.getDurability()-1);
 			if(bookItemDefense.getDurability()<=0){
 				state.getMainCharacter().getItems().remove(bookItemDefense.getId());
 				System.out.println("La durabilité de l'arme "+bookItemDefense.getName()+"est arrivé à terme");
@@ -323,99 +288,93 @@ public class Jeu {
 			mapBookItem.put(bookItemDefense.getId(), bookItemDefense);
 			bookItemDefense = null;*/
 		}
-	}
-
-
-	public void execNodeWithRandomChoices(BookNodeWithRandomChoices node) {
-		if(statePlay)
-			System.out.println(node.getText());
-		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
-		destination = randomChoices.getDestination();
-	}
-
-	public void execNodeTerminal(BookNodeTerminal node) {
-		if(statePlay)
-			player.execNodeTerminal(node);
-		else
-			fourmi.execNodeTerminal(node);
-		end = true;
+		
+		return (attaquant.getBaseDamage() + attaque) * damageMultiplicator - resistance;
 	}
 	
-	private void verifGetNodeHp(AbstractBookNode node){
-		this.mort = false;
-		int getNodehp = 0;
-		if(node instanceof BookNodeWithChoices){
-			BookNodeWithChoices bookNodeGet = (BookNodeWithChoices) node;
-			getNodehp = bookNodeGet.getHp();
-		} else if(node instanceof BookNodeCombat){
-			BookNodeCombat bookNodeGet = (BookNodeCombat) node;
-			getNodehp = bookNodeGet.getHp();
-		} else if(node instanceof BookNodeWithRandomChoices){
-			BookNodeWithRandomChoices bookNodeGet = (BookNodeWithRandomChoices) node;
-			getNodehp = bookNodeGet.getHp();
-		}
-		if(getNodehp != 0){
-			if(state.getMainCharacter().getHpMax() <= (state.getMainCharacter().getHp()+getNodehp)){
-				if(statePlay)
-					System.out.println("Vos HP sont au max");
-				state.getMainCharacter().heal(str);
-			} else {
-				if(getNodehp > 0)
-					state.getMainCharacter().heal(getNodehp);
-				else 
-					state.getMainCharacter().damage(-getNodehp);
-				if(statePlay){
-					System.out.println("Vous avez pris "+ getNodehp + " hp");
-					System.out.println("Vos hp : "+ state.getMainCharacter().getHp());
-				}
-			}
-			if ((state.getMainCharacter().getHp()+getNodehp)<= 0)
-				mort = true;
-		}
+	private void attaque(BookCharacter ennemi){
+		ennemi.damage(getDamageAmount(state.getMainCharacter(), state.getBookItemArme(), null));
 	}
 	
-	private void verifGetNodeItem(AbstractBookNode node){
-		List<String> listItemState = state.getMainCharacter().getItems();
-		List<BookItem> listItemNode = new ArrayList();
-		
-		List<BookItemLink> getNodeItem = null;
-		if(node instanceof BookNodeWithChoices){
-			BookNodeWithChoices bookNodeGet = (BookNodeWithChoices) node;
-			getNodeItem = bookNodeGet.getItemLinks();
-		} else if(node instanceof BookNodeCombat){
-			BookNodeCombat bookNodeGet = (BookNodeCombat) node;
-			getNodeItem = bookNodeGet.getItemLinks();
-		} else if(node instanceof BookNodeWithRandomChoices){
-			BookNodeWithRandomChoices bookNodeGet = (BookNodeWithRandomChoices) node;
-			getNodeItem = bookNodeGet.getItemLinks();
-		}
-		
-		if (!getNodeItem.isEmpty()){
-			int nbItemDispo = getNodeItem.size();
+	private void ennemiTour(List<BookCharacter> listEnnemis){
+		for(BookCharacter ennemi : listEnnemis){
+			state.getMainCharacter().damage(getDamageAmount(ennemi, null, state.getBookItemDefense()));
 			
-			for(BookItemLink itemLink : getNodeItem){
-				listItemNode.add(book.getItems().get(itemLink.getId()));
+			if (showMessages)
+				showMessage(ennemi + " a attaquer, il vous reste" + state.getMainCharacter().getHp()+" hp");
+			
+			if(!state.getMainCharacter().isAlive()) {
+				return;
 			}
-			if(statePlay)
-				state = player.verifGetNodeItem(listItemState, listItemNode, nbItemDispo);
-			else
-				state = fourmi.verifGetNodeItem(listItemState, listItemNode, nbItemDispo);
 		}
 	}
 
+	public AbstractBookNode execNodeWithRandomChoices(BookNodeWithRandomChoices node) {
+		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
+		
+		if(returnedNode != null) 
+			return returnedNode;
+		
+		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
+		
+		if(randomChoices == null) {
+			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
+			return bookNodeTerminalFail;
+		}
+		
+		execBookNodeLink(randomChoices);
+		return book.getNodes().get(randomChoices.getDestination());
+	}
 	
-	private void verifGetChoicesItem(AbstractBookNode node, int str){
-		if(node.getChoices().get(str).getGold() != 0){
+	private void execNodeHp(AbstractBookNodeWithChoices node){
+		int nodeHp = node.getHp();
+		
+		if(nodeHp != 0){
+			if(nodeHp > 0)
+				state.getMainCharacter().heal(nodeHp);
+			else 
+				state.getMainCharacter().damage(-nodeHp);
+
+			showMessage("Vous avez pris "+ nodeHp + " hp");
+
+			if(state.getMainCharacter().getHpMax() == state.getMainCharacter().getHp())
+				showMessage("Vos HP sont au max");
+			else
+				showMessage("Vos hp : "+ state.getMainCharacter().getHp());
+		}
+	}
+	
+	private void chooseItems(AbstractBookNodeWithChoices node){
+		List<BookItemLink> nodeItems = new ArrayList<>();
+		for(BookItemLink bookItemLink : (List<BookItemLink>) node.getItemLinks()) {
+			nodeItems.add(new BookItemLink(bookItemLink));
+		}
+		
+		if (!node.getItemLinks().isEmpty()){			
+			player.prendreItems(state, nodeItems, node.getNbItemsAPrendre());
+		}
+	}
+	
+	private void execBookNodeLink(BookNodeLink bookNodeLink){
+		if(bookNodeLink.getGold() != 0){
 			BookItem bookItem = book.getItems().get("gold");
-			state.getMainCharacter().changeMoneyAmount(bookItem.getId(), node.getChoices().get(str).getGold());
-			if(statePlay)
-				System.out.println("Vous avez pris "+ node.getChoices().get(str).getGold() +" "+ bookItem.getId());
+			state.getMainCharacter().changeMoneyAmount(bookItem.getId(), bookNodeLink.getGold());
+			showMessage("Vous avez pris "+ bookNodeLink.getGold() +" "+ bookItem.getName());
 		}
-		if(node.getChoices().get(str).getHp() != 0){
-			state.getMainCharacter().setHp(node.getChoices().get(str).getHp());
-			if(statePlay)
-				System.out.println("Vous avez pris "+ node.getChoices().get(str).getHp() + " hp");
+		
+		if(bookNodeLink.getHp() != 0){
+			state.getMainCharacter().setHp(bookNodeLink.getHp());
+			showMessage("Vous avez pris "+ bookNodeLink.getHp() + " hp");
 		}
+	}
+	
+	private void showMessage() {
+		showMessage("");
+	}
+	
+	private void showMessage(String str) {
+		if(showMessages)
+			System.out.println(str);
 	}
 
 }

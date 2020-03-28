@@ -65,7 +65,6 @@ public class MainWindow extends Stage {
 		MenuBar menuBar = new MenuBar();
 
 		// --- Menu fichier
-				
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		menuFileNew.setOnAction((ActionEvent e) -> {
@@ -129,24 +128,15 @@ public class MainWindow extends Stage {
 		
 		MenuItem menuBookJouer = new MenuItem("Jouer");
 		menuBookJouer.setOnAction((ActionEvent e) -> {
-			BookState state = new BookState();
-			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
-			state.setMainCharacter(bookCharacter);
-			
-			Jeu jeu = new Jeu(state , book);
+			Jeu jeu = new Jeu(book);
 			jeu.play();
 		});
 		
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		menuBookDifficulty.setOnAction((ActionEvent e) -> {
-			BookState state = new BookState();
-			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
-			state.setMainCharacter(bookCharacter);
-			
-			Jeu jeu = new Jeu(state , book);
+			Jeu jeu = new Jeu(book);
 			float difficulte = jeu.fourmis(10000);
 			rightPane.difficultyChanged(difficulte);
-
 		});
 		
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
