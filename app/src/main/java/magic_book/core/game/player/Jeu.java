@@ -3,6 +3,7 @@ package magic_book.core.game.player;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import javafx.scene.control.Alert;
@@ -19,6 +20,7 @@ import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
+import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
@@ -42,8 +44,7 @@ public class Jeu {
 	}
 	
 	public void play(){
-		player = new Player();
-		end = false;
+		
 		
 		try{
 		BookReader reader = new BookReader();
@@ -63,38 +64,34 @@ public class Jeu {
 			}
 		
 		bookNode = book.getRootNode();
+		HashMap<String, BookItem> mapItem = book.getItems();
+		
+		player = new Player(state, book.getItems());
+		end = false;
 	
 		while(end == false){
 			if(bookNode instanceof BookNodeCombat){
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) bookNode;
-				player.execNodeCombat(bookNodeCombat, state);
+				player.execNodeCombat(bookNodeCombat);
 			}
 			else if(bookNode instanceof BookNodeWithChoices){
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) bookNode;
-				player.execNodeWithChoices(bookNodeWithChoices, state);
+				player.execNodeWithChoices(bookNodeWithChoices);
 			}
 			else if(bookNode instanceof BookNodeWithRandomChoices){
-				List<BookNodeLinkRandom> listChoices = new ArrayList();
 				BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) bookNode;
-				for(int y = 0; y < bookNode.getChoices().size() ; y++){
-						BookNodeLink bookNodeLink = bookNode.getChoices().get(y);
-						BookNodeLinkRandom bookNodeLinkRandom = new BookNodeLinkRandom(bookNodeLink.getText(), bookNodeLink.getDestination(), bookNodeLink.getRequirements(), 0);
-						listChoices.add(bookNodeLinkRandom);
-					}
-					BookNodeWithRandomChoices bookNodeWithRandom = new BookNodeWithRandomChoices(bookNode.getText(), ((BookNodeWithRandomChoices) bookNode).getNbItemsAPrendre(),
-							((BookNodeWithRandomChoices) bookNode).getItemLinks(), ((BookNodeWithRandomChoices) bookNode).getShopItemLinks(), listChoices);
-				player.execNodeWithRandomChoices(bookNodeWithRandom, state);
+				player.execNodeWithRandomChoices(bookNodeWithRandomChoices);
 			}
 			else if(bookNode instanceof BookNodeTerminal){
 				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) bookNode;
-				player.execNodeTerminal(bookNodeTerminal, state);
+				player.execNodeTerminal(bookNodeTerminal);
 				end = true;
 			}
 
 			this.bookNode = player.getBookNodeChoice();
 		}
 	}
-	
+	/*
 	public float fourmis(int nbrFourmis){
 		try{
 		BookReader reader = new BookReader();
@@ -129,6 +126,7 @@ public class Jeu {
 					fourmi.execNodeCombat(bookNodeCombat, state);
 				}
 				else if(bookNode instanceof BookNodeWithChoices){
+					
 					List<BookNodeLinkRandom> listChoices = new ArrayList();
 					for(int y = 0; y < bookNode.getChoices().size() ; y++){
 						BookNodeLink bookNodeLink = bookNode.getChoices().get(y);
@@ -145,9 +143,30 @@ public class Jeu {
 							listChoicesRandomChances.add(r);
 					}
 					System.out.println("Sort liste "+i);
-					BookNodeWithRandomChoices bookNodeWithRandomChoices = new BookNodeWithRandomChoices(bookNode.getText(), ((BookNodeWithChoices) bookNode).getNbItemsAPrendre(),
-							((BookNodeWithChoices) bookNode).getItemLinks(), ((BookNodeWithChoices) bookNode).getShopItemLinks(), listChoices);
-					fourmi.execNodeWithRandomChoices(bookNodeWithRandomChoices, state);
+					BookNodeWithChoices bookNodeWithChoices = new BookNodeWithChoices(bookNode.getText(), ((bookNodeWithChoices) bookNode).getNbItemsAPrendre(),
+							((bookNodeWithChoices) bookNode).getItemLinks(), ((bookNodeWithChoices) bookNode).getShopItemLinks(), listChoices);
+					fourmi.execNodeWithRandomChoices(bookNodeWithChoices, state);
+				}
+				else if(bookNode instanceof BookNodeWithRandomChoices){
+					List<BookNodeLinkRandom> listChoices = new ArrayList();
+					for(int y = 0; y < bookNode.getChoices().size() ; y++){
+						BookNodeLink bookNodeLink = bookNode.getChoices().get(y);
+						Random random = new Random();
+						if(i == 0){
+							r = random.nextInt(10);
+							listChoicesRandomChances.add(r);
+						} else {
+							r = listChoicesRandomChances.get(y);
+						}
+						BookNodeLinkRandom bookNodeLinkRandom = new BookNodeLinkRandom(bookNodeLink.getText(), bookNodeLink.getDestination(), bookNodeLink.getRequirements(), r);
+						listChoices.add(bookNodeLinkRandom);
+						if(i == 0)
+							listChoicesRandomChances.add(r);
+					}
+					System.out.println("Sort liste "+i);
+					BookNodeWithRandomChoices bookNodeWithRandomChoices = new BookNodeWithRandomChoices(bookNode.getText(), ((BookNodeWithRandomChoices) bookNode).getNbItemsAPrendre(),
+							((BookNodeWithRandomChoices) bookNode).getItemLinks(), ((BookNodeWithRandomChoices) bookNode).getShopItemLinks(), listChoices);
+					fourmi.execNodeWithRandomChoices(bookNodeWithChoices, state);
 				}
 				else if(bookNode instanceof BookNodeTerminal){
 					System.out.println("Node terminal "+i);
@@ -162,5 +181,5 @@ public class Jeu {
 		System.out.println("victoire : "+victoire+" nbr fourmis : "+nbrFourmis+ "  %  "+((float)victoire / (float)nbrFourmis) * 100f);
 		
 		return ((float)victoire / (float)nbrFourmis) * 100f;
-	}
+	}*/
 }

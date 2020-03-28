@@ -81,7 +81,8 @@ public class MainWindow extends Stage {
 			BookState state = new BookState();
 			state.setMainCharacter(bookCharacter);
 			Jeu jeu = new Jeu(state , book);
-			System.out.println(jeu.fourmis(50));
+			//System.out.println(jeu.fourmis(50));
+			jeu.play();
 		});
 		
 		
