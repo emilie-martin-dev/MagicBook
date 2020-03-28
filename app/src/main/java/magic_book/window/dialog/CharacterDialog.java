@@ -53,11 +53,6 @@ public class CharacterDialog extends AbstractDialog {
 			
 		
 		persoType = new ChoiceBox<>();
-
- 		persoType.getItems().add(PRINCIPAL);
- 		persoType.getItems().add(ENNEMIES);
- 		persoType.getItems().add(AMIS);
- 		persoType.setValue(AUTRE);
 		
 		root.setHgap(5);
 		root.setVgap(5);
@@ -78,7 +73,6 @@ public class CharacterDialog extends AbstractDialog {
 		
 		idTextField = new TextField();
 		nameTextField = new TextField();
-		raceTextField = new TextField();
 		
 		root.add(idLabel, 0, 0);
 		root.add(idTextField, 1, 0);
