@@ -10,15 +10,19 @@ import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.observer.book.BookNodeObserver;
 
-public class RightPane extends ScrollPane implements BookNodeObserver {
+public class RightPane extends ScrollPane implements BookNodeObserver{
 	
 	private Book book;
 	
 	private int nodeCount;
 	private Label nodeCountLabel;
 	
+	private float difficulte;
+	private Label difficultePourcentageLabel;
+	
 	public RightPane(Book book){		
 		nodeCount = 0;
+		difficulte = 0;
 		
 		this.setMaxWidth(200);
 		this.setMinWidth(200);
@@ -35,12 +39,18 @@ public class RightPane extends ScrollPane implements BookNodeObserver {
 		Label prefixNodeCountLabel = new Label("Total de noeuds : ");
 		nodeCountLabel = new Label(""+nodeCount);
 		nodeCountBox.getChildren().addAll(prefixNodeCountLabel, nodeCountLabel);
-
+		
+		HBox difficulteBox = new HBox();
+		Label difficulteLabel = new Label("Difficulte du livre : ");
+		difficultePourcentageLabel = new Label(""+difficulte);
+		difficulteBox.getChildren().addAll(difficulteLabel, difficultePourcentageLabel);
+		
 		VBox statsLayout = new VBox();
-		statsLayout.getChildren().addAll(nodeCountBox);
+		statsLayout.getChildren().addAll(nodeCountBox, difficulteBox);
 
 		return statsLayout;
 	}
+	
 	
 	private void updateStats() {
 		nodeCountLabel.setText(""+nodeCount);
@@ -65,6 +75,13 @@ public class RightPane extends ScrollPane implements BookNodeObserver {
 	
 		updateStats();
 	}
+	
+	public void difficulteAdded(float difficulte) {
+		System.out.println("oki");
+		this.difficulte = difficulte;
+		difficultePourcentageLabel.setText(""+difficulte);
+	}
+	
 	
 	public void setBook(Book book) {
 		if(this.book != null)

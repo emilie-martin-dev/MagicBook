@@ -156,9 +156,10 @@ public class MainWindow extends Stage {
 			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
 			state.setMainCharacter(bookCharacter);
 			
-			
 			Jeu jeu = new Jeu(state , book);
-			System.out.println(jeu.fourmis(10000));
+			float difficulte = jeu.fourmis(10000);
+			rightPane.difficulteAdded(difficulte);
+
 		});
 		
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
