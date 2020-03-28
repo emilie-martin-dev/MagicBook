@@ -77,37 +77,7 @@ public class MainWindow extends Stage {
 		MenuBar menuBar = new MenuBar();
 
 		// --- Menu fichier
-		MenuItem testFileNew = new MenuItem("Test");
-		testFileNew.setOnAction((ActionEvent e) -> {
-			try{
-				BookReader reader = new BookReader();
-				booktest = reader.read("./test_aure");
-			}
-			catch(FileNotFoundException ex) {
-				Alert a = new Alert(Alert.AlertType.ERROR);
-				a.setTitle("Erreur lors de l'ouverture du fichier");
-				a.setHeaderText("Le fichier n'existe pas");
-				a.show(); 
-			} catch (BookFileException ex) {
-				Alert a = new Alert(Alert.AlertType.ERROR);
-				a.setTitle("Erreur lors de l'ouverture du fichier");
-				a.setHeaderText("Le fichier n'est pas bien formé");
-				a.setContentText(ex.getMessage());
-				a.show();
-			}
-			BookState state = new BookState();
-			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
-			state.setMainCharacter(bookCharacter);
-			
-			
-			Jeu jeu = new Jeu(state , booktest);
-			System.out.println(jeu.fourmis(10));
-			jeu.play();
-			System.out.println(jeu.fourmis(10000));
-		});
-		
-		
-		
+				
 		Menu menuFile = new Menu("Fichier");
 		MenuItem menuFileNew = new MenuItem("Nouveau");
 		menuFileNew.setOnAction((ActionEvent e) -> {
@@ -164,14 +134,33 @@ public class MainWindow extends Stage {
 			saveFile();			
 		});
 
-		menuFile.getItems().addAll(testFileNew, menuFileNew, menuFileOpen, menuFileSave, menuFileSaveAs);
+		menuFile.getItems().addAll(menuFileNew, menuFileOpen, menuFileSave, menuFileSaveAs);
 
 		// --- Menu livre
 		Menu menuBook = new Menu("Livre");
+		
+		MenuItem menuBookJouer = new MenuItem("Jouer");
+		menuBookJouer.setOnAction((ActionEvent e) -> {
+			BookState state = new BookState();
+			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+			state.setMainCharacter(bookCharacter);
+			
+			
+			Jeu jeu = new Jeu(state , book);
+			jeu.play();
+		});
+		
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		menuBookDifficulty.setOnAction((ActionEvent e) -> {
-			System.out.println("magic_book.window.MainWindow.createMenuBar()");
+			BookState state = new BookState();
+			BookCharacter bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+			state.setMainCharacter(bookCharacter);
+			
+			
+			Jeu jeu = new Jeu(state , book);
+			System.out.println(jeu.fourmis(10000));
 		});
+		
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
 			NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
@@ -202,7 +191,7 @@ public class MainWindow extends Stage {
 			}
 		});
 
-		menuBook.getItems().addAll(menuBookDifficulty, menuBookGenerate);
+		menuBook.getItems().addAll(menuBookJouer, menuBookDifficulty, menuBookGenerate);
 
 		// --- Menu affichage
 		Menu menuShow = new Menu("Affichage");
