@@ -112,7 +112,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	public NodeFx createNodeFxDialog(MouseEvent event){
-		NodeDialog nodeDialog = new NodeDialog();
+		NodeDialog nodeDialog = new NodeDialog(book);
 		AbstractBookNode node = nodeDialog.getNode();
 		
 		if(node != null) {
@@ -282,7 +282,7 @@ public class GraphPane extends ScrollPane {
 			if(mode == Mode.SELECT){
 				selectedNodeFx = nodeFx;
 				if(event.getClickCount() == 2) {
-					NodeDialog dialog = new NodeDialog(nodeFx.getNode());
+					NodeDialog dialog = new NodeDialog(book, nodeFx.getNode());
 					if(dialog.getNode() != null) {
 						book.updateNode(nodeFx.getNode(), dialog.getNode());
 						nodeFx.setNode(dialog.getNode());
