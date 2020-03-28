@@ -1,6 +1,7 @@
 package magic_book.core.game.player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -46,10 +47,12 @@ public class Jeu {
 	}
 	
 	public float fourmis(int nbrFourmis){
+		System.out.println("fourmis");
 		showMessages = false;
 		
 		int victoire = 0;
-		for(int i = 0 ; i < nbrFourmis ; i++){			
+		for(int i = 0 ; i < nbrFourmis ; i++){
+		System.out.println("Lets go "+i);			
 			player = new Fourmi();
 			
 			if(runGame()) {
@@ -71,18 +74,25 @@ public class Jeu {
 		
 		while(!gameFinish){
 			if(currentNode instanceof BookNodeCombat){
+				System.out.println("BookNodeCombat");	
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) currentNode;
 				currentNode = execNodeCombat(bookNodeCombat);
 			}
 			else if(currentNode instanceof BookNodeWithChoices){
+								System.out.println("BookNodeWithChoices");	
+
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) currentNode;
 				currentNode = execNodeWithChoices(bookNodeWithChoices);
 			}
 			else if(currentNode instanceof BookNodeWithRandomChoices){
+								System.out.println("BookNodeWithRandomChoices");	
+
 				BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) currentNode;
 				currentNode = execNodeWithRandomChoices(bookNodeWithRandomChoices);
 			}
 			else if(currentNode instanceof BookNodeTerminal){
+								System.out.println("BookNodeTerminal");	
+
 				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) currentNode;
 				execNodeTerminal(bookNodeTerminal);
 				
@@ -92,6 +102,7 @@ public class Jeu {
 					win = true;
 			} else {
 				// Noeud inconnu ou possiblement null, on stop le jeu
+				System.out.println("oooouuuuuuuuuuuuuiiiiiiiiiii");
 				BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 				nodeTerminal.setText("Vous êtes morts...");
 				nodeTerminal.setBookNodeStatus(BookNodeStatus.FAILURE);
@@ -107,7 +118,6 @@ public class Jeu {
 		BookState newState = new BookState();
 		newState.setMainCharacter(bookCharacter);
 		newState.setBook(book);
-		
 		return newState;
 	}
 	
@@ -131,10 +141,10 @@ public class Jeu {
 	
 	public AbstractBookNode execNodeWithChoices(BookNodeWithChoices node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
-		
+		System.out.println("execNodeWithChoices : ");
 		if(returnedNode != null) 
 			return returnedNode;
-		
+		System.out.println("après execNodeWithChoices : ");
 		int lienValide = 0;
 		for (BookNodeLink bookNodeLink : node.getChoices()){
 			if(bookNodeLink.isAvailable(state))
@@ -147,6 +157,7 @@ public class Jeu {
 			int i = 1;
 			for (BookNodeLink bookNodeLink : node.getChoices()){
 				showMessage(i + " - "+bookNodeLink.getText());
+				i++;
 			}
 			
 			showMessage();
@@ -156,7 +167,7 @@ public class Jeu {
 			while (!choixValide){
 				showMessage("Que choisissez-vous ?");
 				int choice = player.makeAChoice(node);
-				
+				System.out.println("Choice : "+choice);
 				if(choice > 0 && choice <= node.getChoices().size()){
 					selectedBookNodeLink = node.getChoices().get(choice-1);
 					if(selectedBookNodeLink.isAvailable(state)){
@@ -264,13 +275,15 @@ public class Jeu {
 			mapBookItem.put(bookItemArme.getId(), bookItemArme);*/
 		}
 		
+		Random random = new Random();
+		int r = random.nextInt(5);
 		int damageMultiplicator = 1;
-		if(attaquant.isDoubleDamage()){
+		if(attaquant.isDoubleDamage() && r > 2){
+			showMessage("Double domage !");
 			damageMultiplicator = 2;
 		}
 
-		Random random = new Random();
-		int r = random.nextInt(5);
+		r = random.nextInt(5);
 		if (r > 3){
 			showMessage("Coup critique !");
 			damageMultiplicator += 0.25;
