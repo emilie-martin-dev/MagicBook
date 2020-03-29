@@ -22,6 +22,7 @@ import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
+import magic_book.core.requirement.RequirementItem;
 
 public class Jeu {
 	
@@ -109,6 +110,8 @@ public class Jeu {
 		if(this.book.getCharacters().get("0") == null){
 			bookCharacter = player.execPlayerCreation(this.book);
 			newState.setMainCharacter(bookCharacter);
+			
+			System.out.println("Mort creation state"+bookCharacter.getHp());
 			System.out.println("1");
 		} else {
 			bookCharacter = this.book.getCharacters().get("0");
@@ -123,8 +126,9 @@ public class Jeu {
 	
 	public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
 		showMessage(node.getText());
-		
+		System.out.println("Mort ??"+state.getMainCharacter().getHp());
 		execNodeHp(node);
+		System.out.println("Mort après??"+state.getMainCharacter().getHp());
 		if(!state.getMainCharacter().isAlive()){
 			BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 			nodeTerminal.setText("Vous êtes morts...");
@@ -167,10 +171,11 @@ public class Jeu {
 			while (!choixValide){
 				showMessage("Que choisissez-vous ?");
 				int choice = player.makeAChoice(node);
-				System.out.println(choice);
+				System.out.println("Choices exec NodeXithChoices "+ choice);
 				if(choice > 0 && choice <= node.getChoices().size()){
 					selectedBookNodeLink = node.getChoices().get(choice-1);
 					if(selectedBookNodeLink.isAvailable(state)){
+						System.out.println("Choices exec NodeXithChoices is available ");
 						choixValide = true;
 					} else {
 						for(List<AbstractRequirement> abstractRequirements : selectedBookNodeLink.getRequirements()) {
@@ -367,6 +372,7 @@ public class Jeu {
 	}
 	
 	private void chooseItems(AbstractBookNodeWithChoices node){
+		System.out.println("chooxseItems");
 		List<BookItemLink> nodeItems = new ArrayList<>();
 		for(BookItemLink bookItemLink : (List<BookItemLink>) node.getItemLinks()) {
 			nodeItems.add(new BookItemLink(bookItemLink));

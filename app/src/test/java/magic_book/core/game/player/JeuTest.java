@@ -325,6 +325,7 @@ public class JeuTest {
 		Assert.assertTrue(victoire ==  100);
 	}
 	
+	@Test
 	public void execNodeWithRandomChoices(){
 		Jeu jeu;
 		Book book;
@@ -415,8 +416,8 @@ public class JeuTest {
 		Assert.assertTrue(victoire > 48 && victoire < 52);
 	}
 	
+	@Test
 	public void execNodeHp(){
-		//Test juste sur un BookNodeWithChoices car BookNodeWithRandomChoices utilise execAbstractNodeWithChoices
 		Jeu jeu;
 		Book book;
 		float victoire;
@@ -429,7 +430,7 @@ public class JeuTest {
 				
 		
 		//Création des Noeuds
-		BookNodeTerminal bookNodeTerminalVictoire = new BookNodeTerminal("Victoire", BookNodeStatus.FAILURE);
+		BookNodeTerminal bookNodeTerminalVictoire = new BookNodeTerminal("Victoire", BookNodeStatus.VICTORY);
 		
 		
 		bookNodeLinkVictoire = new BookNodeLink("BookNodeLink Victoire", 2);
@@ -437,7 +438,7 @@ public class JeuTest {
 		listAbstractBookNode = new ArrayList();
 		listAbstractBookNode.add(bookNodeLinkVictoire);
 		
-		bookNodeWithChoices = new BookNodeWithChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		bookNodeWithChoices = new BookNodeWithChoices("Noeud", 0, null, null, listAbstractBookNode);
 		
 		//1er test - Defaite : le character perd tout ses hp
 		bookCharacter = new BookCharacter();
@@ -463,14 +464,12 @@ public class JeuTest {
 		Assert.assertTrue(victoire ==  0);
 		
 		//2eme test - Victoire : le character ne perd pas tout ses hp
-		bookCharacter = new BookCharacter();
-		bookCharacter.setId("0");
-		bookCharacter.setHp(20);
+		bookCharacter = new BookCharacter("0", "Personnage", 0, 20, null, null, 2);
 		
 		listAbstractBookNode = new ArrayList();
 		listAbstractBookNode.add(bookNodeLinkVictoire);
 		
-		bookNodeWithChoices = new BookNodeWithChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		bookNodeWithChoices = new BookNodeWithChoices("Noeud", 0, null, null, listAbstractBookNode);
 		bookNodeWithChoices.setHp(-19);
 		
 		nodes = new HashMap();
@@ -484,6 +483,73 @@ public class JeuTest {
 		
 		book.setNodes(nodes);
 		book.setCharacters(mapCharacter);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  100);
+	}
+	
+	@Test
+	public void chooseItems(){
+		Jeu jeu;
+		Book book;
+		float victoire;
+		List<BookNodeLink> listAbstractBookNode ;
+		HashMap<Integer, AbstractBookNode> nodes;
+		HashMap<String, BookCharacter> mapCharacter;
+		BookCharacter bookCharacter ;
+		
+		BookItemWeapon bookItemWeapon = new BookItemWeapon("arme", "Aiguille", 2, 2);
+		
+		RequirementItem requirementItem = new RequirementItem(bookItemWeapon.getId());
+		
+		List<AbstractRequirement> listRequirements = new ArrayList();
+		listRequirements.add(requirementItem);
+		
+		List<List<AbstractRequirement>> requirements = new ArrayList();
+		requirements.add(listRequirements);
+				
+		
+		//Création des Noeuds
+		BookNodeTerminal bookNodeTerminalVictoire = new BookNodeTerminal("Victoire", BookNodeStatus.VICTORY);
+		
+		BookNodeLink bookNodeLinkObjet = new BookNodeLink("BookNodeLink Objet", 2, requirements);
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLinkObjet);
+	
+		
+		BookItemLink bookItemLink = new BookItemLink(bookItemWeapon.getId(), 0, 0, false, 0);
+		
+		List<BookItemLink> listBookItemLink = new ArrayList();
+		listBookItemLink.add(bookItemLink);
+		
+		
+		//1er test - Defaite : ne peux pas prendre l'objet
+		BookNodeWithChoices bookNodeWithChoicesNePrendPasObjet = new BookNodeWithChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		book = new Book();
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithChoicesNePrendPasObjet);
+		nodes.put(2, bookNodeTerminalVictoire);
+		
+		book.setNodes(nodes);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire == 0);
+		
+		
+		
+		//2eme test - Victoire : prend l'objet
+		BookNodeWithChoices bookNodeWithChoicesPrendObjet = new BookNodeWithChoices("Noeud Random", 1, listBookItemLink, null, listAbstractBookNode);
+		book = new Book();
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithChoicesPrendObjet);
+		nodes.put(2, bookNodeTerminalVictoire);
+		
+		book.setNodes(nodes);
 		
 		jeu = new Jeu(book);
 		victoire = jeu.fourmis(1);
