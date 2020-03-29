@@ -42,17 +42,15 @@ public class Jeu {
 		player = new Player();
 		
 		showMessages = true;
-		
 		runGame();
+
 	}
 	
 	public float fourmis(int nbrFourmis){
-		System.out.println("fourmis");
 		showMessages = false;
 		
 		int victoire = 0;
-		for(int i = 0 ; i < nbrFourmis ; i++){
-		System.out.println("Lets go "+i);			
+		for(int i = 0 ; i < nbrFourmis ; i++){			
 			player = new Fourmi();
 			
 			if(runGame()) {
@@ -67,32 +65,25 @@ public class Jeu {
 		boolean gameFinish = false;
 		boolean win = false;
 		
-		showMessage(book.getTextPrelude());
-		this.state = createNewState(book);
+		showMessage(this.book.getTextPrelude());
+		this.state = createNewState();
 		
-		AbstractBookNode currentNode = book.getRootNode();
+		AbstractBookNode currentNode = this.book.getRootNode();
 		
 		while(!gameFinish){
 			if(currentNode instanceof BookNodeCombat){
-				System.out.println("BookNodeCombat");	
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) currentNode;
 				currentNode = execNodeCombat(bookNodeCombat);
 			}
 			else if(currentNode instanceof BookNodeWithChoices){
-								System.out.println("BookNodeWithChoices");	
-
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) currentNode;
 				currentNode = execNodeWithChoices(bookNodeWithChoices);
 			}
 			else if(currentNode instanceof BookNodeWithRandomChoices){
-								System.out.println("BookNodeWithRandomChoices");	
-
 				BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) currentNode;
 				currentNode = execNodeWithRandomChoices(bookNodeWithRandomChoices);
 			}
 			else if(currentNode instanceof BookNodeTerminal){
-								System.out.println("BookNodeTerminal");	
-
 				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) currentNode;
 				execNodeTerminal(bookNodeTerminal);
 				
@@ -102,7 +93,6 @@ public class Jeu {
 					win = true;
 			} else {
 				// Noeud inconnu ou possiblement null, on stop le jeu
-				System.out.println("oooouuuuuuuuuuuuuiiiiiiiiiii");
 				BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 				nodeTerminal.setText("Vous êtes morts...");
 				nodeTerminal.setBookNodeStatus(BookNodeStatus.FAILURE);
@@ -113,11 +103,21 @@ public class Jeu {
 		return win;
 	}
 	
-	private BookState createNewState(Book book){
-		BookCharacter bookCharacter = player.execPlayerCreation(book);
+	private BookState createNewState(){
+		BookCharacter bookCharacter;
 		BookState newState = new BookState();
-		newState.setMainCharacter(bookCharacter);
-		newState.setBook(book);
+		if(this.book.getCharacters().get("0") == null){
+			bookCharacter = player.execPlayerCreation(this.book);
+			newState.setMainCharacter(bookCharacter);
+			System.out.println("1");
+		} else {
+			bookCharacter = this.book.getCharacters().get("0");
+			newState.setMainCharacter(bookCharacter);
+			System.out.println("2"+this.book.getCharacters());
+		}
+		
+		System.out.println("newState "+newState.getMainCharacter());
+		newState.setBook(this.book);
 		return newState;
 	}
 	
@@ -141,10 +141,10 @@ public class Jeu {
 	
 	public AbstractBookNode execNodeWithChoices(BookNodeWithChoices node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
-		System.out.println("execNodeWithChoices : ");
+		
 		if(returnedNode != null) 
 			return returnedNode;
-		System.out.println("après execNodeWithChoices : ");
+		
 		int lienValide = 0;
 		for (BookNodeLink bookNodeLink : node.getChoices()){
 			if(bookNodeLink.isAvailable(state))
@@ -167,7 +167,7 @@ public class Jeu {
 			while (!choixValide){
 				showMessage("Que choisissez-vous ?");
 				int choice = player.makeAChoice(node);
-				System.out.println("Choice : "+choice);
+				System.out.println(choice);
 				if(choice > 0 && choice <= node.getChoices().size()){
 					selectedBookNodeLink = node.getChoices().get(choice-1);
 					if(selectedBookNodeLink.isAvailable(state)){
