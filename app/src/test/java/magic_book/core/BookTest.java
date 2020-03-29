@@ -1,5 +1,7 @@
 package magic_book.core;
 
+import java.util.Map;
+import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
@@ -84,6 +86,56 @@ public class BookTest extends AbstractTest {
 	}
 	
 	@Test
+	public void changeFirstNode_changementDestinations() {
+		BookNodeWithChoices node2 = new BookNodeWithChoices();
+		BookNodeWithChoices node3 = new BookNodeWithChoices();
+		BookNodeTerminal node4 = new BookNodeTerminal();
+		
+		BookNodeLink nodeLink2_3 = new BookNodeLink();
+		nodeLink2_3.setDestination(3);
+		
+		BookNodeLink nodeLink3_4 = new BookNodeLink();
+		nodeLink3_4.setDestination(4);
+		
+		BookNodeLink nodeLink3_2 = new BookNodeLink();
+		nodeLink3_2.setDestination(2);
+		
+		BookNodeLink nodeLink3_2_2 = new BookNodeLink();
+		nodeLink3_2_2.setDestination(2);
+		
+		book.addNode(node2); // 2
+		book.addNode(node3); // 3
+		book.addNode(node4); // 4
+		
+		book.addNodeLink(nodeLink2_3, node2);
+		book.addNodeLink(nodeLink3_4, node3);
+		book.addNodeLink(nodeLink3_2, node3);
+		book.addNodeLink(nodeLink3_2_2, node3);
+		
+		book.changeFirstNode(node2); // 2 -> 1 
+		
+		// 2 -> 1
+		// 3 -> 3
+		// 4 -> 4
+		
+		Assert.assertEquals("Test destination nodeLink2_3", 3, nodeLink2_3.getDestination());
+		Assert.assertEquals("Test destination nodeLink3_4", 4, nodeLink3_4.getDestination());
+		Assert.assertEquals("Test destination nodeLink3_2", 1, nodeLink3_2.getDestination());
+		Assert.assertEquals("Test destination nodeLink3_2_2", 1, nodeLink3_2_2.getDestination());
+		
+		book.changeFirstNode(node3); // 3 -> 1 
+		
+		// 2 -> 3
+		// 3 -> 1
+		// 4 -> 4
+		
+		Assert.assertEquals("Test destination nodeLink2_3", 1, nodeLink2_3.getDestination());
+		Assert.assertEquals("Test destination nodeLink3_4", 4, nodeLink3_4.getDestination());
+		Assert.assertEquals("Test destination nodeLink3_2", 3, nodeLink3_2.getDestination());
+		Assert.assertEquals("Test destination nodeLink3_2_2", 3, nodeLink3_2_2.getDestination());
+	}
+	
+	@Test
 	public void changeFirstNode_changementAvecSwap() {
 		BookNodeTerminal node = new BookNodeTerminal();
 		BookNodeTerminal node2 = new BookNodeTerminal();
@@ -102,6 +154,8 @@ public class BookTest extends AbstractTest {
 		Assert.assertEquals("Test taille - normal", 3, book.getNodes().size());
 		Assert.assertEquals("Test taille - inv", 3, book.getNodesInv().size());
 		Assert.assertTrue("Test taille index libre", book.getMissingIndexes().isEmpty());
+		
+		Mockito.verify(bookNodeObservable).notifyNodeAdded(node);
 	}
 	
 	@Test

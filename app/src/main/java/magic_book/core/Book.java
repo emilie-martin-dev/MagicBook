@@ -93,14 +93,33 @@ public class Book {
 		
 		int indexOfNode = this.nodesInv.get(node);
 		AbstractBookNode oldNode = this.nodes.get(1);
+		updateDestinations(indexOfNode, 1);
+		
 		this.nodes.put(1, node);
 		this.nodesInv.put(node, 1);
+	
+		if(oldNode != null)
+			updateDestinations(1, -1);
+		
+		
 		if(oldNode != null) {
 			this.nodes.put(indexOfNode, oldNode);
 			this.nodesInv.put(oldNode, indexOfNode);
+			
+			updateDestinations(-1, indexOfNode);
 		} else {
 			this.missingIndexes.add(indexOfNode);
 			this.nodes.remove(indexOfNode);
+		}
+	}
+	
+	public void updateDestinations(int oldDestination, int newDestination) {
+		for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
+			for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
+				if(nodeLink.getDestination() == oldDestination) {
+					nodeLink.setDestination(newDestination);
+				}
+			}
 		}
 	}
 	
