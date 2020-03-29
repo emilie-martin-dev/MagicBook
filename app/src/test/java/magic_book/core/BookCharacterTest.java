@@ -1,10 +1,11 @@
 package magic_book.core;
 
 import magic_book.core.game.BookCharacter;
+import magic_book.test.AbstractTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class BookCharacterTest {
+public class BookCharacterTest extends AbstractTest {
 
     @Test
 	public void heal_test(){

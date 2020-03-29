@@ -264,4 +264,12 @@ public class Book {
 		return nodesInv;
 	}
 
+	public BookNodeObservable getBookNodeObservable() {
+		return bookNodeObservable;
+	}
+
+	public void setBookNodeObservable(BookNodeObservable bookNodeObservable) {
+		this.bookNodeObservable = bookNodeObservable;
+	}
+	
 }

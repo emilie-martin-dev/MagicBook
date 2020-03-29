@@ -8,10 +8,11 @@ import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
 import magic_book.core.requirement.RequirementMoney;
 import magic_book.core.requirement.RequirementSkill;
+import magic_book.test.AbstractTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class BookNodeLinkTest {
+public class BookNodeLinkTest extends AbstractTest {
 	
 	@Test
 	public void isAvailaible() {

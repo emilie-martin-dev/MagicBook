@@ -1,6 +1,5 @@
 package magic_book.core.parser;
 
-import magic_book.core.parser.TextParser;
 import magic_book.core.game.BookCharacter;
 
 import org.junit.Assert;
@@ -8,8 +7,9 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import magic_book.core.item.BookItem;
+import magic_book.test.AbstractTest;
 
-public class TextParserTest {
+public class TextParserTest extends AbstractTest {
 
     @Test
     public void test_parseText() {

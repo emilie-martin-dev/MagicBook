@@ -2,10 +2,11 @@ package magic_book.core.requirement;
 
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
+import magic_book.test.AbstractTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class RequirementMoneyTest {
+public class RequirementMoneyTest extends AbstractTest {
 	
 	@Test
 	public void isStatisfied(){
