@@ -415,4 +415,78 @@ public class JeuTest {
 		Assert.assertTrue(victoire > 48 && victoire < 52);
 	}
 	
+	public void execNodeHp(){
+		//Test juste sur un BookNodeWithChoices car BookNodeWithRandomChoices utilise execAbstractNodeWithChoices
+		Jeu jeu;
+		Book book;
+		float victoire;
+		List<BookNodeLink> listAbstractBookNode ;
+		BookNodeWithChoices bookNodeWithChoices;
+		HashMap<Integer, AbstractBookNode> nodes;
+		BookNodeLink bookNodeLinkVictoire;
+		HashMap<String, BookCharacter> mapCharacter;
+		BookCharacter bookCharacter ;
+				
+		
+		//Création des Noeuds
+		BookNodeTerminal bookNodeTerminalVictoire = new BookNodeTerminal("Victoire", BookNodeStatus.FAILURE);
+		
+		
+		bookNodeLinkVictoire = new BookNodeLink("BookNodeLink Victoire", 2);
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLinkVictoire);
+		
+		bookNodeWithChoices = new BookNodeWithChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		
+		//1er test - Defaite : le character perd tout ses hp
+		bookCharacter = new BookCharacter();
+		bookCharacter.setId("0");
+		bookCharacter.setHp(20);
+		
+		bookNodeWithChoices.setHp(-20);
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithChoices);
+		nodes.put(2, bookNodeTerminalVictoire);
+		
+		
+		mapCharacter = new HashMap();
+		mapCharacter.put(bookCharacter.getId(), bookCharacter);
+		
+		book = new Book();
+		
+		book.setNodes(nodes);
+		book.setCharacters(mapCharacter);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  0);
+		
+		//2eme test - Victoire : le character ne perd pas tout ses hp
+		bookCharacter = new BookCharacter();
+		bookCharacter.setId("0");
+		bookCharacter.setHp(20);
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLinkVictoire);
+		
+		bookNodeWithChoices = new BookNodeWithChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		bookNodeWithChoices.setHp(-19);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithChoices);
+		nodes.put(2, bookNodeTerminalVictoire);
+		
+		mapCharacter = new HashMap();
+		mapCharacter.put(bookCharacter.getId(), bookCharacter);
+		
+		book = new Book();
+		
+		book.setNodes(nodes);
+		book.setCharacters(mapCharacter);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  100);
+	}
 }

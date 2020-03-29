@@ -351,13 +351,12 @@ public class Jeu {
 	
 	private void execNodeHp(AbstractBookNodeWithChoices node){
 		int nodeHp = node.getHp();
-		
 		if(nodeHp != 0){
+			System.out.println("diff de 0 "+nodeHp);
 			if(nodeHp > 0)
 				state.getMainCharacter().heal(nodeHp);
-			else 
+			else
 				state.getMainCharacter().damage(-nodeHp);
-
 			showMessage("Vous avez pris "+ nodeHp + " hp");
 
 			if(state.getMainCharacter().getHpMax() == state.getMainCharacter().getHp())
