@@ -1,16 +1,11 @@
 package magic_book.core.game.player;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javafx.scene.control.Alert;
 import magic_book.core.Book;
-import magic_book.core.exception.BookFileException;
-import magic_book.core.file.BookReader;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookSkill;
-import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
@@ -24,23 +19,22 @@ import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
 import magic_book.core.requirement.RequirementSkill;
+import magic_book.test.AbstractTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-public class JeuTest {
+public class JeuTest extends AbstractTest {
 	
 	//Variables
-	Jeu jeu;
-	Book book;
-	float victoire;
-	List<BookNodeLink> listAbstractBookNode ;
-	BookNodeWithChoices bookNodeWithChoices;
-	HashMap<Integer, AbstractBookNode> nodes;
-	BookNodeTerminal bookNodeTerminalVictory = new BookNodeTerminal("C'est un noeud de victoire", BookNodeStatus.VICTORY);
-	BookNodeTerminal bookNodeTerminalFailure = new BookNodeTerminal("C'est un noeud de défaite", BookNodeStatus.FAILURE);
-		
-	
+	private	Jeu jeu;
+	private Book book;
+	private float victoire;
+	private List<BookNodeLink> listAbstractBookNode ;
+	private BookNodeWithChoices bookNodeWithChoices;
+	private HashMap<Integer, AbstractBookNode> nodes;
+	private BookNodeTerminal bookNodeTerminalVictory = new BookNodeTerminal("C'est un noeud de victoire", BookNodeStatus.VICTORY);
+	private BookNodeTerminal bookNodeTerminalFailure = new BookNodeTerminal("C'est un noeud de défaite", BookNodeStatus.FAILURE);
+
 	@Test
 	public void runGame(){
 		
@@ -72,19 +66,6 @@ public class JeuTest {
 		jeu = new Jeu(book);
 		victoire = jeu.fourmis(10000);
 		Assert.assertTrue(victoire == 100);
-		
-		//3eme test : noeud Terminal Failure et Victoire
-		listAbstractBookNode.add(bookNodeLink2);
-		
-		bookNodeWithChoices = new BookNodeWithChoices("", 0, null, null, listAbstractBookNode);
-		
-		nodes.put(3, bookNodeTerminalFailure);
-		
-		book = new Book();
-		book.setNodes(nodes);
-		jeu = new Jeu(book);
-		victoire = jeu.fourmis(10000);
-		Assert.assertTrue(victoire > 49 && victoire < 51);
 	}
 	@Test
 	public void execAbstractNodeWithChoices(){		
@@ -346,32 +327,6 @@ public class JeuTest {
 		jeu = new Jeu(book);
 		victoire = jeu.fourmis(1);
 		Assert.assertTrue(victoire ==  0);
-		
-		
-		
-		//3eme test - 50/50 Victoire/Defaite
-		bookNodeLinkVictoire = new BookNodeLinkRandom("BookNodeLink Victoire", 2, null, 1);
-		bookNodeLinkDefaite = new BookNodeLinkRandom("BookNodeLink Defaite", 3, null, 1);
-		
-		listAbstractBookNodeRandom = new ArrayList();
-		listAbstractBookNodeRandom.add(bookNodeLinkVictoire);
-		listAbstractBookNodeRandom.add(bookNodeLinkDefaite);
-		
-
-		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNodeRandom);
-		
-		nodes = new HashMap();
-		nodes.put(1, bookNodeWithRandomChoices);
-		nodes.put(2, bookNodeTerminalVictoire);
-		nodes.put(3, bookNodeTerminalDefaite);
-			
-		book = new Book();
-		
-		book.setNodes(nodes);
-		
-		jeu = new Jeu(book);
-		victoire = jeu.fourmis(10000);
-		Assert.assertTrue(victoire > 48 && victoire < 52);
 	}
 	
 	@Test

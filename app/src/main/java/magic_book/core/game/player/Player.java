@@ -8,12 +8,10 @@ import magic_book.core.game.BookState;
 import magic_book.core.game.player.Jeu.ChoixCombat;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
-import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemHealing;
 import magic_book.core.item.BookItemLink;
-import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
 
 public class Player implements InterfacePlayerFourmis {

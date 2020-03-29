@@ -1,7 +1,6 @@
 package magic_book.core.game.player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -22,7 +21,6 @@ import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
-import magic_book.core.requirement.RequirementItem;
 
 public class Jeu {
 	

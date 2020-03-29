@@ -29,6 +29,7 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		int nbrChoice = 0;
 		
 		for (int i = 0 ; i < this.getChoices().size() ; i++){
+			System.out.println("bookRandomChoices "+ this.getChoices().get(i).getRequirements().get(0).get(0));
 			if(this.getChoices().get(i).isAvailable(state)){
 				listNodeLinkDisponible.add(this.getChoices().get(i));
 				somme += this.getChoices().get(i).getChance();
