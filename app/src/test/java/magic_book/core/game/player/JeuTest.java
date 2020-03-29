@@ -16,7 +16,9 @@ import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
+import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
@@ -242,7 +244,7 @@ public class JeuTest {
 		HashMap<Integer, AbstractBookNode> nodes;
 		
 		//Création des Noeuds
-		BookNodeTerminal bookNodeTerminalWin = new BookNodeTerminal("Victire", BookNodeStatus.VICTORY);
+		BookNodeTerminal bookNodeTerminalWin = new BookNodeTerminal("Victoire", BookNodeStatus.VICTORY);
 		BookNodeTerminal bookNodeTerminalEvasion = new BookNodeTerminal("Evasion", BookNodeStatus.VICTORY);
 		BookNodeTerminal bookNodeTerminalLoose = new BookNodeTerminal("Defaite", BookNodeStatus.FAILURE);
 		
@@ -256,7 +258,7 @@ public class JeuTest {
 		listAbstractBookNode.add(bookNodeLinkLoose);
 		listAbstractBookNode.add(bookNodeLinkEvasion);
 		
-		
+		//1er test : victoire sans ennemis
 		BookNodeCombat bookNodeCombatSansEnnemis = new BookNodeCombat("Combat", bookNodeLinkWin, bookNodeLinkLoose, bookNodeLinkEvasion, 100, null);
 		
 		nodes = new HashMap();
@@ -274,9 +276,9 @@ public class JeuTest {
 		victoire = jeu.fourmis(1);
 		Assert.assertTrue(victoire ==  100);
 		
-		
-		BookCharacter bookCharacterEnnemi1 = new BookCharacter("Sorcier", "Ennemis1", 50, 1, null, null, 2);
-		BookCharacter bookCharacterEnnemi2 = new BookCharacter("Zombie", "Ennemis2", 50, 1, null, null, 2);
+		//2ème test : defaite avec ennemis
+		BookCharacter bookCharacterEnnemi1 = new BookCharacter("Sorcier", "Ennemis1", 50, 100, null, null, 2);
+		BookCharacter bookCharacterEnnemi2 = new BookCharacter("Zombie", "Ennemis2", 50, 100, null, null, 2);
 		
 		
 		HashMap<String, BookCharacter> mapEnnemis = new HashMap();
@@ -306,7 +308,7 @@ public class JeuTest {
 		Assert.assertTrue(victoire ==  0);
 
 		
-		
+		//3ème test : evasion avec ennemis
 		BookNodeCombat bookNodeCombatAvecEvasion = new BookNodeCombat("Combat", bookNodeLinkWin, bookNodeLinkLoose, bookNodeLinkEvasion, 0, listEnnemis);
 		nodes = new HashMap();
 		nodes.put(1, bookNodeCombatAvecEvasion);
@@ -321,7 +323,96 @@ public class JeuTest {
 		jeu = new Jeu(book);
 		victoire = jeu.fourmis(1);
 		Assert.assertTrue(victoire ==  100);
+	}
+	
+	public void execNodeWithRandomChoices(){
+		Jeu jeu;
+		Book book;
+		float victoire;
+		List<BookNodeLinkRandom> listAbstractBookNode ;
+		BookNodeWithRandomChoices bookNodeWithRandomChoices;
+		HashMap<Integer, AbstractBookNode> nodes;
+		BookNodeLinkRandom bookNodeLinkVictoire;
+		BookNodeLinkRandom bookNodeLinkDefaite;
+				
+		
+		//Création des Noeuds
+		BookNodeTerminal bookNodeTerminalVictoire = new BookNodeTerminal("Victoire", BookNodeStatus.VICTORY);
+		BookNodeTerminal bookNodeTerminalDefaite = new BookNodeTerminal("Defaite", BookNodeStatus.FAILURE);
+		
+		//1er test - Chance victoire
+		bookNodeLinkVictoire = new BookNodeLinkRandom("BookNodeLink Victoire", 2, null, 1);
+		bookNodeLinkDefaite = new BookNodeLinkRandom("BookNodeLink Defaite", 3, null, 0);
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLinkVictoire);
+		listAbstractBookNode.add(bookNodeLinkDefaite);
+		
 
+		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithRandomChoices);
+		nodes.put(2, bookNodeTerminalVictoire);
+		nodes.put(3, bookNodeTerminalDefaite);
+			
+		book = new Book();
+		
+		book.setNodes(nodes);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  100);
+		
+		//2eme test - Chance defaite
+		bookNodeLinkVictoire = new BookNodeLinkRandom("BookNodeLink Victoire", 2, null, 0);
+		bookNodeLinkDefaite = new BookNodeLinkRandom("BookNodeLink Defaite", 3, null, 1);
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLinkVictoire);
+		listAbstractBookNode.add(bookNodeLinkDefaite);
+		
+
+		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithRandomChoices);
+		nodes.put(2, bookNodeTerminalVictoire);
+		nodes.put(3, bookNodeTerminalDefaite);
+			
+		book = new Book();
+		
+		book.setNodes(nodes);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  0);
+		
+		
+		
+		//3eme test - 50/50 Victoire/Defaite
+		bookNodeLinkVictoire = new BookNodeLinkRandom("BookNodeLink Victoire", 2, null, 1);
+		bookNodeLinkDefaite = new BookNodeLinkRandom("BookNodeLink Defaite", 3, null, 1);
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLinkVictoire);
+		listAbstractBookNode.add(bookNodeLinkDefaite);
+		
+
+		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithRandomChoices);
+		nodes.put(2, bookNodeTerminalVictoire);
+		nodes.put(3, bookNodeTerminalDefaite);
+			
+		book = new Book();
+		
+		book.setNodes(nodes);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(10000);
+		Assert.assertTrue(victoire > 48 && victoire < 52);
 	}
 	
 }
