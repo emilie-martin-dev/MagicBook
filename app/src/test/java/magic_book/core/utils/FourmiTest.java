@@ -8,8 +8,9 @@ import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
+import magic_book.test.AbstractTest;
 
-public class FourmiTest {
+public class FourmiTest extends AbstractTest {
 	
 	@Test
 	public void estimerDifficulteLivre_test(){	
