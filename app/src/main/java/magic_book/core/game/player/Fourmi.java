@@ -1,48 +1,109 @@
 package magic_book.core.game.player;
 
+import java.util.List;
 import java.util.Random;
+import magic_book.core.Book;
+import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookState;
+import magic_book.core.game.player.Jeu.ChoixCombat;
+import magic_book.core.graph.node.AbstractBookNodeWithChoices;
+import magic_book.core.graph.node.BookNodeCombat;
 
-import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.core.graph.node.BookNodeStatus;
-import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.item.BookItem;
+import magic_book.core.item.BookItemDefense;
+import magic_book.core.item.BookItemHealing;
+import magic_book.core.item.BookItemLink;
+import magic_book.core.item.BookItemWeapon;
 
-public class Fourmi {
-
-	private AbstractBookNode currentNode;
+public class Fourmi implements InterfacePlayerFourmis{
 	
-	public Fourmi(AbstractBookNode node){
-		this.currentNode = node;
+	public Fourmi(){
 	}
 	
-	public void faireUnChoix() {
-		Random rand = new Random();
+	@Override
+	public int makeAChoice(AbstractBookNodeWithChoices node) {
+		Random random = new Random();
+		return random.nextInt(node.getChoices().size())+1;
+	}
+	
+	@Override
+	public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
+		boolean choixValide = false;
+		Random random = new Random();
+		ChoixCombat choixCombat = null;
+		int choix;
 		
-		int nb = rand.nextInt(currentNode.getChoices().size()); 		
-		//this.currentNode = currentNode.getChoices().get(nb).getDestination(); 
-	}
-
-	public AbstractBookNode getCurrentNode() {
-		return currentNode;
-	}
-	
-	public static float estimerDifficulteLivre(AbstractBookNode node, int nbFourmi){
-		int victory = 0;
-		
-		for(int i = 0 ; i < nbFourmi ; i++){
-			Fourmi f = new Fourmi(node);
+		while(!choixValide){
+			if(remainingRoundBeforeEvasion <= 0)
+				choix = 2;
+			else
+				choix = random.nextInt(ChoixCombat.values().length);
+			choixCombat = ChoixCombat.values()[choix];
 			
-			while(!(f.getCurrentNode() instanceof BookNodeTerminal)){
-				f.faireUnChoix();
-			}	
-			
-			BookNodeTerminal nodeTerminal = (BookNodeTerminal) f.getCurrentNode();
-			
-			if(nodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY){
-				victory += 1;
+			//Si inventaire, il choisis puis reviens sur le choix
+			if (choixCombat == ChoixCombat.INVENTAIRE){
+				if(!state.getMainCharacter().getItems().isEmpty())
+					useInventaire(state);
+			} else {
+				choixValide = true;
 			}
-		}	
+		}
 		
-		return ((float)victory / (float)nbFourmi) * 100f;
+		return choixCombat;
+	}
+		
+	public void useInventaire(BookState state){
+		List<String> listItemState = state.getMainCharacter().getItems();
+		
+		Random random = new Random();
+		int choix = random.nextInt(listItemState.size());
+		BookItem bookItem = state.getBook().getItems().get(listItemState.get(choix));
+		
+		if(bookItem instanceof BookItemDefense){
+			state.setBookItemDefense((BookItemDefense) bookItem);
+		} else if(bookItem instanceof BookItemHealing){
+			BookItemHealing bookItemHealing = (BookItemHealing) bookItem;
+			state.getMainCharacter().setHp((state.getMainCharacter().getHp() + bookItemHealing.getHp()));
+			state.getMainCharacter().getItems().remove(listItemState.get(choix));
+		} else if(bookItem instanceof BookItemWeapon){
+			state.setBookItemArme((BookItemWeapon) bookItem);
+		}
 	}
 	
+	@Override
+	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
+		int choix = 0;
+		while(nbItemMax != 0){
+			int itemMax = state.getMainCharacter().getItemsMax();
+			
+			if(state.getMainCharacter().getItems().size() < itemMax && !bookItemLinks.isEmpty()){
+				Random random = new Random();
+				choix = random.nextInt(bookItemLinks.size());
+				
+				BookItemLink itemLink = bookItemLinks.get(choix);
+				
+				state.getMainCharacter().addItem(itemLink.getId());
+				itemLink.setAmount(itemLink.getAmount()-1);
+				
+				if(itemLink.getAmount() == 0)
+					bookItemLinks.remove(itemLink);
+				
+				if(nbItemMax != -1)
+					nbItemMax--;
+			} else {
+				nbItemMax = 0;
+			}
+		}
+	}
+	
+	@Override
+	public BookCharacter execPlayerCreation(Book book) {
+		return new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+	}
+
+	@Override
+	public BookCharacter chooseEnnemi(List<BookCharacter> listEnnemis) {
+		return listEnnemis.get(0);
+	}
+
 }

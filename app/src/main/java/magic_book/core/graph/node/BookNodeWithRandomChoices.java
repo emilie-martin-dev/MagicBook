@@ -27,27 +27,33 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		List<BookNodeLinkRandom> listNodeLinkDisponible = new ArrayList();
 		int somme = 0;
 		int nbrChoice = 0;
+		
 		for (int i = 0 ; i < this.getChoices().size() ; i++){
 			if(this.getChoices().get(i).isAvailable(state)){
 				listNodeLinkDisponible.add(this.getChoices().get(i));
 				somme += this.getChoices().get(i).getChance();
 			}
 		}
+		
 		if(listNodeLinkDisponible.isEmpty()){
-			/*BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
-			BookNodeLinkRandom bookNodeLinkTerminal = new BookNodeLinkRandom("C'est la voie de la raison", bookNodeTerminalFail, null, 0);
-			*/
 			return null;
 		} else {
 			Random random = new Random();
 			int nbrRandomChoice = random.nextInt(somme);
 			for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){
+				if(!this.getChoices().get(i).isAvailable(state)){
+					continue;
+				}
+				
 				nbrRandomChoice -= this.getChoices().get(i).getChance();
-				if(nbrRandomChoice <= 0)
+
+				if(nbrRandomChoice < 0){
 					nbrChoice = i;
 					break;
+				}
 			}
 		}
+		
 		return this.getChoices().get(nbrChoice) ;
 	}
 

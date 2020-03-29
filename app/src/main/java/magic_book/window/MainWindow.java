@@ -3,7 +3,6 @@ package magic_book.window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +14,6 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -25,8 +23,9 @@ import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.core.file.BookWritter;
-import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.observer.book.BookNodeObserver;
+import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookState;
+import magic_book.core.game.player.Jeu;
 import magic_book.window.component.GraphPane;
 import magic_book.window.component.LeftPane;
 import magic_book.window.component.RightPane;
@@ -129,10 +128,38 @@ public class MainWindow extends Stage {
 
 		// --- Menu livre
 		Menu menuBook = new Menu("Livre");
+		
+		MenuItem menuBookJouer = new MenuItem("Jouer");
+		menuBookJouer.setOnAction((ActionEvent e) -> {
+			Book bookCopy = createBookCopy();
+			
+			if(bookCopy != null) {
+				Jeu jeu = new Jeu(bookCopy);
+				jeu.play();
+			} else {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors du chargement du jeu");
+				a.setHeaderText("Impossible de jouer au livre");
+				a.show(); 
+			}
+		});
+		
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		menuBookDifficulty.setOnAction((ActionEvent e) -> {
-			System.out.println("magic_book.window.MainWindow.createMenuBar()");
+			Book bookCopy = createBookCopy();
+			
+			if(bookCopy != null) {
+				Jeu jeu = new Jeu(book);
+				float difficulte = jeu.fourmis(10000);
+				rightPane.difficultyChanged(difficulte);
+			} else {
+				Alert a = new Alert(Alert.AlertType.ERROR);
+				a.setTitle("Erreur lors de l'estimation");
+				a.setHeaderText("Impossible d'estimer la difficulté du livre");
+				a.show(); 
+			}
 		});
+		
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
 			NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
@@ -163,7 +190,7 @@ public class MainWindow extends Stage {
 			}
 		});
 
-		menuBook.getItems().addAll(menuBookDifficulty, menuBookGenerate);
+		menuBook.getItems().addAll(menuBookJouer, menuBookDifficulty, menuBookGenerate);
 
 		// --- Menu affichage
 		Menu menuShow = new Menu("Affichage");
@@ -234,4 +261,23 @@ public class MainWindow extends Stage {
 		}
 	}
 
+	private Book createBookCopy() {
+		try {
+			String tmpPath = ".livreTmpGame";
+			BookWritter bookWritter = new BookWritter();
+			bookWritter.write(tmpPath, book);
+
+			BookReader bookReader = new BookReader();
+			Book bookCopy = bookReader.read(tmpPath);
+			File file = new File(tmpPath);
+			file.delete();
+			
+			return bookCopy;
+		} catch (IOException ex) {
+			return null;
+		} catch (BookFileException ex) {
+			return null;
+		}
+	}
+	
 }

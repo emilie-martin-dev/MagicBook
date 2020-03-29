@@ -306,21 +306,21 @@
 				"immune": ["mindblast"],
 				"hp": 20,
 				"double_damage": true,
-				"combat_skill": 22
+				"combat_skill": 2
 			},
 			{
 				"id": "dorier_ganon",
 				"name": "Dorier + Ganon",
 				"immune": ["mindblast"],
 				"hp": 30,
-				"combat_skill": 28
+				"combat_skill": 3
 			},
 			{
 				"id": "helghast_double_damage",
 				"name": "Helghast",
 				"immune": ["mindblast"],
 				"hp": 30,
-				"combat_skill": 22,
+				"combat_skill": 2,
 				"double_damage": true
 			},
 			{
@@ -328,27 +328,27 @@
 				"name": "Helghast",
 				"immune": ["mindblast"],
 				"hp": 30,
-				"combat_skill": 22,
+				"combat_skill": 3,
 				"skills": ["mindforce"]
 			},
 			{
 				"id": "zombie_crew",
 				"name": "Zombie Crew",
 				"hp": 18,
-				"combat_skill": 13,
+				"combat_skill": 1,
 				"double_damage": true
 			},
 			{
 				"id": "giaks",
 				"name": "Giaks",
 				"hp": 14,
-				"combat_skill": 16
+				"combat_skill": 2
 			},
 			{
 				"id": "halvorc",
 				"name": "Halvorc",
 				"hp": 11,
-				"combat_skill": 8
+				"combat_skill": 1
 			},
 			{
 				"id": "zombie_captain",
@@ -356,116 +356,116 @@
 				"immune": ["mindblast"],
 				"hp": 15,
 				"double_damage": true,
-				"combat_skill": 15
+				"combat_skill": 2
 			},
 			{
 				"id": "viveka",
 				"name": "Viveka",
 				"hp": 27,
-				"combat_skill": 24
+				"combat_skill": 4
 			},
 			{
 				"id": "villager",
 				"name": "Villager",
 				"hp": 16,
-				"combat_skill": 10
+				"combat_skill": 1
 			},
 			{
 				"id": "szall",
 				"name": "Szall",
 				"hp": 16,
-				"combat_skill": 10
+				"combat_skill": 3
 			},
 			{
 				"id": "watchtower_guard",
 				"name": "Watchtower Guard",
 				"hp": 22,
-				"combat_skill": 15
+				"combat_skill": 2
 			},
 			{
 				"id": "priest",
 				"name": "Priest",
 				"hp": 23,
-				"combat_skill": 16
+				"combat_skill": 1
 			},
 			{
 				"id": "knight_white_mountain",
 				"name": "Knight of the White Mountain",
 				"hp": 27,
-				"combat_skill": 20
+				"combat_skill": 2
 			},
 			{
 				"id": "drakkar",
 				"name": "Drakkar",
 				"hp": 25,
-				"combat_skill": 16
+				"combat_skill": 3
 			},
 			{
 				"id": "trickster",
 				"name": "Trickster",
 				"hp": 25,
-				"combat_skill": 17
+				"combat_skill": 2
 			},
 			{
 				"id": "harbour_thugs",
 				"name": "Harbour Thugs",
 				"hp": 25,
-				"combat_skill": 16
+				"combat_skill": 1
 			},
 			{
 				"id": "sailor",
 				"name": "Sailor",
 				"hp": 25,
-				"combat_skill": 18
+				"combat_skill": 4
 			},
 			{
 				"id": "bridge_guard",
 				"name": "Bridge Guard",
 				"hp": 24,
-				"combat_skill": 16
+				"combat_skill": 3
 			},
 			{
 				"id": "town_guard_sergeant",
 				"name": "Town Guard Sergeant",
 				"hp": 22,
-				"combat_skill": 13
+				"combat_skill": 2
 			},
 			{
 				"id": "town_guard_corporal",
 				"name": "Town Guard Corporal",
 				"hp": 22,
-				"combat_skill": 13
+				"combat_skill": 3
 			},
 			{
 				"id": "town_guard",
 				"name": "Town Guard",
 				"hp": 22,
-				"combat_skill": 13
+				"combat_skill": 2
 			},
 			{
 				"id": "street_thief_leader",
 				"name": "Street Thief Leader",
 				"hp": 23,
-				"combat_skill": 15
+				"combat_skill": 5
 			},
 			{
 				"id": "street_thief",
 				"name": "Street Thief",
 				"hp": 23,
-				"combat_skill": 15
+				"combat_skill": 2
 			},
 			{
 				"id": "border_guard",
 				"name": "Border Guard",
 				"hp": 24,
 				"double_damage": true,
-				"combat_skill": 16
+				"combat_skill": 2
 			},
 			{
 				"id": "harbour_thugs",
 				"name": "Harbour Thugs",
 				"hp": 25,
-				"combat_skill": 16
+				"combat_skill": 3
 			}
 		]
 	},
