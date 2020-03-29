@@ -355,6 +355,40 @@ public class BookTest extends AbstractTest {
 	}
 	
 	@Test
+	public void removeNode_removeNodeLinks() {
+		BookNodeWithChoices node2 = new BookNodeWithChoices();
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		BookNodeWithChoices node4 = new BookNodeWithChoices();
+		
+		BookNodeLink nodeLink2 = new BookNodeLink();
+		nodeLink2.setDestination(3);
+		
+		BookNodeLink nodeLink4 = new BookNodeLink();
+		nodeLink4.setDestination(4);
+		
+		BookNodeLink nodeLink4_2 = new BookNodeLink();
+		nodeLink4_2.setDestination(2);
+		
+		BookNodeLink nodeLink4_2_2 = new BookNodeLink();
+		nodeLink4_2_2.setDestination(2);
+		
+		book.addNode(node2); // 2
+		book.addNode(node3); // 3
+		book.addNode(node4); // 4
+		
+		book.addNodeLink(nodeLink2, node2);
+		book.addNodeLink(nodeLink4, node4);
+		book.addNodeLink(nodeLink4_2, node4);
+		book.addNodeLink(nodeLink4_2_2, node4);
+		
+		book.removeNode(node2);
+		
+		Assert.assertTrue("Test taille choices - node3", book.getNodes().get(3).getChoices().isEmpty());
+		Assert.assertEquals("Test taille choices - node4", 1, book.getNodes().get(4).getChoices().size());
+		Assert.assertTrue("Test choice - node4", book.getNodes().get(4).getChoices().get(0) == nodeLink4);
+	}
+	
+	@Test
 	public void updateNodeLink_exits() {
 		BookNodeWithChoices node2 = new BookNodeWithChoices();
 		BookNodeTerminal node3 = new BookNodeTerminal();

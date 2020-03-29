@@ -1,5 +1,6 @@
 package magic_book.core;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import magic_book.core.game.BookCharacter;
 import java.util.HashMap;
@@ -125,21 +126,20 @@ public class Book {
 			
 			bookNodeObservable.notifyNodeDeleted(node);
 			
-			HashMap<AbstractBookNodeWithChoices, BookNodeLink> postRemove = new HashMap<>();
+			List<AbstractMap.SimpleEntry<AbstractBookNodeWithChoices, BookNodeLink>> postRemove = new ArrayList<>();
 			for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
 				if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
 					continue;
 			
-				AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
+				AbstractBookNodeWithChoices currentNode = (AbstractBookNodeWithChoices) entry.getValue();
 				for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
 					if(nodeLink.getDestination() == indexOfNode) {
-						postRemove.put(currentChoice, nodeLink);
-						break;
+						postRemove.add(new AbstractMap.SimpleEntry<>(currentNode, nodeLink));
 					}
 				}
 			}
 			
-			for(Entry<AbstractBookNodeWithChoices, BookNodeLink> entry : postRemove.entrySet()) {
+			for(Entry<AbstractBookNodeWithChoices, BookNodeLink> entry : postRemove) {
 				entry.getKey().removeChoice(entry.getValue());
 			}
 		}
