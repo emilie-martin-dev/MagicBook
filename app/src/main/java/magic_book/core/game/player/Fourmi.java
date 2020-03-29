@@ -31,9 +31,13 @@ public class Fourmi implements InterfacePlayerFourmis{
 		boolean choixValide = false;
 		Random random = new Random();
 		ChoixCombat choixCombat = null;
+		int choix;
 		
 		while(!choixValide){
-			int choix = random.nextInt(ChoixCombat.values().length);
+			if(remainingRoundBeforeEvasion <= 0)
+				choix = 2;
+			else
+				choix = random.nextInt(ChoixCombat.values().length);
 			choixCombat = ChoixCombat.values()[choix];
 			
 			//Si inventaire, il choisis puis reviens sur le choix

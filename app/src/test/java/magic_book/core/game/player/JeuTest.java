@@ -9,13 +9,19 @@ import magic_book.core.Book;
 import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookSkill;
 import magic_book.core.game.BookState;
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.item.BookItemLink;
+import magic_book.core.item.BookItemWeapon;
+import magic_book.core.requirement.AbstractRequirement;
+import magic_book.core.requirement.RequirementItem;
+import magic_book.core.requirement.RequirementSkill;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -126,4 +132,196 @@ public class JeuTest {
 		Assert.assertTrue(victoire ==  100);
 		
 	}
+	
+	@Test
+	public void execNodeWithChoicesLienValide(){
+		Jeu jeu;
+		Book book;
+		float victoire;
+		List<BookNodeLink> listAbstractBookNode ;
+		BookNodeWithChoices bookNodeWithChoices;
+		HashMap<Integer, AbstractBookNode> nodes;
+		
+		//Création des Noeuds
+		BookNodeTerminal bookNodeTerminalVictory = new BookNodeTerminal("C'est un noeud de victoire", BookNodeStatus.VICTORY);
+		
+		BookItemWeapon bookItemWeapon = new BookItemWeapon("arme", "Aiguille", 2, 2);
+		
+		RequirementItem requirementItem = new RequirementItem(bookItemWeapon.getId());
+		
+		List<AbstractRequirement> listRequirements = new ArrayList();
+		listRequirements.add(requirementItem);
+		
+		List<List<AbstractRequirement>> requirements = new ArrayList();
+		requirements.add(listRequirements);
+		
+		//1er test : Requirements non valide - Defaite
+		BookNodeLink bookNodeLink1 = new BookNodeLink("C'est le bookNodeLink qui a besoin d'une arme", 2, requirements);
+		
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLink1);
+		
+		bookNodeWithChoices = new BookNodeWithChoices("", 0, null, null, listAbstractBookNode);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithChoices);
+		nodes.put(2, bookNodeTerminalVictory);
+		
+		
+		book = new Book();
+		
+		book.setNodes(nodes);
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  0);
+		
+		//2eme test : Requirements valide - Victoire
+		List<String> listItems = new ArrayList();
+		listItems.add(bookItemWeapon.getId());
+		
+		BookCharacter bookCharacter = new BookCharacter("0", "Salut", 3, 20, null, listItems, 2);
+		HashMap<String, BookCharacter> characters = new HashMap();
+		characters.put(bookCharacter.getId(), bookCharacter);
+		book.setCharacters(characters);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  100);
+		
+		
+		
+		/*
+		
+		BookSkill bookSkill = new BookSkill("competence", "sort");
+		
+		List<String> listSkills = new ArrayList();
+		listSkills.add(bookSkill.getId());
+		
+		
+		
+		AbstractRequirement requirementSkill = new RequirementSkill(bookSkill.getId());
+		
+		listRequirements = new ArrayList();
+		listRequirements.add(requirementSkill);
+		
+		requirements = new ArrayList();
+		requirements.add(listRequirements);
+		
+		bookNodeLink1 = new BookNodeLink("C'est le bookNodeLink qui a besoin d'une competence", 2, requirements);
+		
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLink1);
+		
+		bookNodeWithChoices = new BookNodeWithChoices("", 0, null, null, listAbstractBookNode);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeWithChoices);
+		nodes.put(2, bookNodeTerminalVictory);
+		
+		bookCharacter = new BookCharacter("0", "Salut", 3, 20, listSkills, null, 2);
+		characters = new HashMap();
+		characters.put("0", bookCharacter);
+		book.setCharacters(characters);
+		
+		book.setNodes(nodes);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  100);*/
+	}
+	
+	@Test
+	public void execNodeCombat(){
+		Jeu jeu;
+		Book book;
+		float victoire;
+		List<BookNodeLink> listAbstractBookNode ;
+		BookNodeWithChoices bookNodeWithChoices;
+		HashMap<Integer, AbstractBookNode> nodes;
+		
+		//Création des Noeuds
+		BookNodeTerminal bookNodeTerminalWin = new BookNodeTerminal("Victire", BookNodeStatus.VICTORY);
+		BookNodeTerminal bookNodeTerminalEvasion = new BookNodeTerminal("Evasion", BookNodeStatus.VICTORY);
+		BookNodeTerminal bookNodeTerminalLoose = new BookNodeTerminal("Defaite", BookNodeStatus.FAILURE);
+		
+		
+		BookNodeLink bookNodeLinkWin = new BookNodeLink("BookNodeLink win", 2);
+		BookNodeLink bookNodeLinkLoose = new BookNodeLink("BookNodeLink loose", 3);
+		BookNodeLink bookNodeLinkEvasion = new BookNodeLink("BookNodeLink evasion", 4);
+		
+		listAbstractBookNode = new ArrayList();
+		listAbstractBookNode.add(bookNodeLinkWin);
+		listAbstractBookNode.add(bookNodeLinkLoose);
+		listAbstractBookNode.add(bookNodeLinkEvasion);
+		
+		
+		BookNodeCombat bookNodeCombatSansEnnemis = new BookNodeCombat("Combat", bookNodeLinkWin, bookNodeLinkLoose, bookNodeLinkEvasion, 100, null);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeCombatSansEnnemis);
+		nodes.put(2, bookNodeTerminalWin);
+		nodes.put(3, bookNodeTerminalEvasion);
+		nodes.put(4, bookNodeTerminalLoose);
+			
+		
+		book = new Book();
+		
+		book.setNodes(nodes);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  100);
+		
+		
+		BookCharacter bookCharacterEnnemi1 = new BookCharacter("Sorcier", "Ennemis1", 50, 1, null, null, 2);
+		BookCharacter bookCharacterEnnemi2 = new BookCharacter("Zombie", "Ennemis2", 50, 1, null, null, 2);
+		
+		
+		HashMap<String, BookCharacter> mapEnnemis = new HashMap();
+		mapEnnemis.put(bookCharacterEnnemi1.getId(), bookCharacterEnnemi1);
+		mapEnnemis.put(bookCharacterEnnemi2.getId(), bookCharacterEnnemi2);
+		
+		
+		List<String> listEnnemis = new ArrayList();
+		listEnnemis.add(bookCharacterEnnemi1.getId());
+		listEnnemis.add(bookCharacterEnnemi2.getId());
+		
+		BookNodeCombat bookNodeCombatAvecEnnemis = new BookNodeCombat("Combat", bookNodeLinkWin, bookNodeLinkLoose, bookNodeLinkEvasion, 100, listEnnemis);
+		
+		nodes = new HashMap();
+		nodes.put(1, bookNodeCombatAvecEnnemis);
+		nodes.put(2, bookNodeTerminalWin);
+		nodes.put(3, bookNodeTerminalLoose);
+		nodes.put(4, bookNodeTerminalEvasion);
+		
+		book = new Book();
+		
+		book.setNodes(nodes);
+		book.setCharacters(mapEnnemis);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  0);
+
+		
+		
+		BookNodeCombat bookNodeCombatAvecEvasion = new BookNodeCombat("Combat", bookNodeLinkWin, bookNodeLinkLoose, bookNodeLinkEvasion, 0, listEnnemis);
+		nodes = new HashMap();
+		nodes.put(1, bookNodeCombatAvecEvasion);
+		nodes.put(2, bookNodeTerminalWin);
+		nodes.put(3, bookNodeTerminalLoose);
+		nodes.put(4, bookNodeTerminalEvasion);
+		book = new Book();
+		
+		book.setNodes(nodes);
+		book.setCharacters(mapEnnemis);
+		
+		jeu = new Jeu(book);
+		victoire = jeu.fourmis(1);
+		Assert.assertTrue(victoire ==  100);
+
+	}
+	
 }

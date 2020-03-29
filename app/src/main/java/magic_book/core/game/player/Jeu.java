@@ -42,8 +42,8 @@ public class Jeu {
 		player = new Player();
 		
 		showMessages = true;
+		
 		runGame();
-
 	}
 	
 	public float fourmis(int nbrFourmis){
@@ -143,7 +143,7 @@ public class Jeu {
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
 		
 		if(returnedNode != null) 
-			return returnedNode;
+			return returnedNode;		
 		
 		int lienValide = 0;
 		for (BookNodeLink bookNodeLink : node.getChoices()){
@@ -207,6 +207,12 @@ public class Jeu {
 		if(returnedNode != null) 
 			return returnedNode;
 		
+		
+		System.out.println("excecNodeCombat "+ node.getEnnemiesId());
+		
+		if(node.getEnnemiesId().isEmpty())
+			return book.getNodes().get(node.getWinBookNodeLink().getDestination());
+		
 		int evasionRound = node.getEvasionRound();
 		boolean finCombat = false;
 		
@@ -224,12 +230,14 @@ public class Jeu {
 			ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
 			
 			if (choixCombat == ChoixCombat.ATTAQUER) {
+				System.out.println("ATTAQUE " +listEnnemis);
 				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
 				attaque(ennemi);
 				
 				if(ennemi.isAlive()){
 					showMessage(ennemi.getName() + " est mort");
 					listEnnemis.remove(ennemi);
+					System.out.println("Mort " +listEnnemis);
 				} else {
 					showMessage(ennemi.getName() + " a " +ennemi.getHp() + " hp");
 				}
@@ -306,7 +314,9 @@ public class Jeu {
 	}
 	
 	private void attaque(BookCharacter ennemi){
+		System.out.println("Avant Mort " +ennemi.getHp());
 		ennemi.damage(getDamageAmount(state.getMainCharacter(), state.getBookItemArme(), null));
+		System.out.println("Mort " +ennemi.getHp());
 	}
 	
 	private void ennemiTour(List<BookCharacter> listEnnemis){
