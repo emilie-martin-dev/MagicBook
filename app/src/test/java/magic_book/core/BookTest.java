@@ -377,10 +377,65 @@ public class BookTest {
 		Assert.assertTrue("Test choice - node4", book.getNodes().get(4).getChoices().get(0) == nodeLink4_2);
 	}
 	
-	/*
-	public void removeNodeLink(BookNodeLink nodeLink) {
+	@Test
+	public void removeNodeLink_exits() {
+		BookNodeWithChoices node2 = new BookNodeWithChoices();
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		BookNodeWithChoices node4 = new BookNodeWithChoices();
+		
+		BookNodeLink nodeLink = new BookNodeLink();
+		nodeLink.setDestination(3);
+		
+		BookNodeLink nodeLink4 = new BookNodeLink();
+		nodeLink4.setDestination(3);
+		
+		book.addNode(node2); // 2
+		book.addNode(node3); // 3
+		book.addNode(node4); // 4
+		
+		book.addNodeLink(nodeLink, node2);
+		book.addNodeLink(nodeLink4, node4);
+		
+		book.removeNodeLink(nodeLink4);
+		
+		Assert.assertEquals("Test taille choices - node2", 1, book.getNodes().get(2).getChoices().size());
+		Assert.assertTrue("Test choice - node2", book.getNodes().get(2).getChoices().get(0) == nodeLink);
+		Assert.assertTrue("Test taille choices - node3", book.getNodes().get(3).getChoices().isEmpty());
+		Assert.assertTrue("Test taille choices - node4", book.getNodes().get(4).getChoices().isEmpty());
 	}
 	
+	@Test
+	public void removeNodeLink_doesntExits() {
+		BookNodeWithChoices node2 = new BookNodeWithChoices();
+		BookNodeTerminal node3 = new BookNodeTerminal();
+		BookNodeWithChoices node4 = new BookNodeWithChoices();
+		
+		BookNodeLink nodeLink2 = new BookNodeLink();
+		nodeLink2.setDestination(3);
+		
+		BookNodeLink nodeLink4 = new BookNodeLink();
+		nodeLink4.setDestination(3);
+		
+		BookNodeLink trashNodeLink = new BookNodeLink();
+		trashNodeLink.setDestination(3);
+		
+		book.addNode(node2); // 2
+		book.addNode(node3); // 3
+		book.addNode(node4); // 4
+		
+		book.addNodeLink(nodeLink2, node2);
+		book.addNodeLink(nodeLink4, node4);
+		
+		book.removeNodeLink(trashNodeLink);
+		
+		Assert.assertEquals("Test taille choices - node2", 1, book.getNodes().get(2).getChoices().size());
+		Assert.assertTrue("Test choice - node2", book.getNodes().get(2).getChoices().get(0) == nodeLink2);
+		Assert.assertTrue("Test taille choices - node3", book.getNodes().get(3).getChoices().isEmpty());
+		Assert.assertEquals("Test taille choices - node4", 1, book.getNodes().get(4).getChoices().size());
+		Assert.assertTrue("Test choice - node4", book.getNodes().get(4).getChoices().get(0) == nodeLink4);
+	}
+	
+	/*
 	public void addItem() {
 	}
 	
