@@ -30,20 +30,19 @@ import org.junit.Test;
 
 public class JeuTest {
 	
+	//Variables
+	Jeu jeu;
+	Book book;
+	float victoire;
+	List<BookNodeLink> listAbstractBookNode ;
+	BookNodeWithChoices bookNodeWithChoices;
+	HashMap<Integer, AbstractBookNode> nodes;
+	BookNodeTerminal bookNodeTerminalVictory = new BookNodeTerminal("C'est un noeud de victoire", BookNodeStatus.VICTORY);
+	BookNodeTerminal bookNodeTerminalFailure = new BookNodeTerminal("C'est un noeud de défaite", BookNodeStatus.FAILURE);
+		
+	
 	@Test
 	public void runGame(){
-				
-		//Variables
-		Book book;
-		float victoire;
-		List<BookNodeLink> listAbstractBookNode ;
-		BookNodeWithChoices bookNodeWithChoices;
-		HashMap<Integer, AbstractBookNode> nodes;
-		Jeu jeu;
-		
-		//Création des Noeuds
-		BookNodeTerminal bookNodeTerminalVictory = new BookNodeTerminal("C'est un noeud de victoire", BookNodeStatus.VICTORY);
-		BookNodeTerminal bookNodeTerminalFailure = new BookNodeTerminal("C'est un noeud de défaite", BookNodeStatus.FAILURE);
 		
 		BookNodeLink bookNodeLink1 = new BookNodeLink("C'est le bookNodeLink", 2);
 		BookNodeLink bookNodeLink2 = new BookNodeLink("C'est le bookNodeLink", 3);
@@ -88,17 +87,7 @@ public class JeuTest {
 		Assert.assertTrue(victoire > 49 && victoire < 51);
 	}
 	@Test
-	public void execAbstractNodeWithChoices(){
-		Jeu jeu;
-		Book book;
-		float victoire;
-		List<BookNodeLink> listAbstractBookNode ;
-		BookNodeWithChoices bookNodeWithChoices;
-		HashMap<Integer, AbstractBookNode> nodes;
-		
-		//Création des Noeuds
-		BookNodeTerminal bookNodeTerminalVictory = new BookNodeTerminal("C'est un noeud de victoire", BookNodeStatus.VICTORY);
-		
+	public void execAbstractNodeWithChoices(){		
 		BookNodeLink bookNodeLink1 = new BookNodeLink("C'est le bookNodeLink", 2);
 		
 		//1er test : noeud Terminal Failure
@@ -137,16 +126,7 @@ public class JeuTest {
 	
 	@Test
 	public void execNodeWithChoicesLienValide(){
-		Jeu jeu;
-		Book book;
-		float victoire;
-		List<BookNodeLink> listAbstractBookNode ;
-		BookNodeWithChoices bookNodeWithChoices;
-		HashMap<Integer, AbstractBookNode> nodes;
-		
 		//Création des Noeuds
-		BookNodeTerminal bookNodeTerminalVictory = new BookNodeTerminal("C'est un noeud de victoire", BookNodeStatus.VICTORY);
-		
 		BookItemWeapon bookItemWeapon = new BookItemWeapon("arme", "Aiguille", 2, 2);
 		
 		RequirementItem requirementItem = new RequirementItem(bookItemWeapon.getId());
@@ -192,9 +172,6 @@ public class JeuTest {
 		Assert.assertTrue(victoire ==  100);
 		
 		
-		
-		/*
-		
 		BookSkill bookSkill = new BookSkill("competence", "sort");
 		
 		List<String> listSkills = new ArrayList();
@@ -231,41 +208,26 @@ public class JeuTest {
 		
 		jeu = new Jeu(book);
 		victoire = jeu.fourmis(1);
-		Assert.assertTrue(victoire ==  100);*/
+		Assert.assertTrue(victoire ==  100);
 	}
 	
 	@Test
 	public void execNodeCombat(){
-		Jeu jeu;
-		Book book;
-		float victoire;
-		List<BookNodeLink> listAbstractBookNode ;
-		BookNodeWithChoices bookNodeWithChoices;
-		HashMap<Integer, AbstractBookNode> nodes;
-		
 		//Création des Noeuds
-		BookNodeTerminal bookNodeTerminalWin = new BookNodeTerminal("Victoire", BookNodeStatus.VICTORY);
 		BookNodeTerminal bookNodeTerminalEvasion = new BookNodeTerminal("Evasion", BookNodeStatus.VICTORY);
-		BookNodeTerminal bookNodeTerminalLoose = new BookNodeTerminal("Defaite", BookNodeStatus.FAILURE);
-		
 		
 		BookNodeLink bookNodeLinkWin = new BookNodeLink("BookNodeLink win", 2);
 		BookNodeLink bookNodeLinkLoose = new BookNodeLink("BookNodeLink loose", 3);
 		BookNodeLink bookNodeLinkEvasion = new BookNodeLink("BookNodeLink evasion", 4);
-		
-		listAbstractBookNode = new ArrayList();
-		listAbstractBookNode.add(bookNodeLinkWin);
-		listAbstractBookNode.add(bookNodeLinkLoose);
-		listAbstractBookNode.add(bookNodeLinkEvasion);
 		
 		//1er test : victoire sans ennemis
 		BookNodeCombat bookNodeCombatSansEnnemis = new BookNodeCombat("Combat", bookNodeLinkWin, bookNodeLinkLoose, bookNodeLinkEvasion, 100, null);
 		
 		nodes = new HashMap();
 		nodes.put(1, bookNodeCombatSansEnnemis);
-		nodes.put(2, bookNodeTerminalWin);
-		nodes.put(3, bookNodeTerminalEvasion);
-		nodes.put(4, bookNodeTerminalLoose);
+		nodes.put(2, bookNodeTerminalVictory);
+		nodes.put(3, bookNodeTerminalFailure);
+		nodes.put(4, bookNodeTerminalEvasion);
 			
 		
 		book = new Book();
@@ -294,8 +256,8 @@ public class JeuTest {
 		
 		nodes = new HashMap();
 		nodes.put(1, bookNodeCombatAvecEnnemis);
-		nodes.put(2, bookNodeTerminalWin);
-		nodes.put(3, bookNodeTerminalLoose);
+		nodes.put(2, bookNodeTerminalVictory);
+		nodes.put(3, bookNodeTerminalFailure);
 		nodes.put(4, bookNodeTerminalEvasion);
 		
 		book = new Book();
@@ -309,11 +271,11 @@ public class JeuTest {
 
 		
 		//3ème test : evasion avec ennemis
-		BookNodeCombat bookNodeCombatAvecEvasion = new BookNodeCombat("Combat", bookNodeLinkWin, bookNodeLinkLoose, bookNodeLinkEvasion, 0, listEnnemis);
+		BookNodeCombat bookNodeCombatAvecEvasion = new BookNodeCombat("Combat", bookNodeLinkLoose, bookNodeLinkLoose, bookNodeLinkEvasion, 0, listEnnemis);
 		nodes = new HashMap();
 		nodes.put(1, bookNodeCombatAvecEvasion);
-		nodes.put(2, bookNodeTerminalWin);
-		nodes.put(3, bookNodeTerminalLoose);
+		nodes.put(2, bookNodeTerminalFailure);
+		nodes.put(3, bookNodeTerminalFailure);
 		nodes.put(4, bookNodeTerminalEvasion);
 		book = new Book();
 		
@@ -327,12 +289,8 @@ public class JeuTest {
 	
 	@Test
 	public void execNodeWithRandomChoices(){
-		Jeu jeu;
-		Book book;
-		float victoire;
-		List<BookNodeLinkRandom> listAbstractBookNode ;
+		List<BookNodeLinkRandom> listAbstractBookNodeRandom;
 		BookNodeWithRandomChoices bookNodeWithRandomChoices;
-		HashMap<Integer, AbstractBookNode> nodes;
 		BookNodeLinkRandom bookNodeLinkVictoire;
 		BookNodeLinkRandom bookNodeLinkDefaite;
 				
@@ -345,12 +303,12 @@ public class JeuTest {
 		bookNodeLinkVictoire = new BookNodeLinkRandom("BookNodeLink Victoire", 2, null, 1);
 		bookNodeLinkDefaite = new BookNodeLinkRandom("BookNodeLink Defaite", 3, null, 0);
 		
-		listAbstractBookNode = new ArrayList();
-		listAbstractBookNode.add(bookNodeLinkVictoire);
-		listAbstractBookNode.add(bookNodeLinkDefaite);
+		listAbstractBookNodeRandom = new ArrayList();
+		listAbstractBookNodeRandom.add(bookNodeLinkVictoire);
+		listAbstractBookNodeRandom.add(bookNodeLinkDefaite);
 		
 
-		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNodeRandom);
 		
 		nodes = new HashMap();
 		nodes.put(1, bookNodeWithRandomChoices);
@@ -369,12 +327,12 @@ public class JeuTest {
 		bookNodeLinkVictoire = new BookNodeLinkRandom("BookNodeLink Victoire", 2, null, 0);
 		bookNodeLinkDefaite = new BookNodeLinkRandom("BookNodeLink Defaite", 3, null, 1);
 		
-		listAbstractBookNode = new ArrayList();
-		listAbstractBookNode.add(bookNodeLinkVictoire);
-		listAbstractBookNode.add(bookNodeLinkDefaite);
+		listAbstractBookNodeRandom = new ArrayList();
+		listAbstractBookNodeRandom.add(bookNodeLinkVictoire);
+		listAbstractBookNodeRandom.add(bookNodeLinkDefaite);
 		
 
-		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNodeRandom);
 		
 		nodes = new HashMap();
 		nodes.put(1, bookNodeWithRandomChoices);
@@ -395,12 +353,12 @@ public class JeuTest {
 		bookNodeLinkVictoire = new BookNodeLinkRandom("BookNodeLink Victoire", 2, null, 1);
 		bookNodeLinkDefaite = new BookNodeLinkRandom("BookNodeLink Defaite", 3, null, 1);
 		
-		listAbstractBookNode = new ArrayList();
-		listAbstractBookNode.add(bookNodeLinkVictoire);
-		listAbstractBookNode.add(bookNodeLinkDefaite);
+		listAbstractBookNodeRandom = new ArrayList();
+		listAbstractBookNodeRandom.add(bookNodeLinkVictoire);
+		listAbstractBookNodeRandom.add(bookNodeLinkDefaite);
 		
 
-		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNode);
+		bookNodeWithRandomChoices = new BookNodeWithRandomChoices("Noeud Random", 0, null, null, listAbstractBookNodeRandom);
 		
 		nodes = new HashMap();
 		nodes.put(1, bookNodeWithRandomChoices);
@@ -418,21 +376,12 @@ public class JeuTest {
 	
 	@Test
 	public void execNodeHp(){
-		Jeu jeu;
-		Book book;
-		float victoire;
-		List<BookNodeLink> listAbstractBookNode ;
-		BookNodeWithChoices bookNodeWithChoices;
-		HashMap<Integer, AbstractBookNode> nodes;
 		BookNodeLink bookNodeLinkVictoire;
 		HashMap<String, BookCharacter> mapCharacter;
 		BookCharacter bookCharacter ;
 				
 		
 		//Création des Noeuds
-		BookNodeTerminal bookNodeTerminalVictoire = new BookNodeTerminal("Victoire", BookNodeStatus.VICTORY);
-		
-		
 		bookNodeLinkVictoire = new BookNodeLink("BookNodeLink Victoire", 2);
 		
 		listAbstractBookNode = new ArrayList();
@@ -448,7 +397,7 @@ public class JeuTest {
 		bookNodeWithChoices.setHp(-20);
 		nodes = new HashMap();
 		nodes.put(1, bookNodeWithChoices);
-		nodes.put(2, bookNodeTerminalVictoire);
+		nodes.put(2, bookNodeTerminalVictory);
 		
 		
 		mapCharacter = new HashMap();
@@ -474,7 +423,7 @@ public class JeuTest {
 		
 		nodes = new HashMap();
 		nodes.put(1, bookNodeWithChoices);
-		nodes.put(2, bookNodeTerminalVictoire);
+		nodes.put(2, bookNodeTerminalVictory);
 		
 		mapCharacter = new HashMap();
 		mapCharacter.put(bookCharacter.getId(), bookCharacter);
@@ -491,11 +440,6 @@ public class JeuTest {
 	
 	@Test
 	public void chooseItems(){
-		Jeu jeu;
-		Book book;
-		float victoire;
-		List<BookNodeLink> listAbstractBookNode ;
-		HashMap<Integer, AbstractBookNode> nodes;
 		HashMap<String, BookCharacter> mapCharacter;
 		BookCharacter bookCharacter ;
 		

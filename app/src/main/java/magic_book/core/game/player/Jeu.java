@@ -110,25 +110,18 @@ public class Jeu {
 		if(this.book.getCharacters().get("0") == null){
 			bookCharacter = player.execPlayerCreation(this.book);
 			newState.setMainCharacter(bookCharacter);
-			
-			System.out.println("Mort creation state"+bookCharacter.getHp());
-			System.out.println("1");
 		} else {
 			bookCharacter = this.book.getCharacters().get("0");
 			newState.setMainCharacter(bookCharacter);
-			System.out.println("2"+this.book.getCharacters());
 		}
 		
-		System.out.println("newState "+newState.getMainCharacter());
 		newState.setBook(this.book);
 		return newState;
 	}
 	
 	public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
 		showMessage(node.getText());
-		System.out.println("Mort ??"+state.getMainCharacter().getHp());
 		execNodeHp(node);
-		System.out.println("Mort après??"+state.getMainCharacter().getHp());
 		if(!state.getMainCharacter().isAlive()){
 			BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 			nodeTerminal.setText("Vous êtes morts...");
@@ -171,11 +164,9 @@ public class Jeu {
 			while (!choixValide){
 				showMessage("Que choisissez-vous ?");
 				int choice = player.makeAChoice(node);
-				System.out.println("Choices exec NodeXithChoices "+ choice);
 				if(choice > 0 && choice <= node.getChoices().size()){
 					selectedBookNodeLink = node.getChoices().get(choice-1);
 					if(selectedBookNodeLink.isAvailable(state)){
-						System.out.println("Choices exec NodeXithChoices is available ");
 						choixValide = true;
 					} else {
 						for(List<AbstractRequirement> abstractRequirements : selectedBookNodeLink.getRequirements()) {
@@ -212,9 +203,6 @@ public class Jeu {
 		if(returnedNode != null) 
 			return returnedNode;
 		
-		
-		System.out.println("excecNodeCombat "+ node.getEnnemiesId());
-		
 		if(node.getEnnemiesId().isEmpty())
 			return book.getNodes().get(node.getWinBookNodeLink().getDestination());
 		
@@ -235,14 +223,12 @@ public class Jeu {
 			ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
 			
 			if (choixCombat == ChoixCombat.ATTAQUER) {
-				System.out.println("ATTAQUE " +listEnnemis);
 				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
 				attaque(ennemi);
 				
 				if(ennemi.isAlive()){
 					showMessage(ennemi.getName() + " est mort");
 					listEnnemis.remove(ennemi);
-					System.out.println("Mort " +listEnnemis);
 				} else {
 					showMessage(ennemi.getName() + " a " +ennemi.getHp() + " hp");
 				}
@@ -319,9 +305,7 @@ public class Jeu {
 	}
 	
 	private void attaque(BookCharacter ennemi){
-		System.out.println("Avant Mort " +ennemi.getHp());
 		ennemi.damage(getDamageAmount(state.getMainCharacter(), state.getBookItemArme(), null));
-		System.out.println("Mort " +ennemi.getHp());
 	}
 	
 	private void ennemiTour(List<BookCharacter> listEnnemis){
@@ -357,7 +341,6 @@ public class Jeu {
 	private void execNodeHp(AbstractBookNodeWithChoices node){
 		int nodeHp = node.getHp();
 		if(nodeHp != 0){
-			System.out.println("diff de 0 "+nodeHp);
 			if(nodeHp > 0)
 				state.getMainCharacter().heal(nodeHp);
 			else
@@ -372,7 +355,6 @@ public class Jeu {
 	}
 	
 	private void chooseItems(AbstractBookNodeWithChoices node){
-		System.out.println("chooxseItems");
 		List<BookItemLink> nodeItems = new ArrayList<>();
 		for(BookItemLink bookItemLink : (List<BookItemLink>) node.getItemLinks()) {
 			nodeItems.add(new BookItemLink(bookItemLink));
