@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import magic_book.core.game.BookCharacter;
+import magic_book.window.UiConsts;
 
 public class CharacterComponent extends GridPane {
 	
@@ -15,8 +16,8 @@ public class CharacterComponent extends GridPane {
 	private CheckBox doubleDamageCheckBox;
 	
 	public CharacterComponent() {		
-		this.setHgap(5);
-		this.setVgap(5);
+		this.setHgap(UiConsts.DEFAULT_MARGIN);
+		this.setVgap(UiConsts.DEFAULT_MARGIN);
 		
 		Label idLabel = new Label("Id : ");
 		Label nameLabel = new Label("Name: ");

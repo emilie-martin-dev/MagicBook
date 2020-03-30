@@ -17,6 +17,7 @@ import magic_book.core.item.BookItemHealing;
 import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.item.BookItemWithDurability;
+import magic_book.window.UiConsts;
 
 public class ItemDialog extends AbstractDialog {
 	
@@ -88,8 +89,8 @@ public class ItemDialog extends AbstractDialog {
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
 		
-		root.setHgap(5);
-		root.setVgap(5);
+		root.setHgap(UiConsts.DEFAULT_MARGIN);
+		root.setVgap(UiConsts.DEFAULT_MARGIN);
 		
 		Label idLabel = new Label("Id : ");
 		Label nameLabel = new Label("Name: ");

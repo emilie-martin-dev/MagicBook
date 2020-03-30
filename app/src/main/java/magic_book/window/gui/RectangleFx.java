@@ -9,10 +9,9 @@ import javafx.scene.shape.Rectangle;
 
 import magic_book.observer.fx.RectangleFxObservable;
 import magic_book.observer.fx.RectangleFxObserver;
+import magic_book.window.UiConsts;
 
 public class RectangleFx extends Rectangle {
-
-	public static final int WIDTH = 50;
 	
 	private RectangleFxObservable nodeFxObservable;
 	
@@ -45,15 +44,15 @@ public class RectangleFx extends Rectangle {
 			}
 		});
 		
-		this.setWidth(WIDTH);
-		this.setHeight(WIDTH);
+		this.setWidth(UiConsts.RECTANGLE_FX_SIZE);
+		this.setHeight(UiConsts.RECTANGLE_FX_SIZE);
 		
 		realX = new SimpleFloatProperty();
 		realY = new SimpleFloatProperty();
 		this.zoom = zoom;
 		
-		this.widthProperty().bind(zoom.multiply(50));
-		this.heightProperty().bind(zoom.multiply(50));
+		this.widthProperty().bind(zoom.multiply(UiConsts.RECTANGLE_FX_SIZE));
+		this.heightProperty().bind(zoom.multiply(UiConsts.RECTANGLE_FX_SIZE));
 		
 		this.xProperty().bind(zoom.multiply(realX));
 		this.yProperty().bind(zoom.multiply(realY));

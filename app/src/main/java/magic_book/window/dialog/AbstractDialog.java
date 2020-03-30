@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import magic_book.window.UiConsts;
 
 public abstract class AbstractDialog extends Stage {
 	
@@ -24,11 +25,11 @@ public abstract class AbstractDialog extends Stage {
 	
 	private void initDialogUI(String title, boolean hideMargins) {
 		BorderPane root = new BorderPane();
-		int margin = hideMargins ? 0 : 25;
- 		root.setPadding(new Insets(margin, margin, 25, margin));
+		int margin = hideMargins ? 0 : UiConsts.DEFAULT_MARGIN_DIALOG;
+ 		root.setPadding(new Insets(margin, margin, UiConsts.DEFAULT_MARGIN_DIALOG, margin));
 		
 		HBox controlButtons = getControlButtons();
-		controlButtons.setPadding(new Insets(10, 25, 0, 0));
+		controlButtons.setPadding(new Insets(UiConsts.DEFAULT_MARGIN, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
 		
 		root.setCenter(getMainUI());
 		root.setBottom(controlButtons);

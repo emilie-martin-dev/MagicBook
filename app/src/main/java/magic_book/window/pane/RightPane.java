@@ -1,6 +1,5 @@
 package magic_book.window.pane;
 
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -9,6 +8,7 @@ import javafx.scene.layout.VBox;
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.observer.book.BookNodeObserver;
+import magic_book.window.UiConsts;
 
 public class RightPane extends ScrollPane implements BookNodeObserver{
 	
@@ -22,9 +22,9 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	public RightPane(Book book){		
 		nodeCount = 0;
 		
-		this.setMaxWidth(200);
-		this.setMinWidth(200);
-		this.setPadding(new Insets(5, 5, 5, 5));
+		this.setMaxWidth(UiConsts.RIGHT_PANEL_SIZE);
+		this.setMinWidth(UiConsts.RIGHT_PANEL_SIZE);
+		this.setPadding(UiConsts.DEFAULT_INSET);
 		this.setFitToWidth(true);
 				
 		this.setContent(createRightPanel());

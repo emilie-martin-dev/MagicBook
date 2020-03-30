@@ -12,6 +12,7 @@ import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
+import magic_book.window.UiConsts;
 
  public class NodeDialog extends AbstractDialog {
 
@@ -46,8 +47,8 @@ import magic_book.core.graph.node.BookNodeWithChoices;
 	@Override
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
-		root.setHgap(5);
-		root.setVgap(5);
+		root.setHgap(UiConsts.DEFAULT_MARGIN);
+		root.setVgap(UiConsts.DEFAULT_MARGIN);
 		
 		Label textLabel = new Label("Texte :");
 		texte = new TextArea();

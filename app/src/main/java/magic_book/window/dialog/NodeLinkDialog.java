@@ -8,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.window.UiConsts;
 
 public class NodeLinkDialog extends AbstractDialog{
 	
@@ -33,8 +34,8 @@ public class NodeLinkDialog extends AbstractDialog{
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
 		
-		root.setHgap(5);
-		root.setVgap(5);
+		root.setHgap(UiConsts.DEFAULT_MARGIN);
+		root.setVgap(UiConsts.DEFAULT_MARGIN);
 		
 		Label textLabel = new Label("Texte choix :");
 		texte = new TextArea();

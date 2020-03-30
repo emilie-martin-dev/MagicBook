@@ -21,6 +21,7 @@ import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
 import magic_book.window.Mode;
+import magic_book.window.UiConsts;
 import magic_book.window.dialog.CharacterDialog;
 import magic_book.window.dialog.ItemDialog;
 
@@ -38,9 +39,9 @@ public class LeftPane extends ScrollPane {
 		this.graphPane = graphPane;
 		this.book = book;
 		
-		this.setMaxWidth(250);
-		this.setMinWidth(250);
-		this.setPadding(new Insets(5, 5, 5, 5));
+		this.setMaxWidth(UiConsts.LEFT_PANEL_SIZE);
+		this.setMinWidth(UiConsts.LEFT_PANEL_SIZE);
+		this.setPadding(UiConsts.DEFAULT_INSET);
 		this.setFitToWidth(true);
 				
 		this.setContent(createLeftPanel());
@@ -59,10 +60,10 @@ public class LeftPane extends ScrollPane {
 		graphPane.setMode(Mode.SELECT);
 
 		FlowPane flow = new FlowPane();
-		flow.setHgap(5);
-		flow.setVgap(5);
+		flow.setHgap(UiConsts.DEFAULT_MARGIN);
+		flow.setVgap(UiConsts.DEFAULT_MARGIN);
 		flow.getChildren().addAll(selectToogle, addNodeToggle, addNodeLinkToggle, suppNode, firstNode);
-		leftContent.setSpacing(15);
+		leftContent.setSpacing(UiConsts.DEFAULT_MARGIN);
 		leftContent.getChildren().add(flow);
 		
 		VBox itemPerso = gestionPerso();
@@ -188,7 +189,7 @@ public class LeftPane extends ScrollPane {
 		treeViewItem.setContextMenu(contextMenuItem);
 
 		VBox vBox = new VBox(treeViewPerso, treeViewItem);
-		vBox.setSpacing(5);
+		vBox.setSpacing(UiConsts.DEFAULT_MARGIN);
 
 		return vBox;
 	}
@@ -227,8 +228,8 @@ public class LeftPane extends ScrollPane {
 		ToggleButton toggleButton = new ToggleButton("", imageView);
 		
 		imageView.setPreserveRatio(true);
-		toggleButton.setMinSize(50, 50);
-		toggleButton.setMaxSize(50, 50);
+		toggleButton.setMinSize(UiConsts.CONTROL_BUTTON_SIZE, UiConsts.CONTROL_BUTTON_SIZE);
+		toggleButton.setMaxSize(UiConsts.CONTROL_BUTTON_SIZE, UiConsts.CONTROL_BUTTON_SIZE);
 
 		toggleButton.setOnAction((ActionEvent e) -> {
 			if(toggleGroup.getSelectedToggle() == null) {

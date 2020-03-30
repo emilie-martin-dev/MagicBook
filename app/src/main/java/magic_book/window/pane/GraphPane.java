@@ -21,6 +21,7 @@ import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.fx.NodeLinkFxObserver;
 import magic_book.observer.fx.RectangleFxObserver;
 import magic_book.window.Mode;
+import magic_book.window.UiConsts;
 import magic_book.window.dialog.NodeDialog;
 import magic_book.window.dialog.NodeLinkDialog;
 import magic_book.window.dialog.PreludeDialog;
@@ -194,9 +195,9 @@ public class GraphPane extends ScrollPane {
 		if(!book.getNodes().isEmpty()) {
 			int i = 0;
 			double angle = (Math.PI * 2) / book.getNodes().size();
-			float radius = (RectangleFx.WIDTH * book.getNodes().size()) / 4;
+			float radius = (UiConsts.RECTANGLE_FX_SIZE * book.getNodes().size()) / 4;
 
-			float deltaPosition = radius + RectangleFx.WIDTH;
+			float deltaPosition = radius + UiConsts.RECTANGLE_FX_SIZE;
 
 			for(AbstractBookNode node : book.getNodes().values()) {
 				NodeFx createdNodeFx = createNode(node, deltaPosition + Math.cos(i * angle) * radius, deltaPosition + Math.sin(i * angle) * radius);
