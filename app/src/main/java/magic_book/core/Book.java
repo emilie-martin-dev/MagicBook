@@ -18,6 +18,8 @@ import magic_book.observer.book.BookNodeObserver;
 
 public class Book {
 	
+	public static final String MAIN_CHARACTER_ID = "main_character";
+	
 	private String textPrelude;
 	private HashMap<Integer, AbstractBookNode> nodes;
 	private HashMap<String, BookItem> items;
@@ -209,6 +211,15 @@ public class Book {
 		for(AbstractBookNodeWithChoices node : postRemove) {
 			node.removeChoice(nodeLink);
 		}
+	}
+	
+	public void setMainCharacter(BookCharacter mainCharacter) {
+		mainCharacter.setId(MAIN_CHARACTER_ID);
+		this.characters.put(MAIN_CHARACTER_ID, mainCharacter);
+	}
+	
+	public BookCharacter getMainCharacter() {
+		return this.characters.get(MAIN_CHARACTER_ID);
 	}
 
 	public int getNodeIndex(AbstractBookNode node) {

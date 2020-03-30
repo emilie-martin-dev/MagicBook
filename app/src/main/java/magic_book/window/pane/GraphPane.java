@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import javafx.beans.property.FloatProperty;
-import javafx.beans.property.FloatPropertyBase;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
@@ -163,10 +161,11 @@ public class GraphPane extends ScrollPane {
 		preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
-					PreludeDialog dialog = new PreludeDialog(preludeFx.getText());
+					PreludeDialog dialog = new PreludeDialog(book.getTextPrelude(), book.getMainCharacter());
 					
 					if(dialog.getTextePrelude() != null) {
 						book.setTextPrelude(dialog.getTextePrelude());
+						book.setMainCharacter(dialog.getMainCharacter());
 						preludeFx.setText(dialog.getTextePrelude());
 					}
 				}

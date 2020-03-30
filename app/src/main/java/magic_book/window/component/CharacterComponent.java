@@ -6,7 +6,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import magic_book.core.game.BookCharacter;
 
-
 public class CharacterComponent extends GridPane {
 	
 	private TextField idTextField;
@@ -71,11 +70,19 @@ public class CharacterComponent extends GridPane {
 	}
 	
 	public void setCharacter(BookCharacter character) {
-		idTextField.setText(character.getId());
-		nameTextField.setText(character.getName());
-		hpTextField.setText(""+character.getHpMax());
-		combatSkillTextField.setText(""+character.getBaseDamage());
-		doubleDamageCheckBox.setSelected(character.isDoubleDamage());
+		if(character != null) {
+			idTextField.setText(character.getId());
+			nameTextField.setText(character.getName());
+			hpTextField.setText(""+character.getHpMax());
+			combatSkillTextField.setText(""+character.getBaseDamage());
+			doubleDamageCheckBox.setSelected(character.isDoubleDamage());
+		} else {
+			idTextField.setText("");
+			nameTextField.setText("");
+			hpTextField.setText("");
+			combatSkillTextField.setText("");
+			doubleDamageCheckBox.setSelected(false);
+		}
 	}
 
 }

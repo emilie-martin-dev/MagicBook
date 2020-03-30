@@ -30,18 +30,16 @@ public class PreludeDialog extends AbstractDialog {
 	private TextArea texte;
 	private Accordion accordion;
 	private ScrollPane scrollPane;
+	private CharacterComponent characterComponent;
 
-	public PreludeDialog() {
-		super("Creation du Prelude", true);
-
-		this.showAndWait();
-	}
-
-	public PreludeDialog(String textePrelude) {
+	public PreludeDialog(String textePrelude, BookCharacter mainCharacter) {
 		super("Edition du Prelude", true);
 
 		texte.setText(textePrelude);
 
+		this.mainCharacter = mainCharacter;
+		characterComponent.setCharacter(mainCharacter);
+		
 		this.showAndWait();
 	}
 
@@ -88,7 +86,7 @@ public class PreludeDialog extends AbstractDialog {
 		scrollPane.setFitToWidth(true);
 		tab2.setContent(scrollPane);
 		
-		CharacterComponent characterComponent = new CharacterComponent();
+		characterComponent = new CharacterComponent();
 		BorderPane root3 = new BorderPane();
 		root3.setCenter(characterComponent);
 		tab3.setContent(root3);
@@ -114,7 +112,12 @@ public class PreludeDialog extends AbstractDialog {
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
+			BookCharacter character = characterComponent.getCharacter();
+			if(character == null)
+				return;
+			
 			this.textePrelude = (String) texte.getText();
+			this.mainCharacter = character;
 
 			close();
 		};
@@ -122,6 +125,22 @@ public class PreludeDialog extends AbstractDialog {
 
 	public String getTextePrelude() {
 		return textePrelude;
+	}
+
+	public List<AbstractCharacterCreation> getCharacterCreations() {
+		return characterCreations;
+	}
+
+	public void setCharacterCreations(List<AbstractCharacterCreation> characterCreations) {
+		this.characterCreations = characterCreations;
+	}
+
+	public BookCharacter getMainCharacter() {
+		return mainCharacter;
+	}
+
+	public void setMainCharacter(BookCharacter mainCharacter) {
+		this.mainCharacter = mainCharacter;
 	}
 
 	private class CharacterCreationPane extends GridPane {

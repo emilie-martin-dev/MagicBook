@@ -1,0 +1,17 @@
+{
+  "prelude": "",
+  "setup": {
+    "character_creation": [],
+    "skills": [],
+    "items": [],
+    "characters": [
+      {
+        "id": "main_character",
+        "name": "uyftgdrsfedqz",
+        "hp": 789,
+        "combat_skill": 54
+      }
+    ]
+  },
+  "sections": {}
+}
