@@ -17,11 +17,14 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import magic_book.core.game.BookCharacter;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.window.component.CharacterComponent;
 
 public class PreludeDialog extends AbstractDialog {
 	
 	private List<AbstractCharacterCreation> characterCreations;
+	private BookCharacter mainCharacter;
 	private String textePrelude;
 	
 	private TextArea texte;
@@ -50,9 +53,12 @@ public class PreludeDialog extends AbstractDialog {
 		tab1.setClosable(false);
 		Tab tab2 = new Tab("Création du personnage");
 		tab2.setClosable(false);
+		Tab tab3 = new Tab("Personnage de base");
+		tab3.setClosable(false);
 
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
+        tabPane.getTabs().add(tab3);
 		
 		GridPane root = new GridPane();
 		root.setHgap(5);
@@ -81,6 +87,11 @@ public class PreludeDialog extends AbstractDialog {
 		scrollPane = new ScrollPane(root2);
 		scrollPane.setFitToWidth(true);
 		tab2.setContent(scrollPane);
+		
+		CharacterComponent characterComponent = new CharacterComponent();
+		BorderPane root3 = new BorderPane();
+		root3.setCenter(characterComponent);
+		tab3.setContent(root3);
 		
 		return tabPane;
 	}

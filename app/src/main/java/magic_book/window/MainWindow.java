@@ -26,9 +26,9 @@ import magic_book.core.file.BookWritter;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 import magic_book.core.game.player.Jeu;
-import magic_book.window.component.GraphPane;
-import magic_book.window.component.LeftPane;
-import magic_book.window.component.RightPane;
+import magic_book.window.pane.GraphPane;
+import magic_book.window.pane.LeftPane;
+import magic_book.window.pane.RightPane;
 import magic_book.window.gui.NodeFx;
 
 public class MainWindow extends Stage {

@@ -1,4 +1,4 @@
-package magic_book.window.component;
+package magic_book.window.pane;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;

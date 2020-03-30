@@ -1,4 +1,4 @@
-package magic_book.window.component;
+package magic_book.window.pane;
 
 import java.io.InputStream;
 import java.util.Map;
