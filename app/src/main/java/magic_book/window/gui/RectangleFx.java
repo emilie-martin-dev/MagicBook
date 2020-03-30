@@ -28,6 +28,18 @@ public class RectangleFx extends Rectangle {
 			nodeFxObservable.notifyOnNodeFXClicked(RectangleFx.this, event);
 		});
 		
+		this.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				RectangleFx.this.setFill(Color.AZURE);
+			}
+		});
+		
+		this.setOnMouseExited(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				RectangleFx.this.setFill(Color.GREEN);
+			}
+		});
+		
 		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
 				RectangleFx.this.setRealX((event.getX() - RectangleFx.this.getWidth() / 2) / zoom.get());
