@@ -66,7 +66,6 @@ public class Book {
 			nodesInv.put(entry.getValue(), entry.getKey());
 		}
 		
-		
 		this.bookNodeObservable = new BookNodeObservable();
 	}	
 

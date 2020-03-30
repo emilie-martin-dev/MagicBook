@@ -107,11 +107,11 @@ public class Jeu {
 	private BookState createNewState(){
 		BookCharacter bookCharacter;
 		BookState newState = new BookState();
-		if(this.book.getCharacters().get("0") == null){
+		if(this.book.getMainCharacter() == null){
 			bookCharacter = player.execPlayerCreation(this.book);
 			newState.setMainCharacter(bookCharacter);
 		} else {
-			bookCharacter = this.book.getCharacters().get("0");
+			bookCharacter = this.book.getMainCharacter();
 			newState.setMainCharacter(bookCharacter);
 		}
 		
