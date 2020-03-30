@@ -199,7 +199,8 @@ public class LeftPane extends ScrollPane {
 		treeViewItem.getRoot().getChildren().clear();
 		
 		for(Map.Entry<String, BookCharacter> entry : book.getCharacters().entrySet()) {
-			addCharacter(entry.getValue());
+			if(!entry.getKey().equals(Book.MAIN_CHARACTER_ID))
+				addCharacter(entry.getValue());
 		}
 		
 		

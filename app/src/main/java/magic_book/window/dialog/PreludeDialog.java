@@ -123,7 +123,6 @@ public class PreludeDialog extends AbstractDialog {
 		return characterComponent;
 	}
 
-
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
