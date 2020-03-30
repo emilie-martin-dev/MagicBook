@@ -329,6 +329,9 @@ public class GraphPane extends ScrollPane {
 						listeNoeudLien.remove(nodeLinkRemove);
 					}
 
+					if(book.getNodeIndex(nodeFx.getNode()) == 1)
+						preludeFxFirstNodeLine.setVisible(false);
+					
 					book.removeNode(nodeFx.getNode());
 				}
 			} else if(mode == Mode.FIRST_NODE) {
