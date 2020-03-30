@@ -231,6 +231,11 @@ public class LeftPane extends ScrollPane {
 		toggleButton.setMaxSize(50, 50);
 
 		toggleButton.setOnAction((ActionEvent e) -> {
+			if(toggleGroup.getSelectedToggle() == null) {
+				toggleGroup.selectToggle(toggleButton);
+				return;
+			}
+			
 			graphPane.setMode(mode);
 			graphPane.setSelectedNodeFx(null);
 		});
