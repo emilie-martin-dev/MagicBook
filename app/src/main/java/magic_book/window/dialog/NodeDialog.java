@@ -40,8 +40,10 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 	 
 	private TextArea texte;
 	private TextField texteEvasion;
+	private TextField hpTextField;
 	private Label combatLabel;
 	private Label evasionLabel;
+	private Label hpLabel;
  	private AbstractBookNode node = null;
  	private ChoiceBox<String> nodeType;
 	private Button bouton;
@@ -51,6 +53,10 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 	private List<String> listEnnemiBox;
 	private Book book;
 
+	
+	
+	
+	
  	public NodeDialog(Book book) {
  		super("Creation d'une page");
 		
@@ -69,27 +75,34 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		if(node instanceof BookNodeTerminal) {
 			BookNodeTerminal terminalNode = (BookNodeTerminal) node;
 			nodeType.setValue(terminalNode.getBookNodeStatus() == BookNodeStatus.FAILURE ? FAILURE : VICTORY);
+			root.getChildren().remove(hpLabel);
+			root.getChildren().remove(hpTextField);
 		} else if (node instanceof BookNodeCombat){
-			BookNodeCombat terminalNode = (BookNodeCombat) node;
+			BookNodeCombat bookNode = (BookNodeCombat) node;
+			hpTextField.setText(String.valueOf(bookNode.getHp()));
 			nodeType.setValue(COMBAT);
-			if(terminalNode.getEnnemiesId().size() > 0){
-				for(int i = 0 ; i< terminalNode.getEnnemiesId().size() ; i++){
+			if(bookNode.getEnnemiesId().size() > 0){
+				for(int i = 0 ; i< bookNode.getEnnemiesId().size() ; i++){
 					addComboBox();
 				}
 				
 				int i =0;
 				for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
-					list.getValue().setValue(terminalNode.getEnnemiesId().get(i));
+					list.getValue().setValue(bookNode.getEnnemiesId().get(i));
 					i+=1;
 				}
 				addShowComboBoxCombat();
 			}
-			texteEvasion.setText(String.valueOf(terminalNode.getEvasionRound()));
+			texteEvasion.setText(String.valueOf(bookNode.getEvasionRound()));
 		} else if (node instanceof BookNodeWithRandomChoices){
+			BookNodeWithRandomChoices bookNode = (BookNodeWithRandomChoices) node;
+			hpTextField.setText(String.valueOf(bookNode.getHp()));
 			nodeType.setValue(BASICRANDOM);
 		} else {
+			BookNodeWithChoices bookNode = (BookNodeWithChoices) node;
+			hpTextField.setText(String.valueOf(bookNode.getHp()));
 			nodeType.setValue(BASIC);
-		}
+		}		
  		this.showAndWait();
  	}
 	
@@ -112,6 +125,9 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
  		nodeType.getItems().add(VICTORY);
  		nodeType.getItems().add(FAILURE);
  		nodeType.setValue(BASIC);
+		
+		hpLabel = new Label("hp (gain ou perte)");
+		hpTextField = new TextField("");
 
 		evasionLabel = new Label("Nombre de tour avant evasion: ");
 		texteEvasion = new TextField("");
@@ -129,15 +145,22 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		});
 		
 		
+		
 		nodeType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+				root.getChildren().remove(hpLabel);
+				root.getChildren().remove(hpTextField);
 				if (nodeType.getValue() == COMBAT){
 					root.getChildren().remove(texte);
 					root.add(bouton,2,2,2,1);
 					addCombatNodeShown();
 				} else {
 					removeCombatNodeShown();
+				}
+				if (nodeType.getValue() == COMBAT || nodeType.getValue() == BASIC ||  nodeType.getValue() == BASICRANDOM){
+					root.add(hpLabel,0,3);
+					root.add(hpTextField,1,3);
 				}
 			}
 		});
@@ -146,7 +169,8 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		root.add(texte, 0, 1, 2, 1);
 		root.add(labelChoix, 0, 2);
 		root.add(nodeType,1 ,2);
-
+		root.add(hpLabel,0,3);
+		root.add(hpTextField,1,3);
 		
 		return root;
 	}
@@ -157,16 +181,47 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 			String texteHistoire = (String) texte.getText();
 			
 			if(nodeType.getValue() == BASIC) {
-				NodeDialog.this.node = new BookNodeWithChoices(texteHistoire);
+				if (hpTextField.getText().isEmpty()){
+					return;
+				}
+				try {
+					BookNodeWithChoices bookNode = (BookNodeWithChoices) node;
+					int hpInt = Integer.parseInt(hpTextField.getText());
+					bookNode = new BookNodeWithChoices(texteHistoire);
+					bookNode.setHp(hpInt);
+					NodeDialog.this.node = bookNode;
+					
+				} catch (NumberFormatException ex){
+					notANumberAlertDialog(ex);
+					return;
+				}
 			} else if (nodeType.getValue() == BASICRANDOM){
-				NodeDialog.this.node = new BookNodeWithRandomChoices(texteHistoire);
+				if (hpTextField.getText().isEmpty()){
+					return;
+				}
+				try {
+					BookNodeWithRandomChoices bookNode = (BookNodeWithRandomChoices) node;
+					int hpInt = Integer.parseInt(hpTextField.getText());
+					bookNode = new BookNodeWithRandomChoices(texteHistoire);
+					bookNode.setHp(hpInt);
+					NodeDialog.this.node = bookNode;
+				} catch (NumberFormatException ex){
+					notANumberAlertDialog(ex);
+					return;
+				}
+				
 			} else if (nodeType.getValue() == COMBAT){
 				if (texteEvasion.getText().isEmpty()){
 					return;
-				} 
+				}
 				try {
-					int tourEvation = Integer.parseInt(texteEvasion.getText());
-					NodeDialog.this.node = new BookNodeCombat(texteHistoire, null, null, null, tourEvation, listEnnemie());
+					BookNodeCombat bookNode = (BookNodeCombat) node;
+					int hpInt = Integer.parseInt(hpTextField.getText());
+					int tourEvasion = Integer.parseInt(texteEvasion.getText());
+					bookNode = new BookNodeCombat(texteHistoire, null, null, null, tourEvasion, listEnnemis());
+					bookNode.setHp(hpInt);
+					NodeDialog.this.node = bookNode;
+					
 				} catch (NumberFormatException ex){
 					notANumberAlertDialog(ex);
 					return;
@@ -195,7 +250,7 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		List<Integer> listCoordonne = new ArrayList();
 		if(listCombo.isEmpty()){
 			coordonnerX = 1;
-			coordonnerY = 4;
+			coordonnerY = 5;
 			listCoordonne.add(coordonnerX);
 			listCoordonne.add(coordonnerY);
 			listCombo.put(listCoordonne, ennemiBox);
@@ -240,9 +295,9 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 	
 	private void addCombatNodeShown(){
 		root.add(texte, 0, 1, 4, 1);
-		root.add(evasionLabel, 0, 3);
-		root.add(texteEvasion, 1, 3);
-		root.add(combatLabel, 0, 4);
+		root.add(evasionLabel, 0, 4);
+		root.add(texteEvasion, 1, 4);
+		root.add(combatLabel, 0, 5);
 		
 	}
 	
@@ -273,15 +328,15 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		return listEnnemiBox;
 	}
 	
-	private List<String> listEnnemie(){
-		List<String> listEnnemie = new ArrayList();
+	private List<String> listEnnemis(){
+		List<String> listEnnemis = new ArrayList();
 		
 		for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
 			if(list.getValue().getValue() != null && list.getValue().getValue() != " "){
-				listEnnemie.add((String) list.getValue().getValue());
+				listEnnemis.add((String) list.getValue().getValue());
 			}
 		}
-		return listEnnemie;
+		return listEnnemis;
 	}
 	
 	

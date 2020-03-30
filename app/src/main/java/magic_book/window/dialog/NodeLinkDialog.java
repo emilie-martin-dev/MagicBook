@@ -46,8 +46,6 @@ public class NodeLinkDialog extends AbstractDialog{
 			root.add(hpTextField, 1, 2);
 			root.add(goldLabel, 0, 3);
 			root.add(goldTextField, 1, 3);
-			root.add(autoLabel, 0, 4);
-			root.add(autoBox, 1, 4);
 			autoBox.setValue(true);
 		}
 		this.showAndWait();
@@ -66,11 +64,8 @@ public class NodeLinkDialog extends AbstractDialog{
 			root.add(hpTextField, 1, 2);
 			root.add(goldLabel, 0, 3);
 			root.add(goldTextField, 1, 3);
-			root.add(autoLabel, 0, 4);
-			root.add(autoBox, 1, 4);
 			hpTextField.setText(String.valueOf(nodeLink.getHp()));
 			goldTextField.setText(String.valueOf(nodeLink.getGold()));
-			autoBox.setValue(String.valueOf(nodeLink.getAuto()));
 		}
 		texte.setText(nodeLink.getText());	
 		
@@ -96,11 +91,6 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		goldLabel = new Label("gold (gain ou perte)");
 		goldTextField = new TextField();
-		
-		autoLabel = new Label("auto");
-		autoBox = new ChoiceBox<>();
-		autoBox.getItems().add(true);
-		autoBox.getItems().add(false);
 		
 		root.add(textLabel, 0, 0);
 		root.add(texte, 0, 1, 2, 1);
@@ -134,7 +124,7 @@ public class NodeLinkDialog extends AbstractDialog{
 					try {
 						int hpInt = Integer.parseInt(hpTextField.getText());
 						int goldInt = Integer.parseInt(goldTextField.getText());
-						NodeLinkDialog.this.nodeLink = new BookNodeLink(texteHistoire, -1, null, hpInt, goldInt, (boolean) autoBox.getValue());
+						NodeLinkDialog.this.nodeLink = new BookNodeLink(texteHistoire, -1, null, hpInt, goldInt, false);
 					} catch (NumberFormatException ex){
 						notANumberAlertDialog(ex);
 						return;
