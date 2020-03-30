@@ -4,6 +4,7 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -20,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.window.UiConsts;
 import magic_book.window.component.CharacterComponent;
 
 public class PreludeDialog extends AbstractDialog {
@@ -48,51 +50,55 @@ public class PreludeDialog extends AbstractDialog {
 	protected Node getMainUI() {
 		TabPane tabPane = new TabPane();
 		
-		Tab tab1 = new Tab("Prélude");
-		tab1.setClosable(false);
-		Tab tab2 = new Tab("Création du personnage");
-		tab2.setClosable(false);
-		Tab tab3 = new Tab("Personnage de base");
-		tab3.setClosable(false);
-
-        tabPane.getTabs().add(tab1);
-        tabPane.getTabs().add(tab2);
-        tabPane.getTabs().add(tab3);
+		Tab preludeTab = new Tab("Prélude");
+		Tab characterCreationTab = new Tab("Création du personnage");
+		Tab mainCharacterTab = new Tab("Personnage de base");
 		
-		GridPane root = new GridPane();
-		root.setHgap(5);
-		root.setVgap(5);
+		preludeTab.setClosable(false);
+		characterCreationTab.setClosable(false);
+		mainCharacterTab.setClosable(false);
 
-		Label textLabel = new Label("Texte :");
+		tabPane.getTabs().addAll(preludeTab, characterCreationTab, mainCharacterTab);
+		
+		preludeTab.setContent(getPreludeTextPane());
+		characterCreationTab.setContent(getCharacterCreationTab());
+		mainCharacterTab.setContent(getMainCharacterPane());
+		
+		return tabPane;
+	}
+	
+	private Node getPreludeTextPane() {
+		GridPane preludeRoot = new GridPane();
+		preludeRoot.setHgap(UiConsts.DEFAULT_MARGIN);
+		preludeRoot.setVgap(UiConsts.DEFAULT_MARGIN);
+		preludeRoot.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
+		
 		texte = new TextArea();
 		texte.setWrapText(true);
-		root.add(textLabel, 0, 0);
-		root.add(texte, 0, 1, 2, 1);
+		preludeRoot.add(new Label("Texte :"), 0, 0);
+		preludeRoot.add(texte, 0, 1, 2, 1);
 		
-		tab1.setContent(root);
-		
-		Insets insets = new Insets(25, 25, 0, 25);
-		root.setPadding(insets);
+		return preludeRoot;
+	}
+	
+	private Node getCharacterCreationTab() {
+		BorderPane characterCreationPane = new BorderPane();
+		characterCreationPane.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
 		
 		accordion = new Accordion();
-		BorderPane root2 = new BorderPane();
-		root2.setCenter(accordion);
+		characterCreationPane.setCenter(accordion);
+		
 		Button addButton = new Button("Ajouter");
 		addButton.setOnAction((ActionEvent e) -> {
 			accordion.getPanes().add(createTitledPane());
 		});
-		root2.setBottom(addButton);
 		
-		scrollPane = new ScrollPane(root2);
+		characterCreationPane.setBottom(addButton);
+		
+		scrollPane = new ScrollPane(characterCreationPane);
 		scrollPane.setFitToWidth(true);
-		tab2.setContent(scrollPane);
 		
-		characterComponent = new CharacterComponent();
-		BorderPane root3 = new BorderPane();
-		root3.setCenter(characterComponent);
-		tab3.setContent(root3);
-		
-		return tabPane;
+		return scrollPane;
 	}
 	
 	private TitledPane createTitledPane() {
@@ -109,6 +115,14 @@ public class PreludeDialog extends AbstractDialog {
 		
 		return titledPane;
 	}
+	
+	private Node getMainCharacterPane() {
+		characterComponent = new CharacterComponent();
+		characterComponent.setAlignment(Pos.CENTER);
+		
+		return characterComponent;
+	}
+
 
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
@@ -118,6 +132,7 @@ public class PreludeDialog extends AbstractDialog {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Erreur sur le personnage principal");
 				alert.setHeaderText("Le personnage principal n'est pas valide");
+				alert.show();
 				
 				return;
 			}
@@ -175,6 +190,7 @@ public class PreludeDialog extends AbstractDialog {
 			type = new ComboBox<>();
 			type.getItems().add(TYPE_TEXT); 
 			type.getItems().add(TYPE_ITEM);
+			type.setValue(TYPE_TEXT);
 			
 			this.add(textLabel, 0, 0);
 			this.add(texte, 0, 1, 2, 1);

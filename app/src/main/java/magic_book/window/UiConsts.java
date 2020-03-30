@@ -15,5 +15,6 @@ public class UiConsts {
 	
 	public static final int DEFAULT_MARGIN_DIALOG = 25;
 	public static final Insets DEFAULT_INSET_DIALOG = new Insets(DEFAULT_MARGIN_DIALOG);
+	public static final Insets DEFAULT_INSET_DIALOG_MAIN_UI = new Insets(25, 25, 0, 25);
 	
 }
