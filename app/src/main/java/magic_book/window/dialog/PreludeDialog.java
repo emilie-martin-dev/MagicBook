@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -113,8 +114,13 @@ public class PreludeDialog extends AbstractDialog {
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			BookCharacter character = characterComponent.getCharacter();
-			if(character == null)
+			if(character == null) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Erreur sur le personnage principal");
+				alert.setHeaderText("Le personnage principal n'est pas valide");
+				
 				return;
+			}
 			
 			this.textePrelude = (String) texte.getText();
 			this.mainCharacter = character;
