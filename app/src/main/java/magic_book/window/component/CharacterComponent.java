@@ -42,32 +42,32 @@ public class CharacterComponent extends GridPane {
 	}
 	
 	public BookCharacter getCharacter() {
-			if (idTextField.getText().trim().isEmpty()
-					|| nameTextField.getText().trim().isEmpty()) {
-				return null;
-			}
-			
-			int hp = 0;
-			int damage = 0;
-			try {
-				hp = Integer.valueOf(hpTextField.getText());
-				damage = Integer.valueOf(combatSkillTextField.getText());
-			} catch(NumberFormatException ex) {
-				return null;
-			}
-			
-			if(hp < -1 || damage < -1)
-				return null;
-			
-			BookCharacter character = new BookCharacter();
-			
-			character.setId(idTextField.getText().trim());
-			character.setName(nameTextField.getText().trim());
-			character.setHpMax(hp);
-			character.setBaseDamage(damage);
-			character.setDoubleDamage(doubleDamageCheckBox.isSelected());
-			
-			return character;
+		if (idTextField.getText().trim().isEmpty()
+				|| nameTextField.getText().trim().isEmpty()) {
+			return null;
+		}
+
+		int hp = 0;
+		int damage = 0;
+		try {
+			hp = Integer.valueOf(hpTextField.getText());
+			damage = Integer.valueOf(combatSkillTextField.getText());
+		} catch(NumberFormatException ex) {
+			return null;
+		}
+
+		if(hp < -1 || damage < -1)
+			return null;
+
+		BookCharacter character = new BookCharacter();
+
+		character.setId(idTextField.getText().trim());
+		character.setName(nameTextField.getText().trim());
+		character.setHpMax(hp);
+		character.setBaseDamage(damage);
+		character.setDoubleDamage(doubleDamageCheckBox.isSelected());
+
+		return character;
 	}
 	
 	public void setCharacter(BookCharacter character) {
