@@ -321,7 +321,7 @@ public class GraphPane extends ScrollPane {
 
 						if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
 							nodeFxToRemove.add(nodeLinkFx);
-							GraphPane.this.rootPane.getChildren().remove(nodeLinkFx);
+							nodeLinkFx.unregisterComponent(rootPane);
 						}
 					}
 

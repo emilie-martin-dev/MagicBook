@@ -51,6 +51,11 @@ public class NodeLinkFx extends Line {
 		rootPane.getChildren().add(endCircle);
 	}
 	
+	public void unregisterComponent(Pane rootPane) {
+		rootPane.getChildren().remove(this);
+		rootPane.getChildren().remove(endCircle);
+	}
+	
 	public void addNodeLinkFxObserver(NodeLinkFxObserver observer) {
 		nodeLinkFxObservable.addObserver(observer);
 	}
