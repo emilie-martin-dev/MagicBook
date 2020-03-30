@@ -15,15 +15,23 @@ import javafx.stage.Stage;
 public abstract class AbstractDialog extends Stage {
 	
 	public AbstractDialog(String title) {
-		initDialogUI(title);
+		initDialogUI(title, false);
 	}
 	
-	private void initDialogUI(String title) {
+	public AbstractDialog(String title, boolean hideMarginTop) {
+		initDialogUI(title, hideMarginTop);
+	}
+	
+	private void initDialogUI(String title, boolean hideMargins) {
 		BorderPane root = new BorderPane();
- 		root.setPadding(new Insets(25));
+		int margin = hideMargins ? 0 : 25;
+ 		root.setPadding(new Insets(margin, margin, 25, margin));
+		
+		HBox controlButtons = getControlButtons();
+		controlButtons.setPadding(new Insets(10, 25, 0, 0));
 		
 		root.setCenter(getMainUI());
-		root.setBottom(getControlButtons());
+		root.setBottom(controlButtons);
 		
 		Scene scene = new Scene(root);
  		this.initModality(Modality.APPLICATION_MODAL);
@@ -52,8 +60,6 @@ public abstract class AbstractDialog extends Stage {
  		box.setSpacing(10d);
  		box.setAlignment(Pos.BASELINE_RIGHT);
  		box.getChildren().addAll(boutonAnnuler, boutonValider);
-		
-		box.setPadding(new Insets(10, 0, 0, 0));
 		
 		return box;
 	}
