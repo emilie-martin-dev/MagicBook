@@ -1,6 +1,9 @@
 package magic_book.window.dialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.beans.value.ChangeListener;
@@ -9,11 +12,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javax.swing.JButton;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 
@@ -38,23 +44,20 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 	private Label evasionLabel;
  	private AbstractBookNode node = null;
  	private ChoiceBox<String> nodeType;
-	private ChoiceBox<String> ennemiBox1;
-	private ChoiceBox<String> ennemiBox2;
-	private ChoiceBox<String> ennemiBox3;
-	private ChoiceBox<String> ennemiBox4;
+	private Button bouton;
 	private GridPane root;
-	
+	private List<Integer> dernier = new ArrayList();
+	private HashMap<List<Integer>,ComboBox> listCombo = new LinkedHashMap();
+	private List<String> listEnnemiBox;
 	private Book book;
 
  	public NodeDialog(Book book) {
  		super("Creation d'une page");
 		
+		listCombo = listCombo;
 		this.book = book;
-		this.ennemiBox1 = ennemiBox1;
-		this.ennemiBox2 = ennemiBox2;
-		this.ennemiBox3 = ennemiBox3;
-		this.ennemiBox4 = ennemiBox4;
 		this.root = root;
+		this.listEnnemiBox = addEnnemieBox();
  		this.showAndWait();
  	}
 
@@ -62,21 +65,25 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		super("Edition de la page");
  		this.book = book;
  		texte.setText(node.getText());
+		this.listEnnemiBox = addEnnemieBox();
 		if(node instanceof BookNodeTerminal) {
 			BookNodeTerminal terminalNode = (BookNodeTerminal) node;
 			nodeType.setValue(terminalNode.getBookNodeStatus() == BookNodeStatus.FAILURE ? FAILURE : VICTORY);
 		} else if (node instanceof BookNodeCombat){
 			BookNodeCombat terminalNode = (BookNodeCombat) node;
 			nodeType.setValue(COMBAT);
-			System.out.println(terminalNode.getEnnemiesId().size());
-			if(terminalNode.getEnnemiesId().size() > 0)
-				ennemiBox1.setValue(terminalNode.getEnnemiesId().get(0));
-			if(terminalNode.getEnnemiesId().size() > 1)
-				ennemiBox2.setValue(terminalNode.getEnnemiesId().get(1));
-			if(terminalNode.getEnnemiesId().size() > 2)
-				ennemiBox3.setValue(terminalNode.getEnnemiesId().get(2));
-			if(terminalNode.getEnnemiesId().size() > 3)
-				ennemiBox4.setValue(terminalNode.getEnnemiesId().get(3));
+			if(terminalNode.getEnnemiesId().size() > 0){
+				for(int i = 0 ; i< terminalNode.getEnnemiesId().size() ; i++){
+					addComboBox();
+				}
+				
+				int i =0;
+				for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
+					list.getValue().setValue(terminalNode.getEnnemiesId().get(i));
+					i+=1;
+				}
+				addShowComboBoxCombat();
+			}
 			texteEvasion.setText(String.valueOf(terminalNode.getEvasionRound()));
 		} else if (node instanceof BookNodeWithRandomChoices){
 			nodeType.setValue(BASICRANDOM);
@@ -89,8 +96,8 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 	@Override
 	protected Node getMainUI() {
 		root = new GridPane();
-		root.setHgap(5);
-		root.setVgap(5);
+		root.setHgap(10);
+		root.setVgap(10);
 		
 		Label textLabel = new Label("Texte :");
 		texte = new TextArea();
@@ -106,27 +113,28 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
  		nodeType.getItems().add(FAILURE);
  		nodeType.setValue(BASIC);
 
-		evasionLabel = new Label("Nombre de tour avant de pouvoir s'évader : ");
+		evasionLabel = new Label("Nombre de tour avant evasion: ");
 		texteEvasion = new TextField("");
 		
 		combatLabel = new Label("Ajout d'ennemi(s) :");
 		
-		ennemiBox1 = new ChoiceBox<>();
-		ennemiBox2 = new ChoiceBox<>();
-		ennemiBox3 = new ChoiceBox<>();
-		ennemiBox4 = new ChoiceBox<>();
-		ennemiBox1.getItems().add(" ");
-		ennemiBox2.getItems().add(" ");
-		ennemiBox3.getItems().add(" ");
-		ennemiBox4.getItems().add(" ");
-		addEnnemieBox();
+		bouton = new Button("Ajouter un personnage");
+		
+		bouton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent t) {
+				addComboBox();
+				addShowComboBoxCombat();
+			}
+		});
+		
 		
 		nodeType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
 				if (nodeType.getValue() == COMBAT){
 					root.getChildren().remove(texte);
-					addEnnemieBox();
+					root.add(bouton,2,2,2,1);
 					addCombatNodeShown();
 				} else {
 					removeCombatNodeShown();
@@ -137,7 +145,7 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		root.add(textLabel, 0, 0);
 		root.add(texte, 0, 1, 2, 1);
 		root.add(labelChoix, 0, 2);
-		root.add(nodeType,1 ,2 );
+		root.add(nodeType,1 ,2);
 
 		
 		return root;
@@ -172,59 +180,107 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 		};
 	}
 	
+	private void addComboBox(){
+		ComboBox ennemiBox = new ComboBox<>();
+		ennemiBox.getItems().add(" ");
+		for(String listEnnemiBo : listEnnemiBox){
+			ennemiBox.getItems().add(listEnnemiBo);
+		}
+		addPositionCombo(ennemiBox);
+	}
+	
+	private void addPositionCombo(ComboBox ennemiBox){
+		int coordonnerX;
+		int coordonnerY;
+		List<Integer> listCoordonne = new ArrayList();
+		if(listCombo.isEmpty()){
+			coordonnerX = 1;
+			coordonnerY = 4;
+			listCoordonne.add(coordonnerX);
+			listCoordonne.add(coordonnerY);
+			listCombo.put(listCoordonne, ennemiBox);
+			dernier.add(coordonnerX);
+			dernier.add(coordonnerY);
+		} else {
+			if(dernier.get(1)%2 != 0){
+				coordonnerX = dernier.get(0)+1;
+				coordonnerY = dernier.get(1)-1;
+				listCoordonne.add(coordonnerX);
+				listCoordonne.add(coordonnerY);
+				dernier.clear();
+				dernier.add(coordonnerX);
+				dernier.add(coordonnerY);
+			} else {
+				coordonnerX = dernier.get(0);
+				coordonnerY = dernier.get(1)+1;
+				listCoordonne.add(dernier.get(0));
+				listCoordonne.add(dernier.get(1)+1);
+				dernier.clear();
+				dernier.add(coordonnerX);
+				dernier.add(coordonnerY);
+			}
+			listCombo.put(listCoordonne, ennemiBox);
+		}
+	}
+	
+	
+	
+	private void addShowComboBoxCombat(){
+		int verif = 0;
+		if (!listCombo.isEmpty()){
+			for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
+				if(verif != listCombo.size()-1 && listCombo.size()!=1){
+					root.getChildren().remove(list.getValue());
+				}
+				root.add(list.getValue(), list.getKey().get(0), list.getKey().get(1));
+				verif+=1;
+			}
+		}
+	}
+	
 	private void addCombatNodeShown(){
 		root.add(texte, 0, 1, 4, 1);
+		root.add(evasionLabel, 0, 3);
+		root.add(texteEvasion, 1, 3);
 		root.add(combatLabel, 0, 4);
-		root.add(ennemiBox1, 1, 4);
-		root.add(ennemiBox2, 1, 5);
-		root.add(ennemiBox3, 2, 4);
-		root.add(ennemiBox4, 2, 5);
-		root.add(evasionLabel, 3, 4);
-		root.add(texteEvasion, 3, 5);
+		
 	}
 	
 	private void removeCombatNodeShown(){
+		root.getChildren().remove(bouton);
 		root.getChildren().remove(texte);
 		root.add(texte, 0, 1, 2, 1);
 		root.getChildren().remove(combatLabel);
-		root.getChildren().remove(ennemiBox1);
-		root.getChildren().remove(ennemiBox2);
-		root.getChildren().remove(ennemiBox3);
-		root.getChildren().remove(ennemiBox4);
 		root.getChildren().remove(evasionLabel);
 		root.getChildren().remove(texteEvasion);
+		if (!listCombo.isEmpty()){
+			for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
+					root.getChildren().remove(list.getValue());
+			}
+		}
+		
 	}
 	
-	private void addEnnemieBox(){
+	private List<String> addEnnemieBox(){
+		List<String> listEnnemiBox = new ArrayList();
 		if(book != null){
 			if(!book.getCharacters().isEmpty()){
 				for(Map.Entry<String, BookCharacter> mapBookCharacter : book.getCharacters().entrySet()){
-					ennemiBox1.getItems().add(mapBookCharacter.getValue().getName());
-					ennemiBox2.getItems().add(mapBookCharacter.getValue().getName());
-					ennemiBox3.getItems().add(mapBookCharacter.getValue().getName());
-					ennemiBox4.getItems().add(mapBookCharacter.getValue().getName());
+					listEnnemiBox.add(mapBookCharacter.getValue().getName());
 				}
 			}
 		}
+		return listEnnemiBox;
 	}
 	
 	private List<String> listEnnemie(){
 		List<String> listEnnemie = new ArrayList();
 		
-		if(ennemiBox1.getValue() != null && ennemiBox1.getValue() != " "){
-			listEnnemie.add(ennemiBox1.getValue());
+		for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
+			if(list.getValue().getValue() != null && list.getValue().getValue() != " "){
+				listEnnemie.add((String) list.getValue().getValue());
+			}
 		}
-		if(ennemiBox2.getValue() != null && ennemiBox2.getValue() != " "){
-			listEnnemie.add(ennemiBox2.getValue());
-		}
-		if(ennemiBox3.getValue() != null && ennemiBox3.getValue() != " "){
-			listEnnemie.add(ennemiBox3.getValue());
-		}
-		if(ennemiBox4.getValue() != null && ennemiBox4.getValue() != " "){
-			listEnnemie.add(ennemiBox4.getValue());
-		}
-		System.out.println(listEnnemie);
-		
 		return listEnnemie;
 	}
 	
