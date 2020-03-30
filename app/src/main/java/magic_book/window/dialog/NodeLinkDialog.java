@@ -21,7 +21,6 @@ public class NodeLinkDialog extends AbstractDialog{
 	private TextField chanceTextField;
 	private Label chanceLabel;
 	
-	
 	private AbstractBookNode firstNode;
 	
 	private GridPane root;
@@ -31,6 +30,8 @@ public class NodeLinkDialog extends AbstractDialog{
 		this.firstNode = firstNode;
 		if(firstNode instanceof BookNodeWithRandomChoices){
 			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
+			root.add(chanceLabel, 0, 2);
+			root.add(chanceTextField, 1, 2);
 			this.nodeLink = nodeLinkRandom;
 		}
 		this.showAndWait();
@@ -38,13 +39,15 @@ public class NodeLinkDialog extends AbstractDialog{
 
 	public NodeLinkDialog(BookNodeLink nodeLink,AbstractBookNode firstNode) {
 		super("Modification du choix");
-		/*if(firstNode instanceof BookNodeWithRandomChoices){
-			BookNodeWithRandomChoices firstNodeRandom = (BookNodeWithRandomChoices) firstNode;
-			chanceTextField.setText(String.valueOf(firstNodeRandom.get.getChance()));
+		if(nodeLink instanceof BookNodeLinkRandom){
+			root.add(chanceLabel, 0, 2);
+			root.add(chanceTextField, 1, 2);
+			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
+			chanceTextField.setText(String.valueOf(nodeLinkRandom.getChance()));
 			this.nodeLink = nodeLinkRandom;
 		} else {
 			this.nodeLink = nodeLink;
-		}*/
+		}
 		texte.setText(nodeLink.getText());	
 		
 		this.showAndWait();
@@ -66,16 +69,7 @@ public class NodeLinkDialog extends AbstractDialog{
 		chanceTextField = new TextField();
 		
 		root.add(textLabel, 0, 0);
-		root.add(texte, 0, 1);
-		root.add(chanceLabel, 1, 0);
-		root.add(chanceTextField, 1, 1);
-		if(firstNode instanceof BookNodeWithRandomChoices){
-			root.add(chanceLabel, 1, 0);
-			root.add(chanceTextField, 1, 1);
-		} else{
-			root.getChildren().remove(chanceLabel);
-			root.getChildren().remove(chanceTextField);
-		}
+		root.add(texte, 0, 1, 2, 1);
 		
 		return root;
 	}
@@ -87,7 +81,7 @@ public class NodeLinkDialog extends AbstractDialog{
 			
 			
 			if(NodeLinkDialog.this.nodeLink == null) {
-				if(NodeLinkDialog.this.nodeLink instanceof BookNodeLinkRandom){
+				if(NodeLinkDialog.this.firstNode instanceof BookNodeWithRandomChoices){
 					if (chanceTextField.getText().isEmpty()){
 						return;
 					}
@@ -104,7 +98,7 @@ public class NodeLinkDialog extends AbstractDialog{
 				}
 			} else {
 					
-				if(NodeLinkDialog.this.nodeLink instanceof BookNodeLinkRandom){
+				if(NodeLinkDialog.this.firstNode instanceof BookNodeWithRandomChoices){
 					if (chanceTextField.getText().isEmpty()){
 						return;
 					} 
