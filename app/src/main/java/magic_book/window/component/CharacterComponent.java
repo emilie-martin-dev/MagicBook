@@ -1,9 +1,13 @@
 package magic_book.window.component;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.window.UiConsts;
 
@@ -15,7 +19,9 @@ public class CharacterComponent extends GridPane {
 	private TextField combatSkillTextField;
 	private CheckBox doubleDamageCheckBox;
 	
-	public CharacterComponent() {		
+	private Book book;
+	
+	public CharacterComponent(Book book) {		
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
 		
@@ -39,6 +45,8 @@ public class CharacterComponent extends GridPane {
 		this.add(combatSkillLabel, 0, 3);
 		this.add(combatSkillTextField, 1, 3);
 		this.add(doubleDamageCheckBox, 0, 4, 2, 1);
+		
+		this.book = book;
 	}
 	
 	public BookCharacter getCharacter() {
@@ -46,7 +54,24 @@ public class CharacterComponent extends GridPane {
 				|| nameTextField.getText().trim().isEmpty()) {
 			return null;
 		}
-
+		String mainCharacter = Book.MAIN_CHARACTER_ID;
+		System.out.println(mainCharacter);
+		System.out.println(idTextField.getText().trim());
+		
+		if (idTextField.getText().trim().compareTo(mainCharacter) == 0){
+			alertBox();
+			return null;
+		}
+		
+		if(book != null){
+			for(Entry<String, BookCharacter> mapCharacter : book.getCharacters().entrySet()){
+				if(idTextField.getText().compareTo(mapCharacter.getKey()) == 0){
+					alertBox();
+					return null;
+				}
+			}
+		}
+		
 		int hp = 0;
 		int damage = 0;
 		try {
@@ -84,6 +109,14 @@ public class CharacterComponent extends GridPane {
 			combatSkillTextField.setText("");
 			doubleDamageCheckBox.setSelected(false);
 		}
+	}
+
+	private void alertBox(){
+		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+		
+		alertDialog.setTitle("Erreur");
+		alertDialog.setContentText("L'ID n'est pas disponible");
+		alertDialog.show();
 	}
 
 }

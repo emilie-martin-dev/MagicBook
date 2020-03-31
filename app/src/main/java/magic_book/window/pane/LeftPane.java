@@ -93,7 +93,7 @@ public class LeftPane extends ScrollPane {
 		menuPersoAdd.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				CharacterDialog characterDialog = new CharacterDialog();
+				CharacterDialog characterDialog = new CharacterDialog(book);
 				BookCharacter perso = characterDialog.getCharacter();
 				if(perso != null) {
 					addCharacter(perso);
@@ -108,7 +108,7 @@ public class LeftPane extends ScrollPane {
 				if(selectedItem != null) {
 					BookCharacter character = selectedItem.getValue();
 					String oldId = character.getId();
-					CharacterDialog characterDialog = new CharacterDialog(character);
+					CharacterDialog characterDialog = new CharacterDialog(character, book);
 					
 					if(characterDialog.getCharacter() == null)
 						return;

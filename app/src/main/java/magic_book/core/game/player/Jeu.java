@@ -67,6 +67,10 @@ public class Jeu {
 		boolean win = false;
 		
 		showMessage(this.book.getTextPrelude());
+		
+		showMessage("Votre personnage : ");
+		showMessage(this.book.getMainCharacter().getDescription(book));
+		
 		this.state = createNewState();
 		
 		AbstractBookNode currentNode = this.book.getRootNode();
