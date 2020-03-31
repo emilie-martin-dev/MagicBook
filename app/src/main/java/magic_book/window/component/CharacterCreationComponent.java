@@ -60,7 +60,7 @@ public class CharacterCreationComponent extends GridPane {
 	}
 
 	private void addItemLinksComponent() {
-		this.add(itemLinksList, 0, 3);
+		this.add(itemLinksList, 0, 3, 2, 1);
 	}
 
 	public AbstractCharacterCreation getCharacterCreation() {
