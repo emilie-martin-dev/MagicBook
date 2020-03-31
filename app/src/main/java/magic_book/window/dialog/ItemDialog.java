@@ -1,5 +1,6 @@
 package magic_book.window.dialog;
 
+import java.util.Map.Entry;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -10,6 +11,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import magic_book.core.Book;
 
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
@@ -44,15 +46,18 @@ public class ItemDialog extends AbstractDialog {
 	private Label defenseLabel;
 	private Label usureLabel;
 	
-	public ItemDialog() {
+	private Book book;
+	
+	public ItemDialog(Book book) {
 		super("Ajout d'un item");
 
+		this.book = book;
 		this.showAndWait();
 	}
 
-	public ItemDialog(BookItem item) {
+	public ItemDialog(BookItem item, Book book) {
 		super("Edition de " + item.getName());
-
+		
 		idTextField.setText(item.getId());
 		nameTextField.setText(item.getName());
 		
@@ -82,6 +87,7 @@ public class ItemDialog extends AbstractDialog {
 			usureTextField.setText(""+itemWithDurability.getDurability());
 		}
 		
+		this.book = book;
 		this.showAndWait();
 	}
 
@@ -175,6 +181,18 @@ public class ItemDialog extends AbstractDialog {
 				return;
 			}
 
+			if(book != null){
+				for(Entry<String, BookItem> mapCharacter : book.getItems().entrySet()){				
+					if(idTextField.getText().compareTo(mapCharacter.getKey()) == 0){
+						notANumberAlertDialog("L'ID n'est pas disponible");
+						return;
+					}
+				}
+			}
+		
+			
+			
+
 			if(itemType.getValue() == KEY_ITEM){
 				ItemDialog.this.item = new BookItem();
 			} else if(itemType.getValue() == MONEY){
@@ -195,7 +213,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemWeapon;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex);
+					notANumberAlertDialog(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
 					return;
 				}
 			} else if(itemType.getValue() == DEFENSE){
@@ -214,7 +232,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemDefense;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex);
+					notANumberAlertDialog(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
 					return;
 				}
 			} else if(itemType.getValue() == HEALING){
@@ -233,7 +251,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemHealing;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex);
+					notANumberAlertDialog(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
 					return;
 				}
 			} 
@@ -245,11 +263,11 @@ public class ItemDialog extends AbstractDialog {
 		};
 	}
 	
-	private void notANumberAlertDialog(NumberFormatException ex){
+	private void notANumberAlertDialog(String message){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 		
 		alertDialog.setTitle("Erreur");
-		alertDialog.setContentText(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
+		alertDialog.setContentText(message);
 		alertDialog.show();
 	}
 	

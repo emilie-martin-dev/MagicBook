@@ -49,14 +49,12 @@ public class CharacterComponent extends GridPane {
 		this.book = book;
 	}
 	
-	public BookCharacter getCharacter() {
+	public BookCharacter getCharacter(Book book) {
 		if (idTextField.getText().trim().isEmpty()
 				|| nameTextField.getText().trim().isEmpty()) {
 			return null;
 		}
 		String mainCharacter = Book.MAIN_CHARACTER_ID;
-		System.out.println(mainCharacter);
-		System.out.println(idTextField.getText().trim());
 		
 		if (idTextField.getText().trim().compareTo(mainCharacter) == 0){
 			alertBox();
@@ -64,7 +62,7 @@ public class CharacterComponent extends GridPane {
 		}
 		
 		if(book != null){
-			for(Entry<String, BookCharacter> mapCharacter : book.getCharacters().entrySet()){
+			for(Entry<String, BookCharacter> mapCharacter : book.getCharacters().entrySet()){				
 				if(idTextField.getText().compareTo(mapCharacter.getKey()) == 0){
 					alertBox();
 					return null;

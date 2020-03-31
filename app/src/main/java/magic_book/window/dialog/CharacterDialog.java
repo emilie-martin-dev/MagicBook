@@ -16,6 +16,7 @@ public class CharacterDialog extends AbstractDialog {
 	
 	public CharacterDialog(Book book) {
 		super("Ajout d'un personnage");
+		this.book = book;
 		
 		this.showAndWait();
 	}
@@ -39,7 +40,7 @@ public class CharacterDialog extends AbstractDialog {
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
-			BookCharacter character = characterComponent.getCharacter();
+			BookCharacter character = characterComponent.getCharacter(book);
 			if(character == null)
 				return;
 			
