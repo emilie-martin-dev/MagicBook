@@ -13,6 +13,7 @@ import magic_book.observer.fx.RectangleFxObserver;
 public class RectangleFx extends Rectangle {
 
 	public static final int WIDTH = 50;
+	public static final int BRIGHT_LEVEL = 50;
 	
 	private RectangleFxObservable nodeFxObservable;
 	
@@ -21,10 +22,10 @@ public class RectangleFx extends Rectangle {
 	
 	private FloatProperty zoom;
 	
-	private Color color;
+	private Color defaultColor;
 
 	public RectangleFx(Color color, FloatProperty zoom) {
-		this.color = color;
+		this.defaultColor = color;
 		nodeFxObservable = new RectangleFxObservable();
 		
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
@@ -33,13 +34,13 @@ public class RectangleFx extends Rectangle {
 		
 		this.setOnMouseEntered(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				RectangleFx.this.setFill(Color.AZURE);
+				RectangleFx.this.setFill(RectangleFx.this.defaultColor.brighter());
 			}
 		});
 		
 		this.setOnMouseExited(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				RectangleFx.this.setFill(RectangleFx.this.color);
+				RectangleFx.this.setFill(RectangleFx.this.defaultColor);
 			}
 		});
 		
@@ -95,5 +96,13 @@ public class RectangleFx extends Rectangle {
 	public void setRealY(double realY) {
 		this.realY.set((float) realY);
 	}
-	
+
+	public Color getDefaultColor() {
+		return defaultColor;
+	}
+
+	public void setDefaultColor(Color defaultColor) {
+		this.defaultColor = defaultColor;
+	}
+
 }

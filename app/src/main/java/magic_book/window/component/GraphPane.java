@@ -279,7 +279,6 @@ public class GraphPane extends ScrollPane {
 		
 		@Override
 		public void onRectangleFXClicked(RectangleFx rectangleFx, MouseEvent event) {	
-			boolean valide = false;
 			NodeFx nodeFx = (NodeFx) rectangleFx;
 			if(mode == Mode.SELECT){
 				selectedNodeFx = nodeFx;
@@ -298,29 +297,30 @@ public class GraphPane extends ScrollPane {
 				} else {
 					if (selectedNodeFx.getNode() instanceof BookNodeCombat){
 						BookNodeCombat firstNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
-						if(firstNodeCombat.getEvasionBookNodeLink() == null)
-							valide = true;
-						if(firstNodeCombat.getLooseBookNodeLink() == null)
-							valide = true;
-						if(firstNodeCombat.getWinBookNodeLink() == null)
-							valide = true;
-					} else {
-						valide = true;
-					}
-					if(valide){
-						NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
-						BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
+						if(firstNodeCombat.getEvasionBookNodeLink() != null 
+								&& firstNodeCombat.getLooseBookNodeLink() != null
+								&& firstNodeCombat.getWinBookNodeLink() != null) {
+							Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 
-						if(bookNodeLink != null) {
-							bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
-
-							book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
-
-							createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
+							alertDialog.setTitle("Erreur");
+							alertDialog.setHeaderText("Veuillez supprimer un lien de victoire / defaite / evasion pour pouvoir rajouter un autre lien.");
+							alertDialog.show();
+			
+							return;
 						}
-					} else {
-						alerteBox();
 					}
+					
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
+					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
+
+					if(bookNodeLink != null) {
+						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
+
+						book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
+
+						createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
+					}
+					
 					selectedNodeFx = null;
 				}
 				
@@ -352,14 +352,6 @@ public class GraphPane extends ScrollPane {
 			}
 			
 			event.consume();
-		}
-		
-		private void alerteBox(){
-			Alert alertDialog = new Alert(Alert.AlertType.ERROR);
-
-			alertDialog.setTitle("Erreur");
-			alertDialog.setContentText("Le premier noeud que vous avez sélectionner est de type combat. Veuillez supprimer un lien de victoire / defaite / evasion pour pouvoir rajouter un autre lien.");
-			alertDialog.show();
 		}
 	}
 	
