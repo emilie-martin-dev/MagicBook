@@ -203,6 +203,7 @@ public class NodeLinkDialog extends AbstractDialog{
 			}
 
 			nodeLink.setText(texteHistoire);
+			nodeLink.setAuto(autoBox.isSelected());
 			
 			linkType = choixLienBox.getValue();
 
