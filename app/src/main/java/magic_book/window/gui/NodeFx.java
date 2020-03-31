@@ -13,12 +13,11 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 public class NodeFx extends RectangleFx {
 	
 	private AbstractBookNode node;
-	
 
 	public NodeFx(AbstractBookNode node, FloatProperty zoom) {
 		super(Color.GREEN, zoom);
 		this.node = node;
-		colorNode();
+		updateNodeColor();
 	}
 
 	public AbstractBookNode getNode() {
@@ -27,21 +26,22 @@ public class NodeFx extends RectangleFx {
 
 	public void setNode(AbstractBookNode node) {
 		this.node = node;
+		updateNodeColor();
 	}
 	
-	public void colorNode(){
+	public void updateNodeColor(){
 		if(node instanceof BookNodeCombat){
-			setColor(Color.GOLD);
+			setDefaultColor(Color.GOLD);
 		} else if(node instanceof BookNodeTerminal){
 			BookNodeTerminal nodeTerminal = (BookNodeTerminal) node;
 			if(nodeTerminal.getBookNodeStatus() == BookNodeStatus.FAILURE)
-				setColor(Color.DARKRED);
+				setDefaultColor(Color.DARKRED);
 			else
-				setColor(Color.DARKGREEN);
+				setDefaultColor(Color.DARKGREEN);
 		} else if(node instanceof BookNodeWithChoices){
-				setColor(Color.CHOCOLATE);
+				setDefaultColor(Color.CHOCOLATE);
 		} else if(node instanceof BookNodeWithRandomChoices){
-				setColor(Color.LIGHTSKYBLUE);
+				setDefaultColor(Color.LIGHTSKYBLUE);
 		}
 	}
 	

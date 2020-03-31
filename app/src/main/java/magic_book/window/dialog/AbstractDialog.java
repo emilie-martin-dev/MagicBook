@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -64,5 +65,14 @@ public abstract class AbstractDialog extends Stage {
 		
 		return box;
 	}
+	
+	public void notANumberAlertDialog(NumberFormatException ex){
+		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+		
+		alertDialog.setTitle("Erreur");
+		alertDialog.setContentText(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
+		alertDialog.show();
+	}
+	
 
 }

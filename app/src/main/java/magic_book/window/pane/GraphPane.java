@@ -19,6 +19,7 @@ import javafx.scene.shape.Line;
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
+import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.fx.NodeLinkFxObserver;
 import magic_book.observer.fx.RectangleFxObserver;
@@ -121,7 +122,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	public NodeFx createNodeFxDialog(MouseEvent event){
-		NodeDialog nodeDialog = new NodeDialog();
+		NodeDialog nodeDialog = new NodeDialog(book);
 		AbstractBookNode node = nodeDialog.getNode();
 		
 		if(node != null) {
@@ -293,7 +294,7 @@ public class GraphPane extends ScrollPane {
 			if(mode == Mode.SELECT){
 				selectedNodeFx = nodeFx;
 				if(event.getClickCount() == 2) {
-					NodeDialog dialog = new NodeDialog(nodeFx.getNode());
+					NodeDialog dialog = new NodeDialog(book, selectedNodeFx.getNode());
 					if(dialog.getNode() != null) {
 						book.updateNode(nodeFx.getNode(), dialog.getNode());
 						nodeFx.setNode(dialog.getNode());
@@ -304,18 +305,33 @@ public class GraphPane extends ScrollPane {
 					return;
 				} else if(selectedNodeFx == null && nodeFx.getNode() instanceof AbstractBookNodeWithChoices) {
 					selectedNodeFx = nodeFx;
-				} else {				
-					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog();
+				} else {
+					if (selectedNodeFx.getNode() instanceof BookNodeCombat){
+						BookNodeCombat firstNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
+						if(firstNodeCombat.getEvasionBookNodeLink() != null 
+								&& firstNodeCombat.getLooseBookNodeLink() != null
+								&& firstNodeCombat.getWinBookNodeLink() != null) {
+							Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+
+							alertDialog.setTitle("Erreur");
+							alertDialog.setHeaderText("Veuillez supprimer un lien de victoire / defaite / evasion pour pouvoir rajouter un autre lien.");
+							alertDialog.show();
+			
+							return;
+						}
+					}
+					
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
 					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
 					if(bookNodeLink != null) {
 						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
 
 						book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
-						
+
 						createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
 					}
-
+					
 					selectedNodeFx = null;
 				}
 				
@@ -358,7 +374,7 @@ public class GraphPane extends ScrollPane {
 		public void onNodeLinkFXClicked(NodeLinkFx nodeLinkFx, MouseEvent event) {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
-					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink());
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode());
 					if(nodeLinkDialog.getNodeLink()!= null) {
 						book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
 						nodeLinkFx.setNodeLink(nodeLinkDialog.getNodeLink());
