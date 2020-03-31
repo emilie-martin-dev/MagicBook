@@ -1,5 +1,6 @@
 package magic_book.window.dialog;
 
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -25,8 +26,11 @@ import javafx.scene.layout.VBox;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationText;
 import magic_book.window.UiConsts;
 import magic_book.window.component.CharacterComponent;
+import magic_book.window.component.CharacterCreationComponent;
 import magic_book.window.component.ItemListComponent;
 
 public class PreludeDialog extends AbstractDialog {
@@ -39,6 +43,7 @@ public class PreludeDialog extends AbstractDialog {
 	private Accordion accordion;
 	private ScrollPane scrollPane;
 	private CharacterComponent characterComponent;
+	private List<CharacterCreationComponent> characterCreationPanes;
 	
 	private Book book;
 
@@ -47,8 +52,13 @@ public class PreludeDialog extends AbstractDialog {
 
 		this.book = book;
 		texte.setText(book.getTextPrelude());
-		this.mainCharacter = book.getMainCharacter();
-		characterComponent.setCharacter(mainCharacter);
+		characterComponent.setCharacter(book.getMainCharacter());
+		
+		this.characterCreationPanes = new ArrayList<>();
+		
+		for(AbstractCharacterCreation characterCreation : book.getCharacterCreations()) {
+			createTitledPane(characterCreation);
+		}
 		
 		this.showAndWait();
 	}
@@ -89,18 +99,19 @@ public class PreludeDialog extends AbstractDialog {
 	}
 	
 	private Node getCharacterCreationTab() {
-		BorderPane characterCreationPane = new BorderPane();
+		VBox characterCreationPane = new VBox();
+		characterCreationPane.setSpacing(UiConsts.DEFAULT_MARGIN);
 		characterCreationPane.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
 		
 		accordion = new Accordion();
-		characterCreationPane.setCenter(accordion);
+		characterCreationPane.getChildren().add(accordion);
 		
 		Button addButton = new Button("Ajouter");
 		addButton.setOnAction((ActionEvent e) -> {
-			accordion.getPanes().add(createTitledPane());
+			createTitledPane();
 		});
 		
-		characterCreationPane.setBottom(addButton);
+		characterCreationPane.getChildren().add(addButton);
 		
 		scrollPane = new ScrollPane(characterCreationPane);
 		scrollPane.setFitToWidth(true);
@@ -108,12 +119,13 @@ public class PreludeDialog extends AbstractDialog {
 		return scrollPane;
 	}
 	
-	private TitledPane createTitledPane() {
+	private void createTitledPane() {
+		createTitledPane(null);
+	}
+	
+	private void createTitledPane(AbstractCharacterCreation characterCreation) {
 		TitledPane titledPane = new TitledPane();
 		Button remove = new Button("Supprimer cette partie");
-		remove.setOnAction((ActionEvent e) -> {
-			accordion.getPanes().remove(titledPane);
-		});
 		
 		HBox removeBox = new HBox();
 		removeBox.getChildren().add(remove);
@@ -122,11 +134,17 @@ public class PreludeDialog extends AbstractDialog {
 		
 		VBox box = new VBox();
 		box.setSpacing(UiConsts.DEFAULT_MARGIN);
-		CharacterCreationPane characterCreationPane = new CharacterCreationPane();
+		CharacterCreationComponent characterCreationPane = new CharacterCreationComponent(book, characterCreation);
+		this.characterCreationPanes.add(characterCreationPane);
 		box.getChildren().addAll(characterCreationPane, removeBox);
 		titledPane.setContent(box);
 		
-		return titledPane;
+		remove.setOnAction((ActionEvent e) -> {
+			accordion.getPanes().remove(titledPane);
+			this.characterCreationPanes.remove(characterCreationPane);
+		});
+		
+		accordion.getPanes().add(titledPane);
 	}
 	
 	private Node getMainCharacterPane() {
@@ -151,7 +169,10 @@ public class PreludeDialog extends AbstractDialog {
 			
 			this.textePrelude = (String) texte.getText();
 			this.mainCharacter = character;
-
+			this.characterCreations = new ArrayList<>();
+			for(CharacterCreationComponent characterCreationPane : characterCreationPanes) {
+				this.characterCreations.add(characterCreationPane.getCharacterCreation());
+			}
 			close();
 		};
 	}
@@ -174,59 +195,5 @@ public class PreludeDialog extends AbstractDialog {
 
 	public void setMainCharacter(BookCharacter mainCharacter) {
 		this.mainCharacter = mainCharacter;
-	}
-
-	private class CharacterCreationPane extends GridPane {
-
-		private AbstractCharacterCreation characterCreation;
-		
-		private static final String TYPE_TEXT = "Texte";
-		//private static final String TYPE_SKILL = "Skills";
-		private static final String TYPE_ITEM = "Item";
-		
-		private ComboBox<String> type;
-		
-		public CharacterCreationPane() {
-			createUi();
-		}
-
-		private void createUi() {
-			this.setHgap(UiConsts.DEFAULT_MARGIN);
-			this.setVgap(UiConsts.DEFAULT_MARGIN);
-			this.setPadding(new Insets(25, 25, 0, 25));
-
-			Label textLabel = new Label("Texte :");
-			TextArea texte = new TextArea();
-			texte.setWrapText(true);
-			
-			type = new ComboBox<>();
-			type.getItems().add(TYPE_TEXT);
-			if(!book.getItems().isEmpty())
-				type.getItems().add(TYPE_ITEM);
-			
-			type.setValue(TYPE_TEXT);
-			
-			this.add(textLabel, 0, 0);
-			this.add(texte, 0, 1, 2, 1);
-			this.add(new Label("Type"), 0, 2);
-			this.add(type, 1, 2);
-			ItemListComponent itemListComponent = new ItemListComponent(book);
-			
-			type.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String t, String t1) -> {
-				this.getChildren().remove(itemListComponent);
-				if(type.getValue().equals(TYPE_ITEM)) {
-					this.add(itemListComponent, 0, 3, 2, 1);			
-				}
-			});
-		
-		}
-		
-		public AbstractCharacterCreation getCharacterCreation() {
-			return characterCreation;
-		}
-
-		public void setCharacterCreation(AbstractCharacterCreation characterCreation) {
-			this.characterCreation = characterCreation;
-		}
 	}
 }

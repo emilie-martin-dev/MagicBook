@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -61,6 +63,14 @@ public class GraphPane extends ScrollPane {
 		this.setPannable(true);
 		
 		zoom = new SimpleFloatProperty(1);
+		
+		new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<? extends Object> ov, Object t, Object t1) {
+				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+			}
+			
+		};
 		
 		rootPane.setOnScroll((ScrollEvent event) -> {
 			float newZoomLevel = ((float)event.getDeltaY() / SCROLL_RATIO) + zoom.getValue();
@@ -167,6 +177,7 @@ public class GraphPane extends ScrollPane {
 					if(dialog.getTextePrelude() != null) {
 						book.setTextPrelude(dialog.getTextePrelude());
 						book.setMainCharacter(dialog.getMainCharacter());
+						book.setCharacterCreations(dialog.getCharacterCreations());
 						preludeFx.setText(dialog.getTextePrelude());
 					}
 				}

@@ -1,5 +1,6 @@
 package magic_book.window.component;
 
+import java.util.List;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
@@ -20,72 +21,73 @@ import magic_book.window.UiConsts;
 
 public class ItemListComponent extends VBox {
 
-	private ComboBox<BookItem> items;
+	private ComboBox<BookItem> itemComboBox;
+	private ListView<BookItemLink> selectedItemsListView;
+	
+	private Button updateItemSelected;
+	private TextField amountTextField;
+	
+	private Book book;
 	
 	public ItemListComponent(Book book) {
+		this.book = book;
+		
 		this.setSpacing(UiConsts.DEFAULT_MARGIN);
 		
-		HBox itemBox = new HBox();
-		itemBox.setSpacing(UiConsts.DEFAULT_MARGIN);
+		itemComboBox = new ComboBox<>();
+		itemComboBox.getItems().addAll(book.getItems().values());
 		
-		items = new ComboBox<>();
-		items.getItems().addAll(book.getItems().values());
-		
-		Button addItem = new Button("Ajouter");
-		Button updateItem = new Button("Modifier");
-
-		itemBox.getChildren().addAll(items, addItem);
-	
-		ListView<BookItemLink> selectedItem = new ListView<>();
-		selectedItem.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		
-		GridPane selectedItemPane = new GridPane();
-		TextField amountTextField = new TextField();
-		selectedItemPane.add(new Label("Montant : "), 0, 0);
-		selectedItemPane.add(amountTextField, 1, 0);
-		selectedItemPane.add(updateItem, 0, 1);
-		
-		amountTextField.setDisable(true);
-		updateItem.setDisable(true);
-		
-		this.getChildren().addAll(itemBox, selectedItem, selectedItemPane);
-		
-		addItem.setOnAction((ActionEvent e) -> {
-			BookItemLink bookItemLink = new BookItemLink();
-			bookItemLink.setId(items.getValue().getId());
-			selectedItem.getItems().add(bookItemLink);
-			
-			items.getItems().remove(items.getValue());
+		Button addItemSelected = new Button("Ajouter");
+		addItemSelected.setOnAction((ActionEvent e) -> {
+			addItemLink(itemComboBox.getValue().getId());
 		});
 		
-		selectedItem.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-			amountTextField.setDisable(true);
-			updateItem.setDisable(true);
-			amountTextField.setText("");
+		HBox itemSelectionBox = new HBox();
+		itemSelectionBox.setSpacing(UiConsts.DEFAULT_MARGIN);
+		itemSelectionBox.getChildren().addAll(itemComboBox, addItemSelected);
+	
+		selectedItemsListView = new ListView<>();
+		selectedItemsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);		
+		selectedItemsListView.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+			disableItemLinkEdition();
 			
-			if(selectedItem.getSelectionModel().getSelectedItem() != null) {
+			if(selectedItemsListView.getSelectionModel().getSelectedItem() != null) {
 				amountTextField.setDisable(false);
-				updateItem.setDisable(false);
-				amountTextField.setText(""+selectedItem.getSelectionModel().getSelectedItem().getAmount());
+				updateItemSelected.setDisable(false);
+				amountTextField.setText(""+selectedItemsListView.getSelectionModel().getSelectedItem().getAmount());
 			}
 		});
 		
+		selectedItemsListView.setContextMenu(createMenuContextItemLink());
+		
+		this.getChildren().addAll(itemSelectionBox, selectedItemsListView, createItemLinkPane());
+	}
+	
+	public ContextMenu createMenuContextItemLink() {
 		ContextMenu contextMenuItemLink = new ContextMenu();
+		
 		MenuItem menuItemLinkDelete = new MenuItem("Supprimer l'item");
 		menuItemLinkDelete.setOnAction((ActionEvent event) -> {
-			BookItemLink itemLink = selectedItem.getSelectionModel().getSelectedItem();
+			BookItemLink itemLink = selectedItemsListView.getSelectionModel().getSelectedItem();
 			if(itemLink != null) {
-				selectedItem.getItems().remove(itemLink);
-				selectedItem.refresh();
-				items.getItems().add(book.getItems().get(itemLink.getId()));
+				selectedItemsListView.getItems().remove(itemLink);
+				selectedItemsListView.refresh();
+				itemComboBox.getItems().add(book.getItems().get(itemLink.getId()));			
+				disableItemLinkEdition();
 			}
 		});
+		
 		contextMenuItemLink.getItems().add(menuItemLinkDelete);
 		
-		selectedItem.setContextMenu(contextMenuItemLink);
+		return contextMenuItemLink;
+	}
+	
+	public GridPane createItemLinkPane() {
+		amountTextField = new TextField();
 		
-		updateItem.setOnAction((ActionEvent e) -> {
-			BookItemLink itemLink = selectedItem.getSelectionModel().getSelectedItem();
+		updateItemSelected = new Button("Modifier");
+		updateItemSelected.setOnAction((ActionEvent e) -> {
+			BookItemLink itemLink = selectedItemsListView.getSelectionModel().getSelectedItem();
 			if(itemLink != null) {
 				int amount = 1;
 				
@@ -98,6 +100,42 @@ public class ItemListComponent extends VBox {
 				itemLink.setAmount(amount);
 			}
 		});
+		
+		GridPane selectedItemLinkPane = new GridPane();
+		selectedItemLinkPane.add(new Label("Montant : "), 0, 0);
+		selectedItemLinkPane.add(amountTextField, 1, 0);
+		selectedItemLinkPane.add(updateItemSelected, 0, 1);
+		
+		return selectedItemLinkPane;
+	}
+	
+	public void disableItemLinkEdition() {
+		amountTextField.setDisable(true);
+		updateItemSelected.setDisable(true);
+		amountTextField.setText("");
+	}
+	
+	public void addItemLink(String id) {
+		BookItemLink bookItemLink = new BookItemLink();
+		bookItemLink.setId(id);
+		
+		addItemLink(bookItemLink);
+	}
+	
+	public void addItemLink(BookItemLink bookItemLink) {
+		selectedItemsListView.getItems().add(bookItemLink);
+
+		itemComboBox.getItems().remove(book.getItems().get(bookItemLink.getId()));
+	}
+	
+	public List<BookItemLink> getBookItemLinks() {
+		return selectedItemsListView.getItems();
+	}
+	
+	public void setBookItemLinks(List<BookItemLink> itemLinks) {
+		for(BookItemLink itemLink : itemLinks) {
+			addItemLink(new BookItemLink(itemLink));
+		}
 	}
 	
 }
