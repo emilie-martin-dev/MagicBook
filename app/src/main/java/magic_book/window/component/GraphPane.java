@@ -19,6 +19,7 @@ import javafx.scene.shape.Line;
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
+import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.fx.NodeLinkFxObserver;
 import magic_book.observer.fx.RectangleFxObserver;
@@ -278,11 +279,12 @@ public class GraphPane extends ScrollPane {
 		
 		@Override
 		public void onRectangleFXClicked(RectangleFx rectangleFx, MouseEvent event) {	
+			boolean valide = false;
 			NodeFx nodeFx = (NodeFx) rectangleFx;
 			if(mode == Mode.SELECT){
 				selectedNodeFx = nodeFx;
 				if(event.getClickCount() == 2) {
-					NodeDialog dialog = new NodeDialog(book, nodeFx.getNode());
+					NodeDialog dialog = new NodeDialog(book, selectedNodeFx.getNode());
 					if(dialog.getNode() != null) {
 						book.updateNode(nodeFx.getNode(), dialog.getNode());
 						nodeFx.setNode(dialog.getNode());
@@ -293,18 +295,32 @@ public class GraphPane extends ScrollPane {
 					return;
 				} else if(selectedNodeFx == null && nodeFx.getNode() instanceof AbstractBookNodeWithChoices) {
 					selectedNodeFx = nodeFx;
-				} else {				
-					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
-					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
-
-					if(bookNodeLink != null) {
-						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
-
-						book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
-						
-						createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
+				} else {
+					if (selectedNodeFx.getNode() instanceof BookNodeCombat){
+						BookNodeCombat firstNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
+						if(firstNodeCombat.getEvasionBookNodeLink() == null)
+							valide = true;
+						if(firstNodeCombat.getLooseBookNodeLink() == null)
+							valide = true;
+						if(firstNodeCombat.getWinBookNodeLink() == null)
+							valide = true;
+					} else {
+						valide = true;
 					}
+					if(valide){
+						NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
+						BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
+						if(bookNodeLink != null) {
+							bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
+
+							book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
+
+							createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
+						}
+					} else {
+						alerteBox();
+					}
 					selectedNodeFx = null;
 				}
 				
@@ -337,6 +353,14 @@ public class GraphPane extends ScrollPane {
 			
 			event.consume();
 		}
+		
+		private void alerteBox(){
+			Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+
+			alertDialog.setTitle("Erreur");
+			alertDialog.setContentText("Le premier noeud que vous avez sélectionner est de type combat. Veuillez supprimer un lien de victoire / defaite / evasion pour pouvoir rajouter un autre lien.");
+			alertDialog.show();
+		}
 	}
 	
 	class NodeLinkFxListener implements NodeLinkFxObserver {
@@ -344,7 +368,7 @@ public class GraphPane extends ScrollPane {
 		public void onNodeLinkFXClicked(NodeLinkFx nodeLinkFx, MouseEvent event) {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
-					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), null);
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode());
 					if(nodeLinkDialog.getNodeLink()!= null) {
 						book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
 						nodeLinkFx.setNodeLink(nodeLinkDialog.getNodeLink());
