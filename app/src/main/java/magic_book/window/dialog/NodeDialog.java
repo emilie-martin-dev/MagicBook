@@ -21,12 +21,14 @@ import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 
 import magic_book.core.graph.node.AbstractBookNode;
+import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.window.UiConsts;
+import magic_book.window.component.ItemListComponent;
 
 public class NodeDialog extends AbstractDialog {
 
@@ -39,23 +41,28 @@ public class NodeDialog extends AbstractDialog {
 	private TextArea texte;
 	private TextField texteEvasion;
 	private TextField hpTextField;
+	private TextField nbrItemTextField;
 	private Label combatLabel;
 	private Label evasionLabel;
 	private Label hpLabel;
+	private Label nbrItemLabel;
 	private AbstractBookNode node = null;
 	private ChoiceBox<String> nodeType;
 	private Button bouton;
 	private GridPane root;
+	private GridPane rootCharacter;
 	private List<Integer> dernier = new ArrayList();
 	private HashMap<List<Integer>,ComboBox> listCombo = new LinkedHashMap();
 	private List<String> listEnnemiBox;
 	private Book book;
+	private ItemListComponent itemLinksList;
 	
 	public NodeDialog(Book book) {
 		super("Creation d'une page");
 		
 		this.book = book;
-		
+		itemLinksList = new ItemListComponent(book);
+		root.add(itemLinksList, 0, 5);
 		this.listEnnemiBox = addEnnemieBox();
 		this.showAndWait();
 	}
@@ -96,13 +103,22 @@ public class NodeDialog extends AbstractDialog {
 			BookNodeWithChoices bookNode = (BookNodeWithChoices) node;
 			hpTextField.setText(String.valueOf(bookNode.getHp()));
 			nodeType.setValue(BASIC);
-		}		
+		}
+		if (node instanceof AbstractBookNodeWithChoices){
+			AbstractBookNodeWithChoices bookNode = (AbstractBookNodeWithChoices) node;
+			itemLinksList = new ItemListComponent(book);
+			itemLinksList.setBookItemLinks(bookNode.getItemLinks());
+			nbrItemTextField.setText(String.valueOf(bookNode.getNbItemsAPrendre()));
+			root.add(itemLinksList, 0,5);
+		}
 		this.showAndWait();
 	}
 	
 	@Override
 	protected Node getMainUI() {
 		root = new GridPane();
+		rootCharacter = new GridPane();
+
 		root.setHgap(UiConsts.DEFAULT_MARGIN);
 		root.setVgap(UiConsts.DEFAULT_MARGIN);
 		
@@ -128,6 +144,9 @@ public class NodeDialog extends AbstractDialog {
 		
 		combatLabel = new Label("Ajout d'ennemi(s) :");
 		
+		nbrItemLabel = new Label("Nombre d'items max:");
+		nbrItemTextField = new TextField("");
+		
 		bouton = new Button("Ajouter un personnage");
 		
 		bouton.setOnAction(new EventHandler<ActionEvent>() {
@@ -143,26 +162,28 @@ public class NodeDialog extends AbstractDialog {
 			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
 				root.getChildren().remove(hpLabel);
 				root.getChildren().remove(hpTextField);
+				root.getChildren().remove(nbrItemLabel);
+				root.getChildren().remove(nbrItemTextField);
 				if (nodeType.getValue() == COMBAT){
-					root.getChildren().remove(texte);
-					root.add(bouton,2,2,2,1);
 					addCombatNodeShown();
 				} else {
 					removeCombatNodeShown();
 				}
 				if (nodeType.getValue() == COMBAT || nodeType.getValue() == BASIC ||  nodeType.getValue() == RANDOM){
-					root.add(hpLabel,0,3);
-					root.add(hpTextField,1,3);
+					root.add(nbrItemLabel, 0, 4);
+					root.add(nbrItemTextField, 1, 4);
+					root.add(hpLabel, 2, 2);
+					root.add(hpTextField, 3, 2);
 				}
 			}
 		});
 		
 		root.add(textLabel, 0, 0);
-		root.add(texte, 0, 1, 2, 1);
+		root.add(texte, 0, 1, 5, 1);
 		root.add(labelChoix, 0, 2);
 		root.add(nodeType,1 ,2);
-		root.add(hpLabel,0,3);
-		root.add(hpTextField,1,3);
+		root.add(hpLabel, 2, 2);
+		root.add(hpTextField, 3, 2);
 		
 		return root;
 	}
@@ -173,14 +194,17 @@ public class NodeDialog extends AbstractDialog {
 			String texteHistoire = (String) texte.getText();
 			
 			if(nodeType.getValue() == BASIC) {
-				if (hpTextField.getText().isEmpty()){
+				if (hpTextField.getText().isEmpty() || nbrItemTextField.getText().isEmpty()){
 					return;
 				}
 				try {
 					BookNodeWithChoices bookNode = (BookNodeWithChoices) node;
 					int hpInt = Integer.parseInt(hpTextField.getText());
+					int itemInt = Integer.parseInt(nbrItemTextField.getText());
 					bookNode = new BookNodeWithChoices(texteHistoire);
 					bookNode.setHp(hpInt);
+					bookNode.setNbItemsAPrendre(itemInt);
+					bookNode.setItemLinks(NodeDialog.this.itemLinksList.getBookItemLinks());
 					NodeDialog.this.node = bookNode;
 					
 				} catch (NumberFormatException ex){
@@ -188,14 +212,17 @@ public class NodeDialog extends AbstractDialog {
 					return;
 				}
 			} else if (nodeType.getValue() == RANDOM){
-				if (hpTextField.getText().isEmpty()){
+				if (hpTextField.getText().isEmpty() || nbrItemTextField.getText().isEmpty()){
 					return;
 				}
 				try {
 					BookNodeWithRandomChoices bookNode = (BookNodeWithRandomChoices) node;
 					int hpInt = Integer.parseInt(hpTextField.getText());
+					int itemInt = Integer.parseInt(nbrItemTextField.getText());
 					bookNode = new BookNodeWithRandomChoices(texteHistoire);
 					bookNode.setHp(hpInt);
+					bookNode.setNbItemsAPrendre(itemInt);
+					bookNode.setItemLinks(NodeDialog.this.itemLinksList.getBookItemLinks());
 					NodeDialog.this.node = bookNode;
 				} catch (NumberFormatException ex){
 					notANumberAlertDialog(ex);
@@ -203,15 +230,19 @@ public class NodeDialog extends AbstractDialog {
 				}
 				
 			} else if (nodeType.getValue() == COMBAT){
-				if (texteEvasion.getText().isEmpty()){
+				if (texteEvasion.getText().isEmpty() || nbrItemTextField.getText().isEmpty()){
 					return;
 				}
 				try {
 					BookNodeCombat bookNode = (BookNodeCombat) node;
 					int hpInt = Integer.parseInt(hpTextField.getText());
 					int tourEvasion = Integer.parseInt(texteEvasion.getText());
+					int itemInt = Integer.parseInt(nbrItemTextField.getText());
 					bookNode = new BookNodeCombat(texteHistoire, null, null, null, tourEvasion, listEnnemis());
 					bookNode.setHp(hpInt);
+					bookNode.setNbItemsAPrendre(itemInt);
+					bookNode.setEvasionRound(tourEvasion);
+					bookNode.setItemLinks(NodeDialog.this.itemLinksList.getBookItemLinks());
 					NodeDialog.this.node = bookNode;
 					
 				} catch (NumberFormatException ex){
@@ -241,27 +272,27 @@ public class NodeDialog extends AbstractDialog {
 		int coordonnerY;
 		List<Integer> listCoordonne = new ArrayList();
 		if(listCombo.isEmpty()){
-			coordonnerX = 1;
-			coordonnerY = 5;
+			coordonnerX = 0;
+			coordonnerY = 0;
 			listCoordonne.add(coordonnerX);
 			listCoordonne.add(coordonnerY);
 			listCombo.put(listCoordonne, ennemiBox);
 			dernier.add(coordonnerX);
 			dernier.add(coordonnerY);
 		} else {
-			if(dernier.get(1)%2 != 0){
+			if(dernier.get(0) < 4){
 				coordonnerX = dernier.get(0)+1;
-				coordonnerY = dernier.get(1)-1;
+				coordonnerY = dernier.get(1);
 				listCoordonne.add(coordonnerX);
 				listCoordonne.add(coordonnerY);
 				dernier.clear();
 				dernier.add(coordonnerX);
 				dernier.add(coordonnerY);
 			} else {
-				coordonnerX = dernier.get(0);
+				coordonnerX = dernier.get(0)-4;
 				coordonnerY = dernier.get(1)+1;
-				listCoordonne.add(dernier.get(0));
-				listCoordonne.add(dernier.get(1)+1);
+				listCoordonne.add(coordonnerX);
+				listCoordonne.add(coordonnerY);
 				dernier.clear();
 				dernier.add(coordonnerX);
 				dernier.add(coordonnerY);
@@ -277,35 +308,35 @@ public class NodeDialog extends AbstractDialog {
 		if (!listCombo.isEmpty()){
 			for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
 				if(verif != listCombo.size()-1 && listCombo.size()!=1){
-					root.getChildren().remove(list.getValue());
+					rootCharacter.getChildren().remove(list.getValue());
 				}
-				root.add(list.getValue(), list.getKey().get(0), list.getKey().get(1));
+				rootCharacter.add(list.getValue(), list.getKey().get(0), list.getKey().get(1));
 				verif+=1;
 			}
 		}
 	}
 	
 	private void addCombatNodeShown(){
-		root.add(texte, 0, 1, 4, 1);
-		root.add(evasionLabel, 0, 4);
-		root.add(texteEvasion, 1, 4);
-		root.add(combatLabel, 0, 5);
-		
+		root.add(evasionLabel, 0, 3);
+		root.add(texteEvasion, 1, 3);
+		root.add(combatLabel, 2, 3);
+		root.add(bouton, 3, 3);
+		root.add(rootCharacter, 1, 5);
 	}
 	
 	private void removeCombatNodeShown(){
 		root.getChildren().remove(bouton);
-		root.getChildren().remove(texte);
-		root.add(texte, 0, 1, 2, 1);
 		root.getChildren().remove(combatLabel);
 		root.getChildren().remove(evasionLabel);
 		root.getChildren().remove(texteEvasion);
-		if (!listCombo.isEmpty()){
+		if (!listCombo.isEmpty() && !rootCharacter.getChildren().isEmpty()){
 			for(Map.Entry<List<Integer>,ComboBox> list : listCombo.entrySet()){
-					root.getChildren().remove(list.getValue());
+					rootCharacter.getChildren().remove(list.getValue());
 			}
 		}
-		
+		root.getChildren().remove(rootCharacter);
+		listCombo.clear();
+		dernier.clear();
 	}
 	
 	private List<String> addEnnemieBox(){
@@ -313,7 +344,7 @@ public class NodeDialog extends AbstractDialog {
 		if(book != null){
 			if(!book.getCharacters().isEmpty()){
 				for(Map.Entry<String, BookCharacter> mapBookCharacter : book.getCharacters().entrySet()){
-					listEnnemiBox.add(mapBookCharacter.getValue().getName());
+					listEnnemiBox.add(mapBookCharacter.getValue().getId());
 				}
 			}
 		}
