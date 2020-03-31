@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Random;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookSkill;
 import magic_book.core.game.BookState;
+import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.game.player.Jeu.ChoixCombat;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -25,6 +29,8 @@ public class Fourmi implements InterfacePlayerFourmis{
 		Random random = new Random();
 		return random.nextInt(node.getChoices().size())+1;
 	}
+	
+	
 	
 	@Override
 	public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
@@ -101,6 +107,24 @@ public class Fourmi implements InterfacePlayerFourmis{
 	@Override
 	public BookCharacter chooseEnnemi(List<BookCharacter> listEnnemis) {
 		return listEnnemis.get(0);
+	}
+
+	@Override
+	public BookState choiceCharacter(Book book, AbstractCharacterCreation characterCreation, BookState state) {
+		int nbr = 0;
+		if(characterCreation instanceof CharacterCreationItem){
+			CharacterCreationItem characterCreationState = (CharacterCreationItem) characterCreation;
+			prendreItems(state, characterCreationState.getItemLinks(), characterCreationState.getAmountToPick());
+		} else if(characterCreation instanceof CharacterCreationSkill){
+			CharacterCreationSkill characterCreationState = (CharacterCreationSkill) characterCreation;
+			for(String listBookSkill : characterCreationState.getSkillLinks()){
+				Random random = new Random();
+				nbr = random.nextInt(5);
+				if(nbr > 2)
+					state.getMainCharacter().addSkill(listBookSkill);
+			}
+		}
+		return state;
 	}
 
 }

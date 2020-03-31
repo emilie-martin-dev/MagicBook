@@ -4,6 +4,7 @@ import java.util.List;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
+import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.game.player.Jeu.ChoixCombat;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -20,5 +21,7 @@ public interface InterfacePlayerFourmis {
 	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax);	
 	
 	public int makeAChoice(AbstractBookNodeWithChoices node);
+	
+	public BookState choiceCharacter(Book book, AbstractCharacterCreation characterCreation, BookState state);
 	
 }

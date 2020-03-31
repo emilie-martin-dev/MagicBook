@@ -8,6 +8,8 @@ import java.util.Random;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -115,8 +117,12 @@ public class Jeu {
 			bookCharacter = player.execPlayerCreation(this.book);
 			newState.setMainCharacter(bookCharacter);
 		} else {
+			CharacterCreationItem characterCreationItem = new CharacterCreationItem();
 			bookCharacter = this.book.getMainCharacter();
 			newState.setMainCharacter(bookCharacter);
+			newState = player.choiceCharacter(book, characterCreationItem, newState);
+			CharacterCreationSkill characterCreationSkill = new CharacterCreationSkill();
+			newState = player.choiceCharacter(book, characterCreationSkill, newState);
 		}
 		
 		newState.setBook(this.book);

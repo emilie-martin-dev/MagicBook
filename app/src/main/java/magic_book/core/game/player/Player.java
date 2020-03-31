@@ -1,10 +1,14 @@
 package magic_book.core.game.player;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
+import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.game.player.Jeu.ChoixCombat;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -231,6 +235,53 @@ public class Player implements InterfacePlayerFourmis {
 		}
 		
 		return listEnnemis.get(choix);
+	}
+
+	
+	private void skillAdd(BookState state, CharacterCreationSkill characterCreationState){
+		System.out.println("Quel skill voulez-vous ?");
+		boolean choixValide = false;
+		int choix = -1;
+		
+		while(!choixValide){
+			Scanner scanner = new Scanner(System.in);
+			choix = scanner.nextInt();
+			
+			if(choix >= 0 && choix <= (characterCreationState.getSkillLinks().size()-1)){
+				choixValide = true;
+			} else {
+				System.out.println("vous ne pouvez pas effectuer ce choix");
+			}
+		}
+		
+		String skill = characterCreationState.getSkillLinks().get(choix);
+		state.getMainCharacter().addSkill(skill);
+		System.out.println("Le skill "+skill+" a été rajouté");
+		
+		characterCreationState.setAmountToPick(characterCreationState.getAmountToPick()-1);
+	}
+	
+	
+	@Override
+	public BookState choiceCharacter(Book book, AbstractCharacterCreation characterCreation, BookState state){
+		System.out.println(characterCreation.getDescription(book));
+		boolean choice;
+		if(characterCreation instanceof CharacterCreationItem){
+			CharacterCreationItem characterCreationState = (CharacterCreationItem) characterCreation;
+			prendreItems(state, characterCreationState.getItemLinks(), characterCreationState.getAmountToPick());
+		} else if(characterCreation instanceof CharacterCreationSkill){
+			CharacterCreationSkill characterCreationState = (CharacterCreationSkill) characterCreation;
+			for(int i = 0 ; i <= characterCreationState.getSkillLinks().size() ; i++){
+				System.out.println("Voulez vous un skill ?");
+				choice = choixYesNo();
+				if(choice == true)
+					break;
+				for(String listBookSkill : characterCreationState.getSkillLinks())
+					System.out.println("- "+listBookSkill);
+				skillAdd(state, characterCreationState);
+			}
+		}
+		return state;
 	}
 
 }
