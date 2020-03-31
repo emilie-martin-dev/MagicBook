@@ -1,9 +1,13 @@
 package magic_book.window.component;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.window.UiConsts;
 
@@ -15,7 +19,10 @@ public class CharacterComponent extends GridPane {
 	private TextField combatSkillTextField;
 	private CheckBox doubleDamageCheckBox;
 	
-	public CharacterComponent() {		
+	private Book book;
+	private String baseId = "";
+	
+	public CharacterComponent(Book book) {		
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
 		
@@ -39,14 +46,28 @@ public class CharacterComponent extends GridPane {
 		this.add(combatSkillLabel, 0, 3);
 		this.add(combatSkillTextField, 1, 3);
 		this.add(doubleDamageCheckBox, 0, 4, 2, 1);
+		
+		this.book = book;
 	}
 	
-	public BookCharacter getCharacter() {
+	public BookCharacter getCharacter(Book book) {
 		if (idTextField.getText().trim().isEmpty()
 				|| nameTextField.getText().trim().isEmpty()) {
 			return null;
 		}
-
+		
+		if(book != null){
+			if (idTextField.getText().trim().equals(Book.MAIN_CHARACTER_ID)){
+				errorIdAlreadyUsed();
+				return null;
+			}
+		
+			if(book.getCharacters().containsKey(idTextField.getText()) && !baseId.equals(idTextField.getText())) {
+				errorIdAlreadyUsed();
+				return null;
+			}
+		}
+		
 		int hp = 0;
 		int damage = 0;
 		try {
@@ -77,6 +98,8 @@ public class CharacterComponent extends GridPane {
 			hpTextField.setText(""+character.getHpMax());
 			combatSkillTextField.setText(""+character.getBaseDamage());
 			doubleDamageCheckBox.setSelected(character.isDoubleDamage());
+			
+			baseId = character.getId();
 		} else {
 			idTextField.setText("");
 			nameTextField.setText("");
@@ -84,6 +107,14 @@ public class CharacterComponent extends GridPane {
 			combatSkillTextField.setText("");
 			doubleDamageCheckBox.setSelected(false);
 		}
+	}
+
+	private void errorIdAlreadyUsed(){
+		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+		
+		alertDialog.setTitle("Erreur");
+		alertDialog.setHeaderText("L'ID n'est pas disponible");
+		alertDialog.show();
 	}
 
 }

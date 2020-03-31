@@ -8,6 +8,9 @@ import java.util.Random;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
+import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -67,6 +70,7 @@ public class Jeu {
 		boolean win = false;
 		
 		showMessage(this.book.getTextPrelude());
+		
 		this.state = createNewState();
 		
 		AbstractBookNode currentNode = this.book.getRootNode();
@@ -108,14 +112,21 @@ public class Jeu {
 		BookCharacter bookCharacter;
 		BookState newState = new BookState();
 		if(this.book.getMainCharacter() == null){
-			bookCharacter = player.execPlayerCreation(this.book);
+			bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
 			newState.setMainCharacter(bookCharacter);
 		} else {
 			bookCharacter = this.book.getMainCharacter();
 			newState.setMainCharacter(bookCharacter);
 		}
 		
+		showMessage("Votre personnage : ");
+		showMessage(newState.getMainCharacter().getDescription(book));
+		
+		for(AbstractCharacterCreation characterCreation : this.book.getCharacterCreations())
+			player.execPlayerCreation(book, characterCreation, newState);
+		
 		newState.setBook(this.book);
+		
 		return newState;
 	}
 	

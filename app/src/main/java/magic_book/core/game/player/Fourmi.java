@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Random;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
+import magic_book.core.game.BookSkill;
 import magic_book.core.game.BookState;
+import magic_book.core.game.character_creation.AbstractCharacterCreation;
+import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.game.player.Jeu.ChoixCombat;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -25,6 +29,8 @@ public class Fourmi implements InterfacePlayerFourmis{
 		Random random = new Random();
 		return random.nextInt(node.getChoices().size())+1;
 	}
+	
+	
 	
 	@Override
 	public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
@@ -94,8 +100,23 @@ public class Fourmi implements InterfacePlayerFourmis{
 	}
 	
 	@Override
-	public BookCharacter execPlayerCreation(Book book) {
-		return new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+	public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state) {
+		if(characterCreation instanceof CharacterCreationItem){
+			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
+			
+			prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
+		} else if(characterCreation instanceof CharacterCreationSkill){
+			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
+			
+			Random random = new Random();
+			int amountToPick = characterCreationSkill.getAmountToPick();
+			while(amountToPick != 0 && !characterCreationSkill.getSkillLinks().isEmpty()) {
+				int choix = random.nextInt(characterCreationSkill.getSkillLinks().size());
+				state.getMainCharacter().addSkill(characterCreationSkill.getSkillLinks().get(choix));
+				characterCreationSkill.getSkillLinks().remove(choix);
+				amountToPick--;
+			}
+		}
 	}
 
 	@Override

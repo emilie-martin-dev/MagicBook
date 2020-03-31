@@ -141,7 +141,7 @@ public class PreludeDialog extends AbstractDialog {
 	}
 	
 	private Node getMainCharacterPane() {
-		characterComponent = new CharacterComponent();
+		characterComponent = new CharacterComponent(null);
 		characterComponent.setAlignment(Pos.CENTER);
 		
 		return characterComponent;
@@ -150,7 +150,7 @@ public class PreludeDialog extends AbstractDialog {
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
-			BookCharacter character = characterComponent.getCharacter();
+			BookCharacter character = characterComponent.getCharacter(null);
 			if(character == null) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Erreur sur le personnage principal");

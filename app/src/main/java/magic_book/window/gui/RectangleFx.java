@@ -18,13 +18,27 @@ public class RectangleFx extends Rectangle {
 	private SimpleFloatProperty realX;
 	private SimpleFloatProperty realY;
 	
+	private Color color;
 	private FloatProperty zoom;
 
 	public RectangleFx(Color color, FloatProperty zoom) {	
 		nodeFxObservable = new RectangleFxObservable();
+		this.color = color;
 		
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			nodeFxObservable.notifyOnNodeFXClicked(RectangleFx.this, event);
+		});
+		
+		this.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				RectangleFx.this.setOpacity(0.5f);
+			}
+		});
+		
+		this.setOnMouseExited(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				RectangleFx.this.setOpacity(100f);
+			}
 		});
 		
 		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
@@ -78,6 +92,11 @@ public class RectangleFx extends Rectangle {
 
 	public void setRealY(double realY) {
 		this.realY.set((float) realY);
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+		this.setFill(color);
 	}
 	
 }
