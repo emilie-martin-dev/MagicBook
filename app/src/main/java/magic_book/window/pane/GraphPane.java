@@ -325,10 +325,22 @@ public class GraphPane extends ScrollPane {
 					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
 					if(bookNodeLink != null) {
+						if(selectedNodeFx.getNode() instanceof BookNodeCombat) {
+							BookNodeCombat bookNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
+							
+							if(nodeLinkDialog.getLinkType() == NodeLinkDialog.EVASION) {
+								bookNodeCombat.setEvasionBookNodeLink(bookNodeLink);
+							} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.PERDRE) {
+								bookNodeCombat.setLooseBookNodeLink(bookNodeLink);
+							} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
+								bookNodeCombat.setWinBookNodeLink(bookNodeLink);
+							}
+						} else {
+							book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
+						}
+						
 						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
-
-						book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
-
+						
 						createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
 					}
 					
@@ -375,8 +387,25 @@ public class GraphPane extends ScrollPane {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
 					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode());
-					if(nodeLinkDialog.getNodeLink()!= null) {
-						book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
+					if(nodeLinkDialog.getNodeLink() != null) {
+						if(nodeLinkFx.getStart().getNode() instanceof BookNodeCombat) {
+							BookNodeCombat bookNodeCombat = (BookNodeCombat) nodeLinkFx.getStart().getNode();
+
+							bookNodeCombat.removeChoice(nodeLinkFx.getNodeLink());
+							
+							if(nodeLinkDialog.getLinkType() == NodeLinkDialog.EVASION) {
+								bookNodeCombat.setEvasionBookNodeLink(nodeLinkDialog.getNodeLink());
+							} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.PERDRE) {
+								bookNodeCombat.setLooseBookNodeLink(nodeLinkDialog.getNodeLink());
+							} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
+								bookNodeCombat.setWinBookNodeLink(nodeLinkDialog.getNodeLink());
+							}
+						} else {							
+							book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
+						}
+						
+						nodeLinkDialog.getNodeLink().setDestination(book.getNodeIndex(nodeLinkFx.getEnd().getNode()));
+						
 						nodeLinkFx.setNodeLink(nodeLinkDialog.getNodeLink());
 					}
 				}

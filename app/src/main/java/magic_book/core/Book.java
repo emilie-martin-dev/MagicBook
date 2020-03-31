@@ -186,8 +186,7 @@ public class Book {
 		}
 		
 		for(AbstractBookNodeWithChoices node : postUpdate) {
-			node.removeChoice(oldBookNodeLink);
-			node.addChoice(newBookNode);
+			node.updateChoice(oldBookNodeLink, newBookNode);
 		}
 	}
 	

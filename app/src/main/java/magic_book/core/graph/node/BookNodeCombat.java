@@ -145,6 +145,21 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 	}
 	
 	@Override
+	public void updateChoice(BookNodeLink oldNodeLink, BookNodeLink newNodeLink) {
+		if(oldNodeLink == winBookNodeLink) {
+			winBookNodeLink = newNodeLink;
+		} 
+		
+		if(oldNodeLink == looseBookNodeLink) {
+			looseBookNodeLink = newNodeLink;			
+		}
+		
+		if(oldNodeLink == evasionBookNodeLink) {
+			evasionBookNodeLink = newNodeLink;			
+		}
+	}
+	
+	@Override
 	public void removeChoice(BookNodeLink nodeLink) {
 		if(nodeLink == winBookNodeLink) {
 			winBookNodeLink = null;
@@ -157,8 +172,6 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		if(nodeLink == evasionBookNodeLink) {
 			evasionBookNodeLink = null;			
 		}
-		
-		super.removeChoice(nodeLink);
 	}
 
 	@Override
@@ -173,8 +186,6 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 		
 		if(evasionBookNodeLink != null)
 			choices.add(evasionBookNodeLink);
-		
-		choices.addAll(super.getChoices());
 		
 		return choices;
 	}

@@ -28,7 +28,7 @@ import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.window.UiConsts;
 
- public class NodeDialog extends AbstractDialog {
+public class NodeDialog extends AbstractDialog {
 
 	private static final String BASIC = "Basic";
 	private static final String RANDOM = "Aléatoire";
@@ -42,8 +42,8 @@ import magic_book.window.UiConsts;
 	private Label combatLabel;
 	private Label evasionLabel;
 	private Label hpLabel;
- 	private AbstractBookNode node = null;
- 	private ChoiceBox<String> nodeType;
+	private AbstractBookNode node = null;
+	private ChoiceBox<String> nodeType;
 	private Button bouton;
 	private GridPane root;
 	private List<Integer> dernier = new ArrayList();
@@ -51,20 +51,20 @@ import magic_book.window.UiConsts;
 	private List<String> listEnnemiBox;
 	private Book book;
 	
- 	public NodeDialog(Book book) {
- 		super("Creation d'une page");
+	public NodeDialog(Book book) {
+		super("Creation d'une page");
 		
-		listCombo = listCombo;
 		this.book = book;
-		this.root = root;
+		
 		this.listEnnemiBox = addEnnemieBox();
- 		this.showAndWait();
- 	}
+		this.showAndWait();
+	}
 
- 	public NodeDialog(Book book, AbstractBookNode node) {
+	public NodeDialog(Book book, AbstractBookNode node) {
 		super("Edition de la page");
- 		this.book = book;
- 		texte.setText(node.getText());
+		
+		this.book = book;
+		texte.setText(node.getText());
 		this.listEnnemiBox = addEnnemieBox();
 		if(node instanceof BookNodeTerminal) {
 			BookNodeTerminal terminalNode = (BookNodeTerminal) node;
@@ -97,12 +97,12 @@ import magic_book.window.UiConsts;
 			hpTextField.setText(String.valueOf(bookNode.getHp()));
 			nodeType.setValue(BASIC);
 		}		
- 		this.showAndWait();
- 	}
+		this.showAndWait();
+	}
 	
 	@Override
 	protected Node getMainUI() {
-		GridPane root = new GridPane();
+		root = new GridPane();
 		root.setHgap(UiConsts.DEFAULT_MARGIN);
 		root.setVgap(UiConsts.DEFAULT_MARGIN);
 		
@@ -113,12 +113,12 @@ import magic_book.window.UiConsts;
 		
 		nodeType = new ChoiceBox<>();
 
- 		nodeType.getItems().add(BASIC);
+		nodeType.getItems().add(BASIC);
 		nodeType.getItems().add(RANDOM);
 		nodeType.getItems().add(COMBAT);
- 		nodeType.getItems().add(VICTORY);
- 		nodeType.getItems().add(FAILURE);
- 		nodeType.setValue(BASIC);
+		nodeType.getItems().add(VICTORY);
+		nodeType.getItems().add(FAILURE);
+		nodeType.setValue(BASIC);
 		
 		hpLabel = new Label("hp (gain ou perte)");
 		hpTextField = new TextField("");
@@ -137,8 +137,6 @@ import magic_book.window.UiConsts;
 				addShowComboBoxCombat();
 			}
 		});
-		
-		
 		
 		nodeType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -337,4 +335,4 @@ import magic_book.window.UiConsts;
 	public AbstractBookNode getNode() {
 		return node;
 	}
- }
+}

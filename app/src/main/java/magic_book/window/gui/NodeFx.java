@@ -16,7 +16,9 @@ public class NodeFx extends RectangleFx {
 
 	public NodeFx(AbstractBookNode node, FloatProperty zoom) {
 		super(Color.GREEN, zoom);
+		
 		this.node = node;
+		
 		updateNodeColor();
 	}
 
@@ -26,6 +28,7 @@ public class NodeFx extends RectangleFx {
 
 	public void setNode(AbstractBookNode node) {
 		this.node = node;
+		
 		updateNodeColor();
 	}
 	

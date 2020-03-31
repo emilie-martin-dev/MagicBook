@@ -3,7 +3,6 @@ package magic_book.core.graph.node;
 import java.util.ArrayList;
 import java.util.List;
 import magic_book.core.Book;
-import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.item.BookItemLink;
@@ -213,6 +212,11 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		this.choices.add(nodeLink);
 	}
 
+	public void updateChoice(T oldNodeLink, T newNodeLink) {
+		removeChoice(oldNodeLink);
+		addChoice(newNodeLink);
+	}
+	
 	public void removeChoice(T nodeLink) {
 		if(this.choices.contains(nodeLink))
 			choices.remove(nodeLink);
