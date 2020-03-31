@@ -12,7 +12,7 @@ import magic_book.core.item.BookItemLink;
 
 public interface InterfacePlayerFourmis {
 	
-	public BookCharacter execPlayerCreation(Book book);
+	public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state);
 	
 	public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state);
 	
@@ -21,7 +21,5 @@ public interface InterfacePlayerFourmis {
 	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax);	
 	
 	public int makeAChoice(AbstractBookNodeWithChoices node);
-	
-	public BookState choiceCharacter(Book book, AbstractCharacterCreation characterCreation, BookState state);
 	
 }

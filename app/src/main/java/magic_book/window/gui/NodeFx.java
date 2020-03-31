@@ -39,7 +39,7 @@ public class NodeFx extends RectangleFx {
 			else
 				setColor(Color.DARKGREEN);
 		} else if(node instanceof BookNodeWithChoices){
-				setColor(Color.LIGHTSEAGREEN);
+				setColor(Color.CHOCOLATE);
 		} else if(node instanceof BookNodeWithRandomChoices){
 				setColor(Color.LIGHTSKYBLUE);
 		}

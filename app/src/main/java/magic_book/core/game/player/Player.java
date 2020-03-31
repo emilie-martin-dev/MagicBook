@@ -207,8 +207,33 @@ public class Player implements InterfacePlayerFourmis {
 	}
 
 	@Override
-	public BookCharacter execPlayerCreation(Book book) {
-		return new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+	public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
+		System.out.println(characterCreation.getText());
+		
+		boolean choice;
+		if(characterCreation instanceof CharacterCreationItem){
+			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
+			
+			prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
+		} else if(characterCreation instanceof CharacterCreationSkill){
+			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
+			
+			for(String skillId : characterCreationSkill.getSkillLinks()){
+				System.out.println("Les skills suivant sont disponible:");
+				System.out.println("- " + state.getBook().getSkills().get(skillId).getDescription(state.getBook()));
+			}
+			
+			int nbItemMax = characterCreationSkill.getAmountToPick();
+			while(nbItemMax != 0){
+				System.out.println("Quel item voulez vous ?");
+				Scanner scanner = new Scanner(System.in);
+				
+				int num = scanner.nextInt();
+				state.getMainCharacter().addSkill(characterCreationSkill.getSkillLinks().get(num));
+				
+				nbItemMax--;
+			}
+		}
 	}
 
 	@Override
@@ -259,29 +284,6 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("Le skill "+skill+" a été rajouté");
 		
 		characterCreationState.setAmountToPick(characterCreationState.getAmountToPick()-1);
-	}
-	
-	
-	@Override
-	public BookState choiceCharacter(Book book, AbstractCharacterCreation characterCreation, BookState state){
-		System.out.println(characterCreation.getDescription(book));
-		boolean choice;
-		if(characterCreation instanceof CharacterCreationItem){
-			CharacterCreationItem characterCreationState = (CharacterCreationItem) characterCreation;
-			prendreItems(state, characterCreationState.getItemLinks(), characterCreationState.getAmountToPick());
-		} else if(characterCreation instanceof CharacterCreationSkill){
-			CharacterCreationSkill characterCreationState = (CharacterCreationSkill) characterCreation;
-			for(int i = 0 ; i <= characterCreationState.getSkillLinks().size() ; i++){
-				System.out.println("Voulez vous un skill ?");
-				choice = choixYesNo();
-				if(choice == true)
-					break;
-				for(String listBookSkill : characterCreationState.getSkillLinks())
-					System.out.println("- "+listBookSkill);
-				skillAdd(state, characterCreationState);
-			}
-		}
-		return state;
 	}
 
 }

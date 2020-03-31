@@ -20,6 +20,7 @@ public class CharacterComponent extends GridPane {
 	private CheckBox doubleDamageCheckBox;
 	
 	private Book book;
+	private String baseId = "";
 	
 	public CharacterComponent(Book book) {		
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
@@ -54,19 +55,16 @@ public class CharacterComponent extends GridPane {
 				|| nameTextField.getText().trim().isEmpty()) {
 			return null;
 		}
-		String mainCharacter = Book.MAIN_CHARACTER_ID;
-		
-		if (idTextField.getText().trim().compareTo(mainCharacter) == 0){
-			alertBox();
-			return null;
-		}
 		
 		if(book != null){
-			for(Entry<String, BookCharacter> mapCharacter : book.getCharacters().entrySet()){				
-				if(idTextField.getText().compareTo(mapCharacter.getKey()) == 0){
-					alertBox();
-					return null;
-				}
+			if (idTextField.getText().trim().equals(Book.MAIN_CHARACTER_ID)){
+				errorIdAlreadyUsed();
+				return null;
+			}
+		
+			if(book.getCharacters().containsKey(idTextField.getText()) && !baseId.equals(idTextField.getText())) {
+				errorIdAlreadyUsed();
+				return null;
 			}
 		}
 		
@@ -100,6 +98,8 @@ public class CharacterComponent extends GridPane {
 			hpTextField.setText(""+character.getHpMax());
 			combatSkillTextField.setText(""+character.getBaseDamage());
 			doubleDamageCheckBox.setSelected(character.isDoubleDamage());
+			
+			baseId = character.getId();
 		} else {
 			idTextField.setText("");
 			nameTextField.setText("");
@@ -109,11 +109,11 @@ public class CharacterComponent extends GridPane {
 		}
 	}
 
-	private void alertBox(){
+	private void errorIdAlreadyUsed(){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 		
 		alertDialog.setTitle("Erreur");
-		alertDialog.setContentText("L'ID n'est pas disponible");
+		alertDialog.setHeaderText("L'ID n'est pas disponible");
 		alertDialog.show();
 	}
 

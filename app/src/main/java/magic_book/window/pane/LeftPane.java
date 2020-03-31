@@ -160,7 +160,7 @@ public class LeftPane extends ScrollPane {
 				if(selectedItem != null) {
 					BookItem item = selectedItem.getValue();
 					String oldId = item.getId();
-					ItemDialog newItemDialog =new ItemDialog(item, LeftPane.this.book);
+					ItemDialog newItemDialog = new ItemDialog(item, LeftPane.this.book);
 					BookItem newItem = newItemDialog.getItem();
 					
 					if(newItem == null){

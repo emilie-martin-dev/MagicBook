@@ -47,6 +47,7 @@ public class ItemDialog extends AbstractDialog {
 	private Label usureLabel;
 	
 	private Book book;
+	private String baseId = "";
 	
 	public ItemDialog(Book book) {
 		super("Ajout d'un item");
@@ -57,6 +58,8 @@ public class ItemDialog extends AbstractDialog {
 
 	public ItemDialog(BookItem item, Book book) {
 		super("Edition de " + item.getName());
+		
+		baseId = item.getId();
 		
 		idTextField.setText(item.getId());
 		nameTextField.setText(item.getName());
@@ -182,17 +185,11 @@ public class ItemDialog extends AbstractDialog {
 			}
 
 			if(book != null){
-				for(Entry<String, BookItem> mapCharacter : book.getItems().entrySet()){				
-					if(idTextField.getText().compareTo(mapCharacter.getKey()) == 0){
-						notANumberAlertDialog("L'ID n'est pas disponible");
-						return;
-					}
+				if(book.getItems().containsKey(idTextField.getText().trim()) && !baseId.equals(idTextField.getText().trim())){
+					showErrorDialog("L'ID n'est pas disponible");
+					return;
 				}
 			}
-		
-			
-			
-
 			if(itemType.getValue() == KEY_ITEM){
 				ItemDialog.this.item = new BookItem();
 			} else if(itemType.getValue() == MONEY){
@@ -213,7 +210,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemWeapon;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
+					notANumberAlertDialog(ex.getMessage());
 					return;
 				}
 			} else if(itemType.getValue() == DEFENSE){
@@ -232,7 +229,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemDefense;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
+					notANumberAlertDialog(ex.getMessage());
 					return;
 				}
 			} else if(itemType.getValue() == HEALING){
@@ -251,7 +248,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemHealing;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
+					notANumberAlertDialog(ex.getMessage());
 					return;
 				}
 			} 
@@ -264,10 +261,14 @@ public class ItemDialog extends AbstractDialog {
 	}
 	
 	private void notANumberAlertDialog(String message){
+		showErrorDialog(message.replace("For input string: ", "") + " n'est pas un entier");
+	}
+	
+	private void showErrorDialog(String message){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 		
 		alertDialog.setTitle("Erreur");
-		alertDialog.setContentText(message);
+		alertDialog.setHeaderText(message);
 		alertDialog.show();
 	}
 	

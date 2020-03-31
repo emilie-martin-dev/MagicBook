@@ -9,7 +9,7 @@ public class PreludeFx extends RectangleFx {
 	private String text;
 	
 	public PreludeFx(String texte, FloatProperty zoom) {
-		super(Color.SILVER, zoom);
+		super(Color.DEEPPINK, zoom);
 		
 		this.text = texte;
 	}
