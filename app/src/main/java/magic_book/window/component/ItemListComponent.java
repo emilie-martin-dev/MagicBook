@@ -39,7 +39,8 @@ public class ItemListComponent extends VBox {
 		
 		Button addItemSelected = new Button("Ajouter");
 		addItemSelected.setOnAction((ActionEvent e) -> {
-			addItemLink(itemComboBox.getValue().getId());
+			if(itemComboBox.getValue() != null)
+				addItemLink(itemComboBox.getValue().getId());
 		});
 		
 		HBox itemSelectionBox = new HBox();
