@@ -14,7 +14,7 @@ public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> 
 	private boolean auto;
 
 	public BookItemLink() {
-		this("", 0, -1, false, -1);
+		this("", 1, -1, false, -1);
 	}
 	
 	public BookItemLink(String id, int amount, int price, boolean auto, int sellingPrice) {
@@ -149,4 +149,9 @@ public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> 
 		this.auto = auto;
 	}
 
+	@Override
+	public String toString() {
+		return this.id;
+	}
+	
 }

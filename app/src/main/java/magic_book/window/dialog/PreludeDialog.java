@@ -1,6 +1,8 @@
 package magic_book.window.dialog;
 
 import java.util.List;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,11 +20,14 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.window.UiConsts;
 import magic_book.window.component.CharacterComponent;
+import magic_book.window.component.ItemListComponent;
 
 public class PreludeDialog extends AbstractDialog {
 	
@@ -34,13 +39,15 @@ public class PreludeDialog extends AbstractDialog {
 	private Accordion accordion;
 	private ScrollPane scrollPane;
 	private CharacterComponent characterComponent;
+	
+	private Book book;
 
-	public PreludeDialog(String textePrelude, BookCharacter mainCharacter) {
+	public PreludeDialog(Book book) {
 		super("Edition du Prelude", true);
 
-		texte.setText(textePrelude);
-
-		this.mainCharacter = mainCharacter;
+		this.book = book;
+		texte.setText(book.getTextPrelude());
+		this.mainCharacter = book.getMainCharacter();
 		characterComponent.setCharacter(mainCharacter);
 		
 		this.showAndWait();
@@ -103,14 +110,20 @@ public class PreludeDialog extends AbstractDialog {
 	
 	private TitledPane createTitledPane() {
 		TitledPane titledPane = new TitledPane();
-		Button remove = new Button("Supprimer");
+		Button remove = new Button("Supprimer cette partie");
 		remove.setOnAction((ActionEvent e) -> {
 			accordion.getPanes().remove(titledPane);
 		});
 		
+		HBox removeBox = new HBox();
+		removeBox.getChildren().add(remove);
+		removeBox.setAlignment(Pos.CENTER_RIGHT);
+		removeBox.setPadding(new Insets(0, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
+		
 		VBox box = new VBox();
+		box.setSpacing(UiConsts.DEFAULT_MARGIN);
 		CharacterCreationPane characterCreationPane = new CharacterCreationPane();
-		box.getChildren().addAll(characterCreationPane, remove);
+		box.getChildren().addAll(characterCreationPane, removeBox);
 		titledPane.setContent(box);
 		
 		return titledPane;
@@ -178,8 +191,8 @@ public class PreludeDialog extends AbstractDialog {
 		}
 
 		private void createUi() {
-			this.setHgap(5);
-			this.setVgap(5);
+			this.setHgap(UiConsts.DEFAULT_MARGIN);
+			this.setVgap(UiConsts.DEFAULT_MARGIN);
 			this.setPadding(new Insets(25, 25, 0, 25));
 
 			Label textLabel = new Label("Texte :");
@@ -187,14 +200,25 @@ public class PreludeDialog extends AbstractDialog {
 			texte.setWrapText(true);
 			
 			type = new ComboBox<>();
-			type.getItems().add(TYPE_TEXT); 
-			type.getItems().add(TYPE_ITEM);
+			type.getItems().add(TYPE_TEXT);
+			if(!book.getItems().isEmpty())
+				type.getItems().add(TYPE_ITEM);
+			
 			type.setValue(TYPE_TEXT);
 			
 			this.add(textLabel, 0, 0);
 			this.add(texte, 0, 1, 2, 1);
 			this.add(new Label("Type"), 0, 2);
 			this.add(type, 1, 2);
+			ItemListComponent itemListComponent = new ItemListComponent(book);
+			
+			type.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String t, String t1) -> {
+				this.getChildren().remove(itemListComponent);
+				if(type.getValue().equals(TYPE_ITEM)) {
+					this.add(itemListComponent, 0, 3, 2, 1);			
+				}
+			});
+		
 		}
 		
 		public AbstractCharacterCreation getCharacterCreation() {

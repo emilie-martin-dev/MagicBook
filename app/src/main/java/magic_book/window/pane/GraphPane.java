@@ -162,7 +162,7 @@ public class GraphPane extends ScrollPane {
 		preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
-					PreludeDialog dialog = new PreludeDialog(book.getTextPrelude(), book.getMainCharacter());
+					PreludeDialog dialog = new PreludeDialog(book);
 					
 					if(dialog.getTextePrelude() != null) {
 						book.setTextPrelude(dialog.getTextePrelude());
