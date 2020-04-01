@@ -296,6 +296,20 @@ public class GraphPane extends ScrollPane {
 				if(event.getClickCount() == 2) {
 					NodeDialog dialog = new NodeDialog(book, selectedNodeFx.getNode());
 					if(dialog.getNode() != null) {
+						if(dialog.getNode() instanceof BookNodeCombat || selectedNodeFx.getNode() instanceof BookNodeCombat) {
+							List<NodeLinkFx> postRemove = new ArrayList<>();
+							for(NodeLinkFx nodeLinkFx : listeNoeudLien) {
+								if(nodeLinkFx.getStart().getNode() == selectedNodeFx.getNode()) {
+									nodeLinkFx.unregisterComponent(rootPane);
+									postRemove.add(nodeLinkFx);
+								}
+							}
+							
+							for(NodeLinkFx nodeLinkFxToRemove : postRemove) {
+								listeNoeudLien.remove(nodeLinkFxToRemove);
+							}
+						}
+						
 						book.updateNode(nodeFx.getNode(), dialog.getNode());
 						nodeFx.setNode(dialog.getNode());
 					}
