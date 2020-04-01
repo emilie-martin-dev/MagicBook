@@ -56,7 +56,6 @@ public class Player implements InterfacePlayerFourmis {
 			}
 			
 			choixCombat = ChoixCombat.values()[choix-1];
-			System.out.println("choixCombat"+choixCombat);
 			//Si inventaire, il choisis puis reviens sur le choix
 			if (choixCombat == ChoixCombat.INVENTAIRE){
 				if(!state.getMainCharacter().getItems().isEmpty())

@@ -14,6 +14,7 @@ public class CharacterJson {
 	private List<String> immune;
 	@SerializedName("double_damage")
 	private Boolean doubleDamage;
+	@SerializedName("item_max")
 	private Integer itemMax;
 
 	public String getId() {
