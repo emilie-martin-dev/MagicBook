@@ -33,26 +33,76 @@ import magic_book.window.gui.NodeLinkFx;
 import magic_book.window.gui.PreludeFx;
 import magic_book.window.gui.RectangleFx;
 
+/**
+* Pane comprenant tout le milieu de la fenêtre : l'édition des noeuds
+*/
 public class GraphPane extends ScrollPane {
 	
+	/**
+	* Ratio lors du scroll
+	*/
 	private static final float SCROLL_RATIO = 400f;
+	
+	/**
+	* Minimum du zoom
+	*/
 	private static final float MIN_ZOOM = 0.2f;
+	
+	/**
+	* Maximum du zoom
+	*/
 	private static final float MAX_ZOOM = 4f;
 	
+	/**
+	* Liste de noeud existant
+	*/
 	private List<NodeFx> listeNoeud;
+	
+	/**
+	* Liste de lien existant
+	*/
 	private List<NodeLinkFx> listeNoeudLien;
+	
+	/**
+	* Le premier noeud sélectionné
+	*/
 	private NodeFx selectedNodeFx;
 	
+	/**
+	* Le prélude est le premier noeud lors de la création du lien
+	*/
 	private Line preludeFxFirstNodeLine;
 	
+	/**
+	* Mode sélectionné
+	*/
 	private Mode mode;
-	private PreludeFx preludeFx;	
+	
+	/**
+	* Noeud du prélude
+	*/
+	private PreludeFx preludeFx;
+	
+	/**
+	* Le livre contenant toutes les informations
+	*/
 	private Book book;
 	
+	/**
+	* Le Pane du GraphPane qui contient tout
+	*/
 	private Pane rootPane;
 	
+	/**
+	* le zoom
+	*/
 	private SimpleFloatProperty zoom;
 	
+	
+	/**
+	* Création du pane
+	* @param book Le livre contenant toutes les informations
+	*/
 	public GraphPane(Book book){
 		listeNoeud = new ArrayList<>();
 		listeNoeudLien = new ArrayList<>();
@@ -108,6 +158,13 @@ public class GraphPane extends ScrollPane {
 		setBook(book);
 	}
 	
+	/**
+	* Création d'un NodeFx et du rectangle
+	* @param node Contient le noeud qui va être lié au NodeFx
+	* @param x Contient le x du clique de la souris
+	* @param y Contient le y du clique de la souris
+	* @return le rectangle
+	*/
 	public NodeFx createNode(AbstractBookNode node, double x, double y) {
 		NodeFx nodeFx = new NodeFx(node, zoom);
 		nodeFx.setRealX(x);
@@ -121,6 +178,11 @@ public class GraphPane extends ScrollPane {
 		return nodeFx;
 	}
 	
+	/**
+	* Création d'un noeud
+	* @param event Clique de la souris
+	* @return null
+	*/
 	public NodeFx createNodeFxDialog(MouseEvent event){
 		NodeDialog nodeDialog = new NodeDialog(book);
 		AbstractBookNode node = nodeDialog.getNode();
@@ -134,7 +196,13 @@ public class GraphPane extends ScrollPane {
 		return null;
 	}
 	
-
+	/**
+	* Création du NodeLinkFx et de la ligne graphique du lien
+	* @param bookNodeLink lien rataché au NodeLinkFx
+	* @param firstNodeFx premier noeud (début du lien)
+	* @param secondNodeFx deuxième noeud (fin du lien)
+	* @return un lien
+	*/
 	public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
 		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
 		nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
@@ -152,6 +220,10 @@ public class GraphPane extends ScrollPane {
 		return nodeLinkFx;
 	}
 	
+	/**
+	* Demande de confirmation pour la supression du lien
+	* @return Choix
+	*/
 	public boolean confirmDeleteDialog() {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Suppression");
@@ -165,6 +237,10 @@ public class GraphPane extends ScrollPane {
 		return false;
 	}
 	
+	
+	/**
+	* Création du prélude et de son NodeFx
+	*/
 	private void createNodePrelude() {
 		PreludeFx preludeFx = new PreludeFx(null, zoom);
 		preludeFx.setRealX(10);
@@ -192,6 +268,10 @@ public class GraphPane extends ScrollPane {
 		this.setPreludeFx(preludeFx);
 	}
 	
+	/**
+	* Ajout de toutes les informations dans le livre
+	* @param book Le livre contenant toutes les informations
+	*/
 	public void setBook(Book book){	
 		listeNoeud.clear();
 		listeNoeudLien.clear();
@@ -227,6 +307,10 @@ public class GraphPane extends ScrollPane {
 		setFirstNode(nodeNodeFxMapping.get(book.getRootNode()));		
 	}
 	
+	/**
+	* Le premier noeud du livre est le prélude
+	* @param newFirstNode Prélude
+	*/	
 	public void setFirstNode(NodeFx newFirstNode) {
 		preludeFx.setFirstNode(newFirstNode);
 		
@@ -246,46 +330,89 @@ public class GraphPane extends ScrollPane {
 		}
 	}
 	
+	/**
+	* Récupère la liste de tout les noeuds existant
+	* @return liste de tout les noeuds existant
+	*/	
 	public List<NodeFx> getListeNoeud() {
 		return listeNoeud;
 	}
 
+	/**
+	* Récupère la liste de tout les liens existant
+	* @return liste de tout les liens existant
+	*/	
 	public List<NodeLinkFx> getListeNoeudLien() {
 		return listeNoeudLien;
 	}
 
+	/**
+	* Récupère le NodeFx (rectangle) sélectionné
+	* @return NodeFx sélectionné
+	*/	
 	public NodeFx getSelectedNodeFx() {
 		return selectedNodeFx;
 	}
 	
+	/**
+	* Récupère le prélude (rectangle)
+	* @return Prélude
+	*/	
 	public PreludeFx getPreludeFx() {
 		return preludeFx;
 	}
 	
+	/**
+	* Récupère le mode sélectionné
+	* @return Mode sélectionné
+	*/
 	public Mode getMode() {
 		return mode;
 	}
 
+	/**
+	* Modifie le noeud sélectionné
+	* @param selectedNodeFx noeud sélétionné
+	*/
 	public void setSelectedNodeFx(NodeFx selectedNodeFx) {
 		this.selectedNodeFx = selectedNodeFx;
 	}
 
+	/**
+	* Modifie rectangle contenant le prélude
+	* @param preludeFx prélude
+	*/
 	public void setPreludeFx(PreludeFx preludeFx) {
 		this.preludeFx = preludeFx;
 	}
 
+	/**
+	* Modifie le mode sélectionné
+	* @param mode mode sélectionné
+	*/
 	public void setMode(Mode mode) {
 		this.mode = mode;
 	}
 
+	/**
+	* Modifie la liste de noeud existant
+	* @param listeNoeud liste de noeud existant
+	*/
 	public void setListeNoeud(List<NodeFx> listeNoeud) {
 		this.listeNoeud = listeNoeud;
 	}
 
+	/**
+	* Modifie la liste de lien existant
+	* @param listeNoeudLien liste de lien existant
+	*/
 	public void setListeNoeudLien(List<NodeLinkFx> listeNoeudLien) {
 		this.listeNoeudLien = listeNoeudLien;
 	}
 	
+	/**
+	* Permet de gérer les évènements sur les noeuds (rectangle)
+	*/
 	class NodeFxListener implements RectangleFxObserver {
 		
 		@Override
@@ -381,6 +508,9 @@ public class GraphPane extends ScrollPane {
 		}
 	}
 	
+	/**
+	* Permet de gérer les évènements sur les liens (ligne)
+	*/
 	class NodeLinkFxListener implements NodeLinkFxObserver {
 
 		public void onNodeLinkFXClicked(NodeLinkFx nodeLinkFx, MouseEvent event) {
