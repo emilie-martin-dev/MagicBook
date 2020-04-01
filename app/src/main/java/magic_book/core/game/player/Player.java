@@ -171,9 +171,9 @@ public class Player implements InterfacePlayerFourmis {
 	@Override
 	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 		while(nbItemMax != 0){
+			System.out.println("Les items suivant sont disponible:");
 			for(BookItemLink itemLink : bookItemLinks){
-				System.out.println("Les items suivant sont disponible:");
-				System.out.println("- " + state.getBook().getItems().get(itemLink.getId()).getDescription(state.getBook()));
+				System.out.println("state.getBook().getItems() "+state.getBook().getItems().get(itemLink.getId()).getName());
 			}
 			
 			System.out.println("Voulez vous un item ?");
@@ -256,7 +256,7 @@ public class Player implements InterfacePlayerFourmis {
 		boolean choice;
 		if(characterCreation instanceof CharacterCreationItem){
 			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
-			
+			System.out.println(characterCreationItem.getAmountToPick());
 			prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
 		} else if(characterCreation instanceof CharacterCreationSkill){
 			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;

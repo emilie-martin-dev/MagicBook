@@ -263,7 +263,7 @@ public class GraphPane extends ScrollPane {
 		
 		preludeFxFirstNodeLine.startXProperty().bind(preludeFx.xProperty().add(preludeFx.widthProperty().divide(2)));
 		preludeFxFirstNodeLine.startYProperty().bind(preludeFx.yProperty().add(preludeFx.heightProperty().divide(2)));
-
+		
 		rootPane.getChildren().add(preludeFx);
 		this.setPreludeFx(preludeFx);
 	}

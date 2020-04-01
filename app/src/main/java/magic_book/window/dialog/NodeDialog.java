@@ -313,7 +313,7 @@ public class NodeDialog extends AbstractDialog {
 		if(book != null){
 			if(!book.getCharacters().isEmpty()){
 				for(Map.Entry<String, BookCharacter> mapBookCharacter : book.getCharacters().entrySet()){
-					listEnnemiBox.add(mapBookCharacter.getValue().getName());
+					listEnnemiBox.add(mapBookCharacter.getValue().getId());
 				}
 			}
 		}

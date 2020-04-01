@@ -266,7 +266,6 @@ public class MainWindow extends Stage {
 			String tmpPath = ".livreTmpGame";
 			BookWritter bookWritter = new BookWritter();
 			bookWritter.write(tmpPath, book);
-
 			BookReader bookReader = new BookReader();
 			Book bookCopy = bookReader.read(tmpPath);
 			File file = new File(tmpPath);

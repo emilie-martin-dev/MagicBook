@@ -11,6 +11,7 @@ public class CharacterCreationJson {
 	private Integer amountToPick;
 	private List<ItemLinkJson> items;
 	private List<String> skills;
+	private Integer itemMax;
 
 	public String getText() {
 		return text;
@@ -50,6 +51,14 @@ public class CharacterCreationJson {
 
 	public void setSkills(List<String> skills) {
 		this.skills = skills;
+	}
+
+	public Integer getItemMax() {
+		return itemMax;
+	}
+
+	public void setItemMax(Integer itemMax) {
+		this.itemMax = itemMax;
 	}
 	
 	

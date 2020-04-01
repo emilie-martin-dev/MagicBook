@@ -98,6 +98,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		characterJson.setName(name);
 		characterJson.setCombatSkill(baseDamage);
 		characterJson.setHp(hpMax);
+		characterJson.setItemMax(itemsMax);
 		
 		if(doubleDamage)
 			characterJson.setDoubleDamage(true);
@@ -126,6 +127,11 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 			}
 		}
 		
+		this.itemsMax = 0;
+		if(json.getItemMax() != null) {
+			this.itemsMax = json.getItemMax();
+		}
+		
 		this.items.clear();
 		
 		this.immunes.clear();
@@ -134,8 +140,6 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 				immunes.add(immune);
 			}
 		}
-		
-		this.itemsMax = 0;
 		
 		if(json.getDoubleDamage() != null)
 			this.doubleDamage = json.getDoubleDamage();
@@ -152,6 +156,9 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		buffer.append("\n");
 		buffer.append("Dégats : ");
 		buffer.append(baseDamage);
+		buffer.append("\n");
+		buffer.append("Items max : ");
+		buffer.append(itemsMax);
 		buffer.append("\n");
 		
 		if(!skills.isEmpty()) {
