@@ -1,7 +1,5 @@
 package magic_book.window.component;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -18,9 +16,8 @@ public class CharacterComponent extends GridPane {
 	private TextField hpTextField;
 	private TextField combatSkillTextField;
 	private TextField itemMaxTextField;
+	private TextField argentTextField;
 	private CheckBox doubleDamageCheckBox;
-	
-	private Label itemMaxLabel;
 	
 	private Book book;
 	private Boolean mainCharacter;
@@ -35,6 +32,7 @@ public class CharacterComponent extends GridPane {
 		Label hpLabel = new Label("Hp : ");
 		Label combatSkillLabel = new Label("Dégats : ");
 		Label itemMaxLabel = new Label("Item max : ");
+		Label argentLabel = new Label("Argent : ");
 		
 		idTextField = new TextField();
 		nameTextField = new TextField();
@@ -42,6 +40,7 @@ public class CharacterComponent extends GridPane {
 		combatSkillTextField = new TextField();
 		doubleDamageCheckBox = new CheckBox("Double dégats");
 		itemMaxTextField = new TextField();
+		argentTextField = new TextField();
 		
 		this.add(idLabel, 0, 0);
 		this.add(idTextField, 1, 0);
@@ -59,13 +58,14 @@ public class CharacterComponent extends GridPane {
 		if(mainCharacter){
 			this.add(itemMaxLabel, 0, 5);
 			this.add(itemMaxTextField, 1, 5);
+			this.add(argentLabel, 0, 6);
+			this.add(argentTextField, 1, 6);
 		}
 	}
 	
 	public BookCharacter getCharacter(Book book) {
 		if (idTextField.getText().trim().isEmpty()
-				|| nameTextField.getText().trim().isEmpty()
-				|| itemMaxTextField.getText().isEmpty()) {
+				|| nameTextField.getText().trim().isEmpty()) {
 			return null;
 		}
 		
@@ -81,8 +81,8 @@ public class CharacterComponent extends GridPane {
 			}
 		}
 		
-		int hp = 0;
-		int damage = 0;
+		int hp;
+		int damage;
 		try {
 			hp = Integer.valueOf(hpTextField.getText());
 			damage = Integer.valueOf(combatSkillTextField.getText());
@@ -94,7 +94,7 @@ public class CharacterComponent extends GridPane {
 			return null;
 
 		BookCharacter character = new BookCharacter();
-
+		character.addItem("gold");
 		character.setId(idTextField.getText().trim());
 		character.setName(nameTextField.getText().trim());
 		character.setHpMax(hp);
@@ -102,13 +102,16 @@ public class CharacterComponent extends GridPane {
 		character.setDoubleDamage(doubleDamageCheckBox.isSelected());
 		if(mainCharacter){
 			int itemMaxInt;
+			int argentInt;
 			try {
 				itemMaxInt = Integer.parseInt(itemMaxTextField.getText());
+				argentInt = Integer.parseInt(argentTextField.getText());
 			} catch (NumberFormatException ex){
 				notANumberAlertDialog(ex.getMessage());
 				return null;
 			}
 			character.setItemsMax(itemMaxInt);
+			character.changeMoneyAmount("gold", argentInt);
 		}
 			
 
@@ -119,15 +122,18 @@ public class CharacterComponent extends GridPane {
 		if(character != null) {
 			idTextField.setText(character.getId());
 			nameTextField.setText(character.getName());
-			hpTextField.setText(""+character.getHpMax());
+			hpTextField.setText(""+character.getHp());
 			combatSkillTextField.setText(""+character.getBaseDamage());
 			doubleDamageCheckBox.setSelected(character.isDoubleDamage());
 			itemMaxTextField.setText(String.valueOf(character.getItemsMax()));
 			baseId = character.getId();
+			argentTextField.setText(""+character.getMoney("gold"));
 		} else {
 			idTextField.setText("");
 			nameTextField.setText("");
 			hpTextField.setText("");
+			argentTextField.setText("");
+			itemMaxTextField.setText("");
 			combatSkillTextField.setText("");
 			doubleDamageCheckBox.setSelected(false);
 		}

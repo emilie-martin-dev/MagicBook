@@ -90,9 +90,7 @@ public class NodeDialog extends AbstractDialog {
 			itemLinksList.setBookItemLinks(bookNode.getItemLinks());
 		
 			nbrItemTextField.setText(""+bookNode.getNbItemsAPrendre());
-			hpTextField.setText(""+bookNode.getHp());
-			
-			rootBorder.setBottom(basicPane);		
+			hpTextField.setText(""+bookNode.getHp());	
 		}
 		
 		if(node instanceof BookNodeTerminal) {
@@ -116,6 +114,7 @@ public class NodeDialog extends AbstractDialog {
 			rootBorder.setBottom(combatPane);
 			
 			nodeType.setValue(COMBAT);
+			
 		} else if (node instanceof BookNodeWithRandomChoices){
 			nodeType.setValue(RANDOM);
 			rootBorder.setBottom(basicPane);
@@ -173,7 +172,8 @@ public class NodeDialog extends AbstractDialog {
 				rootBorder.setBottom(null);
 
 				if (nodeType.getValue() == COMBAT){
-					rootBorder.setBottom(combatPane);					
+					System.out.println("combatPane "+combatPane);
+					rootBorder.setBottom(combatPane);
 				} else if (nodeType.getValue() == BASIC ||  nodeType.getValue() == RANDOM){
 					rootBorder.setBottom(basicPane);
 				}
@@ -208,7 +208,7 @@ public class NodeDialog extends AbstractDialog {
 		rootCharacter.setHgap(UiConsts.DEFAULT_MARGIN);
 		
 		combatPane.setSpacing(UiConsts.DEFAULT_MARGIN);
-		combatPane.getChildren().addAll(basicPane, combatGridPane);
+		combatPane.getChildren().addAll(combatGridPane);
 		
 		return rootBorder;
 	}

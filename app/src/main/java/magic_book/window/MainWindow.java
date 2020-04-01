@@ -3,8 +3,6 @@ package magic_book.window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -23,8 +21,6 @@ import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.core.file.BookWritter;
-import magic_book.core.game.BookCharacter;
-import magic_book.core.game.BookState;
 import magic_book.core.game.player.Jeu;
 import magic_book.window.pane.GraphPane;
 import magic_book.window.pane.LeftPane;
@@ -149,7 +145,7 @@ public class MainWindow extends Stage {
 			Book bookCopy = createBookCopy();
 			
 			if(bookCopy != null) {
-				Jeu jeu = new Jeu(book);
+				Jeu jeu = new Jeu(bookCopy);
 				float difficulte = jeu.fourmis(10000);
 				rightPane.difficultyChanged(difficulte);
 			} else {

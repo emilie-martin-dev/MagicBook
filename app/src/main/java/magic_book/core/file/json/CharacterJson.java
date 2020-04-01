@@ -16,6 +16,8 @@ public class CharacterJson {
 	private Boolean doubleDamage;
 	@SerializedName("item_max")
 	private Integer itemMax;
+	@SerializedName("money")
+	private Integer money;
 
 	public String getId() {
 		return id;
@@ -81,4 +83,11 @@ public class CharacterJson {
 		this.itemMax = itemMax;
 	}
 
+	public Integer getMoney() {
+		return money;
+	}
+
+	public void setMoney(Integer money) {
+		this.money = money;
+	}
 }

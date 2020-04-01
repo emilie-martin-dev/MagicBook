@@ -301,6 +301,13 @@
 		],
 		"characters" : [
 			{
+				"id": "main_character",
+				"name": "Principal",
+				"hp": 150,
+				"combat_skill": 10,
+				"item_max": 10
+			},
+			{
 				"id": "wounded_helghast",
 				"name": "Wounded Helghast",
 				"immune": ["mindblast"],
