@@ -195,6 +195,9 @@ public class Player implements InterfacePlayerFourmis {
 			} else {
 				nbItemMax = 0;
 			}
+			
+			if(bookItemLinks.isEmpty())
+				nbItemMax = 0;
 		}
 	}
 
