@@ -87,9 +87,6 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 	public SectionJson toJson() {
 		SectionJson sectionJson = super.toJson();
 		CombatJson combatJson = new CombatJson();
-				
-		if(evasionRound != 0)
-			combatJson.setEvasionRound(evasionRound);
 
 		combatJson.setEnemies(ennemiesId);
 
@@ -103,6 +100,7 @@ public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 
 		if(evasionBookNodeLink != null) {
 			combatJson.setEvasion(evasionBookNodeLink.toJson());
+			combatJson.setEvasionRound(evasionRound);
 		}
 
 		sectionJson.setCombat(combatJson);

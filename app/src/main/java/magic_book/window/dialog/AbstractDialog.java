@@ -5,9 +5,11 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -17,25 +19,38 @@ import magic_book.window.UiConsts;
 public abstract class AbstractDialog extends Stage {
 	
 	public AbstractDialog(String title) {
-		initDialogUI(title, false);
+		this(title, false, false);
 	}
 	
 	public AbstractDialog(String title, boolean hideMarginTop) {
-		initDialogUI(title, hideMarginTop);
+		this(title, hideMarginTop, false);
 	}
 	
-	private void initDialogUI(String title, boolean hideMargins) {
-		BorderPane root = new BorderPane();
+	public AbstractDialog(String title, boolean hideMarginTop, boolean useScroll) {
+		initDialogUI(title, hideMarginTop, useScroll);
+	}
+	
+	private void initDialogUI(String title, boolean hideMargins, boolean useScroll) {
+		BorderPane rootPane = new BorderPane();
 		int margin = hideMargins ? 0 : UiConsts.DEFAULT_MARGIN_DIALOG;
- 		root.setPadding(new Insets(margin, margin, UiConsts.DEFAULT_MARGIN_DIALOG, margin));
+ 		rootPane.setPadding(new Insets(margin, margin, UiConsts.DEFAULT_MARGIN_DIALOG, margin));
 		
 		HBox controlButtons = getControlButtons();
 		controlButtons.setPadding(new Insets(UiConsts.DEFAULT_MARGIN, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
 		
-		root.setCenter(getMainUI());
-		root.setBottom(controlButtons);
+		rootPane.setCenter(getMainUI());
+		rootPane.setBottom(controlButtons);
 		
-		Scene scene = new Scene(root);
+		Parent rootNode = rootPane;
+		if(useScroll) {
+			ScrollPane scrollPane = new ScrollPane();
+			scrollPane.setFitToWidth(true);
+			scrollPane.setContent(rootPane);
+			
+			rootNode = scrollPane;
+		}
+		
+		Scene scene = new Scene(rootNode);
  		this.initModality(Modality.APPLICATION_MODAL);
  		this.setResizable(false);
  		this.setTitle(title);

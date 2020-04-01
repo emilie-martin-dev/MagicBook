@@ -139,8 +139,8 @@
 \RequirePackage{ifthen} % Permet de faire des conditions
 \RequirePackage{listings} % Permet d'afficher des codes sources
 \RequirePackage{mathptmx} % Permet d'utiliser la police Times New Roman
-\RequirePackage{multirow} % Permet d'afficher des codes sources
 \RequirePackage{mfirstuc} % Permet de mettre en majuscule la première lettre d'un mot
+\RequirePackage{multirow} % Permet de fusionner des cellules du tableau
 \RequirePackage[section]{placeins} % Permet de bloquer les floats pour ne pas les faire dépasser d'une section par ex
 \RequirePackage{setspace} % Permet de changer l'interligne
 \RequirePackage{tabularx} % Permet d'utiliser les tableaux
