@@ -13,7 +13,9 @@ public class CharacterJson {
 	private List<String> skills;
 	private List<String> immune;
 	@SerializedName("double_damage")
-	private Boolean doubleDamage;			
+	private Boolean doubleDamage;
+	@SerializedName("item_max")
+	private Integer itemMax;
 
 	public String getId() {
 		return id;
@@ -69,6 +71,14 @@ public class CharacterJson {
 
 	public void setDoubleDamage(Boolean doubleDamage) {
 		this.doubleDamage = doubleDamage;
+	}
+
+	public Integer getItemMax() {
+		return itemMax;
+	}
+
+	public void setItemMax(Integer itemMax) {
+		this.itemMax = itemMax;
 	}
 
 }

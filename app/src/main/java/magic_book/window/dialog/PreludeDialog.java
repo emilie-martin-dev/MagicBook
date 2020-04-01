@@ -141,7 +141,7 @@ public class PreludeDialog extends AbstractDialog {
 	}
 	
 	private Node getMainCharacterPane() {
-		characterComponent = new CharacterComponent(null);
+		characterComponent = new CharacterComponent(null, true);
 		characterComponent.setAlignment(Pos.CENTER);
 		
 		return characterComponent;

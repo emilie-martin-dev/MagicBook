@@ -17,12 +17,16 @@ public class CharacterComponent extends GridPane {
 	private TextField nameTextField;
 	private TextField hpTextField;
 	private TextField combatSkillTextField;
+	private TextField itemMaxTextField;
 	private CheckBox doubleDamageCheckBox;
 	
+	private Label itemMaxLabel;
+	
 	private Book book;
+	private Boolean mainCharacter;
 	private String baseId = "";
 	
-	public CharacterComponent(Book book) {		
+	public CharacterComponent(Book book, Boolean mainCharacter) {		
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
 		
@@ -30,12 +34,14 @@ public class CharacterComponent extends GridPane {
 		Label nameLabel = new Label("Name: ");
 		Label hpLabel = new Label("Hp : ");
 		Label combatSkillLabel = new Label("Dégats : ");
+		Label itemMaxLabel = new Label("Item max : ");
 		
 		idTextField = new TextField();
 		nameTextField = new TextField();
 		hpTextField = new TextField();
 		combatSkillTextField = new TextField();
 		doubleDamageCheckBox = new CheckBox("Double dégats");
+		itemMaxTextField = new TextField();
 		
 		this.add(idLabel, 0, 0);
 		this.add(idTextField, 1, 0);
@@ -48,11 +54,18 @@ public class CharacterComponent extends GridPane {
 		this.add(doubleDamageCheckBox, 0, 4, 2, 1);
 		
 		this.book = book;
+		this.mainCharacter = mainCharacter;
+		
+		if(mainCharacter){
+			this.add(itemMaxLabel, 0, 5);
+			this.add(itemMaxTextField, 1, 5);
+		}
 	}
 	
 	public BookCharacter getCharacter(Book book) {
 		if (idTextField.getText().trim().isEmpty()
-				|| nameTextField.getText().trim().isEmpty()) {
+				|| nameTextField.getText().trim().isEmpty()
+				|| itemMaxTextField.getText().isEmpty()) {
 			return null;
 		}
 		
@@ -87,6 +100,17 @@ public class CharacterComponent extends GridPane {
 		character.setHpMax(hp);
 		character.setBaseDamage(damage);
 		character.setDoubleDamage(doubleDamageCheckBox.isSelected());
+		if(mainCharacter){
+			int itemMaxInt;
+			try {
+				itemMaxInt = Integer.parseInt(itemMaxTextField.getText());
+			} catch (NumberFormatException ex){
+				notANumberAlertDialog(ex.getMessage());
+				return null;
+			}
+			character.setItemsMax(itemMaxInt);
+		}
+			
 
 		return character;
 	}
@@ -98,7 +122,7 @@ public class CharacterComponent extends GridPane {
 			hpTextField.setText(""+character.getHpMax());
 			combatSkillTextField.setText(""+character.getBaseDamage());
 			doubleDamageCheckBox.setSelected(character.isDoubleDamage());
-			
+			itemMaxTextField.setText(String.valueOf(character.getItemsMax()));
 			baseId = character.getId();
 		} else {
 			idTextField.setText("");
@@ -116,5 +140,16 @@ public class CharacterComponent extends GridPane {
 		alertDialog.setHeaderText("L'ID n'est pas disponible");
 		alertDialog.show();
 	}
+	
+	private void notANumberAlertDialog(String message){
+		showErrorDialog(message.replace("For input string: ", "") + " n'est pas un entier");
+	}
 
+	private void showErrorDialog(String message){
+		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+		
+		alertDialog.setTitle("Erreur");
+		alertDialog.setHeaderText(message);
+		alertDialog.show();
+	}
 }

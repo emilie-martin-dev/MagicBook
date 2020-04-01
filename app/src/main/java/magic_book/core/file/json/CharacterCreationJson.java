@@ -50,7 +50,6 @@ public class CharacterCreationJson {
 
 	public void setSkills(List<String> skills) {
 		this.skills = skills;
-	}
-	
+	}	
 	
 }

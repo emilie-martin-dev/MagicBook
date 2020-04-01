@@ -122,10 +122,10 @@ public class Jeu {
 		showMessage("Votre personnage : ");
 		showMessage(newState.getMainCharacter().getDescription(book));
 		
+		newState.setBook(this.book);
+		
 		for(AbstractCharacterCreation characterCreation : this.book.getCharacterCreations())
 			player.execPlayerCreation(book, characterCreation, newState);
-		
-		newState.setBook(this.book);
 		
 		return newState;
 	}

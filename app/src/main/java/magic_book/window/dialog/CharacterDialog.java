@@ -33,7 +33,7 @@ public class CharacterDialog extends AbstractDialog {
 
 	@Override
 	protected Node getMainUI() {
-		characterComponent = new CharacterComponent(book);
+		characterComponent = new CharacterComponent(book, false);
 		return characterComponent;
 	}
 
