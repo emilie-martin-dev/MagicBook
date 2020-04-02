@@ -1,44 +1,74 @@
 \chapter{Travail de groupe}
 
-	%Parler du groupe et de sa "communication"
-
 	\section{Répartition des fonctionnalités}
-	\begin{tabular}{|l|l l|}
+	\begin{tabular}{|l|l|}
 		\hline
-		\multicolumn{3}{|c|}{Tâches effectuer} \\
+		\multicolumn{2}{|c|}{Tâches effectués} \\
 		\hline
 		\multirow{10}{*}{Justine MARTIN}
-			& Prélude & test \\
-			& Pannel des stats & test \\
-			& BookEditor & test \\
-			& Enregistrer et lecture d'un fichier Json & test \\
-			& création d'un livre test & test \\
-			& mise en place d'un arc de cercle lors de l'affichage des noeuds & test \\
-			& zoom sur l'affichage principal & test \\
-			& Supression d'un noeud & test \\
-			& Création de test unitaire & test \\
-			& Correction des codes avant de merges & test \\\hline
+			& Prélude\\
+			& Pannel des stats\\
+			& BookEditor\\
+			& Enregistrer et lecture d'un fichier Json\\
+			& création d'un livre test\\
+			& mise en place d'un arc de cercle lors de l'affichage des noeuds\\
+			& zoom sur l'affichage principal\\
+			& Supression d'un noeud\\
+			& Création de test unitaire\\
+			& Correction des codes avant de merges\\
+		\hline
 		\multirow{10}{*}{Auréline DEROUIN}
-			& Classe Jeu/Fourmis/Player & test \\
-			& Mis en place du GraphPane & test \\
-			& Mis en place des boites de dialog & test \\
-			& Création des classes de BookNode & test \\
-			& Supression d'un noeud & test \\
-			& test & test \\
-			& test & test \\
-			& test & test \\
-			& test & test \\
-			& test & test \\ \hline
-  		\multirow{2}{*}{Maxime THOMAS}
-			& test & test \\
-			& test & test \\ \hline
+			& Classe Jeu / Fourmis / Player\\
+			& Mis en place du GraphPane\\
+			& Mis en place des boites de dialog\\
+			& Création des classes de BookNode\\
+			& Supression d'un noeud\\
+			& test\\
+			& test\\
+			& test\\
+			& test\\
+			& test\\
+		\hline
+  		\multirow{5}{*}{Maxime THOMAS}
+			& Classe BookCharacter\\
+			& Quelques classes JSON\\
+			& Ajout des classes pour le pattern observer\\
+			& Cache le panel de gauche si l'on décoche une case dans le menu\\
+			& Version primitive de l'estimation de la difficulté d'un livre\\
+		\hline
 		\multirow{2}{*}{Dimitri STEPANIAK}
-			& test & test \\
-			& test & test \\\hline
+			& Interface sommaire pour la fenêtre principale\\
+			& Listing et ajout d'items et de personnages sur le panel de gauche\\
+		\hline
 		\end{tabular}
 
 	\section{Idées d'améliorations}
 
+		Notre application n'ayant pu être terminé faute de temps, voici la liste des améliorations que nous aurions voulus faire et celles qui seraient possibles d'implémenter ensuite :
 
+		\begin{itemize}
+			\item{Concevoir deux types de fichier, l'un pour l'éditeur et l'autre pour le jeu. Le jeu serait une version épurée de celui de l'éditeur et ne contiendrait pas la position des noeuds par exemple}
+			\item{Vérifier que le livre est valide pour être joué}
+			\item{Déclencher plus d'exception si le livre est incorrect}
+			\item{Gérer les shops(jeu et gui), champs auto (jeu uniquement) et skills (gui)}
+			\item{Afficher les personnages et items inutilisés}
+			\item{Indiquer si l'estimation de la difficulté est à jour ou non}
+			\item{Gestion des prérequis sur les boites de dialogue des noeuds}
+			\item{Améliorer l'intelligence de la fourmis (pouvoir estimer si un item est plus important qu'un autre, meilleure gestion des combats, ...)}
+			\item{Ajouter et supprimer des skills au fil du jeu}
+			\item{Ajout de paramètres aux skills (plutot que d'avoir un simple nom)}
+			\item{Afficher les chemins gagnants}
+			\item{"Langage" simple permettant de manier des conditions et variables pour des prérequis notamment}
+			\item{Possibilité d'avoir des pnj qui pourraient nous suivre dans l'aventure pour combattre ou pour dévérouiller certains passages par exemple.}
+		\end{itemize}
 
-	\section{Bugs connus}
+	\section{Bugs et problèmes connus}
+
+		Certains et problèmes sont connus, en voici une liste non exhaustive une fois de plus :
+
+		\begin{itemize}
+			\item{Tests incomplets sur le Book et le Jeu}
+			\item{Le changement d'id d'un personnage ou d'un item ne met pas à jour les différents élements du livre (noeuds, choix, ...)}
+			\item{Diverses bugs visuels concernant la boite de dialogue sur le Prélude}
+			\item{Le zoom ne se fait pas selon la position actuel de la souris mais du point supérieur gauche du GraphPane}
+		\end{itemize}
