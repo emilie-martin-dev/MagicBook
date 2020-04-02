@@ -94,7 +94,6 @@ public class CharacterComponent extends GridPane {
 			return null;
 
 		BookCharacter character = new BookCharacter();
-		character.addItem("gold");
 		character.setId(idTextField.getText().trim());
 		character.setName(nameTextField.getText().trim());
 		character.setHpMax(hp);
@@ -122,7 +121,7 @@ public class CharacterComponent extends GridPane {
 		if(character != null) {
 			idTextField.setText(character.getId());
 			nameTextField.setText(character.getName());
-			hpTextField.setText(""+character.getHp());
+			hpTextField.setText(""+character.getHpMax());
 			combatSkillTextField.setText(""+character.getBaseDamage());
 			doubleDamageCheckBox.setSelected(character.isDoubleDamage());
 			itemMaxTextField.setText(String.valueOf(character.getItemsMax()));

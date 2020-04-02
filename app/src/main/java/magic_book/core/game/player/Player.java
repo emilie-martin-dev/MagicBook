@@ -76,19 +76,14 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("0 - oui");
 		System.out.println("1 - non");
 		System.out.println("Que choisissez-vous ?");
-		boolean choix;
 		Scanner scanner = new Scanner(System.in);
 		int choixJoueur = -1;
 		
 		while(choixJoueur != 0 && choixJoueur != 1) {
 			choixJoueur = scanner.nextInt();
 		}
-		if(choixJoueur == 0)
-			choix = true;
-		else
-			choix = false;
 		
-		return choix;
+		return choixJoueur == 0;
 	}
 	
 	/**
@@ -268,7 +263,8 @@ public class Player implements InterfacePlayerFourmis {
 			}
 			
 			int nbItemMax = characterCreationSkill.getAmountToPick();
-			while(nbItemMax != 0){
+			
+			while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
 				skillAdd(state, characterCreationSkill);
 				nbItemMax--;
 			}
@@ -335,6 +331,7 @@ public class Player implements InterfacePlayerFourmis {
 		String skill = characterCreationState.getSkillLinks().get(choix);
 		state.getMainCharacter().addSkill(skill);
 		System.out.println("Le skill "+skill+" a été rajouté");
+		characterCreationState.getSkillLinks().remove(skill);
 		
 		characterCreationState.setAmountToPick(characterCreationState.getAmountToPick()-1);
 	}

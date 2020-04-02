@@ -172,7 +172,6 @@ public class NodeDialog extends AbstractDialog {
 				rootBorder.setBottom(null);
 
 				if (nodeType.getValue() == COMBAT){
-					System.out.println("combatPane "+combatPane);
 					rootBorder.setBottom(combatPane);
 				} else if (nodeType.getValue() == BASIC ||  nodeType.getValue() == RANDOM){
 					rootBorder.setBottom(basicPane);

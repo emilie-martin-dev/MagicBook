@@ -56,9 +56,11 @@ public class Fourmi implements InterfacePlayerFourmis{
 		
 	public void useInventaire(BookState state){
 		List<String> listItemState = state.getMainCharacter().getItems();
+		
 		Random random = new Random();
 		int choix = random.nextInt(listItemState.size());
 		BookItem bookItem = state.getBook().getItems().get(listItemState.get(choix));
+		
 		if(bookItem instanceof BookItemDefense){
 			state.setBookItemDefense((BookItemDefense) bookItem);
 		} else if(bookItem instanceof BookItemHealing){
