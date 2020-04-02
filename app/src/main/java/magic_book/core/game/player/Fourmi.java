@@ -18,6 +18,9 @@ import magic_book.core.item.BookItemHealing;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 
+/**
+ * Permet à la fourmi de jouer en fonction des choix random
+ */
 public class Fourmi implements InterfacePlayerFourmis{
 	
 	public Fourmi(){
@@ -28,8 +31,6 @@ public class Fourmi implements InterfacePlayerFourmis{
 		Random random = new Random();
 		return random.nextInt(node.getChoices().size())+1;
 	}
-	
-	
 	
 	@Override
 	public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
@@ -42,7 +43,7 @@ public class Fourmi implements InterfacePlayerFourmis{
 			choix = random.nextInt(ChoixCombat.values().length);
 			choixCombat = ChoixCombat.values()[choix];
 			choixCombat = ChoixCombat.ATTAQUER;
-			//Si inventaire, il choisit puis reviens sur le choix
+			
 			if (choixCombat == ChoixCombat.INVENTAIRE){
 				if(!state.getMainCharacter().getItems().isEmpty())
 					useInventaire(state);
@@ -53,7 +54,8 @@ public class Fourmi implements InterfacePlayerFourmis{
 		
 		return choixCombat;
 	}
-		
+	
+	@Override
 	public void useInventaire(BookState state){
 		List<String> listItemState = state.getMainCharacter().getItems();
 		

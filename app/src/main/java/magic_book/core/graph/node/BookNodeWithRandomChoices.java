@@ -38,8 +38,12 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		if(listNodeLinkDisponible.isEmpty()){
 			return null;
 		} else {
-			Random random = new Random(); 		
-			int nbrRandomChoice = random.nextInt(somme);
+			Random random = new Random();
+			int nbrRandomChoice;
+			if(somme == 0)
+				nbrRandomChoice = random.nextInt(listNodeLinkDisponible.size()-1);
+			else
+				nbrRandomChoice = random.nextInt(somme);
 			for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){
 				if(!this.getChoices().get(i).isAvailable(state)){
 					continue;

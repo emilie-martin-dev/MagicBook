@@ -167,8 +167,8 @@ public class GraphPane extends ScrollPane {
 	*/
 	public NodeFx createNode(AbstractBookNode node, double x, double y) {
 		NodeFx nodeFx = new NodeFx(node, zoom);
-		nodeFx.setRealX(x);
-		nodeFx.setRealY(y);
+		nodeFx.setRealX(x/zoom.get());
+		nodeFx.setRealY(y/zoom.get());
 		
 		nodeFx.addNodeFxObserver(new NodeFxListener());
 		

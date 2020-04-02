@@ -29,22 +29,56 @@ import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
 
+/**
+ * Permet de gérer la partie que ça soit dans le cas d'une fourmi ou d'un joueur
+ */
 public class Jeu {
 	
+	/**
+	 * Enum des différents choix pour les noeuds de combat
+	 */
 	public enum ChoixCombat {
 		ATTAQUER, INVENTAIRE, EVASION;
 	}
 	
+	/**
+	 * Sauvegarde actuelle de la partie
+	 */
 	private BookState state;
+	
+	/**
+	 * Contient le player actuel (fourmi ou joueur)
+	 */
 	private InterfacePlayerFourmis player;
+	
+	/**
+	 * Copie actuel du livre, permet de ne pas modifier le livre qui contient toutes les informations
+	 */
 	private Book book;
+	
+	/**
+	 * Permet d'afficher les messages si c'est le joueur qui joue (true)
+	 */
 	private boolean showMessages;
+	
+	/**
+	 * Livre contenant toutes les informations
+	 */
 	private Book bookToRead;
 	
+	/**
+	 * Création du jeu
+	 * @param book Livre contenant toutes les informations et mis en la variable bookToRead
+	 */
 	public Jeu(Book book){
 		this.bookToRead = book;
 	}
 	
+	/**
+	 * Méthode qui est appelé pour jouer en tant que player
+	 * @throw IOException : si l'écriture / la lecture est incorecte
+	 * @throw BookFileException : si le fichier est incorrecte
+	 */
 	public void play() throws IOException, BookFileException {
 		player = new Player();
 		
@@ -53,6 +87,13 @@ public class Jeu {
 		runGame();
 	}
 	
+	/**
+	 * Estime la dificulté du livre (fourmis)
+	 * @throw IOException : si l'écriture / la lecture est incorecte
+	 * @throw BookFileException : si le fichier est incorrecte
+	 * @param nbrFourmis Nombre de fois que le jeu va se lancer
+	 * @return pourcentage de victoire
+	 */
 	public float fourmis(int nbrFourmis) throws IOException, BookFileException {
 		showMessages = false;
 		
@@ -68,7 +109,14 @@ public class Jeu {
 		return ((float)victoire / (float)nbrFourmis) * 100f;
 	}
 	
-	private boolean runGame() throws IOException, FileNotFoundException, FileNotFoundException, BookFileException {
+	/**
+	 * Permet de lancer le jeu
+	 * @throw IOException : si l'écriture / la lecture est incorecte
+	 * @throw FileNotFoundException : si le fichier n'est pas trouvé
+	 * @throw BookFileException : si le fichier est incorrecte
+	 * @return Un boolean win: true si la partie est gagné
+	 */
+	private boolean runGame() throws IOException, FileNotFoundException, BookFileException {
 		boolean gameFinish = false;
 		boolean win = false;
 		
@@ -120,6 +168,10 @@ public class Jeu {
 		return win;
 	}
 	
+	/**
+	 * Créer une nouvelle partie avec le personnage principal
+	 * @return Nouvelle partie
+	 */
 	private BookState createNewState(){
 		BookCharacter bookCharacter;
 		BookState newState = new BookState();
@@ -141,6 +193,11 @@ public class Jeu {
 		return newState;
 	}
 	
+	/**
+	 * Regarde si le personage est encore en vie
+	 * @param node Noeud actuel
+	 * @return Un noeud terminal Failure si le personnage est mort ou null si il est encore en vie
+	 */
 	public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
 		showMessage(node.getText());
 		execNodeHp(node);
@@ -158,6 +215,11 @@ public class Jeu {
 		return null;
 	}
 	
+	/**
+	 * Exécute un noeud basic
+	 * @param node Noeud basic
+	 * @return La prochaine destination
+	 */
 	public AbstractBookNode execNodeWithChoices(BookNodeWithChoices node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
 		if(returnedNode != null) 
@@ -211,6 +273,10 @@ public class Jeu {
 		}
 	}
 	
+	/**
+	 * Exécute un noeud terminal
+	 * @param node Noeud terminal
+	 */
 	public void execNodeTerminal(BookNodeTerminal node){
 		showMessage(node.getText());
 		
@@ -220,6 +286,11 @@ public class Jeu {
 			showMessage("Vous avez perdu");
 	}
 
+	/**
+	 * Exécute un noeud de combat
+	 * @param node Noeud de combat
+	 * @return La prochaine destination
+	 */
 	public AbstractBookNode execNodeCombat(BookNodeCombat node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
 		if(returnedNode != null) 
@@ -245,8 +316,7 @@ public class Jeu {
 			if (choixCombat == ChoixCombat.ATTAQUER) {
 				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
 				attaque(ennemi);
-				
-				if(ennemi.isAlive()){
+				if(!ennemi.isAlive()){
 					showMessage(ennemi.getName() + " est mort");
 					listEnnemis.remove(ennemi);
 				} else {
@@ -281,6 +351,13 @@ public class Jeu {
 		return book.getNodes().get(node.getWinBookNodeLink().getDestination());
 	}
 
+	/**
+	 * Donne le nombre de dommage infligé
+	 * @param attaquant Le player ou l'ennemi
+	 * @param weapon Item arme de l'attaquant actuel
+	 * @param defenseEnnemie Item defense de l'attaqué
+	 * @return Totalité des dommages infligés
+	 */
 	private int getDamageAmount(BookCharacter attaquant, BookItemWeapon weapon, BookItemDefense defenseEnnemie) {
 		int attaque = 0;
 		if(weapon != null) {
@@ -298,7 +375,7 @@ public class Jeu {
 		int r = random.nextInt(5);
 		int damageMultiplicator = 1;
 		if(attaquant.isDoubleDamage() && r > 2){
-			showMessage("Double domage !");
+			showMessage("Double !");
 			damageMultiplicator = 2;
 		}
 
@@ -324,12 +401,20 @@ public class Jeu {
 		return (attaquant.getBaseDamage() + attaque) * damageMultiplicator - resistance;
 	}
 	
+	/**
+	 * Attaque du player
+	 * @param ennemi Personnage ennemi
+	 */
 	private void attaque(BookCharacter ennemi){
 		int damageInt = getDamageAmount(state.getMainCharacter(), state.getBookItemArme(), null);
 		ennemi.damage(damageInt);
 		showMessage(ennemi +" a perdu "+ damageInt + " hp");
 	}
 	
+	/**
+	 * Attaque de(s) l'ennemi(s)
+	 * @param listEnnemis Personnage(s) ennemi(s)
+	 */
 	private void ennemiTour(List<BookCharacter> listEnnemis){
 		for(BookCharacter ennemi : listEnnemis){
 			state.getMainCharacter().damage(getDamageAmount(ennemi, null, state.getBookItemDefense()));
@@ -343,6 +428,11 @@ public class Jeu {
 		}
 	}
 
+	/**
+	 * Exécute un noeud random
+	 * @param node Noeud aléatoire
+	 * @return La prochaine destination
+	 */
 	public AbstractBookNode execNodeWithRandomChoices(BookNodeWithRandomChoices node) {
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
 		
@@ -360,6 +450,10 @@ public class Jeu {
 		return book.getNodes().get(randomChoices.getDestination());
 	}
 	
+	/**
+	 * Modifie le nombre de point de vie du player si le noeud en enlève ou en donne
+	 * @param node Noeud actuel
+	 */
 	private void execNodeHp(AbstractBookNodeWithChoices node){
 		int nodeHp = node.getHp();
 		if(nodeHp != 0){
@@ -376,6 +470,10 @@ public class Jeu {
 		}
 	}
 	
+	/**
+	 * Permet de choisir les items à prendre dans le noeud
+	 * @param node Noeud actuel
+	 */
 	private void chooseItems(AbstractBookNodeWithChoices node){
 		List<BookItemLink> nodeItems = new ArrayList<>();
 		for(BookItemLink bookItemLink : (List<BookItemLink>) node.getItemLinks()) {
@@ -387,6 +485,10 @@ public class Jeu {
 		}
 	}
 	
+	/**
+	 * Modifie la quantité d'argent et le nombre de point de vie du player si le noeud en enlève ou en donne
+	 * @param node Noeud actuel
+	 */
 	private void execBookNodeLink(BookNodeLink bookNodeLink){
 		if(bookNodeLink.getGold() != 0){
 			state.getMainCharacter().changeMoneyAmount("gold", state.getMainCharacter().getMoney("gold")+bookNodeLink.getGold());
@@ -404,10 +506,17 @@ public class Jeu {
 		}
 	}
 	
+	/**
+	 * Affiche un saut de ligne si le player actuel est un joueur
+	 */
 	private void showMessage() {
 		showMessage("");
 	}
 	
+	/**
+	 * Affiche le message si le player actuel est un joueur
+	 * @param str message à afficher
+	 */
 	private void showMessage(String str) {
 		if(showMessages)
 			System.out.println(str);
