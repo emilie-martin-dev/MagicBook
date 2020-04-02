@@ -23,8 +23,6 @@ import magic_book.core.exception.BookFileException;
 import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.core.file.BookWritter;
-import magic_book.core.game.BookCharacter;
-import magic_book.core.game.BookState;
 import magic_book.core.game.player.Jeu;
 import magic_book.window.pane.GraphPane;
 import magic_book.window.pane.LeftPane;
@@ -131,32 +129,28 @@ public class MainWindow extends Stage {
 		
 		MenuItem menuBookJouer = new MenuItem("Jouer");
 		menuBookJouer.setOnAction((ActionEvent e) -> {
-			Book bookCopy = createBookCopy();
-			
-			if(bookCopy != null) {
-				Jeu jeu = new Jeu(bookCopy);
+			try {
+				Jeu jeu = new Jeu(book);
 				jeu.play();
-			} else {
+			} catch (IOException | BookFileException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
 				a.setTitle("Erreur lors du chargement du jeu");
 				a.setHeaderText("Impossible de jouer au livre");
-				a.show(); 
+				a.show();
 			}
 		});
 		
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		menuBookDifficulty.setOnAction((ActionEvent e) -> {
-			Book bookCopy = createBookCopy();
-			
-			if(bookCopy != null) {
+			try {
 				Jeu jeu = new Jeu(book);
-				float difficulte = jeu.fourmis(10000);
+				float difficulte = jeu.fourmis(1000);
 				rightPane.difficultyChanged(difficulte);
-			} else {
+			} catch (IOException | BookFileException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
 				a.setTitle("Erreur lors de l'estimation");
 				a.setHeaderText("Impossible d'estimer la difficulté du livre");
-				a.show(); 
+				a.show();
 			}
 		});
 		
@@ -258,24 +252,6 @@ public class MainWindow extends Stage {
 			a.setTitle("Erreur lors de l'écriture du fichier");
 			a.setHeaderText("Impossible d'écrire le fichier sur le disque");
 			a.show(); 
-		}
-	}
-
-	private Book createBookCopy() {
-		try {
-			String tmpPath = ".livreTmpGame";
-			BookWritter bookWritter = new BookWritter();
-			bookWritter.write(tmpPath, book);
-			BookReader bookReader = new BookReader();
-			Book bookCopy = bookReader.read(tmpPath);
-			File file = new File(tmpPath);
-			file.delete();
-			
-			return bookCopy;
-		} catch (IOException ex) {
-			return null;
-		} catch (BookFileException ex) {
-			return null;
 		}
 	}
 	

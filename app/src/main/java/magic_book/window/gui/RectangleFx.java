@@ -35,13 +35,13 @@ public class RectangleFx extends Rectangle {
 		
 		this.setOnMouseEntered(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				RectangleFx.this.setFill(RectangleFx.this.defaultColor.brighter());
+				RectangleFx.this.setOpacity(0.5f);
 			}
 		});
 		
 		this.setOnMouseExited(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				RectangleFx.this.setFill(RectangleFx.this.defaultColor);
+				RectangleFx.this.setOpacity(100f);
 			}
 		});
 		

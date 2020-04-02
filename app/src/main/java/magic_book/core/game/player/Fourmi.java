@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
-import magic_book.core.game.BookSkill;
 import magic_book.core.game.BookState;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.game.character_creation.CharacterCreationItem;
@@ -42,8 +41,8 @@ public class Fourmi implements InterfacePlayerFourmis{
 		while(!choixValide){
 			choix = random.nextInt(ChoixCombat.values().length);
 			choixCombat = ChoixCombat.values()[choix];
-			
-			//Si inventaire, il choisis puis reviens sur le choix
+			choixCombat = ChoixCombat.ATTAQUER;
+			//Si inventaire, il choisit puis reviens sur le choix
 			if (choixCombat == ChoixCombat.INVENTAIRE){
 				if(!state.getMainCharacter().getItems().isEmpty())
 					useInventaire(state);
@@ -66,7 +65,7 @@ public class Fourmi implements InterfacePlayerFourmis{
 			state.setBookItemDefense((BookItemDefense) bookItem);
 		} else if(bookItem instanceof BookItemHealing){
 			BookItemHealing bookItemHealing = (BookItemHealing) bookItem;
-			state.getMainCharacter().setHp((state.getMainCharacter().getHp() + bookItemHealing.getHp()));
+			state.getMainCharacter().heal(bookItemHealing.getHp());
 			state.getMainCharacter().getItems().remove(listItemState.get(choix));
 		} else if(bookItem instanceof BookItemWeapon){
 			state.setBookItemArme((BookItemWeapon) bookItem);

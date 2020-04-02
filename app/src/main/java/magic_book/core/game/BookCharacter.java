@@ -82,8 +82,12 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		}
 		
 		this.moneys = new HashMap<>();
-		for(Entry<String, Integer> entry : bookCharacter.moneys.entrySet()) {
-			this.moneys.put(entry.getKey(), entry.getValue().intValue());
+		if(!bookCharacter.moneys.isEmpty()){
+			for(Entry<String, Integer> entry : bookCharacter.moneys.entrySet()) {
+				this.moneys.put(entry.getKey(), entry.getValue());
+			}
+		} else {
+			this.moneys.put("gold", 0);
 		}
 		
 		this.itemsMax = bookCharacter.itemsMax;
@@ -99,6 +103,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		characterJson.setCombatSkill(baseDamage);
 		characterJson.setHp(hpMax);
 		characterJson.setItemMax(itemsMax);
+		characterJson.setMoney(moneys.get("gold"));
 		
 		if(doubleDamage)
 			characterJson.setDoubleDamage(true);
@@ -119,7 +124,6 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		this.baseDamage = json.getCombatSkill();
 		this.hp = json.getHp();
 		this.hpMax = json.getHp();
-		
 		this.skills.clear();
 		if(json.getSkills() != null) {
 			for(String skill : json.getSkills()) {
@@ -141,6 +145,12 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 			}
 		}
 		
+		this.moneys.clear();
+		this.moneys.put("gold", 0);
+		if(json.getMoney()!= null) {
+			this.moneys.put("gold", json.getMoney());
+		}
+		
 		if(json.getDoubleDamage() != null)
 			this.doubleDamage = json.getDoubleDamage();
 	}
@@ -159,6 +169,9 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 		buffer.append("\n");
 		buffer.append("Items max : ");
 		buffer.append(itemsMax);
+		buffer.append("\n");
+		buffer.append("Argent : ");
+		buffer.append(moneys.get("gold"));
 		buffer.append("\n");
 		
 		if(!skills.isEmpty()) {

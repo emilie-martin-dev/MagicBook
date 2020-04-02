@@ -1,16 +1,20 @@
 package magic_book.core.game.player;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import javafx.scene.control.Alert;
 
 import magic_book.core.Book;
+import magic_book.core.exception.BookFileException;
+import magic_book.core.file.BookReader;
+import magic_book.core.file.BookWritter;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookState;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
-import magic_book.core.game.character_creation.CharacterCreationItem;
-import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -20,12 +24,10 @@ import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
-import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 import magic_book.core.requirement.AbstractRequirement;
-import magic_book.core.requirement.RequirementItem;
 
 public class Jeu {
 	
@@ -37,12 +39,13 @@ public class Jeu {
 	private InterfacePlayerFourmis player;
 	private Book book;
 	private boolean showMessages;
+	private Book bookToRead;
 	
 	public Jeu(Book book){
-		this.book = book;
+		this.bookToRead = book;
 	}
 	
-	public void play(){
+	public void play() throws IOException, BookFileException {
 		player = new Player();
 		
 		showMessages = true;
@@ -50,7 +53,7 @@ public class Jeu {
 		runGame();
 	}
 	
-	public float fourmis(int nbrFourmis){
+	public float fourmis(int nbrFourmis) throws IOException, BookFileException {
 		showMessages = false;
 		
 		int victoire = 0;
@@ -65,12 +68,21 @@ public class Jeu {
 		return ((float)victoire / (float)nbrFourmis) * 100f;
 	}
 	
-	private boolean runGame() {
+	private boolean runGame() throws IOException, FileNotFoundException, FileNotFoundException, BookFileException {
 		boolean gameFinish = false;
 		boolean win = false;
 		
+		String tmpPath = ".livreTmpGame";
+		BookWritter bookWritter = new BookWritter();
+		bookWritter.write(tmpPath, bookToRead);
+		BookReader bookReader = new BookReader();
+		Book bookCopy = bookReader.read(tmpPath);
+		File file = new File(tmpPath);
+		file.delete();
+
+		this.book = bookCopy;
+
 		showMessage(this.book.getTextPrelude());
-		
 		this.state = createNewState();
 		
 		AbstractBookNode currentNode = this.book.getRootNode();
@@ -112,18 +124,17 @@ public class Jeu {
 		BookCharacter bookCharacter;
 		BookState newState = new BookState();
 		if(this.book.getMainCharacter() == null){
-			bookCharacter = new BookCharacter("Test", "Personnage Test", 3, 50, null, null, null, 5, true);
+			bookCharacter = new BookCharacter("Test", "Personnage Test", 5, 150, null, null, null, 5, true);
 			newState.setMainCharacter(bookCharacter);
 		} else {
-			bookCharacter = this.book.getMainCharacter();
-			newState.setMainCharacter(bookCharacter);
+			BookCharacter bookCharacterMain = this.book.getMainCharacter();
+			newState.setMainCharacter(new BookCharacter(bookCharacterMain));
 		}
-		
+	
 		showMessage("Votre personnage : ");
 		showMessage(newState.getMainCharacter().getDescription(book));
 		
 		newState.setBook(this.book);
-		
 		for(AbstractCharacterCreation characterCreation : this.book.getCharacterCreations())
 			player.execPlayerCreation(book, characterCreation, newState);
 		
@@ -137,7 +148,7 @@ public class Jeu {
 			BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 			nodeTerminal.setText("Vous êtes morts...");
 			nodeTerminal.setBookNodeStatus(BookNodeStatus.FAILURE);
-
+			
 			return nodeTerminal;
 		}
 		
@@ -149,7 +160,6 @@ public class Jeu {
 	
 	public AbstractBookNode execNodeWithChoices(BookNodeWithChoices node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
-		
 		if(returnedNode != null) 
 			return returnedNode;		
 		
@@ -192,9 +202,11 @@ public class Jeu {
 			}
 			
 			execBookNodeLink(selectedBookNodeLink);
+			
 			return book.getNodes().get(selectedBookNodeLink.getDestination());
 		} else {
 			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Vous ne pouvez plus continuer, vous n'avez pas les items / compétences /argent adéquats", BookNodeStatus.FAILURE);
+			
 			return bookNodeTerminalFail;
 		}
 	}
@@ -210,7 +222,6 @@ public class Jeu {
 
 	public AbstractBookNode execNodeCombat(BookNodeCombat node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
-		
 		if(returnedNode != null) 
 			return returnedNode;
 		
@@ -222,7 +233,6 @@ public class Jeu {
 		
 		List<BookCharacter> listEnnemis = new ArrayList();
 		showMessage("Il y a "+node.getEnnemiesId().size() + " ennemies !");
-		
 		for(String ennemieNode : node.getEnnemiesId()){
 			listEnnemis.add(new BookCharacter(book.getCharacters().get(ennemieNode)));
 		}
@@ -232,7 +242,6 @@ public class Jeu {
 				showMessage(ennemi.getDescription(book));
 			
 			ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
-			
 			if (choixCombat == ChoixCombat.ATTAQUER) {
 				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
 				attaque(ennemi);
@@ -272,7 +281,7 @@ public class Jeu {
 		return book.getNodes().get(node.getWinBookNodeLink().getDestination());
 	}
 
-	private int getDamageAmount(BookCharacter attaquant, BookItemWeapon weapon, BookItemDefense bookItemDefense) {
+	private int getDamageAmount(BookCharacter attaquant, BookItemWeapon weapon, BookItemDefense defenseEnnemie) {
 		int attaque = 0;
 		if(weapon != null) {
 			attaque = weapon.getDamage();
@@ -300,8 +309,8 @@ public class Jeu {
 		}
 		
 		int resistance = 0;
-		if(bookItemDefense != null) {
-			resistance = bookItemDefense.getResistance();
+		if(defenseEnnemie != null) {
+			resistance = defenseEnnemie.getResistance();
 			/*bookItemDefense.setDurability(bookItemDefense.getDurability()-1);
 			if(bookItemDefense.getDurability()<=0){
 				state.getMainCharacter().getItems().remove(bookItemDefense.getId());
@@ -316,7 +325,9 @@ public class Jeu {
 	}
 	
 	private void attaque(BookCharacter ennemi){
-		ennemi.damage(getDamageAmount(state.getMainCharacter(), state.getBookItemArme(), null));
+		int damageInt = getDamageAmount(state.getMainCharacter(), state.getBookItemArme(), null);
+		ennemi.damage(damageInt);
+		showMessage(ennemi +" a perdu "+ damageInt + " hp");
 	}
 	
 	private void ennemiTour(List<BookCharacter> listEnnemis){
@@ -325,10 +336,10 @@ public class Jeu {
 			
 			if (showMessages)
 				showMessage(ennemi + " a attaquer, il vous reste" + state.getMainCharacter().getHp()+" hp");
-			
 			if(!state.getMainCharacter().isAlive()) {
 				return;
 			}
+			
 		}
 	}
 
@@ -378,14 +389,18 @@ public class Jeu {
 	
 	private void execBookNodeLink(BookNodeLink bookNodeLink){
 		if(bookNodeLink.getGold() != 0){
-			BookItem bookItem = book.getItems().get("gold");
-			state.getMainCharacter().changeMoneyAmount(bookItem.getId(), bookNodeLink.getGold());
-			showMessage("Vous avez pris "+ bookNodeLink.getGold() +" "+ bookItem.getName());
+			state.getMainCharacter().changeMoneyAmount("gold", state.getMainCharacter().getMoney("gold")+bookNodeLink.getGold());
+			showMessage("Vous avez pris "+ bookNodeLink.getGold() +" gold");
+			showMessage("Vous avez"+ state.getMainCharacter().getMoney("gold") + " gold");
 		}
 		
 		if(bookNodeLink.getHp() != 0){
-			state.getMainCharacter().setHp(bookNodeLink.getHp());
+			if(bookNodeLink.getHp() < 0)
+				state.getMainCharacter().damage(-bookNodeLink.getHp());
+			else
+				state.getMainCharacter().heal(bookNodeLink.getHp());
 			showMessage("Vous avez pris "+ bookNodeLink.getHp() + " hp");
+			showMessage("Vous avez"+ state.getMainCharacter().getHp() + " hp");
 		}
 	}
 	
