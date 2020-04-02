@@ -13,6 +13,12 @@ import magic_book.core.item.BookItem;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.observer.book.BookCharacterObservable;
+import magic_book.observer.book.BookCharacterObserver;
+import magic_book.observer.book.BookItemObservable;
+import magic_book.observer.book.BookItemObserver;
+import magic_book.observer.book.BookNodeLinkObservable;
+import magic_book.observer.book.BookNodeLinkObserver;
 import magic_book.observer.book.BookNodeObservable;
 import magic_book.observer.book.BookNodeObserver;
 
@@ -28,6 +34,9 @@ public class Book {
 	private List<AbstractCharacterCreation> characterCreations;
 	
 	private BookNodeObservable bookNodeObservable;
+	private BookNodeLinkObservable bookNodeLinkObservable;
+	private BookItemObservable bookItemObservable;
+	private BookCharacterObservable bookCharacterObservable;
 
 	private List<Integer> missingIndexes;
 	private HashMap<AbstractBookNode, Integer> nodesInv;
@@ -67,6 +76,9 @@ public class Book {
 		}
 		
 		this.bookNodeObservable = new BookNodeObservable();
+		this.bookNodeLinkObservable = new BookNodeLinkObservable();
+		this.bookItemObservable = new BookItemObservable();
+		this.bookCharacterObservable = new BookCharacterObservable();
 	}	
 
 	public void addNode(AbstractBookNode node) {
@@ -167,6 +179,7 @@ public class Book {
 	
 	public void addNodeLink(BookNodeLink nodeLink, AbstractBookNodeWithChoices node) {
 		node.addChoices(nodeLink);
+		bookNodeLinkObservable.notifyNodeLinkAdded(nodeLink);
 	}
 	
 	public void updateNodeLink(BookNodeLink oldBookNodeLink, BookNodeLink newBookNode) {
@@ -188,6 +201,8 @@ public class Book {
 		for(AbstractBookNodeWithChoices node : postUpdate) {
 			node.updateChoice(oldBookNodeLink, newBookNode);
 		}
+		
+		bookNodeLinkObservable.notifyNodeLinkEdited(oldBookNodeLink, newBookNode);
 	}
 	
 	public void removeNodeLink(BookNodeLink nodeLink) {
@@ -209,6 +224,46 @@ public class Book {
 		for(AbstractBookNodeWithChoices node : postRemove) {
 			node.removeChoice(nodeLink);
 		}
+		
+		bookNodeLinkObservable.notifyNodeLinkDeleted(nodeLink);
+	}
+	
+	public void addItem(BookItem item) {
+		items.put(item.getId(), item);
+		
+		bookItemObservable.notifyItemAdded(item);
+	}
+	
+	public void updateItem(BookItem oldItem, BookItem newItem) {
+		items.remove(oldItem.getId());
+		items.put(newItem.getId(), newItem);
+		
+		bookItemObservable.notifyItemEdited(oldItem, newItem);
+	}
+	
+	public void removeItem(BookItem item) {
+		items.remove(item.getId());
+		
+		bookItemObservable.notifyItemDeleted(item);
+	}
+	
+	public void addCharacter(BookCharacter character) {
+		characters.put(character.getId(), character);
+		
+		bookCharacterObservable.notifyCharacterAdded(character);
+	}
+	
+	public void updateCharacter(BookCharacter oldCharacter, BookCharacter newCharacter) {
+		characters.remove(oldCharacter.getId());
+		characters.put(newCharacter.getId(), newCharacter);
+		
+		bookCharacterObservable.notifyCharacterEdited(oldCharacter, newCharacter);
+	}
+	
+	public void removeCharacter(BookCharacter character) {
+		characters.remove(character.getId());
+		
+		bookCharacterObservable.notifyCharacterDeleted(character);
 	}
 	
 	public void setMainCharacter(BookCharacter mainCharacter) {
@@ -230,6 +285,30 @@ public class Book {
 	
 	public void removeNodeObserver(BookNodeObserver observer) {
 		bookNodeObservable.removeObserver(observer);
+	}
+	
+	public void addNodeLinkObserver(BookNodeLinkObserver observer) {
+		bookNodeLinkObservable.addObserver(observer);
+	}
+	
+	public void removeNodeLinkObserver(BookNodeLinkObserver observer) {
+		bookNodeLinkObservable.removeObserver(observer);
+	}
+	
+	public void addCharacterObserver(BookCharacterObserver observer) {
+		bookCharacterObservable.addObserver(observer);
+	}
+	
+	public void removeCharacterObserver(BookCharacterObserver observer) {
+		bookCharacterObservable.removeObserver(observer);
+	}
+	
+	public void addItemObserver(BookItemObserver observer) {
+		bookItemObservable.addObserver(observer);
+	}
+	
+	public void removeItemObserver(BookItemObserver observer) {
+		bookItemObservable.removeObserver(observer);
 	}
 
 	public String getTextPrelude() {

@@ -21,6 +21,8 @@ import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.observer.book.BookNodeLinkObserver;
+import magic_book.observer.book.BookNodeObserver;
 import magic_book.observer.fx.NodeLinkFxObserver;
 import magic_book.observer.fx.RectangleFxObserver;
 import magic_book.window.Mode;
@@ -36,7 +38,7 @@ import magic_book.window.gui.RectangleFx;
 /**
 * Pane comprenant tout le milieu de la fenêtre : l'édition des noeuds
 */
-public class GraphPane extends ScrollPane {
+public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeLinkObserver{
 	
 	/**
 	* Ratio lors du scroll
@@ -114,14 +116,6 @@ public class GraphPane extends ScrollPane {
 		this.setPannable(true);
 		
 		zoom = new SimpleFloatProperty(1);
-		
-		new ChangeListener<Object>() {
-			@Override
-			public void changed(ObservableValue<? extends Object> ov, Object t, Object t1) {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
-			
-		};
 		
 		rootPane.setOnScroll((ScrollEvent event) -> {
 			float newZoomLevel = ((float)event.getDeltaY() / SCROLL_RATIO) + zoom.getValue();
@@ -273,12 +267,20 @@ public class GraphPane extends ScrollPane {
 	* @param book Le livre contenant toutes les informations
 	*/
 	public void setBook(Book book){	
+		if(this.book != null) {
+			this.book.removeNodeObserver(this);
+			this.book.removeNodeLinkObserver(this);
+		}
+			
+		this.book = book;
+		
+		this.book.addNodeObserver(this);
+		this.book.addNodeLinkObserver(this);
+		
 		listeNoeud.clear();
 		listeNoeudLien.clear();
 		selectedNodeFx = null;
 		rootPane.getChildren().clear();	
-		
-		this.book = book;	
 		
 		createNodePrelude();
 		preludeFx.setText(book.getTextPrelude());
@@ -328,6 +330,36 @@ public class GraphPane extends ScrollPane {
 			
 			book.changeFirstNode(newFirstNode.getNode());
 		}
+	}
+	
+	@Override
+	public void nodeAdded(AbstractBookNode node) {
+
+	}
+
+	@Override
+	public void nodeEdited(AbstractBookNode oldNode, AbstractBookNode newNode) {
+
+	}
+
+	@Override
+	public void nodeDeleted(AbstractBookNode node) {
+
+	}
+
+	@Override
+	public void nodeLinkAdded(BookNodeLink nodeLink) {
+
+	}
+
+	@Override
+	public void nodeLinkEdited(BookNodeLink oldNodeLink, BookNodeLink newNodeLink) {
+
+	}
+
+	@Override
+	public void nodeLinkDeleted(BookNodeLink nodeLink) {
+
 	}
 	
 	/**
@@ -409,6 +441,7 @@ public class GraphPane extends ScrollPane {
 	public void setListeNoeudLien(List<NodeLinkFx> listeNoeudLien) {
 		this.listeNoeudLien = listeNoeudLien;
 	}
+
 	
 	/**
 	* Permet de gérer les évènements sur les noeuds (rectangle)

@@ -20,12 +20,14 @@ import javafx.scene.layout.VBox;
 import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.item.BookItem;
+import magic_book.observer.book.BookCharacterObserver;
+import magic_book.observer.book.BookItemObserver;
 import magic_book.window.Mode;
 import magic_book.window.UiConsts;
 import magic_book.window.dialog.CharacterDialog;
 import magic_book.window.dialog.ItemDialog;
 
-public class LeftPane extends ScrollPane {
+public class LeftPane extends ScrollPane implements BookItemObserver, BookCharacterObserver {
 	
 	private GraphPane graphPane;
 	
@@ -95,8 +97,9 @@ public class LeftPane extends ScrollPane {
 			public void handle(ActionEvent event) {
 				CharacterDialog characterDialog = new CharacterDialog(LeftPane.this.book);
 				BookCharacter perso = characterDialog.getCharacter();
+				
 				if(perso != null) {
-					addCharacter(perso);
+					book.addCharacter(perso);
 				}
 			}
 		});
@@ -106,20 +109,15 @@ public class LeftPane extends ScrollPane {
 			public void handle(ActionEvent event) {
 				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
 				if(selectedItem != null) {
-					BookCharacter character = selectedItem.getValue();
-					String oldId = character.getId();
-					CharacterDialog characterDialog = new CharacterDialog(character, LeftPane.this.book);
+					BookCharacter oldCharacter = selectedItem.getValue();
 					
-					if(characterDialog.getCharacter() == null)
+					CharacterDialog characterDialog = new CharacterDialog(oldCharacter, LeftPane.this.book);
+					BookCharacter newCharacter = characterDialog.getCharacter();
+					
+					if(newCharacter == null)
 						return;
 					
-					character = characterDialog.getCharacter();
-					
-					book.getCharacters().remove(oldId);	
-					book.getCharacters().put(character.getId(), character);
-					selectedItem.setValue(character);
-					
-					treeViewPerso.refresh();
+					book.updateCharacter(oldCharacter, newCharacter);
 				}
 			}
 		});
@@ -128,8 +126,7 @@ public class LeftPane extends ScrollPane {
 			@Override
 			public void handle(ActionEvent event) {
 				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
-				rootPerso.getChildren().remove(selectedItem);
-				book.getCharacters().remove(selectedItem.getValue().getId());
+				book.removeCharacter(selectedItem.getValue());
 			}
 		});
 		
@@ -148,7 +145,7 @@ public class LeftPane extends ScrollPane {
 				ItemDialog itemDialog = new ItemDialog(LeftPane.this.book);
 				BookItem item = itemDialog.getItem();
 				if(item != null) {
-					addItem(item);
+					book.addItem(item);
 				}
 			}
 		});
@@ -158,20 +155,16 @@ public class LeftPane extends ScrollPane {
 			public void handle(ActionEvent event) {
 				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
 				if(selectedItem != null) {
-					BookItem item = selectedItem.getValue();
-					String oldId = item.getId();
-					ItemDialog newItemDialog = new ItemDialog(item, LeftPane.this.book);
+					BookItem oldItem = selectedItem.getValue();
+					
+					ItemDialog newItemDialog = new ItemDialog(oldItem, LeftPane.this.book);
 					BookItem newItem = newItemDialog.getItem();
 					
 					if(newItem == null){
 						return;
 					}
 					
-					selectedItem.setValue(newItem);
-					treeViewItem.refresh();
-					
-					book.getItems().remove(oldId);	
-					book.getItems().put(newItem.getId(), newItem);
+					book.updateItem(oldItem, newItem);
 				}
 			}
 		});
@@ -180,8 +173,7 @@ public class LeftPane extends ScrollPane {
 			@Override
 			public void handle(ActionEvent event) {
 				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
-				rootItem.getChildren().remove(selectedItem);
-				book.getItems().remove(selectedItem.getValue().getId());
+				book.removeItem(selectedItem.getValue());
 			}
 		});
 		
@@ -195,30 +187,28 @@ public class LeftPane extends ScrollPane {
 	}
 	
 	public void setBook(Book book) {
+		if(this.book != null) {
+			this.book.removeCharacterObserver(this);
+			this.book.removeItemObserver(this);
+		}
+			
+		this.book = book;
+		
+		this.book.addCharacterObserver(this);
+		this.book.addItemObserver(this);
+		
 		treeViewPerso.getRoot().getChildren().clear();
 		treeViewItem.getRoot().getChildren().clear();
 		
 		for(Map.Entry<String, BookCharacter> entry : book.getCharacters().entrySet()) {
 			if(!entry.getKey().equals(Book.MAIN_CHARACTER_ID))
-				addCharacter(entry.getValue());
+				characterAdded(entry.getValue());
 		}
 		
 		
 		for(Map.Entry<String, BookItem> entry : book.getItems().entrySet()) {
-			addItem(entry.getValue());
+			itemAdded(entry.getValue());
 		}
-		
-		this.book = book;
-	}
-
-	private void addCharacter(BookCharacter character){
-		treeViewPerso.getRoot().getChildren().add(new TreeItem<> (character));
-		book.getCharacters().put(character.getId(), character);
-	}
-
-	private void addItem(BookItem item){
-		treeViewItem.getRoot().getChildren().add(new TreeItem<> (item));
-		book.getItems().put(item.getId(), item);
 	}
 
 	private ToggleButton createToggleButton(String path, Mode mode) {
@@ -249,5 +239,59 @@ public class LeftPane extends ScrollPane {
 		this.toggleGroup.getToggles().add(toggleButton);
 
 		return toggleButton;
+	}
+
+	@Override
+	public void itemAdded(BookItem item) {
+		treeViewItem.getRoot().getChildren().add(new TreeItem<> (item));	
+	}
+
+	@Override
+	public void itemEdited(BookItem oldItem, BookItem newItem) {
+		for(TreeItem<BookItem> treeItem : treeViewItem.getRoot().getChildren()) {
+			if(treeItem.getValue() == oldItem) {
+				treeItem.setValue(newItem);
+				break;
+			}
+		}
+		
+		treeViewItem.refresh();
+	}
+
+	@Override
+	public void itemDeleted(BookItem item) {
+		for(TreeItem<BookItem> treeItem : treeViewItem.getRoot().getChildren()) {
+			if(treeItem.getValue() == item) {
+				treeViewItem.getRoot().getChildren().remove(treeItem);
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void characterAdded(BookCharacter character) {
+		treeViewPerso.getRoot().getChildren().add(new TreeItem<> (character));
+	}
+
+	@Override
+	public void characterEdited(BookCharacter oldCharacter, BookCharacter newCharacter) {
+		for(TreeItem<BookCharacter> treeItem : treeViewPerso.getRoot().getChildren()) {
+			if(treeItem.getValue() == oldCharacter) {
+				treeItem.setValue(newCharacter);
+				break;
+			}
+		}
+		
+		treeViewPerso.refresh();
+	}
+
+	@Override
+	public void characterDeleted(BookCharacter character) {
+		for(TreeItem<BookCharacter> treeItem : treeViewPerso.getRoot().getChildren()) {
+			if(treeItem.getValue() == character) {
+				treeViewPerso.getRoot().getChildren().remove(treeItem);
+				break;
+			}
+		}
 	}
 }
