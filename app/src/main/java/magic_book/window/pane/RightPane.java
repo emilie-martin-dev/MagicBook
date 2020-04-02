@@ -14,15 +14,42 @@ import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.observer.book.BookNodeObserver;
 import magic_book.window.UiConsts;
 
+/**
+ * Création de la partie droite de la MainWindows (statistiques du livre)
+ */
 public class RightPane extends ScrollPane implements BookNodeObserver{
 	
+	/**
+	 * Livre avec toutes les informations
+	 */
 	private Book book;
 	
+	
+	/**
+	 * Nombre total de noeud
+	 */
 	private int nodeCount;
+	
+	/**
+	 * Nombre total de noeud terminal
+	 */
 	private int nodeTerminalCount;
+	
+	/**
+	 * Nombre total de noeud à choix random
+	 */
 	private int nodeRandomCount;
+	
+	/**
+	 * Nombre total de noeud à choix
+	 */
 	private int nodeChoiceCount;
+	
+	/**
+	 * Nombre total de noeud de combat
+	 */
 	private int nodeCombatCount;
+	
 	
 	private Label nodeCountLabel;
 	private Label nodeTerminalCountLabel;
@@ -31,6 +58,11 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	private Label nodeCombatCountLabel;
 	private Label difficultePourcentageLabel;
 	
+	
+	/**
+	 * Initialisation des valeurs qui compose le panel des statistiques
+	 * @param book Le livre contenant toutes les informations
+	 */
 	public RightPane(Book book){		
 		nodeCount = 0;
 		nodeTerminalCount = 0;
@@ -48,6 +80,10 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		setBook(book);
 	}
 	
+	/**
+	 * Création du panel de statistiques
+	 * @return VBox contenant toutes les statistiques
+	 */
 	private Node createRightPanel() {
 		HBox nodeCountBox = new HBox();
 		nodeCountLabel = new Label("");
@@ -82,7 +118,9 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		return statsLayout;
 	}
 	
-	
+	/**
+	 * Met à jour les statistiques
+	 */
 	private void updateStats() {
 		nodeCountLabel.setText(""+nodeCount);
 		nodeTerminalCountLabel.setText(""+nodeTerminalCount);
@@ -91,6 +129,10 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		nodeCombatCountLabel.setText(""+nodeCombatCount);
 	}
 	
+	/**
+	 * Ajoute +1 au compteur, en fonction du type de noeud
+	 * @param node Noeud ajouter
+	 */
 	private void addToCounter(AbstractBookNode node) {
 		if(node instanceof BookNodeTerminal) {
 			nodeTerminalCount++;
@@ -105,6 +147,10 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		nodeCount++;
 	}
 	
+	/**
+	 * Enlève 1 au compteur, en fonction du type de noeud
+	 * @param node Noeud supprimer
+	 */
 	private void removeToCounter(AbstractBookNode node) {
 		if(node instanceof BookNodeTerminal) {
 			nodeTerminalCount--;
@@ -138,10 +184,18 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		updateStats();
 	}
 	
+	/**
+	 * Change l'estimation de la difficulté
+	 * @param difficulte Estimation de la difficulté
+	 */
 	public void difficultyChanged(float difficulte) {
 		difficultePourcentageLabel.setText(""+difficulte);
 	}	
 	
+	/**
+	 * Remet toutes les statisques à zéro si on ouvre un nouveau livre
+	 * @param book Livre contenant toutes les informations
+	 */
 	public void setBook(Book book) {
 		if(this.book != null)
 			this.book.removeNodeObserver(this);
@@ -151,6 +205,7 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		nodeRandomCount = 0;
 		nodeChoiceCount = 0;
 		nodeCount = 0;
+		difficultePourcentageLabel.setText("?");
 		
 		this.book = book;
 		this.book.addNodeObserver(this);
@@ -162,6 +217,10 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		updateStats();
 	}
 
+	/**
+	 * Donne le livre
+	 * @return Le livre avec toutes les informations
+	 */
 	public Book getBook() {
 		return book;
 	}

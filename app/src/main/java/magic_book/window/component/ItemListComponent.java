@@ -19,16 +19,38 @@ import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemLink;
 import magic_book.window.UiConsts;
 
+/**
+ * Permet d'ajouter ou de supprimer des items
+ */
 public class ItemListComponent extends VBox {
 
+	/**
+	 * Contient la liste d'item disponible
+	 */
 	private ComboBox<BookItem> itemComboBox;
+	/**
+	 * Contient la liste d'item sélectionné
+	 */
 	private ListView<BookItemLink> selectedItemsListView;
 	
+	/**
+	 * Buton d'ajout d'item
+	 */
 	private Button updateItemSelected;
+	/**
+	 * Nombre d'item disponible (par item)
+	 */
 	private TextField amountTextField;
 	
+	/**
+	 * Livre contenant toutes les informations
+	 */
 	private Book book;
 	
+	/**
+	 * Création de la VBox des items
+	 * @param book Livre contenant toutes les informations
+	 */
 	public ItemListComponent(Book book) {
 		this.book = book;
 		
@@ -64,6 +86,10 @@ public class ItemListComponent extends VBox {
 		this.getChildren().addAll(itemSelectionBox, selectedItemsListView, createItemLinkPane());
 	}
 	
+	/**
+	 * Supprime l'item sélectionné
+	 * @return Menu contenant la possibilité de suppression d'item
+	 */
 	public ContextMenu createMenuContextItemLink() {
 		ContextMenu contextMenuItemLink = new ContextMenu();
 		
@@ -83,6 +109,10 @@ public class ItemListComponent extends VBox {
 		return contextMenuItemLink;
 	}
 	
+	/**
+	 * Modifie le nombre d'item disponible en fonction de l'item sélectionné
+	 * @return Pane contenant un bouton et un texte
+	 */
 	public GridPane createItemLinkPane() {
 		amountTextField = new TextField();
 		
@@ -110,12 +140,19 @@ public class ItemListComponent extends VBox {
 		return selectedItemLinkPane;
 	}
 	
+	/**
+	 * L'édition de l'item n'est pas disponible quand aucun item n'est sélectionné
+	 */
 	public void disableItemLinkEdition() {
 		amountTextField.setDisable(true);
 		updateItemSelected.setDisable(true);
 		amountTextField.setText("");
 	}
 	
+	/**
+	 * Ajoute un item dans le noeud
+	 * @param id L'item ajouté
+	 */
 	public void addItemLink(String id) {
 		BookItemLink bookItemLink = new BookItemLink();
 		bookItemLink.setId(id);
@@ -123,16 +160,28 @@ public class ItemListComponent extends VBox {
 		addItemLink(bookItemLink);
 	}
 	
+	/**
+	 * Ajoute l'item dans la liste d'item sélectionné
+	 * @param bookItemLink 
+	 */
 	public void addItemLink(BookItemLink bookItemLink) {
 		selectedItemsListView.getItems().add(bookItemLink);
 
 		itemComboBox.getItems().remove(book.getItems().get(bookItemLink.getId()));
 	}
 	
+	/**
+	 * Liste d'item(s) disponible dans le noeud
+	 * @return Liste d'item(s)
+	 */
 	public List<BookItemLink> getBookItemLinks() {
 		return selectedItemsListView.getItems();
 	}
 	
+	/**
+	 * Modifie laliste d'item disponible dans le noeud
+	 * @param itemLinks Nouvelle liste d'item(s)
+	 */
 	public void setBookItemLinks(List<BookItemLink> itemLinks) {
 		for(BookItemLink itemLink : itemLinks) {
 			addItemLink(new BookItemLink(itemLink));

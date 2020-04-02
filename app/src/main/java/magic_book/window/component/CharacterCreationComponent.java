@@ -11,20 +11,48 @@ import magic_book.core.game.character_creation.CharacterCreationItem;
 import magic_book.core.game.character_creation.CharacterCreationText;
 import magic_book.window.UiConsts;
 
+/**
+ * Permet de sélectionné du texte et/ou des items disponible juste après le prélude
+ */
 public class CharacterCreationComponent extends GridPane {
 		
+	/**
+	 * Type texte
+	 */
 	private static final String TYPE_TEXT = "Texte";
 	//private static final String TYPE_SKILL = "Skills";
+	/**
+	 * Type item
+	 */
 	private static final String TYPE_ITEM = "Item";
 
+	/**
+	 * 
+	 */
 	private ComboBox<String> characterCreationType;
+	
+	/**
+	 * Pane de l'ajout d'item
+	 */
 	private ItemListComponent itemLinksList;
+	/**
+	 * Texte juste après le prélude
+	 */
 	private TextArea texte;
 
+	/**
+	 * Création d'un CharacterCreationComponent null
+	 * @param book Livre contenant toutes les informations
+	 */
 	public CharacterCreationComponent(Book book) {
 		this(book, null);
 	}
 	
+	/**
+	 * Initialisation des valeurs du GripPane
+	 * @param book Livre contenant toutes les informations
+	 * @param abstractCharacterCreation 
+	 */
 	public CharacterCreationComponent(Book book, AbstractCharacterCreation abstractCharacterCreation) {
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
@@ -59,10 +87,17 @@ public class CharacterCreationComponent extends GridPane {
 			setCharacterCreation(abstractCharacterCreation);
 	}
 
+	/**
+	 * Permet d'afficher le Pane qui ajoute les items si jamais TYPE_ITEM est sélectionné dans la ChoiceBox
+	 */
 	private void addItemLinksComponent() {
 		this.add(itemLinksList, 0, 3, 2, 1);
 	}
 
+	/**
+	 * Permet de retourner les items sélectionnés et le texte créer
+	 * @return Item et texte
+	 */
 	public AbstractCharacterCreation getCharacterCreation() {
 		AbstractCharacterCreation characterCreation = null;
 
@@ -80,6 +115,10 @@ public class CharacterCreationComponent extends GridPane {
 		return characterCreation;
 	}
 
+	/**
+	 * Permet de modifier le Pane des items ainsi que le Pane actuel pour une édition
+	 * @param characterCreation Pane existant
+	 */
 	public void setCharacterCreation(AbstractCharacterCreation characterCreation) {
 		if(characterCreation instanceof CharacterCreationItem) {
 			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;

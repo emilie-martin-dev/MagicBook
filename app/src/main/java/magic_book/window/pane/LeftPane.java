@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -25,8 +24,14 @@ import magic_book.window.UiConsts;
 import magic_book.window.dialog.CharacterDialog;
 import magic_book.window.dialog.ItemDialog;
 
+/**
+ * Création du coté gauche de la fenêtre Windows (Mode, Personnages, Items)
+ */
 public class LeftPane extends ScrollPane {
 	
+	/**
+	 * Centre de la fenêtre
+	 */
 	private GraphPane graphPane;
 	
 	private ToggleGroup toggleGroup;

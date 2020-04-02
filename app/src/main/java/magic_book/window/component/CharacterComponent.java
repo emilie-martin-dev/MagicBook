@@ -9,20 +9,58 @@ import magic_book.core.Book;
 import magic_book.core.game.BookCharacter;
 import magic_book.window.UiConsts;
 
+/**
+ * Pane permettant la création d'un personnage
+ */
 public class CharacterComponent extends GridPane {
 	
+	/**
+	 * ID du personnage
+	 */
 	private TextField idTextField;
+	/**
+	 * Nom du personnage
+	 */
 	private TextField nameTextField;
+	/**
+	 * Vie du personnage
+	 */
 	private TextField hpTextField;
+	/**
+	 * Dégat du personnage
+	 */
 	private TextField combatSkillTextField;
+	/**
+	 * Item maximum
+	 */
 	private TextField itemMaxTextField;
+	/**
+	 * Argent disponible
+	 */
 	private TextField argentTextField;
+	/**
+	 * Double domage activé ou non
+	 */
 	private CheckBox doubleDamageCheckBox;
 	
+	/**
+	 * Livre contenant toutes les informations
+	 */
 	private Book book;
+	/**
+	 * Création du personnage principal ou non
+	 */
 	private Boolean mainCharacter;
+	/**
+	 * Base ID
+	 */
 	private String baseId = "";
 	
+	/**
+	 * Initialisation du Pane de la création du personnage
+	 * @param book Livre contenant toutes les informations
+	 * @param mainCharacter Création du personnage principal (true) ou personnage autre (false)
+	 */
 	public CharacterComponent(Book book, Boolean mainCharacter) {		
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
@@ -63,6 +101,11 @@ public class CharacterComponent extends GridPane {
 		}
 	}
 	
+	/**
+	 * Donne toutes les informations saisie
+	 * @param book Livre contenant toutes les informations
+	 * @return Le personnage créer
+	 */
 	public BookCharacter getCharacter(Book book) {
 		if (idTextField.getText().trim().isEmpty()
 				|| nameTextField.getText().trim().isEmpty()) {
@@ -106,7 +149,7 @@ public class CharacterComponent extends GridPane {
 				itemMaxInt = Integer.parseInt(itemMaxTextField.getText());
 				argentInt = Integer.parseInt(argentTextField.getText());
 			} catch (NumberFormatException ex){
-				notANumberAlertDialog(ex.getMessage());
+				showErrorDialog(ex.getMessage());
 				return null;
 			}
 			character.setItemsMax(itemMaxInt);
@@ -117,6 +160,10 @@ public class CharacterComponent extends GridPane {
 		return character;
 	}
 	
+	/**
+	 * Permet de modifier le Pane actuel pour une édition des valeurs saisie
+	 * @param character Personnage existant
+	 */
 	public void setCharacter(BookCharacter character) {
 		if(character != null) {
 			idTextField.setText(character.getId());
@@ -138,6 +185,9 @@ public class CharacterComponent extends GridPane {
 		}
 	}
 
+	/**
+	 * Alerte si l'ID est déjà utilisé
+	 */
 	private void errorIdAlreadyUsed(){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 		
@@ -146,10 +196,10 @@ public class CharacterComponent extends GridPane {
 		alertDialog.show();
 	}
 	
-	private void notANumberAlertDialog(String message){
-		showErrorDialog(message.replace("For input string: ", "") + " n'est pas un entier");
-	}
-
+	/**
+	 * Alert erreur
+	 * @param ex Exception d'erreur
+	 */
 	private void showErrorDialog(String message){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 		

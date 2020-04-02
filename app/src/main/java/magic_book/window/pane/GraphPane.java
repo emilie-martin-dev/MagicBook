@@ -34,7 +34,7 @@ import magic_book.window.gui.PreludeFx;
 import magic_book.window.gui.RectangleFx;
 
 /**
-* Pane comprenant tout le milieu de la fenêtre : l'édition des noeuds
+* Création du centre de la MainWindows (édition des noeuds)
 */
 public class GraphPane extends ScrollPane {
 	
