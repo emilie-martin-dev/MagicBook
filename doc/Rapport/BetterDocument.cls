@@ -145,8 +145,8 @@
 \RequirePackage{setspace} % Permet de changer l'interligne
 \RequirePackage{tabularx} % Permet d'utiliser les tableaux
 \RequirePackage{wrapfig} % Permet d'utiliser les wrapfigure
-\RequirePackage{xcolor} % Permet d'utiliser les couleurs
-
+\RequirePackage[table]{xcolor} % Permet d'utiliser les couleurs
+\RequirePackage{longtable}
 % Package non compatibles avec Beamer
 \ifthenelse{\equal{\classname}{beamer}}{}{%
 	\RequirePackage[top=2.5cm, left=2.5cm, right=2.5cm, bottom=2.5cm]{geometry} % Change les bordures des pages
