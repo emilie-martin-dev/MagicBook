@@ -59,8 +59,10 @@ public class ItemListComponent extends VBox {
 		itemComboBox = new ComboBox<>();
 		itemComboBox.getItems().addAll(book.getItems().values());
 		
+		//Bouton "Ajouter" pour ajouter les items
 		Button addItemSelected = new Button("Ajouter");
 		addItemSelected.setOnAction((ActionEvent e) -> {
+			//Ajoute l'item si un item est sélectionné dans la ComboBox
 			if(itemComboBox.getValue() != null)
 				addItemLink(itemComboBox.getValue().getId());
 		});
@@ -69,6 +71,7 @@ public class ItemListComponent extends VBox {
 		itemSelectionBox.setSpacing(UiConsts.DEFAULT_MARGIN);
 		itemSelectionBox.getChildren().addAll(itemComboBox, addItemSelected);
 	
+		//Permet d'afficher les items ajoutés
 		selectedItemsListView = new ListView<>();
 		selectedItemsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);		
 		selectedItemsListView.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
@@ -94,8 +97,10 @@ public class ItemListComponent extends VBox {
 		ContextMenu contextMenuItemLink = new ContextMenu();
 		
 		MenuItem menuItemLinkDelete = new MenuItem("Supprimer l'item");
+		//Si un clique sur louton "Supprimer l'item"
 		menuItemLinkDelete.setOnAction((ActionEvent event) -> {
 			BookItemLink itemLink = selectedItemsListView.getSelectionModel().getSelectedItem();
+			//Supprime l'item selectionné
 			if(itemLink != null) {
 				selectedItemsListView.getItems().remove(itemLink);
 				selectedItemsListView.refresh();

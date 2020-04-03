@@ -62,10 +62,12 @@ public class NodeLinkFx extends Line {
 		
 		nodeLinkFxObservable = new NodeLinkFxObservable();
 		
+		//Si le lien est cliqué
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			nodeLinkFxObservable.notifyOnNodeLinkFXClicked(NodeLinkFx.this, event);
 		});	
 		
+		//Si le cercle est cliqué
 		endCircle.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			nodeLinkFxObservable.notifyOnNodeLinkFXClicked(NodeLinkFx.this, event);
 		});	

@@ -101,11 +101,14 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		this.firstNode = firstNode;
 		
+		//Si le premier noeud est de type aléatoire
 		if(firstNode instanceof BookNodeWithRandomChoices){
 			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
 			
 			showRandomUi();
-		} else if(firstNode instanceof BookNodeCombat){
+		}
+		//Si le premier noeud est de type combat
+		else if(firstNode instanceof BookNodeCombat){
 			List<String> listChoixCombat = choixCombatRestants();
 			
 			for(String choixCombat : listChoixCombat)
@@ -128,13 +131,16 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		this.firstNode = firstNode;
 		
+		//Si le premier noeud est de type aléatoire
 		if(nodeLink instanceof BookNodeLinkRandom){
 			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
 			
 			chanceTextField.setText(""+nodeLinkRandom.getChance());
 			
 			showRandomUi();
-		} else if(firstNode instanceof BookNodeCombat){
+		}
+		//Si le premier noeud est de type combat
+		else if(firstNode instanceof BookNodeCombat){
 			List<String> listChoixCombat = choixCombatRestants();
 			
 			for(String choix : listChoixCombat) {
@@ -171,6 +177,7 @@ public class NodeLinkDialog extends AbstractDialog{
 
 	@Override
 	protected Node getMainUI() {
+		//Génération des Pane
 		root = new BorderPane();
 		mainUi = new GridPane();
 		randomUi = new GridPane();
@@ -223,7 +230,8 @@ public class NodeLinkDialog extends AbstractDialog{
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			String texteHistoire = (String) texte.getText();
-					
+			
+			//Si le premier noeud est de type aléatoire
 			if(NodeLinkDialog.this.firstNode instanceof BookNodeWithRandomChoices){
 				if (chanceTextField.getText().isEmpty()){
 					return;
@@ -289,6 +297,7 @@ public class NodeLinkDialog extends AbstractDialog{
 	private List<String> choixCombatRestants(){
 		List<String> listeChoix = new ArrayList();
 		
+		//Si le premier noeud est de type combat, on fait la liste des noeud encore disponible (Evasion, Gagner, Perdu)
 		if(firstNode instanceof BookNodeCombat){
 			BookNodeCombat firstNodeCombat = (BookNodeCombat) firstNode;
 			

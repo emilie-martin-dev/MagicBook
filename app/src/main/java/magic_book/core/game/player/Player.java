@@ -29,7 +29,7 @@ public class Player implements InterfacePlayerFourmis {
 	public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
 		boolean choixValide = false;
 		ChoixCombat choixCombat = null;
-				
+		//Affichage des choix lors du tour de combat du player
 		while(!choixValide){
 			System.out.println("Vos choix : ");
 			System.out.println("1 - Attaque");
@@ -47,6 +47,7 @@ public class Player implements InterfacePlayerFourmis {
 			
 			choixCombat = ChoixCombat.values()[choix-1];
 			
+			//Choisi un objet dans l'inventaire puis retourne au choix
 			if (choixCombat == ChoixCombat.INVENTAIRE){
 				if(!state.getMainCharacter().getItems().isEmpty())
 					if(!state.getMainCharacter().getItems().isEmpty())
@@ -231,10 +232,13 @@ public class Player implements InterfacePlayerFourmis {
 	public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
 		System.out.println(characterCreation.getText());
 		
+		//Choix des items du début
 		if(characterCreation instanceof CharacterCreationItem){
 			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
 			prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
-		} else if(characterCreation instanceof CharacterCreationSkill){
+		}
+		//Choix des skill du début
+		else if(characterCreation instanceof CharacterCreationSkill){
 			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
 			
 			for(String skillId : characterCreationSkill.getSkillLinks()){

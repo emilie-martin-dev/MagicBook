@@ -93,6 +93,7 @@ public class CharacterComponent extends GridPane {
 		this.book = book;
 		this.mainCharacter = mainCharacter;
 		
+		//Si c'est le personnage principal
 		if(mainCharacter){
 			this.add(itemMaxLabel, 0, 5);
 			this.add(itemMaxTextField, 1, 5);
@@ -107,17 +108,20 @@ public class CharacterComponent extends GridPane {
 	 * @return Le personnage créer
 	 */
 	public BookCharacter getCharacter(Book book) {
+		//Si l'id et le name non pas de valeur de saisie
 		if (idTextField.getText().trim().isEmpty()
 				|| nameTextField.getText().trim().isEmpty()) {
 			return null;
 		}
 		
 		if(book != null){
+			//Permet de ne pas utiliser id pour le personnage principal
 			if (idTextField.getText().trim().equals(Book.MAIN_CHARACTER_ID)){
 				errorIdAlreadyUsed();
 				return null;
 			}
-		
+			
+			//Permet de ne pas avoir un id déjà utilisé
 			if(book.getCharacters().containsKey(idTextField.getText()) && !baseId.equals(idTextField.getText())) {
 				errorIdAlreadyUsed();
 				return null;
@@ -142,6 +146,8 @@ public class CharacterComponent extends GridPane {
 		character.setHpMax(hp);
 		character.setBaseDamage(damage);
 		character.setDoubleDamage(doubleDamageCheckBox.isSelected());
+		
+		//Si c'est le personnage principal
 		if(mainCharacter){
 			int itemMaxInt;
 			int argentInt;

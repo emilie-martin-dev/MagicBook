@@ -142,7 +142,7 @@ public class RectangleFx extends Rectangle {
 
 	/**
 	 * Modifie la position y du coin gauche du rectangle pour le zoom
-	 * @param realX position du y
+	 * @param realY position du y
 	 */
 	public void setRealY(double realY) {
 		this.realY.set((float) realY);

@@ -29,19 +29,43 @@ import magic_book.window.pane.LeftPane;
 import magic_book.window.pane.RightPane;
 import magic_book.window.gui.NodeFx;
 
+/**
+ * Fenêtre contenant le tout les Pane (LeftPane, GraphPane, RightPane)
+ */
 public class MainWindow extends Stage {
 
+	/**
+	 * Contient le centre de la fenêtre
+	 */
 	private GraphPane graphPane;
+	/**
+	 * Contient la partie gauche de la fenêtre
+	 */
 	private LeftPane leftPane;
+	/**
+	 * Contient la partie droite de la fenêtre
+	 */
 	private RightPane rightPane;
 	
+	/**
+	 * Constitue la fenêtre
+	 */
 	private BorderPane root;
 	
+	/**
+	 * Chemin du fichier actuellement ouvert
+	 */
 	private String path = null;
 	
+	/**
+	 * Le livre contenant toutes les informations
+	 */
 	private Book book;
 	
 
+	/**
+	 * Initialisation de la fenêtre principale
+	 */
 	public MainWindow() {
 		book = new Book();
 		
@@ -62,6 +86,10 @@ public class MainWindow extends Stage {
 		this.show();
 	}
 
+	/**
+	 * Initialisation de la barre de menu
+	 * @return Barre de menu
+	 */
 	private MenuBar createMenuBar() {
 		MenuBar menuBar = new MenuBar();
 
@@ -72,6 +100,8 @@ public class MainWindow extends Stage {
 			setBook(new Book());
 			path = null;
 		});
+		
+		//Permet d'ouvrir un livre
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
 			FileChooser fileChooser = new FileChooser();
@@ -86,6 +116,7 @@ public class MainWindow extends Stage {
 				return;
 			}
 
+			//Si il y a une erreur dans l'ouverture du fichier
 			try {
 				BookReader reader = new BookReader();
 				Book book = reader.read(selectedFile.getAbsolutePath());
@@ -105,6 +136,8 @@ public class MainWindow extends Stage {
 				a.show();
 			}			
 		});
+		
+		//Permet d'enregistrer un livre
 		MenuItem menuFileSave = new MenuItem("Enregistrer");
 		menuFileSave.setOnAction((ActionEvent e) -> {
 			if(path == null) {
@@ -114,6 +147,8 @@ public class MainWindow extends Stage {
 			
 			saveFile();
 		});
+		
+		//Permet d'enregistrer sous un livre
 		MenuItem menuFileSaveAs = new MenuItem("Enregistrer sous");
 		menuFileSaveAs.setOnAction((ActionEvent e) -> {
 			if(!changeSelectedFile())
@@ -127,7 +162,9 @@ public class MainWindow extends Stage {
 		// --- Menu livre
 		Menu menuBook = new Menu("Livre");
 		
+		//Permet de jouer au livre
 		MenuItem menuBookJouer = new MenuItem("Jouer");
+		//Si erreur dans le chargement du livre
 		menuBookJouer.setOnAction((ActionEvent e) -> {
 			try {
 				Jeu jeu = new Jeu(book);
@@ -140,11 +177,13 @@ public class MainWindow extends Stage {
 			}
 		});
 		
+		//Permet de générer des fourmis afin d'estimé la difficulté
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
+		//Si erreur dans le chargement du livre
 		menuBookDifficulty.setOnAction((ActionEvent e) -> {
 			try {
 				Jeu jeu = new Jeu(book);
-				float difficulte = jeu.fourmis(10000);
+				float difficulte = jeu.fourmis(5000);
 				rightPane.difficultyChanged(difficulte);
 			} catch (IOException | BookFileException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
@@ -154,6 +193,7 @@ public class MainWindow extends Stage {
 			}
 		});
 		
+		//Permet de générer tout le livre en texte dans un format .txt
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
 			NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
@@ -187,6 +227,7 @@ public class MainWindow extends Stage {
 		menuBook.getItems().addAll(menuBookJouer, menuBookDifficulty, menuBookGenerate);
 
 		// --- Menu affichage
+		//Permet de masquer/afficher le LeftPane
 		Menu menuShow = new Menu("Affichage");
 		CheckMenuItem menuShowLeftPanel = new CheckMenuItem("Mode, Items et personnages");
 		menuShowLeftPanel.setOnAction((ActionEvent e) -> {
@@ -197,7 +238,7 @@ public class MainWindow extends Stage {
 			}
 		});
 
-
+		//Permet de masquer/afficher le RightPane
 		CheckMenuItem menuShowStatsPanel = new CheckMenuItem("Statistiques");
 		menuShowStatsPanel.setOnAction((ActionEvent e) -> {
 			if(menuShowStatsPanel.isSelected()) {
@@ -217,6 +258,10 @@ public class MainWindow extends Stage {
 		return menuBar;
 	}
 	
+	/**
+	 * Met à jour le livre lors de l'ouverture d'un fichier (nouveau au préexistant)
+	 * @param book Nouveau livre
+	 */
 	private void setBook(Book book) {		
 		this.book = book;
 		
@@ -225,6 +270,10 @@ public class MainWindow extends Stage {
 		graphPane.setBook(book);
 	}
 	
+	/**
+	 * Chemin du fichier
+	 * @return Si l'enregistrement du fichier a été fait ou non
+	 */
 	private boolean changeSelectedFile() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Sauvegarder le livre");
@@ -238,6 +287,9 @@ public class MainWindow extends Stage {
 		return true;
 	}
 	
+	/**
+	 * Permet de souvegarder le doccument en fonction du path (chemin du fichier)
+	 */
 	private void saveFile() {
 		File saveFile = new File(path);
 		

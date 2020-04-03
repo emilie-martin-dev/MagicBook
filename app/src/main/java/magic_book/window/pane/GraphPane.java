@@ -284,6 +284,8 @@ public class GraphPane extends ScrollPane {
 		preludeFx.setText(book.getTextPrelude());
 		
 		HashMap<AbstractBookNode, NodeFx> nodeNodeFxMapping = new HashMap<>();
+		
+		//Positionnement des noeuds du livre chargé
 		if(!book.getNodes().isEmpty()) {
 			int i = 0;
 			double angle = (Math.PI * 2) / book.getNodes().size();
@@ -411,7 +413,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Permet de gérer les évènements sur les noeuds (rectangle)
+	* Permet de gérer les évènements sur les noeuds (rectangle) en fonction du mode sélectionné
 	*/
 	class NodeFxListener implements RectangleFxObserver {
 		
@@ -523,7 +525,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Permet de gérer les évènements sur les liens (ligne)
+	* Permet de gérer les évènements sur les liens (ligne) en fontion du mode sélectionné
 	*/
 	class NodeLinkFxListener implements NodeLinkFxObserver {
 

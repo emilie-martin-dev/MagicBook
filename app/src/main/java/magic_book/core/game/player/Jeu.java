@@ -119,6 +119,7 @@ public class Jeu {
 		boolean gameFinish = false;
 		boolean win = false;
 		
+		//Copie du livre afin de ne pas le modifier
 		String tmpPath = ".livreTmpGame";
 		BookWritter bookWritter = new BookWritter();
 		bookWritter.write(tmpPath, bookToRead);
@@ -132,25 +133,31 @@ public class Jeu {
 		showMessage(this.book.getTextPrelude());
 		this.state = createNewState();
 		
+		//Premier noeud (noeud de départ)
 		AbstractBookNode currentNode = this.book.getRootNode();
 		
+		//Tant que le jeu n'est pas fini
 		while(!gameFinish){
+			//Si c'est un noeud de combat
 			if(currentNode instanceof BookNodeCombat){
 				BookNodeCombat bookNodeCombat = (BookNodeCombat) currentNode;
 				currentNode = execNodeCombat(bookNodeCombat);
 			}
+			//Si c'est un noeud à choix (noeud basic)
 			else if(currentNode instanceof BookNodeWithChoices){
 				BookNodeWithChoices bookNodeWithChoices = (BookNodeWithChoices) currentNode;
 				currentNode = execNodeWithChoices(bookNodeWithChoices);
 			}
+			//Si c'est un noeud aléatoire à choix (noeud random)
 			else if(currentNode instanceof BookNodeWithRandomChoices){
 				BookNodeWithRandomChoices bookNodeWithRandomChoices = (BookNodeWithRandomChoices) currentNode;
 				currentNode = execNodeWithRandomChoices(bookNodeWithRandomChoices);
 			}
+			//Si c'est un noeud terminal
 			else if(currentNode instanceof BookNodeTerminal){
 				BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) currentNode;
 				execNodeTerminal(bookNodeTerminal);
-				
+				//Fin de partie
 				gameFinish = true;
 				
 				if(bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY)
@@ -174,10 +181,14 @@ public class Jeu {
 	private BookState createNewState(){
 		BookCharacter bookCharacter;
 		BookState newState = new BookState();
+		
+		//Création d'un personnage si le personnage principal n'existe pas
 		if(this.book.getMainCharacter() == null){
 			bookCharacter = new BookCharacter("Test", "Personnage Test", 5, 150, null, null, null, 5, true);
 			newState.setMainCharacter(bookCharacter);
-		} else {
+		} 
+		//Récupération du personnage principal
+		else {
 			BookCharacter bookCharacterMain = this.book.getMainCharacter();
 			newState.setMainCharacter(new BookCharacter(bookCharacterMain));
 		}
@@ -186,6 +197,7 @@ public class Jeu {
 		showMessage(newState.getMainCharacter().getDescription(book));
 		
 		newState.setBook(this.book);
+		//Récupération des skills et items disponible au prélude
 		for(AbstractCharacterCreation characterCreation : this.book.getCharacterCreations())
 			player.execPlayerCreation(book, characterCreation, newState);
 		
@@ -199,7 +211,9 @@ public class Jeu {
 	 */
 	public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
 		showMessage(node.getText());
+		//Regarde si il y a une perte/gain de point de vie dans le noeud
 		execNodeHp(node);
+		//Si le personnage n'est plus en vie
 		if(!state.getMainCharacter().isAlive()){
 			BookNodeTerminal nodeTerminal = new BookNodeTerminal();
 			nodeTerminal.setText("Vous êtes morts...");
@@ -208,6 +222,7 @@ public class Jeu {
 			return nodeTerminal;
 		}
 		
+		//Regarde si il y a des item à prendre dans le noeud
 		if(!node.getItemLinks().isEmpty())
 			chooseItems(node);
 		
@@ -225,14 +240,17 @@ public class Jeu {
 			return returnedNode;		
 		
 		int lienValide = 0;
+		//Regarde s'il y a au moins un choix où le personnage à accès en fonction des prérequis
 		for (BookNodeLink bookNodeLink : node.getChoices()){
 			if(bookNodeLink.isAvailable(state))
 				lienValide += 1;
 		}
 
+		//Si il y a au moins un lien valide
 		if (lienValide != 0){
 			showMessage("Voici vos choix : ");
 			
+			//Affichage des choix
 			int i = 1;
 			for (BookNodeLink bookNodeLink : node.getChoices()){
 				showMessage(i + " - "+bookNodeLink.getText());
@@ -248,9 +266,11 @@ public class Jeu {
 				int choice = player.makeAChoice(node);
 				if(choice > 0 && choice <= node.getChoices().size()){
 					selectedBookNodeLink = node.getChoices().get(choice-1);
+					//Vérification des prérequis pour aller vers ce choix
 					if(selectedBookNodeLink.isAvailable(state)){
 						choixValide = true;
 					} else {
+						//Affiche les prérequis manquant
 						for(List<AbstractRequirement> abstractRequirements : selectedBookNodeLink.getRequirements()) {
 							for(AbstractRequirement requirement : abstractRequirements) {
 								showMessage(requirement.getDescription(book));
@@ -265,7 +285,9 @@ public class Jeu {
 			execBookNodeLink(selectedBookNodeLink);
 			
 			return book.getNodes().get(selectedBookNodeLink.getDestination());
-		} else {
+		} 
+		//Si aucun choix n'est valide, le player est automatiquement conduit vers un noeud terminal de défaite
+		else {
 			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Vous ne pouvez plus continuer, vous n'avez pas les items / compétences /argent adéquats", BookNodeStatus.FAILURE);
 			
 			return bookNodeTerminalFail;
@@ -295,6 +317,7 @@ public class Jeu {
 		if(returnedNode != null) 
 			return returnedNode;
 		
+		//S'il n'y a pas d'ennemis, le player est automatiquement envoyé vers le noeud de victoire.
 		if(node.getEnnemiesId().isEmpty())
 			return book.getNodes().get(node.getWinBookNodeLink().getDestination());
 		
@@ -302,26 +325,38 @@ public class Jeu {
 		boolean finCombat = false;
 		
 		List<BookCharacter> listEnnemis = new ArrayList();
-		showMessage("Il y a "+node.getEnnemiesId().size() + " ennemies !");
+		showMessage("Il y a "+node.getEnnemiesId().size() + " ennemis !");
+		//Liste des ennemis
 		for(String ennemieNode : node.getEnnemiesId()){
 			listEnnemis.add(new BookCharacter(book.getCharacters().get(ennemieNode)));
 		}
 		
+		//Tant que le combat n'est pas terminé
 		while(!finCombat){
+			//Desciption des ennemis
 			for(BookCharacter ennemi : listEnnemis)
 				showMessage(ennemi.getDescription(book));
 			
+			//Choix du player
 			ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
+			
+			//Si le choix est Attaquer
 			if (choixCombat == ChoixCombat.ATTAQUER) {
+				//Choix de l'ennemi à attaquer
 				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
+				//Attaque du player
 				attaque(ennemi);
+				//Si l'ennemi n'a plus de vie
 				if(!ennemi.isAlive()){
 					showMessage(ennemi.getName() + " est mort");
 					listEnnemis.remove(ennemi);
 				} else {
 					showMessage(ennemi.getName() + " a " +ennemi.getHp() + " hp");
 				}
-			} else if(choixCombat == ChoixCombat.EVASION) {
+			} 
+			//Si le choix est Evasion
+			else if(choixCombat == ChoixCombat.EVASION) {
+				//Vérification qu'il y a bien un noeud d'évasion et que le nombre de tour avant l'évasion est bien égale ou inférieur à zero
 				if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null) {
 					execBookNodeLink(node.getEvasionBookNodeLink());
 					return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
@@ -330,9 +365,12 @@ public class Jeu {
 					showMessage("vous ne pouvez pas encore vous evader");
 			}
 			
+			//Tour des ennemis
 			ennemiTour(listEnnemis);
 			
+			//Si le player n'a plus de vie, fin du combat
 			if(!state.getMainCharacter().isAlive()) {
+				//Vérification d'un noeud Failure
 				if(node.getLooseBookNodeLink() != null)  {
 					execBookNodeLink(node.getLooseBookNodeLink());
 					return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
@@ -340,12 +378,14 @@ public class Jeu {
 					return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
 			}
 			
+			//Si il n'y a plus d'ennemis, fin de combat
 			if(listEnnemis.isEmpty())
 				finCombat = true;
 			
 			evasionRound -= 1;
 		}
-
+		
+		//Lien vers le noeud de victoire
 		execBookNodeLink(node.getWinBookNodeLink());
 		return book.getNodes().get(node.getWinBookNodeLink().getDestination());
 	}
@@ -359,8 +399,12 @@ public class Jeu {
 	 */
 	private int getDamageAmount(BookCharacter attaquant, BookItemWeapon weapon, BookItemDefense defenseEnnemie) {
 		int attaque = 0;
+		//Si l'attaquant a une arme
 		if(weapon != null) {
+			//Ajout de point de dommage
 			attaque = weapon.getDamage();
+			
+			//Diminution de la durabilité de l'objet
 			/*bookItemArme.setDurability(bookItemArme.getDurability()-1);
 			if(bookItemArme.getDurability()<=0){
 				state.getMainCharacter().getItems().remove(bookItemArme.getId());
@@ -373,20 +417,26 @@ public class Jeu {
 		Random random = new Random();
 		int r = random.nextInt(5);
 		int damageMultiplicator = 1;
+		//Random sur le double dommage
 		if(attaquant.isDoubleDamage() && r > 2){
-			showMessage("Double !");
+			showMessage("Double dommage!");
 			damageMultiplicator = 2;
 		}
 
 		r = random.nextInt(5);
+		//Random sur un coup critique
 		if (r > 3){
 			showMessage("Coup critique !");
 			damageMultiplicator += 0.25;
 		}
 		
 		int resistance = 0;
+		//Si l'attaqué a un item de defense
 		if(defenseEnnemie != null) {
+			//Ajout de point de défense
 			resistance = defenseEnnemie.getResistance();
+			
+			//Diminution de la durabilité de l'objet
 			/*bookItemDefense.setDurability(bookItemDefense.getDurability()-1);
 			if(bookItemDefense.getDurability()<=0){
 				state.getMainCharacter().getItems().remove(bookItemDefense.getId());
@@ -438,13 +488,16 @@ public class Jeu {
 		if(returnedNode != null) 
 			return returnedNode;
 		
+		//Choix du noeud
 		BookNodeLinkRandom randomChoices = node.getRandomChoices(state);
 		
+		//Si le choix est null
 		if(randomChoices == null) {
 			BookNodeTerminal bookNodeTerminalFail = new BookNodeTerminal("Dommage.. Vous êtes mort", BookNodeStatus.FAILURE);
 			return bookNodeTerminalFail;
 		}
 		
+		//Vérification de gain/perte d'argent et/ou de vie sur le lien entre le noeud et la destination
 		execBookNodeLink(randomChoices);
 		return book.getNodes().get(randomChoices.getDestination());
 	}
@@ -455,6 +508,7 @@ public class Jeu {
 	 */
 	private void execNodeHp(AbstractBookNodeWithChoices node){
 		int nodeHp = node.getHp();
+		//Si le noeud fait perdre/gagner de la vie
 		if(nodeHp != 0){
 			if(nodeHp > 0)
 				state.getMainCharacter().heal(nodeHp);
@@ -479,6 +533,7 @@ public class Jeu {
 			nodeItems.add(new BookItemLink(bookItemLink));
 		}
 		
+		//Si le noeud à des items disponible
 		if (!node.getItemLinks().isEmpty()){			
 			player.prendreItems(state, nodeItems, node.getNbItemsAPrendre());
 		}
@@ -489,12 +544,14 @@ public class Jeu {
 	 * @param node Noeud actuel
 	 */
 	private void execBookNodeLink(BookNodeLink bookNodeLink){
+		//Si le lien fait gagner/perdre de l'argent
 		if(bookNodeLink.getGold() != 0){
 			state.getMainCharacter().changeMoneyAmount("gold", state.getMainCharacter().getMoney("gold")+bookNodeLink.getGold());
 			showMessage("Vous avez pris "+ bookNodeLink.getGold() +" gold");
 			showMessage("Vous avez"+ state.getMainCharacter().getMoney("gold") + " gold");
 		}
 		
+		//Si le lien fait gagner/perdre de la vie
 		if(bookNodeLink.getHp() != 0){
 			if(bookNodeLink.getHp() < 0)
 				state.getMainCharacter().damage(-bookNodeLink.getHp());

@@ -118,27 +118,37 @@ public class ItemDialog extends AbstractDialog {
 		idTextField.setText(item.getId());
 		nameTextField.setText(item.getName());
 		
+		//Si c'est un item de type arme
 		if(item instanceof BookItemWeapon) {
 			itemType.setValue(WEAPON);
 			BookItemWeapon itemWeapon = (BookItemWeapon) item;
 			
 			degatTextField.setText(""+itemWeapon.getDamage());
-		} else if (item instanceof BookItemDefense){
+		}
+		//Si c'est un item de type defense
+		else if (item instanceof BookItemDefense){
 			itemType.setValue(DEFENSE);
 			BookItemDefense itemDefense = (BookItemDefense) item;
 			
 			defenseTextField.setText(""+itemDefense.getResistance());
-		} else if (item instanceof BookItemHealing){
+		}
+		//Si c'est un item de type soin
+		else if (item instanceof BookItemHealing){
 			itemType.setValue(HEALING);
 			BookItemHealing itemHealing = (BookItemHealing) item;
 			
 			vieTextField.setText(""+itemHealing.getHp());
-		} else if (item instanceof BookItemMoney){			
+		}
+		//Si c'est un item de type argent
+		else if (item instanceof BookItemMoney){			
 			itemType.setValue(MONEY);
-		} else {
+		}
+		//Si c'est un simple item
+		else {
 			itemType.setValue(KEY_ITEM);
 		}
 		
+		//Si l'item à de la durabilité
 		if(item instanceof BookItemWithDurability) {
 			BookItemWithDurability itemWithDurability = (BookItemWithDurability) item;
 			usureTextField.setText(""+itemWithDurability.getDurability());
@@ -161,6 +171,8 @@ public class ItemDialog extends AbstractDialog {
 
 		idTextField = new TextField("");
 		nameTextField = new TextField("");
+		
+		//ChoiceBox afin de choisir le type d'item
 		itemType = new ChoiceBox<>();
 
  		itemType.getItems().add(KEY_ITEM);
@@ -183,6 +195,7 @@ public class ItemDialog extends AbstractDialog {
 		usureLabel = new Label("Usure du matériel : ");
 		usureTextField = new TextField("");
 		
+		//Permet de changer l'affichage si le type d'item est modifié
 		itemType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
@@ -232,18 +245,22 @@ public class ItemDialog extends AbstractDialog {
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
+			//Ne valide pas si toute les valeurs ne sont pas saisie
 			if (idTextField.getText().trim().isEmpty()
 					|| nameTextField.getText().trim().isEmpty()
 					|| itemType.getValue() == null){
 				return;
 			}
 
+			//Ne valide pas si l'ID est déjà pris'
 			if(book != null){
 				if(book.getItems().containsKey(idTextField.getText().trim()) && !baseId.equals(idTextField.getText().trim())){
 					showErrorDialog("L'ID n'est pas disponible");
 					return;
 				}
 			}
+			
+			//---- Créer l'item en fonction du type choisi
 			if(itemType.getValue() == KEY_ITEM){
 				ItemDialog.this.item = new BookItem();
 			} else if(itemType.getValue() == MONEY){

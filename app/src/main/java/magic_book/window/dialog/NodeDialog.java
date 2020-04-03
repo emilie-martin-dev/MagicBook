@@ -153,6 +153,7 @@ public class NodeDialog extends AbstractDialog {
 		itemLinksList = new ItemListComponent(book);
 		basicPane.add(itemLinksList, 0, 2, 2, 1);
 		
+		//Si le noeud existant est un noeud à choix (autre qu'un noeud terminal) cela affiche les hp, le nombre d'item, le nom des items à prendre
 		if(node instanceof AbstractBookNodeWithChoices){
 			AbstractBookNodeWithChoices bookNode = (AbstractBookNodeWithChoices) node;
 			
@@ -162,13 +163,16 @@ public class NodeDialog extends AbstractDialog {
 			hpTextField.setText(""+bookNode.getHp());	
 		}
 		
+		//Si le noeud existant est un noeud Terminal cela n'affiche que le Texte
 		if(node instanceof BookNodeTerminal) {
 			BookNodeTerminal terminalNode = (BookNodeTerminal) node;
 			
 			rootBorder.setBottom(null);
 			
 			nodeType.setValue(terminalNode.getBookNodeStatus() == BookNodeStatus.FAILURE ? FAILURE : VICTORY);
-		} else if (node instanceof BookNodeCombat){
+		} 
+		//Si le noeud existant est un noeud de combat, cela affiche le Pane de combat
+		else if (node instanceof BookNodeCombat){
 			BookNodeCombat bookNode = (BookNodeCombat) node;
 			
 			if(!bookNode.getEnnemiesId().isEmpty()){
@@ -184,10 +188,14 @@ public class NodeDialog extends AbstractDialog {
 			
 			nodeType.setValue(COMBAT);
 			
-		} else if (node instanceof BookNodeWithRandomChoices){
+		} 
+		//Si le noeud existant est un noeud random
+		else if (node instanceof BookNodeWithRandomChoices){
 			nodeType.setValue(RANDOM);
 			rootBorder.setBottom(basicPane);
-		} else {
+		}
+		//Si le noeud existant est un noeud basic
+		else {
 			nodeType.setValue(BASIC);
 			rootBorder.setBottom(basicPane);
 		}
@@ -199,6 +207,7 @@ public class NodeDialog extends AbstractDialog {
 	
 	@Override
 	protected Node getMainUI() {
+		//Génération des Pane
 		rootBorder = new BorderPane();
 		root = new GridPane();
 		rootCharacter = new GridPane();
@@ -213,6 +222,7 @@ public class NodeDialog extends AbstractDialog {
 		texte.setWrapText(true);
 		Label labelChoix = new Label("Choix du type du noeud :");
 		
+		//ChoiceBox définissant le type de noeud
 		nodeType = new ChoiceBox<>();
 
 		nodeType.getItems().add(BASIC);
@@ -228,9 +238,11 @@ public class NodeDialog extends AbstractDialog {
 		
 		bouton = new Button("Ajouter un personnage");
 		
+		//Si le bouton d'ajout de personnage est appuyé
 		bouton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent t) {
+				//Ajout d'une ComboBox pour l'ajout d'un ennemi
 				addComboBox();
 			}
 		});
@@ -238,21 +250,26 @@ public class NodeDialog extends AbstractDialog {
 		nodeType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+				//Réinitialisation du bas la boite de dialog
 				rootBorder.setBottom(null);
-
+				//Si le type de noeud est défini sur Combat
 				if (nodeType.getValue() == COMBAT){
 					rootBorder.setBottom(combatPane);
-				} else if (nodeType.getValue() == BASIC ||  nodeType.getValue() == RANDOM){
+				}
+				//Si le type de noeud est défini sur Basic ou Random
+				else if (nodeType.getValue() == BASIC ||  nodeType.getValue() == RANDOM){
 					rootBorder.setBottom(basicPane);
 				}
 			}
 		});
 		
+		//Ajout des parties commune à toutes les boites de dialog
 		root.add(textLabel, 0, 0);
 		root.add(texte, 0, 1, 2, 1);
 		root.add(labelChoix, 0, 2);
 		root.add(nodeType, 1, 2);
 		
+		//Ajout des parties commune pour les noeuds de type basic ou random
 		basicPane.add(new Label("hp (gain ou perte) :"), 0, 0);
 		basicPane.add(hpTextField, 1, 0);
 		basicPane.add(new Label("Nombre d'items max :"), 0, 1);
@@ -261,6 +278,7 @@ public class NodeDialog extends AbstractDialog {
 		basicPane.setHgap(UiConsts.DEFAULT_MARGIN);
 		basicPane.setVgap(UiConsts.DEFAULT_MARGIN);
 		
+		//Ajout des parties si le noeud est de type combat
 		GridPane combatGridPane = new GridPane();
 		combatGridPane.add(new Label("Nombre de tour avant evasion :"), 0, 0);
 		combatGridPane.add(texteEvasion, 1, 0);
@@ -286,13 +304,19 @@ public class NodeDialog extends AbstractDialog {
 		return (ActionEvent e) -> {
 			String texteHistoire = texte.getText();
 			
+			//Création d'un noeud basic
 			if(nodeType.getValue() == BASIC) {
 				NodeDialog.this.node = new BookNodeWithChoices();
-			} else if (nodeType.getValue() == RANDOM){
+			}
+			//Création d'un noeud random
+			else if (nodeType.getValue() == RANDOM){
 				NodeDialog.this.node = new BookNodeWithRandomChoices();
-			} else if (nodeType.getValue() == COMBAT){
+			}
+			//Création d'un noeud de combat
+			else if (nodeType.getValue() == COMBAT){
 				int tourEvasion = 0;
 				
+				//La valeur saisie doit être un entier
 				try {
 					tourEvasion = Integer.parseInt(texteEvasion.getText());
 				} catch (NumberFormatException ex){
@@ -305,10 +329,13 @@ public class NodeDialog extends AbstractDialog {
 				bookNode.setEnnemiesId(getSelectedEnnemis());
 
 				NodeDialog.this.node = bookNode;
-			} else {
+			}
+			//Création d'un noeud terminal
+			else {
 				NodeDialog.this.node = new BookNodeTerminal(texteHistoire, nodeType.getValue() == VICTORY ? BookNodeStatus.VICTORY : BookNodeStatus.FAILURE);
 			}
 			
+			//Modification/Création des valeurs saisie
 			if(nodeType.getValue() == BASIC || nodeType.getValue() == RANDOM || nodeType.getValue() == COMBAT) {
 				if (hpTextField.getText().isEmpty() || nbrItemTextField.getText().isEmpty()){
 					return;
