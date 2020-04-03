@@ -269,6 +269,11 @@
 	{»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
 }
 
+\lstdefinelanguage{json}{
+    morestring=[b]",
+    morestring=[d]'
+}
+
 % Bullets listes
 \frenchsetup{ItemLabeli=\textbullet}
 \frenchsetup{ItemLabelii=$\circ$}

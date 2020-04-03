@@ -1,6 +1,23 @@
 \chapter{Aspects techniques}
 
-	\section{Jeu,Player,Foumis}
+	\section{Représentation d'un livre}
+
+		\subsection{Représentation des noeuds et des liens}
+
+
+
+		\subsection{Quelques algorithmes}
+
+
+
+	\section{Lecture et écriture d'un livre}
+
+
+	\section{Edition d'un livre}
+
+
+
+	\section{Rendre le livre jouable et estimer sa difficulté}
 		\underline{Jeu}
 		Une classe à été créer se nommant \textbf{Jeu}, permettant de gérer les méthodes de jeu communes entre le \textit{Player} et les \textit{Fourmis}.\\
 		Un construteur est d'abord appelé afin d'avoir le livre commun à toute les classes. Puis, celui le mode sélectionner ("Générer la difficulté"" ou "jouer"), on fait appels à la méthode correspondante au player. Une fois quele mode à été cliqué, le livre est alors copié afin de ne pas le modifier dans la classe au cas où. Un BookState, correspondant à la sauvegarde de la partie, est alors créer à partir du BookCharacter généré par le prélude. C'est donc le personnage principal. Si aucun personnages n'est créer, alors un personnage lambda va étre créer afin de pouvoir jouer au jeu.\\
@@ -21,5 +38,3 @@
 
 
 	\underline{Fourmis}
-
-	\section{Edition du livre}
