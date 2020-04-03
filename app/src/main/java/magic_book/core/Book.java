@@ -12,6 +12,8 @@ import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.item.BookItem;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
+import magic_book.core.graph.node.BookNodeCombat;
+import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.book.BookCharacterObservable;
 import magic_book.observer.book.BookCharacterObserver;
@@ -102,6 +104,7 @@ public class Book {
 		if(!this.nodes.containsValue(node)) {
 			addNode(node);
 			changeFirstNode(node);
+			return;
 		} 
 		
 		int indexOfNode = this.nodesInv.get(node);
@@ -113,7 +116,6 @@ public class Book {
 	
 		if(oldNode != null)
 			updateDestinations(1, -1);
-		
 		
 		if(oldNode != null) {
 			this.nodes.put(indexOfNode, oldNode);
@@ -139,6 +141,17 @@ public class Book {
 	public void updateNode(AbstractBookNode oldNode, AbstractBookNode newNode) {
 		Integer indexOfNode = this.nodesInv.get(oldNode);
 		if(indexOfNode != null) {
+			if(oldNode instanceof BookNodeCombat || newNode instanceof BookNodeCombat || oldNode.getClass() != newNode.getClass()) {
+				for(BookNodeLink nodeLink : oldNode.getChoices()) {
+					bookNodeLinkObservable.notifyNodeLinkDeleted(nodeLink);
+				}
+			} else if(newNode instanceof AbstractBookNodeWithChoices) {
+				AbstractBookNodeWithChoices bookNodeWithChoices = (AbstractBookNodeWithChoices) newNode;
+				for(BookNodeLink nodeLink : oldNode.getChoices()) {
+					bookNodeWithChoices.addChoice(nodeLink);
+				}
+			}
+						
 			this.nodes.put(indexOfNode, newNode);
 			this.nodesInv.put(newNode, indexOfNode);
 			this.nodesInv.remove(oldNode);
@@ -173,13 +186,18 @@ public class Book {
 			
 			for(Entry<AbstractBookNodeWithChoices, BookNodeLink> entry : postRemove) {
 				entry.getKey().removeChoice(entry.getValue());
+				bookNodeLinkObservable.notifyNodeLinkDeleted(entry.getValue());
+			}
+			
+			for(BookNodeLink nodeLink : node.getChoices()) {
+				bookNodeLinkObservable.notifyNodeLinkDeleted(nodeLink);
 			}
 		}
 	}
 	
 	public void addNodeLink(BookNodeLink nodeLink, AbstractBookNodeWithChoices node) {
 		node.addChoices(nodeLink);
-		bookNodeLinkObservable.notifyNodeLinkAdded(nodeLink);
+		bookNodeLinkObservable.notifyNodeLinkAdded(nodeLink, node);
 	}
 	
 	public void updateNodeLink(BookNodeLink oldBookNodeLink, BookNodeLink newBookNode) {

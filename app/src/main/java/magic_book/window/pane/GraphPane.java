@@ -100,6 +100,9 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	*/
 	private SimpleFloatProperty zoom;
 	
+	private double lastXClick = 0;
+	private double lastYClick = 0;
+	
 	
 	/**
 	* Création du pane
@@ -169,6 +172,9 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		listeNoeud.add(nodeFx);
 		rootPane.getChildren().add(nodeFx);
 		
+		lastXClick = 0;
+		lastYClick = 0;
+		
 		return nodeFx;
 	}
 	
@@ -182,7 +188,8 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		AbstractBookNode node = nodeDialog.getNode();
 		
 		if(node != null) {
-			createNode(node, (int) event.getX(), (int) event.getY());
+			lastXClick = event.getX();
+			lastYClick = event.getY();
 			
 			book.addNode(node);
 		}
@@ -249,7 +256,6 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 						book.setTextPrelude(dialog.getTextePrelude());
 						book.setMainCharacter(dialog.getMainCharacter());
 						book.setCharacterCreations(dialog.getCharacterCreations());
-						preludeFx.setText(dialog.getTextePrelude());
 					}
 				}
 			}
@@ -283,7 +289,6 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		rootPane.getChildren().clear();	
 		
 		createNodePrelude();
-		preludeFx.setText(book.getTextPrelude());
 		
 		HashMap<AbstractBookNode, NodeFx> nodeNodeFxMapping = new HashMap<>();
 		if(!book.getNodes().isEmpty()) {
@@ -334,32 +339,80 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	
 	@Override
 	public void nodeAdded(AbstractBookNode node) {
-
+		createNode(node, lastXClick, lastYClick);
 	}
 
 	@Override
 	public void nodeEdited(AbstractBookNode oldNode, AbstractBookNode newNode) {
-
+		for(NodeFx nodeFx : listeNoeud) {
+			if(nodeFx.getNode() == oldNode) {
+				nodeFx.setNode(newNode);
+				break;
+			}
+		}
 	}
 
 	@Override
 	public void nodeDeleted(AbstractBookNode node) {
-
+		NodeFx nodeFxToDelete = null;
+		for(NodeFx nodeFx : listeNoeud) {
+			if(nodeFx.getNode() == node) {
+				rootPane.getChildren().remove(nodeFx);
+				nodeFxToDelete = nodeFx;
+				break;
+			}
+		}
+		
+		listeNoeud.remove(nodeFxToDelete);
+				
+		if(preludeFx.getFirstNode() == nodeFxToDelete) {
+			preludeFxFirstNodeLine.setVisible(false);
+			preludeFx.setFirstNode(null);
+		}
 	}
 
 	@Override
-	public void nodeLinkAdded(BookNodeLink nodeLink) {
-
+	public void nodeLinkAdded(BookNodeLink nodeLink, AbstractBookNodeWithChoices node) {
+		NodeFx start = null;
+		NodeFx end = null;
+		
+		for(NodeFx nodeFx : listeNoeud) {
+			if(nodeFx.getNode() == node) 
+				start = nodeFx;
+			else if(nodeFx.getNode() == book.getNodes().get(nodeLink.getDestination()))
+				end = nodeFx;
+				
+			if(start != null && end != null)
+				break;
+		}
+		
+		if(start != null && end != null)
+			createNodeLink(nodeLink, start, end);
 	}
 
 	@Override
 	public void nodeLinkEdited(BookNodeLink oldNodeLink, BookNodeLink newNodeLink) {
-
+		for(NodeLinkFx nodeLinkFx : listeNoeudLien) {
+			if(nodeLinkFx.getNodeLink() == oldNodeLink) {
+				nodeLinkFx.setNodeLink(newNodeLink);
+				break;
+			}
+		}
 	}
 
 	@Override
 	public void nodeLinkDeleted(BookNodeLink nodeLink) {
+		List<NodeLinkFx> postRemove = new ArrayList<>();
+		for(NodeLinkFx nodeLinkFx : listeNoeudLien) {
+			if(nodeLinkFx.getNodeLink() == nodeLink) {
+				nodeLinkFx.unregisterComponent(rootPane);
+				postRemove.add(nodeLinkFx);
+			}
+		}					
 
+		for(NodeLinkFx nodeLinkFxToRemove : postRemove) {
+			listeNoeudLien.remove(nodeLinkFxToRemove);
+		}
 	}
 	
 	/**
@@ -456,22 +509,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 				if(event.getClickCount() == 2) {
 					NodeDialog dialog = new NodeDialog(book, selectedNodeFx.getNode());
 					if(dialog.getNode() != null) {
-						if(dialog.getNode() instanceof BookNodeCombat || selectedNodeFx.getNode() instanceof BookNodeCombat) {
-							List<NodeLinkFx> postRemove = new ArrayList<>();
-							for(NodeLinkFx nodeLinkFx : listeNoeudLien) {
-								if(nodeLinkFx.getStart().getNode() == selectedNodeFx.getNode()) {
-									nodeLinkFx.unregisterComponent(rootPane);
-									postRemove.add(nodeLinkFx);
-								}
-							}
-							
-							for(NodeLinkFx nodeLinkFxToRemove : postRemove) {
-								listeNoeudLien.remove(nodeLinkFxToRemove);
-							}
-						}
-						
 						book.updateNode(nodeFx.getNode(), dialog.getNode());
-						nodeFx.setNode(dialog.getNode());
 					}
 				}
 			} else if(mode == Mode.ADD_NODE_LINK) {
@@ -499,6 +537,8 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
 					if(bookNodeLink != null) {
+						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
+						
 						if(selectedNodeFx.getNode() instanceof BookNodeCombat) {
 							BookNodeCombat bookNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
 							
@@ -509,42 +549,18 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 							} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
 								bookNodeCombat.setWinBookNodeLink(bookNodeLink);
 							}
+							
+							createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
 						} else {
 							book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
 						}
-						
-						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
-						
-						createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
 					}
 					
 					selectedNodeFx = null;
 				}
 				
-				
 			} else if(mode == Mode.DELETE) {
 				if(confirmDeleteDialog()){
-					GraphPane.this.rootPane.getChildren().remove(nodeFx);
-				
-					List<NodeLinkFx> nodeFxToRemove = new ArrayList();
-
-					for(NodeLinkFx nodeLinkFx: listeNoeudLien){
-						NodeFx nodeFxStart = nodeLinkFx.getStart();
-						NodeFx nodeFxEnd = nodeLinkFx.getEnd();
-
-						if(nodeFxStart == nodeFx || nodeFxEnd == nodeFx){
-							nodeFxToRemove.add(nodeLinkFx);
-							nodeLinkFx.unregisterComponent(rootPane);
-						}
-					}
-
-					for(NodeLinkFx nodeLinkRemove:nodeFxToRemove){
-						listeNoeudLien.remove(nodeLinkRemove);
-					}
-
-					if(book.getNodeIndex(nodeFx.getNode()) == 1)
-						preludeFxFirstNodeLine.setVisible(false);
-					
 					book.removeNode(nodeFx.getNode());
 				}
 			} else if(mode == Mode.FIRST_NODE) {
@@ -565,10 +581,12 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 				if(event.getClickCount() == 2) {
 					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode());
 					if(nodeLinkDialog.getNodeLink() != null) {
+						nodeLinkDialog.getNodeLink().setDestination(book.getNodeIndex(nodeLinkFx.getEnd().getNode()));
+						
 						if(nodeLinkFx.getStart().getNode() instanceof BookNodeCombat) {
 							BookNodeCombat bookNodeCombat = (BookNodeCombat) nodeLinkFx.getStart().getNode();
 
-							bookNodeCombat.removeChoice(nodeLinkFx.getNodeLink());
+							book.removeNodeLink(nodeLinkFx.getNodeLink());
 							
 							if(nodeLinkDialog.getLinkType() == NodeLinkDialog.EVASION) {
 								bookNodeCombat.setEvasionBookNodeLink(nodeLinkDialog.getNodeLink());
@@ -577,20 +595,15 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 							} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
 								bookNodeCombat.setWinBookNodeLink(nodeLinkDialog.getNodeLink());
 							}
+							
+							createNodeLink(nodeLinkDialog.getNodeLink(), nodeLinkFx.getStart(), nodeLinkFx.getEnd());
 						} else {							
 							book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
 						}
-						
-						nodeLinkDialog.getNodeLink().setDestination(book.getNodeIndex(nodeLinkFx.getEnd().getNode()));
-						
-						nodeLinkFx.setNodeLink(nodeLinkDialog.getNodeLink());
 					}
 				}
 			} else if(mode == Mode.DELETE) {
 				if (confirmDeleteDialog()== true){
-					listeNoeudLien.remove(nodeLinkFx);
-					GraphPane.this.rootPane.getChildren().remove(nodeLinkFx);
-					
 					book.removeNodeLink(nodeLinkFx.getNodeLink());
 				}
 			}
