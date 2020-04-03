@@ -1,6 +1,7 @@
 \chapter{Aspects techniques}
 
 	\section{Représentation d'un livre}
+		\label{sec:representation_livre}
 
 		\subsection{Représentation des noeuds et des liens}
 
@@ -12,6 +13,152 @@
 
 	\section{Lecture et écriture d'un livre}
 
+		L'objectif de l'application étant de concevoir un éditeur, il était important de permettre la sauvegarde et la lecture du livre que l'on édite. Le choix du format JSON est rapidement survenue. Premièrement car un fichier d'exemple qui nous a été fournis était sous ce format mais aussi car il s'agit d'une structure simple et très facile à lire. Nous avon alors utilisé GSON, une librairie, conçue par Google, extrêmement simple. Elle permet de retranscrire sous forme d'objet Java un fichier JSON structuré, c'est à dire où l'on distingue très clairement des objets qui se répète.
+
+		Afin de lire un fichier JSON, avec cette librairie, il suffit de concevoir des objets Java avec les même attributs que ceux du fichier à lire ou à écrire. Voici un exemple très court de ce à quoi nos fichiers ressembles :
+
+		\subsection{La structure du JSON}
+
+\begin{lstlisting}[language=json, caption=Exemple de livre très simple]
+{
+	"prelude": "Vous êtes l'enseignant qui note notre projet",
+	"setup": {
+		"skills": [],
+		"items": [],
+		"characters": [],
+		"character_creation": []
+	},
+	"sections": {
+		"1" : {
+			"text": "Vous être en train d'étudier notre projet",
+			"choices": [
+				{
+					"text": "Mettre une bonne note",
+					"section": 3
+				},
+				{
+					"text": "Mettre une mauvaise note",
+					"section": 2,
+				}
+			]
+		},
+		"2": {
+			"text": "Les étudiants du projet sont tristes",
+			"end_type": "FAILURE"
+		},
+		"3": {
+			"text": "Les étudiants sont satisfait de leur travail",
+			"end_type": "VICTORY"
+		}
+	}
+}
+\end{lstlisting}
+
+		On retrouve plusieurs éléments différents. On remarque par exemple un attribut "prelude", ainsi que deux grosses parties, "setup" et "sections". Dans la suite, nous détaillerons uniquement les attributs les plus frequemment présents.
+
+		\subsubsection{Setup}
+
+			Commençons par détailler "setup". Ce passage contient toutes les informations générales à notre livre. On y retrouve la liste des compétences ("skills"), la liste des items ("items") et la liste des personnages ("characters"). "character\_creation", lui, détaille toutes les étapes lors de la conception du personnage qui intervient au tout début. Celle-ci permet de sélectionner des skills et items de départ.
+
+			Pour le moment les compétences sont uniquement composé d'un id et d'un nom. Dans une future \maj{} il serait intéressant d'ajouter des propriétés pour connaitre la force ajouté dans un combat, la quantité de soins à rendre par noeuds, par exemple.
+
+\begin{lstlisting}[language=json, caption=Exemple de compétence]
+{
+	"id": "sixth_sense",
+	"name": "Sixième sens"
+}
+\end{lstlisting}
+
+			Les items peuvent être de différents types : KEY\_ITEM, WEAPON, DEFENSE, MONEY, HEALING. On retrouve pour tous les items un id et un nom ("name"). Pour certains types, des attributs supplémentaires sont présent. Par exemple, un attribut "durability" peut être présent. Il permet de déterminer le nombre d'utilisation maximum d'un item. Un item de type HEALING possède un nombre de pv à rendre ("hp") tandis que ceux type WEAPON possède un montant de dégats ("damage") par exemple.
+
+\begin{lstlisting}[language=json, caption=Exemple d'items]
+{
+	"id": "backpack",
+	"name": "Backpack",
+	"item_type": "KEY_ITEM"
+},
+{
+	"id": "healing_potion_4",
+	"name": "Potion de soins (4HP)",
+	"hp": 4,
+	"durability": 1,
+	"item_type": "HEALING"
+}
+\end{lstlisting}
+
+			Concernant les personnages on y retrouve un id, un nom ("name"), un nombre de pv maximum ("hp"), un boolean pour indiquer s'il a beaucoup de chance que ses coups fassent le double des dégats ("double\_damage"), ainsi que "combat\_skill" qui représente le montant de ses dégats.
+
+\begin{lstlisting}[language=json, caption=Exemple de personnage]
+{
+	"id": "zombie_captain",
+	"name": "Zombie Captain",
+	"hp": 15,
+	"double_damage": true,
+	"combat_skill": 2
+}
+\end{lstlisting}
+
+			Les character character\_creation peuvent être de simple texte ou de type "ITEM" ou "SKILL". On y retrouve les différents skills ou items que l'on peut prendre pour débuter notre aventure ainsi que le nombre que l'on doit en choisir ("amount\_to\_pick").
+
+\begin{lstlisting}[language=json, caption=Exemple de character\_creation]
+{
+	"text": "Kai Disciplines\n\nOver the centuries, the Kai monks have mastered the skills of the warrior. These skills are known as the Kai Disciplines, [...]",
+	"type": "SKILL",
+	"skills": [
+		"camouflage",
+		"hunting",
+		"sixth_sense",
+		"tracking",
+		"healing",
+		"weaponskill",
+		"mindshield",
+		"mindblast",
+		"animal_kinship",
+		"mind_over_matter"
+	],
+	"amount_to_pick": 5
+}
+\end{lstlisting}
+
+		\subsubsection{Sections}
+
+			Enfin, la partie "sections" représente un numéro de paragraphe ainsi que le paragraphe associe. Dans ces paragraphes il y a les différents liens possibles.
+
+			Posssede un texte, une liste d'items qu'il est possible de prendre, les items disponibles à l'achat, les différents choix possibles. Le nombre ditems max a prendre. Une description du combat (lien de victoire, defaite, etc) ainsi que la liste des ids des ennemis. un champ ("is\_random\_pick": true,) indique s'il s'agit d'nu noeud random. Par defaut il est considéré comme étant false. Un type de fin (victoire ou defaite). Un nombre de pv a rendre
+
+			Concernant les items disponibles à la vente ou ceux que l'on peut prendre,
+
+			Les choix possede un texte, un poid si random, un montant de gold a donner des pv a perdre et une liste de prerequis
+
+		\subsection{La lecture et l'écriture}
+
+			Du fait que la structure en Json n'est pas identique à celle détaillé dans \nameref{sec:representation_livre} (page \pageref{sec:representation_livre}), nous avons fait des classes intermédiaires pour permettre cette lecture. Celles-ci sont disponibles dans le package \textit{magic\_book/core/file/json} et ne contiennent rien de plus que des getter et setter. Aussi, afin de permettre une convertion entre les classes faites pour représenter un fichier json et celles faites pour être utilisées par l'application, une interface \textit{JsonExportable} existe. Celle ci permet de redéfinir 2 méthodes. L'une renvoyant la classe JSON associé à notre classe actuelle, l'autre permettant à partir d'une classe JSON d'obtenir la classe Java correspondante.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.66\textwidth, keepaspectratio]{img/json_exportable.png}
+				\caption{L'interface JsonExportable et quelques classes qui l'implémentent}
+			\end{figure}
+
+			Enfin, les classes BookReader et BookWritter permettent de récupérer toutes les classes JSON intermédiaires pour les regrouper dans le BookJson qui correspond à la structure complète de notre livre. Ces classes sont également une couche d'abstraction à GSON car c'est elles qui se chargent d'écrire le JSON correspondant dans un flux.
+
+			Pour résumer, on peut schématiser ces échanges de telle sorte :
+
+			\begin{figure}[H]
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw=black, text=black, shape=rectangle, minimum width=3cm, minimum height=5cm] (json) at (0,0) {JSON};
+						\node[draw=black, text=black, shape=rectangle, minimum width=3cm, minimum height=5cm, align=center] (json_class) at (6,0) {Classes JSON\\ intermédiaires};
+						\node[draw=black, text=black, shape=rectangle, minimum width=3cm, minimum height=5cm, align=center] (class) at (12,0) {Classes utilisées\\ par l'application};
+
+						\draw[->] ([yshift=1cm]json.east) -- node[above, align=center] {BookReader\\ \fontsize{10}{12}\selectfont-> Gson.fromJson()}([yshift=1cm]json_class.west);
+						\draw[->] ([yshift=-1cm]json_class.west) -- node[above, align=center] {BookWritter\\ \fontsize{10}{12}\selectfont-> Gson.toJson()}([yshift=-1cm]json.east);
+
+						\draw[->] ([yshift=1cm]json_class.east) -- node[above, align=center] {JsonExportable\\.fromJson()}([yshift=1cm]class.west);
+						\draw[->] ([yshift=-1cm]class.west) -- node[above, align=center] {JsonExportable\\.fromJson()}([yshift=-1cm]json_class.east);
+					\end{tikzpicture}
+				\end{center}
+				\caption{Échanges pour la lecture / écriture}
+			\end{figure}
 
 	\section{Edition d'un livre}
 

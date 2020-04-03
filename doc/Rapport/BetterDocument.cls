@@ -147,6 +147,7 @@
 \RequirePackage{wrapfig} % Permet d'utiliser les wrapfigure
 \RequirePackage[table]{xcolor} % Permet d'utiliser les couleurs
 \RequirePackage{longtable}
+
 % Package non compatibles avec Beamer
 \ifthenelse{\equal{\classname}{beamer}}{}{%
 	\RequirePackage[top=2.5cm, left=2.5cm, right=2.5cm, bottom=2.5cm]{geometry} % Change les bordures des pages
@@ -346,7 +347,7 @@
 		\pagestyledefault{}
 	}%
 
-	\setlength{\parskip}{1em}
+	\setlength{\parskip}{0.5em}
 
 	% Numerotation des sections et subsection
 	\renewcommand\thesection{\Alph{section}}
