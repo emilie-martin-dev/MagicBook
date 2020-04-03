@@ -8,15 +8,34 @@ import magic_book.core.file.JsonExportable;
 import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.TypeJson;
 
+/**
+ * Skills disponible lors de la création du personnage principal
+ */
 public class CharacterCreationSkill extends AbstractCharacterCreation {
 	
+	/**
+	 * Nombre maximum de skill pouvant être pris
+	 */
 	private int amountToPick;
+	
+	/**
+	 * Liste des skill
+	 */
 	private List<String> skillLinks;
 	
+	/**
+	 * Création du skill avec par défaut une valeur -1 en amountToPick (représente un nombre infini)
+	 */
 	public CharacterCreationSkill() {
 		this("", null, -1);
 	}
 	
+	/**
+	 * Création de la liste des skill disponible, lié à un texte du début
+	 * @param text Texte lié à la liste des skill
+	 * @param skillLinks Liste de skill associé au texte
+	 * @param amountToPick Nombre de skill maximum pouvant être pris
+	 */
 	public CharacterCreationSkill(String text, List<String> skillLinks, int amountToPick) {
 		super(text);
 		
@@ -65,22 +84,42 @@ public class CharacterCreationSkill extends AbstractCharacterCreation {
 		this.setSkillLinks(json.getSkills());
 	}
 	
+	/**
+	 * Ajoute un skill à la liste de tout les skill
+	 * @param skillLink Skill à ajouter
+	 */ 
 	public void addSkillLink(String skillLink) {
 		this.skillLinks.add(skillLink);
 	}
 	
+	/**
+	 * Donne la liste de skill
+	 * @return Liste de skill
+	 */
 	public List<String> getSkillLinks() {
 		return skillLinks;
 	}
 
+	/**
+	 * Modifie toute la liste des skill
+	 * @param skillLinks Liste de skill
+	 */
 	public void setSkillLinks(List<String> skillLinks) {
 		this.skillLinks = skillLinks;
 	}
 
+	/**
+	 * Donne le nombre de skill pouvant être pris
+	 * @return Nombre de skill pouvant être pris
+	 */
 	public int getAmountToPick() {
 		return amountToPick;
 	}
 	
+	/**
+	 * Change le nombre maximum de skill pouvant être pris
+	 * @param amountToPick Nouveau nombre de skill pouvant être pris
+	 */
 	public void setAmountToPick(int amountToPick) {
 		this.amountToPick = amountToPick;
 	}
