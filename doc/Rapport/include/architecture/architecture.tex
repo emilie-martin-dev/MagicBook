@@ -2,7 +2,42 @@
 
 	\section{Arborescence du projet}
 
+		\begin{description}
+			\item[.github :]{Fichiers spécifiques à GitHub.}
+			\begin{description}
+				\item[workflows]{Fichiers destiné au module d' "Actions" de GitHub. Nous nous en somme servis pour lancer automatiquement les tests unitaires lors d'un push ou d'une pull-request.}
+			\end{description}
+			\item[app :]{Contient tout le code source de notre application.}
+			\begin{description}
+				\item[gradle:]{Wrapper de gradle.}
+				\item[livre :]{Exemples de livre.}
+				\item[src :]{Contient les codes sources, ressources et tests unitaires.}
+				\begin{description}
+					\item[main :]{Code principal de l'application.}
+					\begin{description}
+						\item[java :]{Code source.}
+						\item[resources :]{Ressources pour l'application (images, musiques, ...).}
+					\end{description}
+					\item[test :]{Code des tests unitaires.}
+					\begin{description}
+						\item[java :]{Code source.}
+						\item[resources :]{Ressources utiles pour les tests (images, musiques, config, ...).}
+					\end{description}
+				\end{description}
+				\item[build.gradle :]{Script de configuration du projet (dépendance, classe principale, ...).}
+				\item[gradlew:]{Script pour les systèmes Unix afin d'exécuter le Wrapper de Gradle.}
+				\item[graldlew.bat :]{Script pour les systèmes DOS afin d'exécuter le Wrapper de Gradle.}
+				\item[settings.gradle :]{Configuration sur les modules à inclure, les noms de ceux-ci, etc.}
+				\item[.gitattributes :]{Permet de fixer la fin de ligne pour les scripts Unix et DOS.}
+			\end{description}
+			\item[doc :]{Contient toute la documentations du projet, notamment le rapport.}
+			\item[.gitignore :]{Fichier ignorant les changements sur certains fichiers ou dossier sur Git.}
+			\item[CONVENTIONS.md :]{Conventions de nommage concernant le projet et les commits.}
+			\item[LICENSE :]{Licence du projet.}
+			\item[README.md :]{README pour présenter notre projet et expliquer la compilation de celui-ci.}
+		\end{description}
 
+		Pour mieux comprendre la structure de gradle les liens suivants sont utiles \url{https://guides.gradle.org/creating-new-gradle-builds/} et \url{https://docs.gradle.org/6.3/userguide/gradle_wrapper.html}
 
 	\section{Présentation des packages}
 
