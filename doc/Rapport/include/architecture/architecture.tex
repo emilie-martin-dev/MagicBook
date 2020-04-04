@@ -1,7 +1,35 @@
 \chapter{Architecture du projet}
 
 	\section{Arborescence du projet}
+      \begin{description}
+    
+    \item[.github :]Système d'action specifique pour github nous permettant par exemple lors d'un push/pull de tester automatiquement le projet avec des test unitaires. 
+   
+            
+    \item[app :] Contient tous le code source de notre application.
+        \begin{description}
+               \item[src :] Le code des differentes classes du projet.
+                
+                 
+                  \item[gradle:] Présence du fichier .jar pour executer gradle.
+                   \item[livre :] Exemple de livre.
+                    \item[settings.gradle :] Renomme la racine de notre projet.
+                    \item[build.gradle :] Script de configuration qui définit notre projet et ses taches.
+                    \item[graldlew.bat :]script shell conçus pour télécharger Gradle si on ne l'a pas pour windows. 
+                    \item[gradlew:] script shell conçus pour télécharger Gradle si on ne l'a pas pour unix.
+                  
+        \end{description} 
+    
+	\item[doc :] Contient toutes la documentations du projet, notamment le rapport.
+	
+	\item[.gitignore :] Fichier ignorant certain fichier sur git afin de ne pas les commits.
 
+	\item [CONVENTIONS.md :] Fichier texte listant les conventions auxquelles chaque membres du groupe                    c'est pliée afin de réalisé le projet.
 
+	\item[licence :] Terme de la Licence du MIT.
+
+    \item[README.md :] Liste les objectifs de notre projet et, explique la compilation de celui-ci.
+    
+    \end{description}  
 
 	\section{Présentation des packages}
