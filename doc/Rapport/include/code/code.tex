@@ -18,23 +18,58 @@
 
 
 	\section{Rendre le livre jouable et estimer sa difficulté}
-		\underline{Jeu}
+		\subsection{Jeu}
 		Une classe à été créer se nommant \textbf{Jeu}, permettant de gérer les méthodes de jeu communes entre le \textit{Player} et les \textit{Fourmis}.\\
-		Un construteur est d'abord appelé afin d'avoir le livre commun à toute les classes. Puis, celui le mode sélectionner ("Générer la difficulté"" ou "jouer"), on fait appels à la méthode correspondante au player. Une fois quele mode à été cliqué, le livre est alors copié afin de ne pas le modifier dans la classe au cas où. Un BookState, correspondant à la sauvegarde de la partie, est alors créer à partir du BookCharacter généré par le prélude. C'est donc le personnage principal. Si aucun personnages n'est créer, alors un personnage lambda va étre créer afin de pouvoir jouer au jeu.\\
-		Une fois le BookState créer et la copie du livre enregistrer, on prend le premier paragraphe et on regarde à quel "noeud" il appartient. Une méthode sera ainsi appeler en fontion du type de noeuds qui prend en charge.\\
-		La méthode correspondante au type de noeud s'exécute et renvoie le noeud de "destination", en fonction du choix du player, ou de la mort du player. En effet, ces "noeuds" peuvent faire venir la mort du player en enlevant de la vie par exemple, ou que ce player tombe dans une embuscade... Ces noeuds offre beaucoup de possibilité.\\
+		Un construteur est d'abord appelé, à partir de la MainWindows, afin d'envoyer le livre contenant toutes les informations. Puis, en fonction du mode sélectionner ("Générer la difficulté" ou "jouer"), la méthode correspondante au player est appelé.\\
+		Une fois dans la méthode choisis, le livre est alors copié afin de ne pas le modifier par erreur pendant le jeu. Un BookState, qui correspond à la sauvegarde de la partie, est alors créé. Si le prélude contient un personnage principal, alors celui ci est enregistré dans la sauvegarde de la partie (le BookState). Dans le cas contraire, un autre personnage principal est créer afin de pouvoir jouer au jeu.\\
+		Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur est appelé en focntion du player actuel. Comme cela, le player choisit parmi une liste de skill et d'items disponible en début de partie afin de les avoir pour commencer le jeu.\\
+		Une fois le BookState créer, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. Une méthode est appelé en fonction de son type de noeud. La méthode correspondante au type de noeud s'exécute et renvoie le noeud de "destination", en fonction du choix du player et/ou de la mort du player. Durant l'exécution des différentes méthodes et en fonction du player, d'autre méthode externe sont appelé nottament dans la classe Fourmis ou Player.\\
+		Pour chaque type de noeud, sauf pour un noeud terminal, une méthode commune est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie puis regarde si le player est toujours en vie. Si ce dernier n'est plus en vie, un noeud terminal est alors renvoyé en noeud de destination. S'il est encore en vie et que le noeud propose des items, ils sont proposés au player en appelant la méthode correspondante entre Fourmis ou Player. A chaque detination choisi, une autre méthode est appelé afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent.\\
 
-		Durant l'exécution de la méthode, et en fonction du player, d'autre méthode externe sont appeler, nottament dans la classe Fourmis ou Player.
+		\underline{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices}. Cette dernière renvoi un noeud terminal si aucun choix n'est valide, ce qu'il veut dire, si le player n'a aucun choix ou s'il ne possède pas les items/skill pour aller vers ce choix.\\
+		Si le player est encore en vie et si il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du player. Si le player a les prérequis pour aller vers cette destination, alors le noeud choisi est renvoyé en noeud de destination. Sinon, le player doit faire un autre choix.\\
 
-	\underline{Interface Player / Foumis}
-		Une interface \textbf{InterfacePlayerFoumis} à été créer permettant une mise en commun des codes Player et Fourmis. Ces classes permettent de faire un choix, prendre les items disponibles, créer un personage lambda, aller dans l'inventaire, choisir son ennemis ou encore combatre.\\
-		Elles permettrent de d'appeler la même méthode (que cela soit fourmis ou player) au même moment. La méthode sera alors exécuté différément en fonction du player. Cela permet donc une harmonie du code
+		\underline{Si c'est un noeud de type combat}, une vérification est réalisé afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, le noeud en cas de victoire est envoyé en noeud de destination. Sinon, une liste d'ennemis est créer afin de ne pas modifié la vie des ennemis. Car ces derniers ne sont pas lié au noeud, mais c'est l'ID de l'ennemis qui est lié au noeud permettant de les appelés plusieurs fois dans plusieurs ou dans le même noeud.\\
+		Le combat commence alors. Le choix est défini par la méthode du player correspondant. Trois choix sont possible:\\
+		\begin{itemize}
+			\item \underline{Attaque :} un autre choix est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Une fois l'ennemi sélectionné, une méthode attaque est appelé apellant elle même une autre méthode commune entre l'attaque du player et l'attaque d'ennemi. Nommé \textif{getDamageAmount}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player.\\
+			Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimer de la liste des ennemis.
+			\item \underline{Inventaire :} si ce choix est fait par le player, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense.
+			\item \underline{Evasion :} si le tour avant évasion est inférieur ou égal à 0 et si un noeud de d'évasion existe, le player peut alors s'enfuir. Sinon cela lui passe son tour.
+		\end{itemize}
+		\\
+		Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textif{getDamageAmount} permettant aux ennemis d'attaquer un par un.\\
 
-	\underline{Player}
-		La classe \textbf{Player} permet de jouer au jeu en tant que joueur. Elle permet de faire des choix grâce aux Scanner.\\ Cette classe a des méthodes de l'interface, notamment celle de combatChoice qui prend en paramètre le noeud de Combat, le nombre de tour avant l'évasion ainsi que le BookState. Cette méthode permet de choisir nos choix lors de notre tour dans le combat. On peut alors choisir d'attaquer, d'aller dans notre inventaire ou alors de s'évader.\\
-		Si on choisi l'inventaire, on va alors dans une autre méthode appelé useInventaire() qui prendre le BookState en parametre. On peut alors utiliser une potion, prendre un objet de défense ou alors une arme. Si l'on choisis un autre choix, cette objet n'est pas utilisable lors d'un combat (comme par exemple de l'argent). Une fois l'objet pris, on retourne dans les choix du combat. On peut alors, soit retourner dans l'inventaire pour prendre un autre objet, soit attaquer ou s'évader.\\
-		Si le choix évasion est choisi, un message apparait si le nombre de tour avant l'évasion n'est pas à zero. Si il n'est pas à zéro, un message apparait et il doit refaire un autre choix. Sinon, il va alors dans le noeud de destination qui a été prévu pour l'évasion.\\
-		Si le choix attaque est choisi...
+		La fin de combat est déterminé si la liste d'ennemis est vide ou si le player n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat.\\
 
 
-	\underline{Fourmis}
+		\underline{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le player est encore en vie. Puis une autre méthode est appelé afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.\\
+
+		\underline{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un bolean sur l'état de la fin de partie.\\
+
+	\subsection{Interface Player / Foumis}
+		Une interface \textbf{InterfacePlayerFoumis} à été créer permettant une mise en commun des codes Player et Fourmis. Ces méthodes permettent de faire un choix, prendre les items disponibles, créer un personage lambda, aller dans l'inventaire, choisir son ennemis ou encore combatre. Elles sont appelé au même moment. La méthode sera alors exécuté différément en fonction du player.\\
+
+		\textit{execPlayerCreation} permet de choisir les skill et les items disponible au début de la partie. Ces derniers sont défini lors de la création du prélude. Pour l'ajout des items, la méthode \textit{prendItems} est appelé.\\
+
+		\textit{combatChoice}, prend en paramètre le noeud de Combat et le nombre de tour avant l'évasion ainsi que le BookState, permet de faire un choix lors du tour du player dans un combat. On peut alors choisir d'attaquer, d'aller dans l'inventaire ou alors de s'évader. Si on choisi l'inventaire, on va alors dans une autre méthode appelé useInventaire() qui prend le BookState en paramètre. On peut alors utiliser une potion, prendre un objet de défense ou alors une arme. Si l'on choisis un autre choix, cette objet n'est pas utilisable lors d'un combat (comme par exemple de l'argent). Une fois l'objet pris, on retourne dans les choix du combat. On peut alors, soit retourner dans l'inventaire pour prendre un autre objet, soit attaquer ou s'évader.\\
+
+		\textit{chooseEnnemi} permet de choisir l'ennemi à attaquer parmi la liste de tout les ennemis encore en vie.\\
+
+		\textit{prendItems} permet de prendre un item parmi la liste d'items disponible. Cette liste est pris en paramètre ainsi que la sauvegarde de la partie et le nombre d'item maximum pouvant être pris.\\
+
+		\textit{makeAChoice} permet de faire un choix en fonction des différentes destinations proposé par le noeud.\\
+
+		\textit{useIventaire} permet d'utiliser son inventaire lors d'un noeud de combat. La mise à jour d'un port d'item de défense ou d'arme est alors mis à jour. Si un item de soin est choisi, les points de vie du joueur sont alors actualisé.\\
+
+	\subsection{Player}
+		La classe \textbf{Player} permet de jouer au jeu en tant que joueur. Elle permet de faire des choix grâce aux Scanner. Des messages sont aussi affiché afin de guider le joueur dans ses choix.\\
+		Notament la méthode \textit{choixYesNo} qui permet de choisir oui ou non et de renvoyer le boolean true ou false. Cette méthode permet, par exemple, de savoir si le player veut supprimer, prendre un item ou un skill.\\
+		Pour la méthode commune \textit{prendItems}, cette dernière fait appel à d'autre méthode dans la classe Player. Comme itemAdd() permettant de choisir l'item à ajouter dans l'inventaire. Ou encore itemPlein() qui demande au joueur s'il veut supprimer un item. Si le joueur répond oui, la méthode itemSupp() est appelé afin de choisir l'item à supprimer et à mettre à jour l'inventaire.\\
+		Pour la méthode \textit{execPlayerCreation} au moment de l'ajout des skill, le joueur doit confimer ou non s'il veut un skill. Si oui, la méthode skillAdd est appelé jusqu'à ce que le maximum d'item à été pris ou qu'ilne reste plus de skill à prendre.\\
+
+	\subsection{Fourmis}
+		La classe \textbf{Fourmis} permet de jouer en tant que joueur fictif. Elle effectue des choix random en fonction des différentes méthodes de l'interface.
+		Comme par exemple, pour prendre des items ou des skill, la fourmi en prend autant que possible et en supprime obligatoirement en aléatoire si il n'a plus de place dans l'inventaire. Nous avons décider de réalisé cette méthode comme cela afin de pouvoir aller dans le maximum de noeud s'ilsont des prérequis ou alors avoir le maximum d'items pour les combats.\\
+		Pour la méthode \textit{chooseEnnemi}, la fourmi envoyé prend obligatoirement le premier ennemi permettant de tué le maximum d'ennemis en attaquant toujours le même ennemis.\\
+		Et enfin, la méthode \textit{combatChoice} permet de choisir entre ATTAQUE, EVASION, INVENTAIRE. Nous avons choisir de faire un random sur les trois choix et non pas sur deux choix même si le tour d'évasion n'est pas disponible afin de passer le tour, comme le joueur, afn d'avoir la même chance lors des combats.\\
