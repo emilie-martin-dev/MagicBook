@@ -6,7 +6,7 @@ import magic_book.core.file.JsonExportable;
 import magic_book.core.parser.Descriptible;
 
 /**
- * Création des compétences
+ * Représente une compétence
  */
 public class BookSkill implements Descriptible, JsonExportable<SkillJson> {
 	
@@ -20,14 +20,14 @@ public class BookSkill implements Descriptible, JsonExportable<SkillJson> {
 	private String name;
 
 	/**
-	 * Initialisation des valeurs
+	 * Création d'un skill
 	 */
 	public BookSkill() {
 		this("", "");
 	}
 	
 	/**
-	 * Modification du skill
+	 * Création du skill
 	 * @param id ID de la compétence
 	 * @param name Nom de la compétence
 	 */

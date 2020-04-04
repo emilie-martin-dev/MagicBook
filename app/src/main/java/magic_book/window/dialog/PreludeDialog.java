@@ -27,12 +27,12 @@ import magic_book.window.component.CharacterComponent;
 import magic_book.window.component.CharacterCreationComponent;
 
 /**
- * Boite de dialog pour la création/édition du prélude
+ * Boite de dialog pour la création / édition du prélude, du personnage principal et de la "Création du personnage"
  */
 public class PreludeDialog extends AbstractDialog {
 	
 	/**
-	 * Liste de tout les skills, items, textex à prendre/afficher après le prélude
+	 * Liste de toute les étapes de la création du personnage
 	 */
 	private List<AbstractCharacterCreation> characterCreations;
 	/**
@@ -49,30 +49,26 @@ public class PreludeDialog extends AbstractDialog {
 	 */
 	private TextArea texte;
 	/**
-	 * Contient le texte du personnage ainsi que les iteme disponible lors du prélude
+	 * Contient les différentes étapes de la créationdu personnage
 	 */
 	private Accordion accordion;
 	/**
-	 * Permet de sroller la fenêtre du prélude
-	 */
-	private ScrollPane scrollPane;
-	/**
-	 * Pane comprenant toutes les informations remplis pour la création du personnage principal
+	 * Pane comprenant toutes les informations sur le personnage principal
 	 */
 	private CharacterComponent characterComponent;
 	/**
-	 * Comporte tout les textes de début et les items liés à ces textes
+	 * Comporte tous les Pane des étapes de la création d'un personnage
 	 */
 	private List<CharacterCreationComponent> characterCreationComponent;
 	
 	/**
-	 * Livre contenant toutes les informations
+	 * Livre en cours d'édition
 	 */
 	private Book book;
 
 	/**
 	 * Initialisation du prélude
-	 * @param book Le livre contenant toutes les informations
+	 * @param book Le livre en cours d'édition
 	 */
 	public PreludeDialog(Book book) {
 		super("Edition du Prelude", true);
@@ -113,7 +109,7 @@ public class PreludeDialog extends AbstractDialog {
 	
 	/**
 	 * Affichage pour le texte du prélude
-	 * @return Le pane du texte
+	 * @return Le pane du texte du prélude
 	 */
 	private Node getPreludeTextPane() {
 		GridPane preludeRoot = new GridPane();
@@ -130,8 +126,8 @@ public class PreludeDialog extends AbstractDialog {
 	}
 	
 	/**
-	 * Affichage pour l'ajout des items et du texte
-	 * @return Le pane de la création des items et du texte
+	 * Affichage pour l'ajout des étapes de la creation du personnage
+	 * @return Le pane de la création étapes de la creation du personnage
 	 */
 	private Node getCharacterCreationTab() {
 		VBox characterCreationPane = new VBox();
@@ -147,22 +143,22 @@ public class PreludeDialog extends AbstractDialog {
 		
 		characterCreationPane.getChildren().addAll(accordion, addButton);
 		
-		scrollPane = new ScrollPane(characterCreationPane);
+		ScrollPane scrollPane = new ScrollPane(characterCreationPane);
 		scrollPane.setFitToWidth(true);
 		
 		return scrollPane;
 	}
 	
 	/**
-	 * Appel de la méthode pour créer un Accordion
+	 * Méthode pour créer un nouvel élément de la conception du personnage
 	 */
 	private void createTitledPane() {
 		createTitledPane(null);
 	}
 	
 	/**
-	 * Création de l'intérieur d'un Accordion
-	 * @param characterCreation Skill(s) et/ou item(s) et/ou texte à l'intérieur de Accordion
+	 * Méthode pour créer un nouvel élément de la conception du personnage
+	 * @param characterCreation L'élément de la conception du personnage
 	 */
 	private void createTitledPane(AbstractCharacterCreation characterCreation) {
 		TitledPane titledPane = new TitledPane();
@@ -190,7 +186,7 @@ public class PreludeDialog extends AbstractDialog {
 	}
 	
 	/**
-	 * Création du pane pour la création du personnage principal
+	 * Affichage pour la création du personnage principal
 	 * @return personnage principal
 	 */
 	private Node getMainCharacterPane() {
@@ -233,8 +229,8 @@ public class PreludeDialog extends AbstractDialog {
 	}
 
 	/**
-	 * Donne la liste des skills/items/textes du personnage principal
-	 * @return skills/items/textes du personnage principal
+	 * Donne la liste des étapes de la création du personnage principal
+	 * @return La liste des étapes de la création du personnage principal
 	 */
 	public List<AbstractCharacterCreation> getCharacterCreations() {
 		return characterCreations;

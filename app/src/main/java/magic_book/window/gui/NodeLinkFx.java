@@ -12,7 +12,7 @@ import magic_book.observer.fx.NodeLinkFxObservable;
 import magic_book.observer.fx.NodeLinkFxObserver;
 
 /**
- * Contient le lien entre deux noeud
+ * Représente graphiquement un lien entre deux noeud
  */
 public class NodeLinkFx extends Line {
 	
@@ -30,12 +30,12 @@ public class NodeLinkFx extends Line {
 	private NodeFx endNode;
 	
 	/**
-	 * Cercle pour le noeud de destination
+	 * Cercle pour le noeud graphique de destination
 	 */
 	private Circle endCircle;
 	
 	/**
-	 * Observe le moindre changement du lien
+	 * Observable pour notifier d'un évènement
 	 */
 	private NodeLinkFxObservable nodeLinkFxObservable;
 
@@ -74,8 +74,8 @@ public class NodeLinkFx extends Line {
 	}
 	
 	/**
-	 * Ajoute un cercle au noeud de fin
-	 * @param rootPane Pane du centre de la fenêtre du MainWindows
+	 * Ajoute le lien et le cercle du noeud graphique de fin au Pane
+	 * @param rootPane Pane auquel on doit ajouter le lien
 	 */
 	public void registerComponent(Pane rootPane) {
 		rootPane.getChildren().add(this);
@@ -83,8 +83,8 @@ public class NodeLinkFx extends Line {
 	}
 	
 	/**
-	 * Enlève le cercle du rectangle si il est supprimé
-	 * @param rootPane Pane du centre de la fenêtre du MainWindows
+	 * Enlève le lien et le cercle du noeud graphique de fin au Pane
+	 * @param rootPane ane auquel on doit ajouter le lien
 	 */
 	public void unregisterComponent(Pane rootPane) {
 		rootPane.getChildren().remove(this);
@@ -116,7 +116,7 @@ public class NodeLinkFx extends Line {
 	}
 
 	/**
-	 * Donne le noeud de départ
+	 * Donne le noeud graphique de départ
 	 * @return Noeud de départ
 	 */
 	public NodeFx getStart() {
@@ -124,15 +124,15 @@ public class NodeLinkFx extends Line {
 	}
 
 	/**
-	 * Modifie le noeud de départ
-	 * @param startNode Nouveau noeud de départ
+	 * Modifie le noeud graphique de départ
+	 * @param startNode Nouveau noeud graphique de départ
 	 */
 	public void setStart(NodeFx startNode) {
 		this.startNode = startNode;
 	}
 
 	/**
-	 * Donne le noeud de fin
+	 * Donne le noeud graphique de fin
 	 * @return Noeud de fin
 	 */
 	public NodeFx getEnd() {
@@ -140,8 +140,8 @@ public class NodeLinkFx extends Line {
 	}
 
 	/**
-	 * Modifie le noeud de destination
-	 * @param endNode Nouveau noeud de destination
+	 * Modifie le noeud graphique de destination
+	 * @param endNode Nouveau noeud graphique de destination
 	 */
 	public void setEnd(NodeFx endNode) {
 		this.endNode = endNode;

@@ -10,7 +10,7 @@ import magic_book.core.file.json.TypeJson;
 import magic_book.core.item.BookItemLink;
 
 /**
- * Items disponible lors de la création du personnage principal
+ * Étape de la "Création du personnage" dans lequel on peut choisir ses items de départ
  */
 public class CharacterCreationItem extends AbstractCharacterCreation {
 
@@ -19,21 +19,21 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 	 */
 	private int amountToPick;
 	/**
-	 * Liste des items
+	 * Liste des items disponibles
 	 */
 	private List<BookItemLink> itemLinks;
 	
 	/**
-	 * Création de l'item avec par défaut une valeur -1 en amountToPick (représente un nombre infini)
+	 * Constructeur basique
 	 */
 	public CharacterCreationItem() {
 		this("", null, -1);
 	}
 	
 	/**
-	 * Création de la liste d'item disponible lié à un texte du début
-	 * @param text Texte lié à la liste d'item disponible
-	 * @param itemLinks Liste d'item associé au texte
+	 * Constructeur complet
+	 * @param text Texte à afficher
+	 * @param itemLinks Liste des items disponibles
 	 * @param amountToPick Nombre d'item maximum pouvant être pris
 	 */
 	public CharacterCreationItem(String text, List<BookItemLink> itemLinks, int amountToPick) {
@@ -108,7 +108,7 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 	}
 
 	/**
-	 * Donnne la liste d'item lié au texte
+	 * Donnne la liste d'item disponibles
 	 * @return Liste d'item
 	 */
 	public List<BookItemLink> getItemLinks() {

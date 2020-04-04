@@ -12,12 +12,12 @@ import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.Parsable;
 
 /**
- * Création du personnage
+ * Représente un personnage
  */
 public class BookCharacter implements Parsable, Descriptible, JsonExportable<CharacterJson> {
 
 	/**
-	 * ID du personnage (permet de le retrouver)
+	 * ID du personnage
 	 */
 	private String id;
 	/**
@@ -41,7 +41,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	 */
 	private List<String> skills;
 	/**
-	 * Liste d'imunités du personnage
+	 * Liste d'immunités du personnage
 	 */
 	private List<String> immunes;
 	/**
@@ -49,7 +49,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	 */
 	private List<String> items;
 	/**
-	 * Argent et type d'argent du personnage
+	 * Montant d'argent en fonction du nom de la monnaie
 	 */
 	private HashMap<String, Integer> moneys;
 	/**
@@ -70,13 +70,13 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 
 	/**
 	 * Création d'un personnage normal
-	 * @param id Permet de retrouver le personnage
+	 * @param id L'id du personnage
 	 * @param name Nom du personnage
 	 * @param baseDamage Dommage de base du personnage
 	 * @param hpMax Point de vie maximum du personnage
 	 * @param listSkills Liste de compétence du personnage
 	 * @param listItems Liste d'item du personnage
-	 * @param itemsMax Item maximum possédé
+	 * @param itemsMax Items maximum pouvant être possédés
 	 */
 	public BookCharacter(String id, String name, int baseDamage, int hpMax, List<String> listSkills, List<String> listItems, int itemsMax) {
 		this(id, name, baseDamage, hpMax, listSkills, null, listItems, itemsMax, false);
@@ -84,14 +84,14 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	
 	/**
 	 * Création d'un personnage avec tout les paramètres
-	 * @param id Permet de retrouver le personnage
+	 * @param id L'id du personnage
 	 * @param name Nom du personnage
 	 * @param baseDamage Dommage de base du personnage
 	 * @param hpMax Point de vie maximum du personnage
 	 * @param listSkills Liste de compétence du personnage
 	 * @param listImmune Liste d'immunité du personnage
 	 * @param listItems Liste d'item du personnage
-	 * @param itemsMax Item maximum possédé
+	 * @param itemsMax Items maximum pouvant être possédés
 	 * @param doubleDamage Double dommage activé (true) ou non (false)
 	 */
 	public BookCharacter(String id, String name, int baseDamage, int hpMax, List<String> listSkills, List<String> listImmune, List<String> listItems, int itemsMax, boolean doubleDamage) {
@@ -121,8 +121,8 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	}
 
 	/**
-	 * Modification d'un personnage
-	 * @param bookCharacter Nouveau personnage
+	 * Copie d'un personnage
+	 * @param bookCharacter personnage à copier
 	 */
 	public BookCharacter(BookCharacter bookCharacter) {
 		this.id = bookCharacter.id;
@@ -278,6 +278,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	 */
 	public void damage(int amount) {
 		this.hp -= amount;
+		
 		if (this.hp < 0){
 			this.hp = 0;
 		}
@@ -296,9 +297,9 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	}
 	
 	/**
-	 * Donne le nombre d'argent en fonction du nom de la monaie demandé
+	 * Retourne le montant de l'argent en fonction du nom de la monaie demandé
 	 * @param moneyId Nom de la monnaie
-	 * @return Nombre d'argent en fonction du nom de la monnaie
+	 * @return Nombre d'argent possédé
 	 */
 	public int getMoney(String moneyId) {
 		if(moneys.get(moneyId) != null) {
@@ -309,7 +310,7 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	}
 	
 	/**
-	 * Change le nombre d'argent disponible en fonction du nom de la monnaie
+	 * Donne le montant d'argent en fonction du nom de la monnaie
 	 * @param moneyId Nom de la monnaie
 	 * @param amount Nombre d'argent en plus ou en moins
 	 */

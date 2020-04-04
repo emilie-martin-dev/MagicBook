@@ -5,25 +5,24 @@ import magic_book.core.file.JsonExportable;
 import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.parser.Descriptible;
 
+/**
+ * Classe de base pour la conception d'une étape à la "Conception d'un personnage"
+ */
 public abstract class AbstractCharacterCreation implements Descriptible, JsonExportable<CharacterCreationJson> {
 
 	/**
-	 * Texte lié
+	 * Texte de la partie de la conception
 	 */
 	private String text;
 
 	/**
-	 * Création du texte lié à tout les skill et items ajouté
-	 * @param text 
+	 * Constructeur de base
+	 * @param text Le texte à afficher
 	 */
 	public AbstractCharacterCreation(String text) {
 		this.text = text;
 	}
 	
-	/**
-	 * Permet de transformer tout les CharacterCreation en Json
-	 * @return Character création écrit en Json
-	 */
 	@Override
 	public CharacterCreationJson toJson() {
 		CharacterCreationJson characterCreationJson = new CharacterCreationJson();
@@ -33,20 +32,12 @@ public abstract class AbstractCharacterCreation implements Descriptible, JsonExp
 		return characterCreationJson;
 	}
 
-	/**
-	 * Permet de transformer le CharacterCreation écrit en Json en CharacterCreation
-	 * @param json 
-	 */
 	@Override
 	public void fromJson(CharacterCreationJson json) {
 		this.setText(json.getText());
 	}
 	
-	/**
-	 * Donne et permet d'afficher le texte
-	 * @param book Livre contenant toute les informations
-	 * @return 
-	 */
+	@Override
 	public String getDescription(Book book) {
 		return this.text + "\n";
 	}

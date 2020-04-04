@@ -4,44 +4,20 @@ import javafx.beans.property.FloatProperty;
 import javafx.scene.paint.Color;
 
 /**
- * Contient le prélude et construit le rectangle
+ * Représentation graphique du prélude
  */
 public class PreludeFx extends RectangleFx {
 	
 	/**
-	 * Prélude
+	 * Premier noeud du livre
 	 */
 	private NodeFx firstNode;
 	/**
-	 * Texte du prélude
-	 */
-	private String text;
-	
-	/**
-	 * Initialisation du rectangle et du texte du prélude
-	 * @param texte Texte du prélude
+	 * Constructeur 
 	 * @param zoom Valeur du zoom
 	 */
-	public PreludeFx(String texte, FloatProperty zoom) {
+	public PreludeFx(FloatProperty zoom) {
 		super(Color.DEEPPINK, zoom);
-		
-		this.text = texte;
-	}
-	
-	/**
-	 * Donne le texte du prélude
-	 * @return Texte
-	 */
-	public String getText() {
-		return this.text;
-	}
-
-	/**
-	 * Modifie le texte du prélude
-	 * @param text Texte
-	 */
-	public void setText(String text) {
-		this.text = text;
 	}
 
 	/**

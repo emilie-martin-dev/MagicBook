@@ -19,7 +19,7 @@ import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 
 /**
- * Permet à la fourmi de jouer en fonction des choix random
+ * Permet à la fourmi de jouer en faisant des choix aléatoires
  */
 public class Fourmi implements InterfacePlayerFourmis{
 	

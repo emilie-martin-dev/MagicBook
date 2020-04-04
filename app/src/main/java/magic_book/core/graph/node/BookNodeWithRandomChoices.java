@@ -41,7 +41,7 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 			Random random = new Random();
 			int nbrRandomChoice;
 			if(somme == 0)
-				nbrRandomChoice = random.nextInt(listNodeLinkDisponible.size()-1);
+				nbrRandomChoice = random.nextInt(listNodeLinkDisponible.size());
 			else
 				nbrRandomChoice = random.nextInt(somme);
 			for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){

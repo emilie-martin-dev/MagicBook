@@ -1,7 +1,7 @@
 package magic_book.core.game.character_creation;
 
 /**
- * Texte lors de la création du personnage principal
+ *  Étape de la "Création du personnage" dans lequel on affiche uniquement du texte
  */
 public class CharacterCreationText extends AbstractCharacterCreation {
 

@@ -5,12 +5,12 @@ import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemWeapon;
 
 /**
- * Création de la sauvegarde de la partie en cours
+ * Représente l'état de la partie en cours
  */
 public class BookState {
 
 	/**
-	 * Livre contenant toute les informations
+	 * Livre contenant sur lequel on joue
 	 */
 	private Book book;
 	
@@ -29,7 +29,7 @@ public class BookState {
 	private BookItemDefense bookItemDefense;
 
 	/**
-	 * Donne toutes les informations du personnage principal
+	 * Donne le personnage principal
 	 * @return Personnage principal
 	 */
 	public BookCharacter getMainCharacter() {

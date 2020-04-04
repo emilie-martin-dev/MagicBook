@@ -242,7 +242,7 @@ public class GraphPane extends ScrollPane {
 	* Création du prélude et de son NodeFx
 	*/
 	private void createNodePrelude() {
-		PreludeFx preludeFx = new PreludeFx(null, zoom);
+		PreludeFx preludeFx = new PreludeFx(zoom);
 		preludeFx.setRealX(10);
 		preludeFx.setRealY(10);
 		
@@ -255,7 +255,6 @@ public class GraphPane extends ScrollPane {
 						book.setTextPrelude(dialog.getTextePrelude());
 						book.setMainCharacter(dialog.getMainCharacter());
 						book.setCharacterCreations(dialog.getCharacterCreations());
-						preludeFx.setText(dialog.getTextePrelude());
 					}
 				}
 			}
@@ -281,7 +280,6 @@ public class GraphPane extends ScrollPane {
 		this.book = book;	
 		
 		createNodePrelude();
-		preludeFx.setText(book.getTextPrelude());
 		
 		HashMap<AbstractBookNode, NodeFx> nodeNodeFxMapping = new HashMap<>();
 		

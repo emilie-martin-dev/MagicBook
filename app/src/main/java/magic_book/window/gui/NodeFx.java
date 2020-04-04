@@ -11,7 +11,7 @@ import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 
 /**
- * Contient le noeud et construit le rectangle
+ * Représente graphiquement un noeud du livre
  */
 public class NodeFx extends RectangleFx {
 	

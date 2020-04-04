@@ -3,7 +3,7 @@ package magic_book.window;
 import javafx.geometry.Insets;
 
 /**
- * Valeur static final des différents Pane
+ * Constantes pour les dimensions de l'affichage graphique (marges, tailles, ...)
  */
 public class UiConsts {
 

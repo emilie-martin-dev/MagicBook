@@ -18,7 +18,7 @@ import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
 
 /**
- * Permet au joueur de jouer en fonction de ses choix
+ * Permet au joueur de jouer en utilisant la console
  */
 public class Player implements InterfacePlayerFourmis {
 	
@@ -241,14 +241,14 @@ public class Player implements InterfacePlayerFourmis {
 		else if(characterCreation instanceof CharacterCreationSkill){
 			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
 			
-			for(String skillId : characterCreationSkill.getSkillLinks()){
-				System.out.println("Les skills suivant sont disponible:");
-				System.out.println("- " + state.getBook().getSkills().get(skillId).getDescription(state.getBook()));
-			}
-			
 			int nbItemMax = characterCreationSkill.getAmountToPick();
 			
 			while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
+				for(String skillId : characterCreationSkill.getSkillLinks()){
+					System.out.println("Les skills suivant sont disponible:");
+					System.out.println("- " + state.getBook().getSkills().get(skillId).getDescription(state.getBook()));
+				}
+				
 				skillAdd(state, characterCreationSkill);
 				nbItemMax--;
 			}

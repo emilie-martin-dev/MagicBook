@@ -9,31 +9,31 @@ import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.TypeJson;
 
 /**
- * Skills disponible lors de la création du personnage principal
+ *  Étape de la "Création du personnage" dans lequel on peut choisir ses skils de départ
  */
 public class CharacterCreationSkill extends AbstractCharacterCreation {
 	
 	/**
-	 * Nombre maximum de skill pouvant être pris
+	 * Nombre maximum de skills pouvant être pris
 	 */
 	private int amountToPick;
 	
 	/**
-	 * Liste des skill
+	 * Liste des skills
 	 */
 	private List<String> skillLinks;
 	
 	/**
-	 * Création du skill avec par défaut une valeur -1 en amountToPick (représente un nombre infini)
+	 * Constructeur basique
 	 */
 	public CharacterCreationSkill() {
 		this("", null, -1);
 	}
 	
 	/**
-	 * Création de la liste des skill disponible, lié à un texte du début
-	 * @param text Texte lié à la liste des skill
-	 * @param skillLinks Liste de skill associé au texte
+	 * Constructeur complet
+	 * @param text Texte à afficher
+	 * @param skillLinks Liste de skill disponibles
 	 * @param amountToPick Nombre de skill maximum pouvant être pris
 	 */
 	public CharacterCreationSkill(String text, List<String> skillLinks, int amountToPick) {
@@ -85,7 +85,7 @@ public class CharacterCreationSkill extends AbstractCharacterCreation {
 	}
 	
 	/**
-	 * Ajoute un skill à la liste de tout les skill
+	 * Ajoute un skill à la liste de tout les skills
 	 * @param skillLink Skill à ajouter
 	 */ 
 	public void addSkillLink(String skillLink) {
@@ -93,24 +93,24 @@ public class CharacterCreationSkill extends AbstractCharacterCreation {
 	}
 	
 	/**
-	 * Donne la liste de skill
-	 * @return Liste de skill
+	 * Donne la liste de skills
+	 * @return Liste de skills
 	 */
 	public List<String> getSkillLinks() {
 		return skillLinks;
 	}
 
 	/**
-	 * Modifie toute la liste des skill
-	 * @param skillLinks Liste de skill
+	 * Modifie toute la liste des skills
+	 * @param skillLinks Liste de skills
 	 */
 	public void setSkillLinks(List<String> skillLinks) {
 		this.skillLinks = skillLinks;
 	}
 
 	/**
-	 * Donne le nombre de skill pouvant être pris
-	 * @return Nombre de skill pouvant être pris
+	 * Donne le nombre de skills pouvant être pris
+	 * @return Nombre de skills pouvant être pris
 	 */
 	public int getAmountToPick() {
 		return amountToPick;
