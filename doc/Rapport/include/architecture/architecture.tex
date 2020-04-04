@@ -2,6 +2,82 @@
 
 	\section{Arborescence du projet}
 
+		\begin{description}
+			\item[.github :]{Fichiers spécifiques à GitHub.}
+			\begin{description}
+				\item[workflows]{Fichiers destiné au module d' "Actions" de GitHub. Nous nous en somme servis pour lancer automatiquement les tests unitaires lors d'un push ou d'une pull-request.}
+			\end{description}
+			\item[app :]{Contient tout le code source de notre application.}
+			\begin{description}
+				\item[gradle:]{Wrapper de gradle.}
+				\item[livre :]{Exemples de livre.}
+				\item[src :]{Contient les codes sources, ressources et tests unitaires.}
+				\begin{description}
+					\item[main :]{Code principal de l'application.}
+					\begin{description}
+						\item[java :]{Code source.}
+						\item[resources :]{Ressources pour l'application (images, musiques, ...).}
+					\end{description}
+					\item[test :]{Code des tests unitaires.}
+					\begin{description}
+						\item[java :]{Code source.}
+						\item[resources :]{Ressources utiles pour les tests (images, musiques, config, ...).}
+					\end{description}
+				\end{description}
+				\item[build.gradle :]{Script de configuration du projet (dépendance, classe principale, ...).}
+				\item[gradlew:]{Script pour les systèmes Unix afin d'exécuter le Wrapper de Gradle.}
+				\item[graldlew.bat :]{Script pour les systèmes DOS afin d'exécuter le Wrapper de Gradle.}
+				\item[settings.gradle :]{Configuration sur les modules à inclure, les noms de ceux-ci, etc.}
+				\item[.gitattributes :]{Permet de fixer la fin de ligne pour les scripts Unix et DOS.}
+			\end{description}
+			\item[doc :]{Contient toute la documentations du projet, notamment le rapport.}
+			\item[.gitignore :]{Fichier ignorant les changements sur certains fichiers ou dossier sur Git.}
+			\item[CONVENTIONS.md :]{Conventions de nommage concernant le projet et les commits.}
+			\item[LICENSE :]{Licence du projet.}
+			\item[README.md :]{README pour présenter notre projet et expliquer la compilation de celui-ci.}
+		\end{description}
 
+		Pour mieux comprendre la structure de gradle les liens suivants sont utiles \url{https://guides.gradle.org/creating-new-gradle-builds/} et \url{https://docs.gradle.org/6.3/userguide/gradle_wrapper.html}
 
 	\section{Présentation des packages}
+
+		Notre application contenant beaucoup de classes, celles-ci sont réparties en packages que nous allons détailler :
+
+		\begin{description}
+			\item[core]{Classes principales de l'application}
+			\begin{description}
+				\item[exception]{Classes d'exceptions}
+				\item[file]{Classes utiles à la lecture, l'écriture de fichier (json et texte)}
+				\begin{description}
+					\item[deserializer]{Classes qui héritent de JsonDeserializer (provient de GSON)}
+					\item[json]{Classes JSON intermédiaire pour la lecture et l'écriture avec GSON}
+				\end{description}
+				\item[game]{Classes spécifiques au jeu (Personnage, Skill, BookState, ...)}
+				\begin{description}
+					\item[character\_creation]{Classes qui représentent une étape de la "Création du personnage"}
+					\item[player]{Classes qui permettent de jouer au jeu (Joueur ou fourmis)}
+				\end{description}
+				\item[graph]{Classes qui représentent les noeuds et les liens}
+				\begin{description}
+					\item[node]{Classes pour les noeuds}
+					\item[node\_link]{Classe pour les liens}
+				\end{description}
+				\item[item]{Classes qui représentent les items}
+				\item[parser]{Classes qui permettent de parser un texte pour afficher le nom de l'item ou du personnage}
+				\item[requirement]{Classes pour gérer les prérequis sur un noeud}
+			\end{description}
+
+			\item[observer]{Classes pour le pattern observer}
+			\begin{description}
+				\item[book]{Classes pour le pattern observer du livre}
+				\item[fx]{Classes pour le pattern observer des éléments JavaFx}
+			\end{description}
+
+			\item[window]{Classes pour l'affichage avec JavaFx}
+			\begin{description}
+				\item[component]{Composants réutilisables à différents endroits (dans plusieurs boites de dialogues par exemple)}
+				\item[dialog]{Les différentes boites de dialogue}
+				\item[gui]{Les différents éléments graphiques pour JavaFx (NodeFx, NodeLinkFx, PreludeFx)}
+				\item[pane]{Les différentes parties qui composent notre affichage sur la fenêtre (Partie de gauche, centrale, droite)}
+			\end{description}
+		\end{description}

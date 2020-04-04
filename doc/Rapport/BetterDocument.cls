@@ -147,6 +147,7 @@
 \RequirePackage{wrapfig} % Permet d'utiliser les wrapfigure
 \RequirePackage[table]{xcolor} % Permet d'utiliser les couleurs
 \RequirePackage{longtable}
+
 % Package non compatibles avec Beamer
 \ifthenelse{\equal{\classname}{beamer}}{}{%
 	\RequirePackage[top=2.5cm, left=2.5cm, right=2.5cm, bottom=2.5cm]{geometry} % Change les bordures des pages
@@ -207,20 +208,9 @@
 	commentstyle=\color{codeDarkComment},
 	keywordstyle=\color{codeDarkKeyword},
 	ndkeywordstyle=\color{codeDarkKeyword2},
-	numberstyle=\tiny\color{codeDarkNumber},
+	numberstyle=\fontsize{8}{10}\selectfont\color{codeDarkNumber},
 	stringstyle=\color{codeDarkString},
-	basicstyle=\color{codeDarkText}\ttfamily\footnotesize,
-	breakatwhitespace=false,
-	breaklines=true,
-	captionpos=b,
-	keepspaces=true,
-	numbers=left,
-	numbersep=5pt,
-	showspaces=false,
-	showstringspaces=false,
-	showtabs=false,
-	extendedchars=true,
-	tabsize=4
+	basicstyle=\color{codeDarkText}\ttfamily\footnotesize
 }
 
 \definecolor{codeLightBackground}{HTML}{FAFAFA}
@@ -236,23 +226,13 @@
 	commentstyle=\color{codeLightComment},
 	keywordstyle=\color{codeLightKeyword},
 	ndkeywordstyle=\color{codeLightKeyword2},
-	numberstyle=\tiny\color{codeLightNumber},
+	numberstyle=\fontsize{8}{10}\selectfont\color{codeLightNumber},
 	stringstyle=\color{codeLightString},
-	basicstyle=\color{codeLightText}\ttfamily\footnotesize,
-	breakatwhitespace=false,
-	breaklines=true,
-	captionpos=b,
-	keepspaces=true,
-	numbers=left,
-	numbersep=5pt,
-	showspaces=false,
-	showstringspaces=false,
-	showtabs=false,
-	extendedchars=true,
-	tabsize=4
+	basicstyle=\color{codeLightText}\ttfamily\footnotesize
 }
 
-\lstset{style=light, literate=
+\lstset{style=light,
+	literate=
 	{á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
 	{Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
 	{à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
@@ -266,7 +246,18 @@
 	{ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
 	{ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
 	{€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
-	{»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+	{»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	extendedchars=true,
+	tabsize=4
 }
 
 \lstdefinelanguage{json}{
@@ -286,7 +277,8 @@
 \urlstyle{same}
 \hypersetup{
 	urlcolor = {links},
-	linkcolor = {links}
+	linkcolor = {links},
+	citecolor = {links}
 }
 
 % Code spécifique à Beamer
@@ -346,7 +338,7 @@
 		\pagestyledefault{}
 	}%
 
-	\setlength{\parskip}{1em}
+	\setlength{\parskip}{0.5em}
 
 	% Numerotation des sections et subsection
 	\renewcommand\thesection{\Alph{section}}
