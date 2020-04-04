@@ -19,7 +19,7 @@
 
 		\subsection{La structure du JSON}
 
-\begin{lstlisting}[language=json, caption=Exemple de livre très simple]
+\begin{lstlisting}[language=json, caption=Exemple de livre très simple, label=lst:exemple_livre]
 {
 	"prelude": "Vous êtes l'enseignant qui note notre projet",
 	"setup": {
@@ -38,7 +38,7 @@
 				},
 				{
 					"text": "Mettre une mauvaise note",
-					"section": 2,
+					"section": 2
 				}
 			]
 		},
@@ -122,13 +122,71 @@
 
 		\subsubsection{Sections}
 
-			Enfin, la partie "sections" représente un numéro de paragraphe ainsi que le paragraphe associe. Dans ces paragraphes il y a les différents liens possibles.
+			La partie "sections" est une map qui représente le numéro d'un paragraphe ainsi que le paragraphe associé. Il existe différents types de paragraphes, à choix, à choix aléatoire, avec des combats, terminaux. Tous possède un texte. Les noeuds terminaux possèdent un type de fin ("end\_type") afin savoir si l'on a gagné ou pas (cf : Listing \ref{lst:exemple_livre}). Les noeuds aléatoires eux, possède un attribut "is\_random\_pick" qui vaut true. Pour tous les autres types de noeuds, on retrouve parmis les attributs les plus importants une liste d'items qu'il est possible de prendre, un montant d'item maximum qui peut être pris ("amount\_to\_pick"), des items disponibles à l'achat ("shop").
 
-			Posssede un texte, une liste d'items qu'il est possible de prendre, les items disponibles à l'achat, les différents choix possibles. Le nombre ditems max a prendre. Une description du combat (lien de victoire, defaite, etc) ainsi que la liste des ids des ennemis. un champ ("is\_random\_pick": true,) indique s'il s'agit d'nu noeud random. Par defaut il est considéré comme étant false. Un type de fin (victoire ou defaite). Un nombre de pv a rendre
+\begin{lstlisting}[language=json, caption=Exemple de paragraphe]
+{
+	"text": "The back door opens [...]",
+	"items": [
+		{
+			"id": "gold",
+			"amount": 5
+		},
+		{
+			"id": "dagger"
+		},
+		{
+			"id": "seal_hammerdal"
+		}
+	],
+	"amount_to_pick": 2
+	"choices": [
+		{
+			"text": "Return to the tavern.",
+			"section": "177"
+		},
+		{
+			"text": "Study the tomb.",
+			"section": "24"
+		}
+	]
+}
+\end{lstlisting}
 
-			Concernant les items disponibles à la vente ou ceux que l'on peut prendre,
+			Certains paragraphes peuvent contenir un attribut "combat". Dès lors on peut connaitre le choix en cas de victoire ("win"), de défaite ("loose") ou d'évasion ("evasion). Si l'évasion est possible seulement à partir d'un certains nombre de tour on retrouve alors un attribut nommé "evasion\_round". Pour finir, un attribut "enemies" permet de connaitre les personnages que l'on combat.
 
-			Les choix possede un texte, un poid si random, un montant de gold a donner des pv a perdre et une liste de prerequis
+\begin{lstlisting}[language=json, caption=Exemple de paragraphe avec des combats]
+{
+	"text": "The dead zombies lie [...]",
+	"combat": {
+		"win": {
+			"text": "If you win the combat.",
+			"section": "309"
+		},
+		"enemies": [
+			"zombie_captain"
+		]
+	}
+}
+\end{lstlisting}
+
+			Pour représenter un lien vers un autre paragraphe on retrouve une liste de choix ("choices"). Ils possèdent également un texte qui correspond à l'intititulé du choix, le numéro du paragraphe suivant ("section"), un nombre d'hp à retirer, un nombre d'argent à ajouter ainsi qu'un liste de prérequis ("requirements"). Comme pour les BookNodeLink, il s'agit d'un tableau à deux dimensions. Le premier représente une liste de condition en OU et le second une liste de condition en ET. Enfin, pour les noeuds aléatoire, un poid est également présent ("weight").
+
+\begin{lstlisting}[language=json, caption=Exemple de choix]
+{
+	"text": "If you have the Kai Discipline of Tracking.",
+	"section": "182",
+	"hp": -5,
+	"requirements":  [
+		[
+			{
+				"id": "tracking",
+				"type": "SKILL"
+			}
+		]
+	]
+}
+\end{lstlisting}
 
 		\subsection{La lecture et l'écriture}
 
