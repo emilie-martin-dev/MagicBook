@@ -5,3 +5,44 @@
 
 
 	\section{Présentation des packages}
+
+		Notre application contenant beaucoup de classes, celles-ci sont réparties en packages que nous allons détailler :
+
+		\begin{description}
+			\item[core]{Classes principales de l'application}
+			\begin{description}
+				\item[exception]{Classes d'exceptions}
+				\item[file]{Classes utiles à la lecture, l'écriture de fichier (json et texte)}
+				\begin{description}
+					\item[deserializer]{Classes qui héritent de JsonDeserializer (provient de GSON)}
+					\item[json]{Classes JSON intermédiaire pour la lecture et l'écriture avec GSON}
+				\end{description}
+				\item[game]{Classes spécifiques au jeu (Personnage, Skill, BookState, ...)}
+				\begin{description}
+					\item[character\_creation]{Classes qui représentent une étape de la "Création du personnage"}
+					\item[player]{Classes qui permettent de jouer au jeu (Joueur ou fourmis)}
+				\end{description}
+				\item[graph]{Classes qui représentent les noeuds et les liens}
+				\begin{description}
+					\item[node]{Classes pour les noeuds}
+					\item[node\_link]{Classe pour les liens}
+				\end{description}
+				\item[item]{Classes qui représentent les items}
+				\item[parser]{Classes qui permettent de parser un texte pour afficher le nom de l'item ou du personnage}
+				\item[requirement]{Classes pour gérer les prérequis sur un noeud}
+			\end{description}
+
+			\item[observer]{Classes pour le pattern observer}
+			\begin{description}
+				\item[book]{Classes pour le pattern observer du livre}
+				\item[fx]{Classes pour le pattern observer des éléments JavaFx}
+			\end{description}
+
+			\item[window]{Classes pour l'affichage avec JavaFx}
+			\begin{description}
+				\item[component]{Composants réutilisables à différents endroits (dans plusieurs boites de dialogues par exemple)}
+				\item[dialog]{Les différentes boites de dialogue}
+				\item[gui]{Les différents éléments graphiques pour JavaFx (NodeFx, NodeLinkFx, PreludeFx)}
+				\item[pane]{Les différentes parties qui composent notre affichage sur la fenêtre (Partie de gauche, centrale, droite)}
+			\end{description}
+		\end{description}
