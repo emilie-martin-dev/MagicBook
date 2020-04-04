@@ -4,8 +4,6 @@
 
 		\subsection{Représentation des noeuds et des liens}
 
-
-
 		\subsection{Quelques algorithmes}
 
 
@@ -13,7 +11,52 @@
 	\section{Lecture et écriture d'un livre}
 
 
-	\section{Edition d'un livre}
+	\section{Edition graphique d'un livre}
+		Afin d'éditer un livre, nous avons différents boutons permettant de changer de mode. Chaque mode permet d'ajouter, de supprimer, de sélectionner, un noeud ou un lien. Ces modes sont gérer à l'aide de la MainWindows qui est une fenêtre qui affiche tout les différents panel. Il existe trois grand panel comportant eux même d'autre petit panel. Le premier panel se nomme le "LeftPane". Il se situe à gauche et est composé des boutons de mode, d'une liste d'item existant ainsi que d'une liste de personnage existant. Le deuxième panel s'appel le "GraphPane". Il est au centre et permet d'ajouter les noeuds ainsi que les liens entre les noeuds. Il contient également le prélude. Le troisième panel se nomme le "RightPane". Il permet d'afficher les statistiques du livre comme par exemple, le nombre de noeud et l'estimation de la difficulté du livre.\\
+
+		\subsection{MainWindows}
+			La MainWindows, comme mentionné précédement, contient toute la fenêtre. Elle contient également un Menu permettant de réaliser plusieurs actions.\\
+			Premièrement, dans le menu nommé "Fichier", l'utilisateur peut alors ouvrir un nouveau livre vide en cliquant sur "Nouveau". Un nouveau livre est alors ouvert en mettant tout les panel (LeftPane, GraphPane, RightPane) à jour, permettant ainsi de remmettre tout à zéro. Ce menu comporte aussi un MenuItem nommé "Ouvrir", permettant ainsi d'ouvrir un fichier Json ou txt. Si ce fichier n'est pas fonctionnel, un message d'erreur apparait. Sinon, le livre est changé en mettant tout les panel à jour. Il peut aussi enregistrer ou enregistrer-sous le livre en faisant appel au FileChooser et au File.\\
+			Deuxièmement, dans le menu nommé "Livre", l'utilisateur peut "Jouer" ou "Estimer la difficulté". Ces deux MenuItem utilisent toutes les deux la classe Jeu, décrit un peu plus loin. Un autre MenuItem est aussi présent, permettant de "Générer le livre en txt". Cela permet à l'utilisateur de pouvoir avoir un livre propre contenant les paragraphes et le choix de chaque paragraphes.\\
+			Troisièmement, dans le menu nommé "Affichage", l'utilisateur peut afficher ou non, le LeftPane et/ou le RightPane. Cela permet notament à l'utilisateur de mieux voir la partie "édition". Mais était surtout réalisé pour un meilleur affichage en vidéo projecteur de notre projet.\\
+
+		\subsection{LeftPane}
+			Ce panel contient tout d'abord des ToggleButton permettant de sélectionner un mode parmis cinq modes : SELECT, ADD_NODE, ADD_NODE_LINK, DELETE, FIRST_NODE. Chacun de ces mode fait appel à une méthode permettant de créer le bouton. Cette méthode prend en paramètre une image et un des modes de la classe Mode.\\
+			Ensuite, un TreeItem contenant des BookCharacter est créer permettant de lister tout les personnages créé à l'aide de TreeView. Le même procédé est réalisé pour les items.\\
+			Puis, pour permettre à l'utilisateur de créer des items et des personnages, un ContextMenu est ajouter au TreeView des items, puis au TreeView des personnages. Une action est implémenté pour chaque choix de ces ContextMenu: Ajout, Modification, Suppression.\\
+			Si le choix d'ajout est cliqué, une boite de dialog apparait appelant CharacterDialog qui elle même appel CharacterComponent pour la création d'un personnage ou ItemDialog pour la création d'un item.\\
+			Pour ce dernier, l'ItemDialog à une ChoiceBox permettant de choisir si l'item créer est une arme, un item de soin, de défense ou un simple item. Le BookItem est créer en fonction du type d'item.\\
+
+
+		\subsection{GraphPane}
+		Pour ajouter un noeud, on clique sur le mode "ADD_NODE",puis on clique sur le GraphPane. Une fenêtre de dialog est alors ouverte afin de renseigner le paragraphe à afficher, ainsi qu'une CheckBox permettant de sélectionner le type de noeud. L'affichage change en fonction du type de noeud sélectionner dans cette CheckBox, qui elle, est prédéfini sur "basic".\\
+
+		Si c'est un noeud basic ou aléatoire, les renseignements suivant sont demandé: le texte à afficher, le nombre de points de vie à gagner/perdre, les items disponible, le nombre d'item disponible. Rien ne change sur la structure de la boite de dialog entre ces deux types. Mais au moment de la validation, le type de BookNode créer se fera en fonction de la valeur de la choiceBox : BoockNodeWithChoices, BookNodeWithRandomChoices. Des try/catch sont utilisé afin de changer certaine valeurs de saisie en Integer. Cela permet d'être sûr que ce sont des chiffres. Si la conversion ne peut pas se faire, une boite de dialog affichant l'erreur apparait, notifiant ainsi où l'erreur se situe.\\
+
+		Si c'est un noeud de combat...... JUJU  :p\\
+
+
+		Si c'est un noeud terminal, une ChoiceBox est juste rajouté afin de savoir si c'est un noeud gagnant ou perdant. Lors de la validation, un BookNodeTerminal est créer avec comme valeur un BookNodeStatus défini en fonction de la ChoiceBox.\\
+
+		Dès qu'un noeud est validé, un NodeFx est créer. Il contient alors le noeud créer et affiche un Rectangle là où la souris a été cliqué dans le graphPane, à la création du noeud. La couleur du carré change en fonction du type de noeud. Un RectangleFX est donc mis en place permettant d'envoyé une notification si jamais la souris passe dessus (opacité du Rectangle qui change), réalise un clique maintenu (déplacement du rectangle en fonction de la souris), réalise un clique simple. Pour ce dernier, cela envoie une notification à l'observable permettant de prévenir l'observeur qu'on a cliquer dessus. Cela sert si un double clique est produit (permet de procédé à une modification si le mode activé est "SELECT", a une suppression si c'est le mode DELETE qui est activé ou encore a une création de lien entre le prélude et le noeud sélectionné si le mode FIRST_NODE est activé) ou si un deux cliques espacé sont réalisé (permet de procédé à la création d'un lien si le mode "ADD_NODE_LINK" est sélectionné).\\
+
+		Une fois un ou plusieurs noeud créer, un lien peut être donc être effectué. Le lien peut être fait sur le même noeud, si une boucle est voulu. Mais il peut aussi être réalisé entre deux noeuds. Pour ce faire, le mode "ADD_NODE_LINK" doit être activé. Le premier clique permet de sauvegarder le noeud de départ. Le deuxième permet d'avoir le noeud de destination. Une fois les deux cliques détecté, une fenêtre de dialog apparait. Il y a trois affichage différent.\\
+		L'affiche ce fait en fonction du premier noeud. Tout d'abord, l'affichage commun entre ces noeuds est un simple texte, deux TextField ainsi qu'un CheckBox. Les TextField permettent d'ajouter un gain ou une perte de vie/d'argent. La CheckBox, quant a elle, permet d'aller vers ce choix obligatoirement ou non.\\
+		Si le premier noeud est un noeud de combat, une ChoiceBox apparait alors permettant de choisir si c'est un lien gagnant, perdant ou un lien d'évasion. Cette liste de choix est créer si le permier noeud à encore des choix de libre. S'il n'a plus de choix libre, une boite d'alerte s'affiche en prévenant qu'il n'y a plus aucun lien disponible.\\
+
+		Si le permier noeud est de type aléatoire, le joueur doit alors renseigner la chance sur chaque lien.\\
+
+		Le lien est repésenté par une ligne entre le noeuds de départ et d'arrivé. Pour les différencier, un cercle est créer et est affiché au noeud de destination. Tout cela est géré par NodeLinkFx qui a aussi un observeur permettant d'envoyé une notification si jamais la ligne ou le cercle enregistre un événement "clique". Cela permet de savoir si le lien a été double cliqué pour réaliser une modification.\\
+
+		Le prélude est déjà situé en haut à gauche du GraphPane. Ce prélude, comme les noeuds, est représenté par un carré. Ce carré est lié à un PréludeFx contenant des Tab. La première Tab contient le texte du prélude. La deuxième contient la création du personnage. Et la troisième la création du personnage principal.\\
+		La deuxième partie du TabPane contient un Accordion.  Cette accordion est affiché grâce au bouton "Ajouter". Chaque accordion est composé d'un CharacterCreationComponent comprenant un Texte, une CheckBox (Texte, Item), et d'un bouton "Supprimer cette partie". La checkBox n'affiche que "Texte" si aucun item n'est disponible. Mais si un item est créé, l'utilisateur peu alors ajouter un ItemListComponent en sélectionnant "Item" dans la CheckBox. Cette classe est affiché sur tout les noeuds, permettant d'ajouter des items ainsi que la quantité disponible de chaque item, qui ici, sera disponible en début de partie. L'item ajouté peut être supprimé grâce à un clic droit de la souris.
+		La troisième partie du TabPane permet quant a elle, de créer le personnage principal grâce au CharacterComponent. Cette classe permet de créer un personnage. Mais si la valeur boolean de mainCharacter est true, les TextField pour le nombre d'item maximum ainsi que la quantité d'argent est ajouté.
+		Après validation, le textPrelude (texte du prélude), mainCharacter (personnage principal) et le characterCreations (item et texte à afficher après le prélude) est créer.
+
+		\subsection{RightPane}
+
+		Ce panel contient tout ce qui représente les statistiques. Dès qu'un noeud est ajouté ou supprimé, une méthode de la class \textit{RightPane} est utilisé afin de mettre à jour le nombre de noeuds existant. Pour la difficulté du livre, elle est mise à jours dès que \textbf{Estimé la difficulté du livre} est sélectionné.\\
+		Si un nouveau livre est chargé, tout ces statistiques ce remmettent à zéro.
 
 
 
