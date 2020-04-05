@@ -5,7 +5,7 @@
 		\begin{description}
 			\item[.github :]{Fichiers spécifiques à GitHub.}
 			\begin{description}
-				\item[workflows :]{Fichiers destiné au module d' "Actions" de GitHub. Nous nous en somme servis pour lancer automatiquement les tests unitaires lors d'un push ou d'une pull-request.}
+				\item[workflows :]{Fichiers destinés au module d' "Actions" de GitHub. Nous nous en sommes servis pour lancer automatiquement les tests unitaires lors d'un push ou d'une pull-request.}
 			\end{description}
 			\item[app :]{Contient tout le code source de notre application.}
 			\begin{description}
@@ -16,17 +16,17 @@
 					\item[main :]{Code principal de l'application.}
 					\begin{description}
 						\item[java :]{Code source.}
-						\item[resources :]{Ressources pour l'application (images, musiques, ...).}
+						\item[resources :]{Ressources pour l'application (images, ...).}
 					\end{description}
-					\item[test :]{Code des tests unitaires.}
+					\item[test :]{Le code des tests unitaires.}
 					\begin{description}
 						\item[java :]{Code source.}
-						\item[resources :]{Ressources utiles pour les tests (images, musiques, config, ...).}
+						\item[resources :]{Ressources utiles pour les tests uniquement (images, ...).}
 					\end{description}
 				\end{description}
 				\item[build.gradle :]{Script de configuration du projet (dépendance, classe principale, ...).}
 				\item[gradlew:]{Script pour les systèmes Unix afin d'exécuter le Wrapper de Gradle.}
-				\item[graldlew.bat :]{Script pour les systèmes DOS afin d'exécuter le Wrapper de Gradle.}
+				\item[gradlew.bat :]{Script pour les systèmes DOS afin d'exécuter le Wrapper de Gradle.}
 				\item[settings.gradle :]{Configuration sur les modules à inclure, les noms de ceux-ci, etc.}
 				\item[.gitattributes :]{Permet de fixer la fin de ligne pour les scripts Unix et DOS.}
 			\end{description}
@@ -50,7 +50,7 @@
 				\item[file :]{Classes utiles à la lecture, l'écriture de fichier (json et texte)}
 				\begin{description}
 					\item[deserializer :]{Classes qui héritent de JsonDeserializer (provient de GSON)}
-					\item[json :]{Classes JSON intermédiaire pour la lecture et l'écriture avec GSON}
+					\item[json :]{Classes JSON intermédiaires pour la lecture et l'écriture avec GSON}
 				\end{description}
 				\item[game :]{Classes spécifiques au jeu (Personnage, Skill, BookState, ...)}
 				\begin{description}
@@ -60,7 +60,7 @@
 				\item[graph :]{Classes qui représentent les noeuds et les liens}
 				\begin{description}
 					\item[node :]{Classes pour les noeuds}
-					\item[node\_link :]{Classe pour les liens}
+					\item[node\_link :]{Classes pour les liens}
 				\end{description}
 				\item[item :]{Classes qui représentent les items}
 				\item[parser :]{Classes qui permettent de parser un texte pour afficher le nom de l'item ou du personnage}
