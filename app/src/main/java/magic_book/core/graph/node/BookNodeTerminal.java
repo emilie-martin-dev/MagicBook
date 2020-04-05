@@ -5,14 +5,28 @@ import magic_book.core.Book;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.graph.node_link.BookNodeLink;
 
+/**
+ * Noeud terminal
+ */
 public class BookNodeTerminal extends AbstractBookNode {
 
+	/**
+	 * Permet de prendre deux status
+	 */
 	private BookNodeStatus bookNodeStatus;
 
+	/**
+	 * Constructeur vide
+	 */
 	public BookNodeTerminal() {
 		this("", null);
 	}
 	
+	/**
+	 * Initialisation des valeurs
+	 * @param texte Texte du noeud
+	 * @param bookNodeStatus Status du noeud: Failure ou Victory
+	 */
 	public BookNodeTerminal(String texte, BookNodeStatus bookNodeStatus){
 		super(texte);
 		
