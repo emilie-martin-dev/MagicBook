@@ -143,6 +143,7 @@
 \RequirePackage{multirow} % Permet de fusionner des cellules du tableau
 \RequirePackage[section]{placeins} % Permet de bloquer les floats pour ne pas les faire dépasser d'une section par ex
 \RequirePackage{setspace} % Permet de changer l'interligne
+\RequirePackage{subcaption}
 \RequirePackage{tabularx} % Permet d'utiliser les tableaux
 \RequirePackage{wrapfig} % Permet d'utiliser les wrapfigure
 \RequirePackage[table]{xcolor} % Permet d'utiliser les couleurs
