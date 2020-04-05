@@ -6,8 +6,8 @@ import java.util.Random;
 import magic_book.core.file.json.ChoiceJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.game.BookState;
-import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
+import magic_book.core.item.BookItemLink;
 
 public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookNodeLinkRandom>{
 	

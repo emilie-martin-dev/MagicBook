@@ -1,8 +1,8 @@
 package magic_book.core.game;
 
 import magic_book.core.Book;
-import magic_book.core.file.json.SkillJson;
 import magic_book.core.file.JsonExportable;
+import magic_book.core.file.json.SkillJson;
 import magic_book.core.parser.Descriptible;
 
 public class BookSkill implements Descriptible, JsonExportable<SkillJson> {

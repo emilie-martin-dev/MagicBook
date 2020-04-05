@@ -2,9 +2,7 @@ package magic_book.core.game.character_creation;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import magic_book.core.Book;
-import magic_book.core.file.JsonExportable;
 import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.TypeJson;
 

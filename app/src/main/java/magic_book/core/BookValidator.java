@@ -3,12 +3,12 @@ package magic_book.core;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import magic_book.core.game.BookCharacter;
-import magic_book.core.item.BookItem;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
+import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
-import magic_book.core.graph.node.BookNodeTerminal;
+import magic_book.core.item.BookItem;
 
 public class BookValidator {
 

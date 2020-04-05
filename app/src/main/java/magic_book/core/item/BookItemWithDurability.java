@@ -2,7 +2,6 @@ package magic_book.core.item;
 
 import magic_book.core.Book;
 import magic_book.core.file.json.ItemJson;
-import magic_book.core.parser.Descriptible;
 
 public class BookItemWithDurability extends BookItem {
 

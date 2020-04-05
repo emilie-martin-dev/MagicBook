@@ -6,8 +6,8 @@ import magic_book.core.Book;
 import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.game.BookCharacter;
-import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.item.BookItemLink;
 
 public class BookNodeCombat extends AbstractBookNodeWithChoices<BookNodeLink> {
 	

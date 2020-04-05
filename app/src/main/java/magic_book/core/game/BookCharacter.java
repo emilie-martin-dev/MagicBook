@@ -1,10 +1,9 @@
 package magic_book.core.game;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
-
 import magic_book.core.Book;
 import magic_book.core.file.JsonExportable;
 import magic_book.core.file.json.CharacterJson;

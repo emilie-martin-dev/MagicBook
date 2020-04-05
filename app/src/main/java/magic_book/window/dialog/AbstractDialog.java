@@ -33,7 +33,7 @@ public abstract class AbstractDialog extends Stage {
 	private void initDialogUI(String title, boolean hideMargins, boolean useScroll) {
 		BorderPane rootPane = new BorderPane();
 		int margin = hideMargins ? 0 : UiConsts.DEFAULT_MARGIN_DIALOG;
- 		rootPane.setPadding(new Insets(margin, margin, UiConsts.DEFAULT_MARGIN_DIALOG, margin));
+		rootPane.setPadding(new Insets(margin, margin, UiConsts.DEFAULT_MARGIN_DIALOG, margin));
 		
 		HBox controlButtons = getControlButtons();
 		controlButtons.setPadding(new Insets(UiConsts.DEFAULT_MARGIN, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
@@ -51,10 +51,10 @@ public abstract class AbstractDialog extends Stage {
 		}
 		
 		Scene scene = new Scene(rootNode);
- 		this.initModality(Modality.APPLICATION_MODAL);
- 		this.setResizable(false);
- 		this.setTitle(title);
- 		this.setScene(scene);
+		this.initModality(Modality.APPLICATION_MODAL);
+		this.setResizable(false);
+		this.setTitle(title);
+		this.setScene(scene);
 	}
 	
 	protected abstract Node getMainUI();
@@ -63,20 +63,20 @@ public abstract class AbstractDialog extends Stage {
 	
 	private HBox getControlButtons() {
 		Button boutonAnnuler = new Button("Annuler");
- 		boutonAnnuler.setOnAction(new EventHandler<ActionEvent>() {
- 			@Override
- 			public void handle(ActionEvent e) {
- 				close();
- 			}
- 		});
+		boutonAnnuler.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				close();
+			}
+		});
 		
 		Button boutonValider = new Button("Valider");
 		boutonValider.setOnAction(getValidButtonEventHandler());
 		
 		HBox box = new HBox();
- 		box.setSpacing(10d);
- 		box.setAlignment(Pos.BASELINE_RIGHT);
- 		box.getChildren().addAll(boutonAnnuler, boutonValider);
+		box.setSpacing(10d);
+		box.setAlignment(Pos.BASELINE_RIGHT);
+		box.getChildren().addAll(boutonAnnuler, boutonValider);
 		
 		return box;
 	}

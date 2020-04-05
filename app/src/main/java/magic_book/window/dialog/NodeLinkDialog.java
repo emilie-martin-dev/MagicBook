@@ -16,8 +16,8 @@ import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.window.UiConsts;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
+import magic_book.window.UiConsts;
 
 public class NodeLinkDialog extends AbstractDialog{
 	

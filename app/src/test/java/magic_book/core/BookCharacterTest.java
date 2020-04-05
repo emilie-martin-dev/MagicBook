@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class BookCharacterTest extends AbstractTest {
 
-    @Test
+	@Test
 	public void heal_test(){
 		BookCharacter character = new BookCharacter("", "", 0, 5, null, null, 0);
 		

@@ -1,14 +1,7 @@
 package magic_book.core.utils;
 
-import magic_book.core.game.player.Fourmi;
-import org.junit.Assert;
-import org.junit.Test;
-
-import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.core.graph.node.BookNodeStatus;
-import magic_book.core.graph.node.BookNodeTerminal;
-import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.test.AbstractTest;
+import org.junit.Test;
 
 public class FourmiTest extends AbstractTest {
 	

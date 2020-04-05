@@ -2,7 +2,6 @@ package magic_book.window.gui;
 
 import javafx.beans.property.FloatProperty;
 import javafx.scene.paint.Color;
-
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeStatus;

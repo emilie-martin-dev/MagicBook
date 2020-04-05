@@ -1,6 +1,5 @@
 package magic_book.window.dialog;
 
-import java.util.Map.Entry;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -12,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import magic_book.core.Book;
-
 import magic_book.core.item.BookItem;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemHealing;
@@ -109,9 +107,9 @@ public class ItemDialog extends AbstractDialog {
 		nameTextField = new TextField("");
 		itemType = new ChoiceBox<>();
 
- 		itemType.getItems().add(KEY_ITEM);
+		itemType.getItems().add(KEY_ITEM);
 		itemType.getItems().add(HEALING);
- 		itemType.getItems().add(MONEY);
+		itemType.getItems().add(MONEY);
 		itemType.getItems().add(WEAPON);
 		itemType.getItems().add(DEFENSE);
 		

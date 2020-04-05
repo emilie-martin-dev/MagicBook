@@ -2,19 +2,18 @@ package magic_book.core;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import magic_book.core.game.BookCharacter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookSkill;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
-import magic_book.core.item.BookItem;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
-import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.item.BookItem;
 import magic_book.observer.book.BookCharacterObservable;
 import magic_book.observer.book.BookCharacterObserver;
 import magic_book.observer.book.BookItemObservable;
@@ -48,7 +47,7 @@ public class Book {
 	}
 
 	public Book(String textPrelude, HashMap<Integer, AbstractBookNode> nodes, HashMap<String, BookItem> items, HashMap<String, BookCharacter> characters, HashMap<String, BookSkill> skills, List<AbstractCharacterCreation> characterCreations) {
- 		this.textPrelude = textPrelude;
+		this.textPrelude = textPrelude;
 		this.nodes = nodes;
 		this.items = items;
 		this.characters = characters;

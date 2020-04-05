@@ -3,9 +3,6 @@ package magic_book.window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -24,10 +21,10 @@ import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.core.file.BookWritter;
 import magic_book.core.game.player.Jeu;
+import magic_book.window.gui.NodeFx;
 import magic_book.window.pane.GraphPane;
 import magic_book.window.pane.LeftPane;
 import magic_book.window.pane.RightPane;
-import magic_book.window.gui.NodeFx;
 
 public class MainWindow extends Stage {
 

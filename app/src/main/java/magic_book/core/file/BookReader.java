@@ -2,7 +2,6 @@ package magic_book.core.file;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,15 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import magic_book.core.Book;
 import magic_book.core.exception.BookFileException;
 import magic_book.core.file.deserializer.BookNodeStatusDeserializer;
 import magic_book.core.file.json.BookJson;
 import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.CharacterJson;
-import magic_book.core.file.json.ChoiceJson;
-import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.ItemType;
 import magic_book.core.file.json.SectionJson;
@@ -30,20 +26,17 @@ import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.game.character_creation.CharacterCreationItem;
 import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.game.character_creation.CharacterCreationText;
-import magic_book.core.item.BookItemDefense;
-import magic_book.core.item.BookItem;
-import magic_book.core.item.BookItemHealing;
-import magic_book.core.item.BookItemMoney;
-import magic_book.core.item.BookItemWeapon;
 import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.core.graph.node.AbstractBookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeCombat;
-import magic_book.core.graph.node_link.BookNodeLink;
-import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
+import magic_book.core.item.BookItem;
+import magic_book.core.item.BookItemDefense;
+import magic_book.core.item.BookItemHealing;
+import magic_book.core.item.BookItemMoney;
+import magic_book.core.item.BookItemWeapon;
 
 public class BookReader {
 	

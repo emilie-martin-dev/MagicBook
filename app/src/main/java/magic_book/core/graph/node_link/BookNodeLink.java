@@ -1,9 +1,7 @@
 package magic_book.core.graph.node_link;
 
-import magic_book.core.graph.node.AbstractBookNode;
 import java.util.ArrayList;
 import java.util.List;
-
 import magic_book.core.Book;
 import magic_book.core.file.JsonExportable;
 import magic_book.core.file.json.ChoiceJson;

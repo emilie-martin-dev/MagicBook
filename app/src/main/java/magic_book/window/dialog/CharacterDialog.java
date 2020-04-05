@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import magic_book.core.Book;
-
 import magic_book.core.game.BookCharacter;
 import magic_book.window.component.CharacterComponent;
 

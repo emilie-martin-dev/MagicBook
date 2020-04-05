@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

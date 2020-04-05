@@ -5,8 +5,8 @@ import java.util.List;
 import magic_book.core.Book;
 import magic_book.core.file.json.ItemLinkJson;
 import magic_book.core.file.json.SectionJson;
-import magic_book.core.item.BookItemLink;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.item.BookItemLink;
 
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
 	

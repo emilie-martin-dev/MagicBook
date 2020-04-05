@@ -1,14 +1,12 @@
 package magic_book.core;
 
-import java.util.Map;
-import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.observer.book.BookNodeObservable;
 import magic_book.test.AbstractTest;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;

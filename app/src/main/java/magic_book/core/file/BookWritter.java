@@ -6,18 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-
 import magic_book.core.Book;
 import magic_book.core.file.json.BookJson;
 import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.file.json.CharacterJson;
-import magic_book.core.file.json.ChoiceJson;
-import magic_book.core.file.json.CombatJson;
 import magic_book.core.file.json.ItemJson;
 import magic_book.core.file.json.SectionJson;
 import magic_book.core.file.json.SetupJson;
@@ -25,10 +20,8 @@ import magic_book.core.file.json.SkillJson;
 import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookSkill;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
-import magic_book.core.item.BookItem;
 import magic_book.core.graph.node.AbstractBookNode;
-import magic_book.core.graph.node.BookNodeCombat;
-import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.item.BookItem;
 
 public class BookWritter {
 	

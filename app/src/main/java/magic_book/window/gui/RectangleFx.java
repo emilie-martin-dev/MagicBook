@@ -6,7 +6,6 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
 import magic_book.observer.fx.RectangleFxObservable;
 import magic_book.observer.fx.RectangleFxObserver;
 import magic_book.window.UiConsts;

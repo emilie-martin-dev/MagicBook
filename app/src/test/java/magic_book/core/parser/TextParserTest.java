@@ -1,18 +1,16 @@
 package magic_book.core.parser;
 
+import java.util.HashMap;
 import magic_book.core.game.BookCharacter;
-
+import magic_book.core.item.BookItem;
+import magic_book.test.AbstractTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
-import magic_book.core.item.BookItem;
-import magic_book.test.AbstractTest;
-
 public class TextParserTest extends AbstractTest {
 
-    @Test
-    public void test_parseText() {
+	@Test
+	public void test_parseText() {
 		String text = "## c ## est arrivée à bon port avec le {{ i1 }}. Le messager de ## c ##, ##  c2     ## en compagnie de ##c3## se tiennent devant vous. \\#\\# Pas bouger! \\#\\#";
 		String expected = "Jennifer est arrivée à bon port avec le Sceptre. Le messager de Jennifer, Zeref en compagnie de Pluton se tiennent devant vous. \\#\\# Pas bouger! \\#\\#";
 		
@@ -31,5 +29,5 @@ public class TextParserTest extends AbstractTest {
 		items.put(i.getId(), i);
 		
 		Assert.assertEquals(expected, TextParser.parseText(text, items, characters));
-    }
+	}
 }
