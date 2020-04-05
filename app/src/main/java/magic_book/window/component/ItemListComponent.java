@@ -20,7 +20,7 @@ import magic_book.core.item.BookItemLink;
 import magic_book.window.UiConsts;
 
 /**
- * Permet d'ajouter ou de supprimer des items
+ * Permet de sélectionner des items parmis ceux disponibles
  */
 public class ItemListComponent extends VBox {
 
@@ -34,7 +34,7 @@ public class ItemListComponent extends VBox {
 	private ListView<BookItemLink> selectedItemsListView;
 	
 	/**
-	 * Buton d'ajout d'item
+	 * Bouton de mise à jour d'item
 	 */
 	private Button updateItemSelected;
 	/**
@@ -115,8 +115,8 @@ public class ItemListComponent extends VBox {
 	}
 	
 	/**
-	 * Modifie le nombre d'item disponible en fonction de l'item sélectionné
-	 * @return Pane contenant un bouton et un texte
+	 * Pane pour l'edition d'un item de la liste
+	 * @return Pane pour l'edition d'un item de la liste
 	 */
 	public GridPane createItemLinkPane() {
 		amountTextField = new TextField();

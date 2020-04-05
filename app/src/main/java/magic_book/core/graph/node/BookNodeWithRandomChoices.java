@@ -42,7 +42,7 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 	}
 	
 	/**
-	 * Choisi un noeud aléatoire de destination en fonction de la chance de chaque liens
+	 * Choisi un noeud aléatoire de destination en fonction de la probabilité de chaque liens
 	 * @param state Etat actuel du jeu
 	 * @return Lien de destination ou null si pas de possibilité
 	 */

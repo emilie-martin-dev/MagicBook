@@ -12,7 +12,7 @@ import magic_book.core.game.character_creation.CharacterCreationText;
 import magic_book.window.UiConsts;
 
 /**
- * Permet de sélectionné du texte et/ou des items disponible juste après le prélude
+ * Permet de concevoir une étape de la "Création du personnage"
  */
 public class CharacterCreationComponent extends GridPane {
 		
@@ -27,7 +27,7 @@ public class CharacterCreationComponent extends GridPane {
 	private static final String TYPE_ITEM = "Item";
 
 	/**
-	 * 
+	 * Le type d'étape que l'on souhaite
 	 */
 	private ComboBox<String> characterCreationType;
 	
@@ -41,7 +41,7 @@ public class CharacterCreationComponent extends GridPane {
 	private TextArea texte;
 
 	/**
-	 * Création d'un CharacterCreationComponent null
+	 * Création d'un CharacterCreationComponent
 	 * @param book Livre contenant toutes les informations
 	 */
 	public CharacterCreationComponent(Book book) {
@@ -49,7 +49,7 @@ public class CharacterCreationComponent extends GridPane {
 	}
 	
 	/**
-	 * Initialisation des valeurs du GripPane
+	 * Initialisation des valeurs du GridPane
 	 * @param book Livre contenant toutes les informations
 	 * @param abstractCharacterCreation 
 	 */
@@ -95,8 +95,8 @@ public class CharacterCreationComponent extends GridPane {
 	}
 
 	/**
-	 * Permet de retourner les items sélectionnés et le texte créer
-	 * @return Item et texte
+	 * Permet de retourner l'étape de la création du personnage
+	 * @return Étape de la création du personnage
 	 */
 	public AbstractCharacterCreation getCharacterCreation() {
 		AbstractCharacterCreation characterCreation = null;
@@ -116,8 +116,8 @@ public class CharacterCreationComponent extends GridPane {
 	}
 
 	/**
-	 * Permet de modifier le Pane des items ainsi que le Pane actuel pour une édition
-	 * @param characterCreation Pane existant
+	 * Permet de changer l'étape à éditer
+	 * @param characterCreation étape à éiter
 	 */
 	public void setCharacterCreation(AbstractCharacterCreation characterCreation) {
 		if(characterCreation instanceof CharacterCreationItem) {

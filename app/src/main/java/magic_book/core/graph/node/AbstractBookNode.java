@@ -32,11 +32,7 @@ public abstract class AbstractBookNode implements Descriptible, JsonExportable<S
 	 */
 	public abstract <T extends BookNodeLink> List<T> getChoices();
 
-	/**
-	 * Description des choix
-	 * @param book Livre contenant toutes les informations
-	 * @return Un texte en remplacent les id des items/personnages par leurs nom
-	 */
+	@Override
 	public String getDescription(Book book) {
 		return TextParser.parseText(text, book.getItems(), book.getCharacters())+"\n";
 	}

@@ -179,9 +179,8 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	/**
 	* Création d'une boite de dialogue pour renseigner un noeud
 	* @param event Clique de la souris
-	* @return le noeud créé
 	*/
-	public NodeFx createNodeFxDialog(MouseEvent event){
+	public void createNodeFxDialog(MouseEvent event){
 		NodeDialog nodeDialog = new NodeDialog(book);
 		AbstractBookNode node = nodeDialog.getNode();
 		
@@ -191,8 +190,6 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 			
 			book.addNode(node);
 		}
-		
-		return null;
 	}
 	
 	/**
@@ -267,7 +264,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	}
 	
 	/**
-	* Ajout de toutes les informations dans le livre
+	* Change le livre en cours d'édition
 	* @param book Le livre contenant toutes les informations
 	*/
 	public void setBook(Book book){	

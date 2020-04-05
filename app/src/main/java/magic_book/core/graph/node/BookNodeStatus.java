@@ -1,7 +1,7 @@
 package magic_book.core.graph.node;
 
 /**
- * Status d'une partie
+ * Statut d'une partie
  */
 public enum BookNodeStatus {
 	/**
@@ -15,7 +15,7 @@ public enum BookNodeStatus {
 	private String name;
 
 	/**
-	 * Constructeur, prend le nom du statu en paramètre
+	 * Constructeur, prend le nom du statut en paramètre
 	 * @param name Nom du BookNodeState
 	 */
 	BookNodeStatus(String name) {

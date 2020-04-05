@@ -23,11 +23,11 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	 */
 	private List<BookItemLink> itemLinks;
 	/**
-	 * Liste des items pouvant être acheté sur le noeud
+	 * Liste des items pouvant être achetés sur le noeud
 	 */
 	private List<BookItemLink> shopItemLinks;
 	/**
-	 *  Liste de BookNodeLink ou de BookNodeLinkRandom représentant tout les choix possible à partir de ce noeud
+	 *  Liste de BookNodeLink ou de BookNodeLinkRandom représentant tous les choix possible à partir de ce noeud
 	 */
 	private List<T> choices;
 	/**
@@ -82,7 +82,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	}
 	
 	/**
-	 * Donne un texte décrivant les items disponible sur ce noeud
+	 * Décrit les items disponibless
 	 * @param book Livre contenant toute les informations
 	 * @return Texte comprennant le nom ainsi que le nombre des items disponible
 	 */
@@ -111,9 +111,9 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	}
 	
 	/**
-	 * Donne un texte décrivant les items pouvant être acheté sur ce noeud
+	 * Décrit les items qui peuvent être achetés
 	 * @param book Livre contenant toute les informations
-	 * @return Texte comprenant le nom des items
+	 * @return Texte comprenant le les items
 	 */
 	public String getShopDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
@@ -132,9 +132,9 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	}
 	
 	/**
-	 * Donne un texte notifiant l'obligation de manger
+	 * Décrit le reste des informations
 	 * @param book Livre contenant toute les informations
-	 * @return Texte si le joueur est encore en vie
+	 * @return Texte sur le reste des informations
 	 */
 	public String getMiscellaneousDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
@@ -272,9 +272,9 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	}
 
 	/**
-	 * Enlève un choix et ajoute un nouveau choix
-	 * @param oldNodeLink Choix représenté par un BookNodeLink ou un BookNodeLinkRandom à supprimer
-	 * @param newNodeLink  Choix représenté par un BookNodeLink ou un BookNodeLinkRandom à ajouter
+	 * Met à jour un choix
+	 * @param oldNodeLink Ancien choix représenté par un BookNodeLink ou un BookNodeLinkRandom 
+	 * @param newNodeLink Nouveau choix représenté par un BookNodeLink ou un BookNodeLinkRandom
 	 */
 	public void updateChoice(T oldNodeLink, T newNodeLink) {
 		removeChoice(oldNodeLink);

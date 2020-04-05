@@ -74,8 +74,8 @@ public class Jeu {
 	
 	/**
 	 * Méthode qui est appelé pour jouer en tant que player
-	 * @throw IOException : si l'écriture / la lecture est incorecte
-	 * @throw BookFileException : si le fichier est incorrect
+	 * @throws IOException : si l'écriture / la lecture est incorecte
+	 * @throws BookFileException : si le fichier est incorrect
 	 */
 	public void play() throws IOException, BookFileException {
 		player = new Player();
@@ -87,8 +87,8 @@ public class Jeu {
 	
 	/**
 	 * Estime la dificulté du livre (fourmis)
-	 * @throw IOException : si l'écriture / la lecture est incorecte
-	 * @throw BookFileException : si le fichier est incorrect
+	 * @throws IOException : si l'écriture / la lecture est incorecte
+	 * @throws BookFileException : si le fichier est incorrect
 	 * @param nbrFourmis Nombre de fois que le jeu va se lancer
 	 * @return pourcentage de victoire
 	 */

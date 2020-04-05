@@ -8,12 +8,12 @@ import magic_book.core.game.BookCharacter;
 import magic_book.window.component.CharacterComponent;
 
 /**
- * Boite de dialog pour l'ajout des personnages
+ * Boite de dialogue pour la manipulation des personnages
  */
 public class CharacterDialog extends AbstractDialog {
 	
 	/**
-	 * Personnage créer
+	 * Personnage créé
 	 */
 	private BookCharacter character;
 	/**
@@ -26,7 +26,7 @@ public class CharacterDialog extends AbstractDialog {
 	private Book book;
 	
 	/**
-	 * Initialisation de la boite de dialog du personnage
+	 * Initialisation de la boite de dialogue du personnage
 	 * @param book Le livre contenant toutes les informations
 	 */
 	public CharacterDialog(Book book) {
@@ -37,7 +37,7 @@ public class CharacterDialog extends AbstractDialog {
 	}
 	
 	/**
-	 * Edition de la boite de dialog du personnage
+	 * Edition de la boite de dialogue du personnage
 	 * @param character Personnage existant
 	 * @param book Le livre contenant toutes les informations
 	 */

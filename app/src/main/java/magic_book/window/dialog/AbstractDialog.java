@@ -17,12 +17,12 @@ import javafx.stage.Stage;
 import magic_book.window.UiConsts;
 
 /**
- * Classe mère de toute les boites de dialog
+ * Classe mère de toute les boites de dialogue
  */
 public abstract class AbstractDialog extends Stage {
 	
 	/**
-	 * Titre de la boite de dialog
+	 * Titre de la boite de dialogue
 	 * @param title Le message à afficher
 	 */
 	public AbstractDialog(String title) {
@@ -30,7 +30,7 @@ public abstract class AbstractDialog extends Stage {
 	}
 	
 	/**
-	 * Titre et marge de la boite de dialog
+	 * Titre et marge de la boite de dialogue
 	 * @param title Le message à afficher
 	 * @param hideMarginTop Marge pour le prélude
 	 */
@@ -39,7 +39,7 @@ public abstract class AbstractDialog extends Stage {
 	}
 	
 	/**
-	 * Titre et marge avec un rajout d'un scroll de la boite de dialog
+	 * Titre et marge avec un rajout d'un scroll de la boite de dialogue
 	 * @param title Le message à afficher
 	 * @param hideMarginTop Marge pour le prélude
 	 * @param useScroll Scroll du Pane
@@ -49,7 +49,7 @@ public abstract class AbstractDialog extends Stage {
 	}
 	
 	/**
-	 * Initialisation de la boite de dialog
+	 * Initialisation de la boite de dialogue
 	 * @param title Le message à afficher
 	 * @param hideMarginTop Marge pour le prélude
 	 * @param useScroll Scroll du Pane
@@ -82,14 +82,14 @@ public abstract class AbstractDialog extends Stage {
 	}
 	
 	/**
-	 * Initialisation des valeur et du GraphPane de la boite de dialog
-	 * @return le GraphPane initialisé
+	 * Création du contenu central de la boite de dialogue
+	 * @return Contenu central de la boite de dialogue
 	 */
 	protected abstract Node getMainUI();
 	
 	/**
-	 * Création des Book(node/lien/item/personnage) en fonction des valeurs saisie.
-	 * @return La validation de la création du book(node/lien/item/personnage)
+	 * Création de l'action à réaliser lors d'un clic sur le bouton pour valider
+	 * @return L'action à réaliser lors d'un clic sur le bouton pour valider
 	 */
 	protected abstract EventHandler<ActionEvent> getValidButtonEventHandler();
 	
@@ -118,8 +118,8 @@ public abstract class AbstractDialog extends Stage {
 	}
 	
 	/**
-	 * Alert qui apparait si la saisie de certain texte n'est pas un nombre
-	 * @param ex Exception d'erreur
+	 * Alert qui apparait si la saisie d'une zone de texte n'est pas un nombre
+	 * @param ex Exception affin d'afficher le texte qui est erroné
 	 */
 	protected void notANumberAlertDialog(NumberFormatException ex){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);

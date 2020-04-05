@@ -225,7 +225,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 	}
 	
 	/**
-	 * Si un livre est ouvert, toute la vue sur les items et personnages se met à jour
+	 * On change de livre, toute la vue sur les items et personnages se met à jour
 	 * @param book Nouveau livre contenant toutes les informations
 	 */
 	public void setBook(Book book) {

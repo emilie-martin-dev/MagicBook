@@ -20,7 +20,7 @@ import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.window.UiConsts;
 
 /**
- * Boite de dialog pour la création/édition des liens entre les noeuds
+ * Boite de dialogue pour la création/édition des liens entre les noeuds
  */
 public class NodeLinkDialog extends AbstractDialog{
 	
@@ -102,9 +102,7 @@ public class NodeLinkDialog extends AbstractDialog{
 		this.firstNode = firstNode;
 		
 		//Si le premier noeud est de type aléatoire
-		if(firstNode instanceof BookNodeWithRandomChoices){
-			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
-			
+		if(firstNode instanceof BookNodeWithRandomChoices){			
 			showRandomUi();
 		}
 		//Si le premier noeud est de type combat

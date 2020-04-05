@@ -45,7 +45,7 @@ public class MainWindow extends Stage {
 	private RightPane rightPane;
 	
 	/**
-	 * Constitue la fenêtre
+	 * Constitue l'affichage centrale de la fenêtre
 	 */
 	private BorderPane root;
 	

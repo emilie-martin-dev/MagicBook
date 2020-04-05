@@ -11,12 +11,12 @@ import magic_book.core.graph.node_link.BookNodeLink;
 public class BookNodeTerminal extends AbstractBookNode {
 
 	/**
-	 * Permet de prendre deux status
+	 * Statut du noeud
 	 */
 	private BookNodeStatus bookNodeStatus;
 
 	/**
-	 * Constructeur vide
+	 * Constructeur
 	 */
 	public BookNodeTerminal() {
 		this("", null);
@@ -67,12 +67,18 @@ public class BookNodeTerminal extends AbstractBookNode {
 		this.setBookNodeStatus(json.getEndType());
 	}
 	
-	
-	
+	/**
+	 * Donne le statut du noeud
+	 * @return Statut du noeud
+	 */
 	public BookNodeStatus getBookNodeStatus() {
 		return bookNodeStatus;
 	}
 
+	/**
+	 * Change le statut du noeud
+	 * @param bookNodeStatus Le nouveau statut
+	 */
 	public void setBookNodeStatus(BookNodeStatus bookNodeStatus) {
 		this.bookNodeStatus = bookNodeStatus;
 	}
