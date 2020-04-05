@@ -148,6 +148,7 @@
 \RequirePackage{wrapfig} % Permet d'utiliser les wrapfigure
 \RequirePackage[table]{xcolor} % Permet d'utiliser les couleurs
 \RequirePackage{longtable}
+\usepackage[linesnumbered,ruled,onelanguage]{algorithm2e}
 
 % Package non compatibles avec Beamer
 \ifthenelse{\equal{\classname}{beamer}}{}{%

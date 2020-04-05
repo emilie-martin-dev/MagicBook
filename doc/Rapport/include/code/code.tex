@@ -78,7 +78,7 @@
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.45\textwidth, keepaspectratio]{img/book_character.png}
-				\caption{UML sur la gestion des items}
+				\caption{UML sur la gestion des personnages}
 			\end{figure}
 
 			Concernant les listes de String (skills, immunes, items), il s'agit d'une liste contenant les id. Pour "immunes", il s'agit des id des skills contre lesquels le personnage est immunisé. Cela nous permet aux items et compétences de n'être référencés qu'à un seul et même endroit, c'est à dire, dans la classe Book. Pour la monnaie, le choix a été fait d'utiliser une HashMap<String, Integer> afin de pouvoir gérer différents types de monnaie et leur montant dans une même histoire. Malheureusement, notre format de livre, et donc notre application, ne permet pour le moment pas de gérer pleinement cette fonctionnalité.
@@ -94,34 +94,249 @@
 
 			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attribut spécfique à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type money inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère par le mot clé \textit{super.nomMethode(arguments)}.
 
-\begin{lstlisting}[language=Java, caption=Exemple de spécialisation des items]
-@Override
-public String getDescription(Book book) {
-	StringBuffer buffer = new StringBuffer();
+			\begin{lstlisting}[gobble=12, language=Java, caption=Exemple de spécialisation des items]
+			@Override
+			public String getDescription(Book book) {
+				StringBuffer buffer = new StringBuffer();
 
-	buffer.append(super.getDescription(book));
+				buffer.append(super.getDescription(book));
 
-	buffer.append("Dégats : ");
-	buffer.append(damage);
-	buffer.append("\n");
+				buffer.append("Dégats : ");
+				buffer.append(damage);
+				buffer.append("\n");
 
-	return buffer.toString();
-}
+				return buffer.toString();
+			}
 
-@Override
-public ItemJson toJson() {
-	ItemJson itemJson = super.toJson();
+			@Override
+			public ItemJson toJson() {
+				ItemJson itemJson = super.toJson();
 
-	itemJson.setDamage(damage);
-	itemJson.setItemType(ItemType.WEAPON);
+				itemJson.setDamage(damage);
+				itemJson.setItemType(ItemType.WEAPON);
 
-	return itemJson;
-}
-\end{lstlisting}
+				return itemJson;
+			}
+			\end{lstlisting}
 
 		\subsection{La classe Book}
 
+			Cette classe est la plus importante de tout le projet. En effet, c'est elle qui met en lien tous les différents éléments qu'on a pu évoquer avant. C'est en effet ce que l'on peut observer sur la figure suivante.
 
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.8\textwidth, keepaspectratio]{img/book.png}
+				\caption{UML sur la classe Book}
+			\end{figure}
+
+			Par soucis de place, les getters et setter n'ont pas été renseignés. Il en va de même pour le détails des différentes classes (BookCharacter, BookItem, ...). Enfin, les observateur sont volontairement omis car ils seront détaillés un peu plus tard (dans \nameref{subsec:pattern_observer} à la page \pageref{subsec:pattern_observer}).
+
+			Tout d'abord, commençons par expliquer comment sont sauvegardés nos noeuds et les liens dans la HashMap "nodes".
+
+			Cette HashMap possède un int comme clé, clé qui correspond au numéro du paragraphe. Lorsque l'on ajoute un noeud au livre, on doit d'abord lui trouver un numéro. Nous avons décidé de plusieurs règles. Les paragraphes commencent à partir du numéro 1. Le numéro 1 représente \textbf{toujours} le premier paragraphe du livre. De ce fait, si l'on ajoute un noeud, il devra avoir pour numéro le 2.
+
+			\begin{figure}[H]
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_1) at (0,0) (1, 1) {(1)};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_2) at (1,0) {2};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_3) at (2,0) {(3)};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_4) at (3,0) {(4)};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_5) at (4,0) {(5)};
+
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_a) at (1,2) {P\_a};
+
+						\draw[->] (m_2.north) -- (p_a.south);
+					\end{tikzpicture}
+				\end{center}
+				\caption{Ajout du paragraphe A}
+			\end{figure}
+
+			Les autres numéros sont représentés mais mis entre parenthèse car ils n'existent pas dans la Map. Ils sont uniquement là pour nous aider à bien visualiser ce dont on parle. Si nous décidons maintenant d'ajouter un second paragraphe alors celui-ci sera à la position 3.
+
+			\begin{figure}[H]
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_1) at (0,0) (1, 1) {(1)};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_2) at (1,0) {2};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_3) at (2,0) {3};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_4) at (3,0) {(4)};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_5) at (4,0) {(5)};
+
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_a) at (1,2) {P\_a};
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_b) at (2,2) {P\_b};
+
+						\draw[->] (m_2.north) -- (p_a.south);
+						\draw[->] (m_3.north) -- (p_b.south);
+					\end{tikzpicture}
+				\end{center}
+				\caption{Ajout du paragraphe B}
+			\end{figure}
+
+			Maintenant, supposons que nous souhaitons que notre paragraphe A soit le premier noeud du livre, alors il suffira de l'ajouter dans la map l'indice 1 et de supprimer la clé 2 de notre Map.
+
+			\begin{figure}[H]
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_1) at (0,0) {1};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_2) at (1,0) {*2*};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_3) at (2,0) {3};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_4) at (3,0) {(4)};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_5) at (4,0) {(5)};
+
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_a) at (0,2) {P\_a};
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_b) at (2,2) {P\_b};
+
+						\draw[->] (m_1.north) -- (p_a.south);
+						\draw[->] (m_3.north) -- (p_b.south);
+					\end{tikzpicture}
+				\end{center}
+				\caption{Le paragraphe A devient le noeud de départ}
+			\end{figure}
+
+			Dès lors, une case vide se retrouve disponible (symbolisé par des **). Ainsi, si l'on souhaite ajouter un noeud, il faudra d'abord compler ce vide. Le prochain paragraphe, le C donc, aura pour numéro le 2.
+
+			\begin{figure}[H]
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_1) at (0,0) {1};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_2) at (1,0) {2};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_3) at (2,0) {3};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_4) at (3,0) {(4)};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_5) at (4,0) {(5)};
+
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_a) at (0,2) {P\_a};
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_b) at (2,2) {P\_b};
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_c) at (1,2) {P\_c};
+
+						\draw[->] (m_1.north) -- (p_a.south);
+						\draw[->] (m_2.north) -- (p_c.south);
+						\draw[->] (m_3.north) -- (p_b.south);
+					\end{tikzpicture}
+				\end{center}
+				\caption{Ajout du paragraphe C}
+			\end{figure}
+
+			Enfin, notre application peut recommencer à ajouter des noeuds à la "fin" de notre Map.
+
+			\begin{figure}[H]
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_1) at (0,0) {1};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_2) at (1,0) {2};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_3) at (2,0) {3};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_4) at (3,0) {4};
+						\node[draw=black, text=black, shape=rectangle, minimum width=1cm, minimum height=1cm] (m_5) at (4,0) {(5)};
+
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_a) at (0,2) {P\_a};
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_b) at (2,2) {P\_b};
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_c) at (1,2) {P\_c};
+						\node[draw=black, text=black, shape=circle, minimum size=0.5cm] (p_d) at (3,2) {P\_d};
+
+						\draw[->] (m_1.north) -- (p_a.south);
+						\draw[->] (m_2.north) -- (p_c.south);
+						\draw[->] (m_3.north) -- (p_b.south);
+						\draw[->] (m_4.north) -- (p_d.south);
+					\end{tikzpicture}
+				\end{center}
+				\caption{Ajout du paragraphe D}
+			\end{figure}
+
+			Voici quelques précisions supplémentaires :
+
+			\begin{itemize}
+				\item{Le principe d'indice manquant fonctionne également pour la suppression d'un noeud}
+				\item{Afin de gagner en performance dans la recherche d'un numéro d'un noeud (pour savoir quel numéro sera manquant par exemple), une autre HashMap est mis à jour en même temps que celle des noeuds. Il s'agit de nodeInv. Cette map n'est rien de plus qu'une sorte de mirroir pour celle des noeuds, on lui passe un noeud en clé et on obtient son indice. Il est donc extrêmement important que les deux maps soient parfaitement identique pour éviter tous bugs.}
+				\item{\label{subsec:noeud_delete_missing_index}Pour déterminer l'indice d'un noeud, nous nous basons sur la taille de la Map. Cela pose problème dans un cas particulié. En effet, si nous supprimons un paragraphe au milieu de la map, le noeud à l'indice 3, par exemple, alors cet indice sera libre. Si nous sauvegardons et décidons d'ouvrir de nouveau le fichier, alors nous n'aurons plus cette liste. Il faudrait que nous parcourions la Map pour trouver les indices manquant à la lecture du livre, cependant, comme évoqué un peu partout dans ce rapport, nous avons manqué de temps, d'autant plus que nous pensé à ce détails quelques jours avant de rendre le rapport.}
+			\end{itemize}
+
+			De ce fait, voici l'algorithme que nous avons mis en place pour l'ajout d'un noeud.
+
+			\begin{algorithm}[H]
+				\DontPrintSemicolon
+				\KwIn{le noeud à ajouter : node}
+				\KwData{
+					nodes : Map<Integer, AbstractBookNode> liste des noeuds\;
+					nodesInv : Map<AbstractBookNode, Integer> liste inversée des noeuds\;
+					missingIndexes : List<Integer> liste des indices libres\;
+				}
+
+				\uIf{node in nodes}{
+					\Return{}
+				}
+
+				\uIf{missingIndexes.length == 0}{
+					offset: int\;
+					offset $\gets$ (1 in nodes) ? 1 : 2\;
+					nodes[nodes.length + offset] $\gets$ node\;
+					nodesInv[node] $\gets$ nodesInv.length + offset\;
+				}
+				\uElse{
+					nodes[missingIndexes[0]] $\gets$ node\;
+					nodesInv[node] $\gets$ missingIndexes[0]\;
+					missingIndexes.remove(0)\;
+				}
+
+				notifyNodeAdded(node)
+				\caption{Ajout d'un noeud}
+			\end{algorithm}
+
+			La variable offset correspond au décalage à ajouter pour placer le noeud. Comme on commence à 2 un décalage de 2 est nécessaire. Supposons que le premier noeud est renseigné et qu'il est le seul du tableau. Ajouter un noeud le placerait à la position 2 + tailleDuTableau soit 2 + 1 c'est à dire 3. On a un décalage de un. De ce fait, on doit faire un décalage de 1 uniquement si le premier noeud est renseigné.
+
+			Voyons maintenant celui mis en place pour le changement du premier noeud.
+
+			\begin{algorithm}[H]
+				\DontPrintSemicolon
+				\KwIn{le noeud à ajouter : node}
+				\KwData{
+					nodes : Map<Integer, AbstractBookNode> liste des noeuds\;
+					nodesInv : Map<AbstractBookNode, Integer> liste inversée des noeuds\;
+					missingIndexes : List<Integer> liste des indices libres\;
+				}
+
+				\uIf{not (node in nodes)}{
+					addNode(node)
+				}
+				\;
+				updateDestinations(1, -1)\;
+				\;
+				indexOfNode: int\;
+				indexOfNode $\gets$ nodesInv[node]\;
+				\;
+				oldNode: AbstractBookNode\;
+				oldNode $\gets$ nodes[1]\;
+				\;
+				updateDestinations(indexOfNode, 1)\;
+				\;
+				nodes[1] $\gets$ node\;
+				nodesInv[node] $\gets$ 1\;
+				\;
+				\uIf{oldNode != null}{
+					nodes[indexOfNode] $\gets$ oldNode\;
+					nodesInv[oldNode] $\gets$ indexOfNode\;
+
+					updateDestinations(-1, indexOfNode)\;
+				}
+				\uElse {
+					missingIndexes.add(indexOfNode)\;
+					nodes.remove(indexOfNode)\;
+				}
+
+				\caption{Changement du premier noeud}
+			\end{algorithm}
+
+			\textit{updateDestinations permet de changer les numéro de destination des BookNodeLink d'un ancien numéro, vers un nouveau}
+
+		\subsection{Le pattern observer et la classe Book}
+			\label{subsec:pattern_observer}
+
+			Le pattern observer est essentiel pour la mise en place du pattern MVC. Nous avons décidé de le faire de la manière suivante :
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.8\textwidth, keepaspectratio]{img/observer.png}
+				\caption{UML sur la classe Book}
+			\end{figure}
+
+			Tous les observers sont dispo sauf pour le changement de premier noeud.
 
 	\section{Lecture et écriture d'un livre}\label{Json}
 
@@ -131,40 +346,40 @@ public ItemJson toJson() {
 
 		\subsection{La structure du JSON}
 
-\begin{lstlisting}[language=json, caption=Exemple de livre très simple, label=lst:exemple_livre]
-{
-	"prelude": "Vous êtes l'enseignant qui note notre projet",
-	"setup": {
-		"skills": [],
-		"items": [],
-		"characters": [],
-		"character_creation": []
-	},
-	"sections": {
-		"1" : {
-			"text": "Vous être en train d'étudier notre projet",
-			"choices": [
-				{
-					"text": "Mettre une bonne note",
-					"section": 3
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de livre très simple, label=lst:exemple_livre]
+			{
+				"prelude": "Vous êtes l'enseignant qui note notre projet",
+				"setup": {
+					"skills": [],
+					"items": [],
+					"characters": [],
+					"character_creation": []
 				},
-				{
-					"text": "Mettre une mauvaise note",
-					"section": 2
+				"sections": {
+					"1" : {
+						"text": "Vous être en train d'étudier notre projet",
+						"choices": [
+							{
+								"text": "Mettre une bonne note",
+								"section": 3
+							},
+							{
+								"text": "Mettre une mauvaise note",
+								"section": 2
+							}
+						]
+					},
+					"2": {
+						"text": "Les étudiants du projet sont tristes",
+						"end_type": "FAILURE"
+					},
+					"3": {
+						"text": "Les étudiants sont satisfait de leur travail",
+						"end_type": "VICTORY"
+					}
 				}
-			]
-		},
-		"2": {
-			"text": "Les étudiants du projet sont tristes",
-			"end_type": "FAILURE"
-		},
-		"3": {
-			"text": "Les étudiants sont satisfait de leur travail",
-			"end_type": "VICTORY"
-		}
-	}
-}
-\end{lstlisting}
+			}
+			\end{lstlisting}
 
 		On retrouve plusieurs éléments différents. On remarque par exemple un attribut "prelude", ainsi que deux grosses parties, "setup" et "sections". Dans la suite, nous détaillerons uniquement les attributs les plus frequemment présents.
 
@@ -174,131 +389,131 @@ public ItemJson toJson() {
 
 			Pour le moment les compétences sont uniquement composé d'un id et d'un nom. Dans une future \maj{} il serait intéressant d'ajouter des propriétés pour connaitre la force ajouté dans un combat, la quantité de soins à rendre par noeuds, par exemple.
 
-\begin{lstlisting}[language=json, caption=Exemple de compétence]
-{
-	"id": "sixth_sense",
-	"name": "Sixième sens"
-}
-\end{lstlisting}
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de compétence]
+			{
+				"id": "sixth_sense",
+				"name": "Sixième sens"
+			}
+			\end{lstlisting}
 
 			Les items peuvent être de différents types : KEY\_ITEM, WEAPON, DEFENSE, MONEY, HEALING. On retrouve pour tous les items un id et un nom ("name"). Pour certains types, des attributs supplémentaires sont présent. Par exemple, un attribut "durability" peut être présent. Il permet de déterminer le nombre d'utilisation maximum d'un item. Un item de type HEALING possède un nombre de pv à rendre ("hp") tandis que ceux type WEAPON possède un montant de dégats ("damage") par exemple.
 
-\begin{lstlisting}[language=json, caption=Exemple d'items]
-{
-	"id": "backpack",
-	"name": "Backpack",
-	"item_type": "KEY_ITEM"
-},
-{
-	"id": "healing_potion_4",
-	"name": "Potion de soins (4HP)",
-	"hp": 4,
-	"durability": 1,
-	"item_type": "HEALING"
-}
-\end{lstlisting}
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple d'items]
+			{
+				"id": "backpack",
+				"name": "Backpack",
+				"item_type": "KEY_ITEM"
+			},
+			{
+				"id": "healing_potion_4",
+				"name": "Potion de soins (4HP)",
+				"hp": 4,
+				"durability": 1,
+				"item_type": "HEALING"
+			}
+			\end{lstlisting}
 
 			Concernant les personnages on y retrouve un id, un nom ("name"), un nombre de pv maximum ("hp"), un boolean pour indiquer s'il a beaucoup de chance que ses coups fassent le double des dégats ("double\_damage"), ainsi que "combat\_skill" qui représente le montant de ses dégats.
 
-\begin{lstlisting}[language=json, caption=Exemple de personnage]
-{
-	"id": "zombie_captain",
-	"name": "Zombie Captain",
-	"hp": 15,
-	"double_damage": true,
-	"combat_skill": 2
-}
-\end{lstlisting}
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de personnage]
+			{
+				"id": "zombie_captain",
+				"name": "Zombie Captain",
+				"hp": 15,
+				"double_damage": true,
+				"combat_skill": 2
+			}
+			\end{lstlisting}
 
 			Les character character\_creation peuvent être de simple texte ou de type "ITEM" ou "SKILL". On y retrouve les différents skills ou items que l'on peut prendre pour débuter notre aventure ainsi que le nombre que l'on doit en choisir ("amount\_to\_pick").
 
-\begin{lstlisting}[language=json, caption=Exemple de character\_creation]
-{
-	"text": "Kai Disciplines\n\nOver the centuries, the Kai monks have mastered the skills of the warrior. These skills are known as the Kai Disciplines, [...]",
-	"type": "SKILL",
-	"skills": [
-		"camouflage",
-		"hunting",
-		"sixth_sense",
-		"tracking",
-		"healing",
-		"weaponskill",
-		"mindshield",
-		"mindblast",
-		"animal_kinship",
-		"mind_over_matter"
-	],
-	"amount_to_pick": 5
-}
-\end{lstlisting}
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de character\_creation]
+			{
+				"text": "Kai Disciplines\n\nOver the centuries, the Kai monks have mastered the skills of the warrior. These skills are known as the Kai Disciplines, [...]",
+				"type": "SKILL",
+				"skills": [
+					"camouflage",
+					"hunting",
+					"sixth_sense",
+					"tracking",
+					"healing",
+					"weaponskill",
+					"mindshield",
+					"mindblast",
+					"animal_kinship",
+					"mind_over_matter"
+				],
+				"amount_to_pick": 5
+			}
+			\end{lstlisting}
 
 		\subsubsection{Sections}
 
 			La partie "sections" est une map qui représente le numéro d'un paragraphe ainsi que le paragraphe associé. Il existe différents types de paragraphes, à choix, à choix aléatoire, avec des combats, terminaux. Tous possède un texte. Les noeuds terminaux possèdent un type de fin ("end\_type") afin savoir si l'on a gagné ou pas (cf : Listing \ref{lst:exemple_livre}). Les noeuds aléatoires eux, possède un attribut "is\_random\_pick" qui vaut true. Pour tous les autres types de noeuds, on retrouve parmis les attributs les plus importants une liste d'items qu'il est possible de prendre, un montant d'item maximum qui peut être pris ("amount\_to\_pick"), des items disponibles à l'achat ("shop").
 
-\begin{lstlisting}[language=json, caption=Exemple de paragraphe]
-{
-	"text": "The back door opens [...]",
-	"items": [
-		{
-			"id": "gold",
-			"amount": 5
-		},
-		{
-			"id": "dagger"
-		},
-		{
-			"id": "seal_hammerdal"
-		}
-	],
-	"amount_to_pick": 2
-	"choices": [
-		{
-			"text": "Return to the tavern.",
-			"section": "177"
-		},
-		{
-			"text": "Study the tomb.",
-			"section": "24"
-		}
-	]
-}
-\end{lstlisting}
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de paragraphe]
+			{
+				"text": "The back door opens [...]",
+				"items": [
+					{
+						"id": "gold",
+						"amount": 5
+					},
+					{
+						"id": "dagger"
+					},
+					{
+						"id": "seal_hammerdal"
+					}
+				],
+				"amount_to_pick": 2
+				"choices": [
+					{
+						"text": "Return to the tavern.",
+						"section": "177"
+					},
+					{
+						"text": "Study the tomb.",
+						"section": "24"
+					}
+				]
+			}
+			\end{lstlisting}
 
 			Certains paragraphes peuvent contenir un attribut "combat". Dès lors on peut connaitre le choix en cas de victoire ("win"), de défaite ("loose") ou d'évasion ("evasion). Si l'évasion est possible seulement à partir d'un certains nombre de tour on retrouve alors un attribut nommé "evasion\_round". Pour finir, un attribut "enemies" permet de connaitre les personnages que l'on combat.
 
-\begin{lstlisting}[language=json, caption=Exemple de paragraphe avec des combats]
-{
-	"text": "The dead zombies lie [...]",
-	"combat": {
-		"win": {
-			"text": "If you win the combat.",
-			"section": "309"
-		},
-		"enemies": [
-			"zombie_captain"
-		]
-	}
-}
-\end{lstlisting}
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de paragraphe avec des combats]
+			{
+				"text": "The dead zombies lie [...]",
+				"combat": {
+					"win": {
+						"text": "If you win the combat.",
+						"section": "309"
+					},
+					"enemies": [
+						"zombie_captain"
+					]
+				}
+			}
+			\end{lstlisting}
 
 			Pour représenter un lien vers un autre paragraphe on retrouve une liste de choix ("choices"). Ils possèdent également un texte qui correspond à l'intititulé du choix, le numéro du paragraphe suivant ("section"), un nombre d'hp à retirer, un nombre d'argent à ajouter ainsi qu'un liste de prérequis ("requirements"). Comme pour les BookNodeLink, il s'agit d'un tableau à deux dimensions. Le premier représente une liste de condition en OU et le second une liste de condition en ET. Enfin, pour les noeuds aléatoire, un poid est également présent ("weight").
 
-\begin{lstlisting}[language=json, caption=Exemple de choix]
-{
-	"text": "If you have the Kai Discipline of Tracking.",
-	"section": "182",
-	"hp": -5,
-	"requirements":  [
-		[
+			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de choix]
 			{
-				"id": "tracking",
-				"type": "SKILL"
+				"text": "If you have the Kai Discipline of Tracking.",
+				"section": "182",
+				"hp": -5,
+				"requirements":  [
+					[
+						{
+							"id": "tracking",
+							"type": "SKILL"
+						}
+					]
+				]
 			}
-		]
-	]
-}
-\end{lstlisting}
+			\end{lstlisting}
 
 		\subsection{La lecture et l'écriture}
 			\label{subsec:lecture_ecriture_fichier}

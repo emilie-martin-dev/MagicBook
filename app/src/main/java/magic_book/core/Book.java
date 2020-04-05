@@ -25,16 +25,16 @@ import magic_book.observer.book.BookNodeObservable;
 import magic_book.observer.book.BookNodeObserver;
 
 public class Book {
-	
+
 	public static final String MAIN_CHARACTER_ID = "main_character";
-	
+
 	private String textPrelude;
 	private HashMap<Integer, AbstractBookNode> nodes;
 	private HashMap<String, BookItem> items;
 	private HashMap<String, BookCharacter> characters;
 	private HashMap<String, BookSkill> skills;
 	private List<AbstractCharacterCreation> characterCreations;
-	
+
 	private BookNodeObservable bookNodeObservable;
 	private BookNodeLinkObservable bookNodeLinkObservable;
 	private BookItemObservable bookItemObservable;
@@ -42,11 +42,11 @@ public class Book {
 
 	private List<Integer> missingIndexes;
 	private HashMap<AbstractBookNode, Integer> nodesInv;
-	
+
 	public Book() {
 		this("", null, null, null, null, null);
 	}
-	
+
 	public Book(String textPrelude, HashMap<Integer, AbstractBookNode> nodes, HashMap<String, BookItem> items, HashMap<String, BookCharacter> characters, HashMap<String, BookSkill> skills, List<AbstractCharacterCreation> characterCreations) {
  		this.textPrelude = textPrelude;
 		this.nodes = nodes;
@@ -54,39 +54,39 @@ public class Book {
 		this.characters = characters;
 		this.skills = skills;
 		this.characterCreations = characterCreations;
-		
+
 		this.missingIndexes = new ArrayList<>();
 		this.nodesInv = new HashMap<>();
-		
+
 		if(this.nodes == null)
 			this.nodes = new HashMap<>();
-		
+
 		if(this.items == null)
 			this.items = new HashMap<>();
-		
+
 		if(this.characters == null)
 			this.characters = new HashMap<>();
-		
+
 		if(this.skills == null)
 			this.skills = new HashMap<>();
-		
+
 		if(this.characterCreations == null)
 			this.characterCreations = new ArrayList<>();
-		
+
 		for(Map.Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()){
 			nodesInv.put(entry.getValue(), entry.getKey());
 		}
-		
+
 		this.bookNodeObservable = new BookNodeObservable();
 		this.bookNodeLinkObservable = new BookNodeLinkObservable();
 		this.bookItemObservable = new BookItemObservable();
 		this.bookCharacterObservable = new BookCharacterObservable();
-	}	
+	}
 
 	public void addNode(AbstractBookNode node) {
 		if(this.nodes.containsValue(node))
 			return;
-		
+
 		if(this.missingIndexes.isEmpty()) {
 			int offset = (this.nodes.containsKey(1)) ? 1 : 2;
 			this.nodes.put(this.nodes.size()+offset, node);
@@ -96,38 +96,34 @@ public class Book {
 			this.nodesInv.put(node, missingIndexes.get(0));
 			this.missingIndexes.remove(0);
 		}
-		
+
 		bookNodeObservable.notifyNodeAdded(node);
 	}
-	
+
 	public void changeFirstNode(AbstractBookNode node) {
 		if(!this.nodes.containsValue(node)) {
 			addNode(node);
-			changeFirstNode(node);
-			return;
-		} 
-		
+		}
+
+		updateDestinations(1, -1);
 		int indexOfNode = this.nodesInv.get(node);
 		AbstractBookNode oldNode = this.nodes.get(1);
 		updateDestinations(indexOfNode, 1);
-		
+
 		this.nodes.put(1, node);
 		this.nodesInv.put(node, 1);
-	
-		if(oldNode != null)
-			updateDestinations(1, -1);
-		
+
 		if(oldNode != null) {
 			this.nodes.put(indexOfNode, oldNode);
 			this.nodesInv.put(oldNode, indexOfNode);
-			
+
 			updateDestinations(-1, indexOfNode);
 		} else {
 			this.missingIndexes.add(indexOfNode);
 			this.nodes.remove(indexOfNode);
 		}
 	}
-	
+
 	public void updateDestinations(int oldDestination, int newDestination) {
 		for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
 			for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
@@ -137,7 +133,7 @@ public class Book {
 			}
 		}
 	}
-	
+
 	public void updateNode(AbstractBookNode oldNode, AbstractBookNode newNode) {
 		Integer indexOfNode = this.nodesInv.get(oldNode);
 		if(indexOfNode != null) {
@@ -151,31 +147,33 @@ public class Book {
 					bookNodeWithChoices.addChoice(nodeLink);
 				}
 			}
-						
+
 			this.nodes.put(indexOfNode, newNode);
 			this.nodesInv.put(newNode, indexOfNode);
 			this.nodesInv.remove(oldNode);
-			
+
 			bookNodeObservable.notifyNodeEdited(oldNode, newNode);
 		} else {
 			addNode(newNode);
 		}
 	}
-	
+
 	public void removeNode(AbstractBookNode node) {
 		Integer indexOfNode = this.nodesInv.get(node);
 		if(indexOfNode != null) {
-			this.missingIndexes.add(indexOfNode);
+			if(indexOfNode != 1)
+				this.missingIndexes.add(indexOfNode);
+
 			this.nodes.remove(indexOfNode);
 			this.nodesInv.remove(node);
-			
+
 			bookNodeObservable.notifyNodeDeleted(node);
-			
+
 			List<AbstractMap.SimpleEntry<AbstractBookNodeWithChoices, BookNodeLink>> postRemove = new ArrayList<>();
 			for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
 				if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
 					continue;
-			
+
 				AbstractBookNodeWithChoices currentNode = (AbstractBookNodeWithChoices) entry.getValue();
 				for(BookNodeLink nodeLink : entry.getValue().getChoices()) {
 					if(nodeLink.getDestination() == indexOfNode) {
@@ -183,30 +181,30 @@ public class Book {
 					}
 				}
 			}
-			
+
 			for(Entry<AbstractBookNodeWithChoices, BookNodeLink> entry : postRemove) {
 				entry.getKey().removeChoice(entry.getValue());
 				bookNodeLinkObservable.notifyNodeLinkDeleted(entry.getValue());
 			}
-			
+
 			for(BookNodeLink nodeLink : node.getChoices()) {
 				bookNodeLinkObservable.notifyNodeLinkDeleted(nodeLink);
 			}
 		}
 	}
-	
+
 	public void addNodeLink(BookNodeLink nodeLink, AbstractBookNodeWithChoices node) {
 		node.addChoices(nodeLink);
 		bookNodeLinkObservable.notifyNodeLinkAdded(nodeLink, node);
 	}
-	
+
 	public void updateNodeLink(BookNodeLink oldBookNodeLink, BookNodeLink newBookNode) {
 		List<AbstractBookNodeWithChoices> postUpdate = new ArrayList<>();
-		
+
 		for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
 			if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
 				continue;
-			
+
 			AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
 			for(BookNodeLink nl : entry.getValue().getChoices()) {
 				if(nl == oldBookNodeLink) {
@@ -215,21 +213,21 @@ public class Book {
 				}
 			}
 		}
-		
+
 		for(AbstractBookNodeWithChoices node : postUpdate) {
 			node.updateChoice(oldBookNodeLink, newBookNode);
 		}
-		
+
 		bookNodeLinkObservable.notifyNodeLinkEdited(oldBookNodeLink, newBookNode);
 	}
-	
+
 	public void removeNodeLink(BookNodeLink nodeLink) {
 		List<AbstractBookNodeWithChoices> postRemove = new ArrayList<>();
-		
+
 		for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
 			if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
 				continue;
-			
+
 			AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
 			for(BookNodeLink nl : entry.getValue().getChoices()) {
 				if(nl == nodeLink) {
@@ -238,57 +236,57 @@ public class Book {
 				}
 			}
 		}
-		
+
 		for(AbstractBookNodeWithChoices node : postRemove) {
 			node.removeChoice(nodeLink);
 		}
-		
+
 		bookNodeLinkObservable.notifyNodeLinkDeleted(nodeLink);
 	}
-	
+
 	public void addItem(BookItem item) {
 		items.put(item.getId(), item);
-		
+
 		bookItemObservable.notifyItemAdded(item);
 	}
-	
+
 	public void updateItem(BookItem oldItem, BookItem newItem) {
 		items.remove(oldItem.getId());
 		items.put(newItem.getId(), newItem);
-		
+
 		bookItemObservable.notifyItemEdited(oldItem, newItem);
 	}
-	
+
 	public void removeItem(BookItem item) {
 		items.remove(item.getId());
-		
+
 		bookItemObservable.notifyItemDeleted(item);
 	}
-	
+
 	public void addCharacter(BookCharacter character) {
 		characters.put(character.getId(), character);
-		
+
 		bookCharacterObservable.notifyCharacterAdded(character);
 	}
-	
+
 	public void updateCharacter(BookCharacter oldCharacter, BookCharacter newCharacter) {
 		characters.remove(oldCharacter.getId());
 		characters.put(newCharacter.getId(), newCharacter);
-		
+
 		bookCharacterObservable.notifyCharacterEdited(oldCharacter, newCharacter);
 	}
-	
+
 	public void removeCharacter(BookCharacter character) {
 		characters.remove(character.getId());
-		
+
 		bookCharacterObservable.notifyCharacterDeleted(character);
 	}
-	
+
 	public void setMainCharacter(BookCharacter mainCharacter) {
 		mainCharacter.setId(MAIN_CHARACTER_ID);
 		this.characters.put(MAIN_CHARACTER_ID, mainCharacter);
 	}
-	
+
 	public BookCharacter getMainCharacter() {
 		return this.characters.get(MAIN_CHARACTER_ID);
 	}
@@ -296,35 +294,35 @@ public class Book {
 	public int getNodeIndex(AbstractBookNode node) {
 		return nodesInv.containsKey(node) ? nodesInv.get(node) : -1;
 	}
-	
+
 	public void addNodeObserver(BookNodeObserver observer) {
 		bookNodeObservable.addObserver(observer);
 	}
-	
+
 	public void removeNodeObserver(BookNodeObserver observer) {
 		bookNodeObservable.removeObserver(observer);
 	}
-	
+
 	public void addNodeLinkObserver(BookNodeLinkObserver observer) {
 		bookNodeLinkObservable.addObserver(observer);
 	}
-	
+
 	public void removeNodeLinkObserver(BookNodeLinkObserver observer) {
 		bookNodeLinkObservable.removeObserver(observer);
 	}
-	
+
 	public void addCharacterObserver(BookCharacterObserver observer) {
 		bookCharacterObservable.addObserver(observer);
 	}
-	
+
 	public void removeCharacterObserver(BookCharacterObserver observer) {
 		bookCharacterObservable.removeObserver(observer);
 	}
-	
+
 	public void addItemObserver(BookItemObserver observer) {
 		bookItemObservable.addObserver(observer);
 	}
-	
+
 	public void removeItemObserver(BookItemObserver observer) {
 		bookItemObservable.removeObserver(observer);
 	}
@@ -336,7 +334,7 @@ public class Book {
 	public void setTextPrelude(String textPrelude) {
 		this.textPrelude = textPrelude;
 	}
-	
+
 	public HashMap<Integer, AbstractBookNode> getNodes() {
 		return nodes;
 	}
@@ -344,7 +342,7 @@ public class Book {
 	public AbstractBookNode getRootNode() {
 		return nodes.get(1);
 	}
-	
+
 	public void setNodes(HashMap<Integer, AbstractBookNode> nodes) {
 		this.nodes = nodes;
 	}
@@ -396,5 +394,5 @@ public class Book {
 	public void setBookNodeObservable(BookNodeObservable bookNodeObservable) {
 		this.bookNodeObservable = bookNodeObservable;
 	}
-	
+
 }
