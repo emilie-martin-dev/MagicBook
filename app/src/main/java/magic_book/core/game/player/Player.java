@@ -203,7 +203,6 @@ public class Player implements InterfacePlayerFourmis {
 	* Permet au joueur d'utiliser un objet de son inventaire
 	* @param state Sauvegarde actuelle de la partie
 	*/
-	
 	public void useInventaire(BookState state){
 		List<String> itemsPerso = state.getMainCharacter().getItems();
 		
@@ -260,14 +259,15 @@ public class Player implements InterfacePlayerFourmis {
 		} else if(characterCreation instanceof CharacterCreationSkill){
 			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
 			
-			for(String skillId : characterCreationSkill.getSkillLinks()){
-				System.out.println("Les skills suivant sont disponible:");
-				System.out.println("- " + state.getBook().getSkills().get(skillId).getDescription(state.getBook()));
-			}
-			
 			int nbItemMax = characterCreationSkill.getAmountToPick();
 			
 			while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
+				System.out.println("Les skills suivant sont disponible:");
+				int i = 0;
+				for(String skillId : characterCreationSkill.getSkillLinks()){
+					System.out.println(i + " - " + state.getBook().getSkills().get(skillId).getDescription(state.getBook()));
+					i++;
+				}
 				skillAdd(state, characterCreationSkill);
 				nbItemMax--;
 			}
@@ -315,27 +315,32 @@ public class Player implements InterfacePlayerFourmis {
 	* @param state Sauvegarde actuelle de la partie
 	* @param characterCreationState skill disponible
 	*/
-	private void skillAdd(BookState state, CharacterCreationSkill characterCreationState){
-		System.out.println("Quel skill voulez-vous ?");
-		boolean choixValide = false;
-		int choix = -1;
-		
-		while(!choixValide){
-			Scanner scanner = new Scanner(System.in);
-			choix = scanner.nextInt();
-			
-			if(choix >= 0 && choix <= (characterCreationState.getSkillLinks().size()-1)){
-				choixValide = true;
-			} else {
-				System.out.println("vous ne pouvez pas effectuer ce choix");
+	private void skillAdd(BookState state, CharacterCreationSkill characterCreationSkill){
+		System.out.println("Voulez vous un skill ?");
+		if(choixYesNo()){
+			System.out.println("Quel skill voulez-vous ?");
+			boolean choixValide = false;
+			int choix = -1;
+
+			while(!choixValide){
+				Scanner scanner = new Scanner(System.in);
+				choix = scanner.nextInt();
+
+				if(choix >= 0 && choix <= (characterCreationSkill.getSkillLinks().size()-1)){
+					choixValide = true;
+				} else {
+					System.out.println("vous ne pouvez pas effectuer ce choix");
+				}
 			}
+
+			String skill = characterCreationSkill.getSkillLinks().get(choix);
+			state.getMainCharacter().addSkill(skill);
+			System.out.println("Le skill "+skill+" a été rajouté");
+			characterCreationSkill.getSkillLinks().remove(skill);
+
+			characterCreationSkill.setAmountToPick(characterCreationSkill.getAmountToPick()-1);
+		} else {
+			characterCreationSkill.getSkillLinks().clear();
 		}
-		
-		String skill = characterCreationState.getSkillLinks().get(choix);
-		state.getMainCharacter().addSkill(skill);
-		System.out.println("Le skill "+skill+" a été rajouté");
-		characterCreationState.getSkillLinks().remove(skill);
-		
-		characterCreationState.setAmountToPick(characterCreationState.getAmountToPick()-1);
 	}
 }
