@@ -329,14 +329,16 @@
 		\subsection{Le pattern observer et la classe Book}
 			\label{subsec:pattern_observer}
 
-			Le pattern observer est essentiel pour la mise en place du pattern MVC. Nous avons décidé de le faire de la manière suivante :
+			Le pattern observer est essentiel pour la mise en place du pattern MVC. Nous avons décidé de procéder de la manière suivante :
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.8\textwidth, keepaspectratio]{img/observer.png}
-				\caption{UML sur la classe Book}
+				\caption{UML d'exmple sur le pattern observer}
 			\end{figure}
 
-			Tous les observers sont dispo sauf pour le changement de premier noeud.
+			Comme on peut le voir, une classe mère \textbf{Observable<T>} détient une List<T> d'observers. Une méthode d'ajout, et de suppression permettent de modifier cette liste. Dès lors que l'on souhaite ajouter un nouveau type d'observer, on doit commencer par créer une nouvelle Interface avec les méthodes que l'on souhaite fournir, dans notre exemple il s'agit de nodeAdded, nodeEdited, nodeDeleted. Une fois cette interface faite, on doit alors faire une nouvelle classe Observable, BookNodeObservable dans notre cas, qui hérite de Observable<T>, T étant l'observer que l'on souhaite utiliser, donc BookNodeObserver. Ainsi, chaque Observable que l'on fera ne sera qu'une définition des méthodes pour notifier qu'un évènement s'est produit.
+
+			Le choix à été fait de séparer les différentes parties (noeuds, liens, items, ...) du livre en différents observers afin de ne pas surcharger le nombre de méthodes à redéfinir dans les classes Observer, et donc de n'observer que ce dont on a besoin. De ce fait, tous les observers concernant le livre sont sont disponibles sauf celui pour notifier d'un changement concernant le premier noeud.
 
 	\section{Lecture et écriture d'un livre}\label{Json}
 
