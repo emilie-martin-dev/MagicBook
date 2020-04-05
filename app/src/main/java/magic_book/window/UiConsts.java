@@ -2,6 +2,9 @@ package magic_book.window;
 
 import javafx.geometry.Insets;
 
+/**
+ * Constantes pour les dimensions de l'affichage graphique (marges, tailles, ...)
+ */
 public class UiConsts {
 
 	public static final int LEFT_PANEL_SIZE = 250;

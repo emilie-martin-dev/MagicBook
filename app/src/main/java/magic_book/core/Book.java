@@ -193,7 +193,7 @@ public class Book {
 	}
 
 	public void addNodeLink(BookNodeLink nodeLink, AbstractBookNodeWithChoices node) {
-		node.addChoices(nodeLink);
+		node.addChoice(nodeLink);
 		bookNodeLinkObservable.notifyNodeLinkAdded(nodeLink, node);
 	}
 

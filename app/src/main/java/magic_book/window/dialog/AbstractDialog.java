@@ -16,20 +16,44 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import magic_book.window.UiConsts;
 
+/**
+ * Classe mère de toute les boites de dialog
+ */
 public abstract class AbstractDialog extends Stage {
 	
+	/**
+	 * Titre de la boite de dialog
+	 * @param title Le message à afficher
+	 */
 	public AbstractDialog(String title) {
 		this(title, false, false);
 	}
 	
+	/**
+	 * Titre et marge de la boite de dialog
+	 * @param title Le message à afficher
+	 * @param hideMarginTop Marge pour le prélude
+	 */
 	public AbstractDialog(String title, boolean hideMarginTop) {
 		this(title, hideMarginTop, false);
 	}
 	
+	/**
+	 * Titre et marge avec un rajout d'un scroll de la boite de dialog
+	 * @param title Le message à afficher
+	 * @param hideMarginTop Marge pour le prélude
+	 * @param useScroll Scroll du Pane
+	 */
 	public AbstractDialog(String title, boolean hideMarginTop, boolean useScroll) {
 		initDialogUI(title, hideMarginTop, useScroll);
 	}
 	
+	/**
+	 * Initialisation de la boite de dialog
+	 * @param title Le message à afficher
+	 * @param hideMarginTop Marge pour le prélude
+	 * @param useScroll Scroll du Pane
+	 */
 	private void initDialogUI(String title, boolean hideMargins, boolean useScroll) {
 		BorderPane rootPane = new BorderPane();
 		int margin = hideMargins ? 0 : UiConsts.DEFAULT_MARGIN_DIALOG;
@@ -57,10 +81,22 @@ public abstract class AbstractDialog extends Stage {
 		this.setScene(scene);
 	}
 	
+	/**
+	 * Initialisation des valeur et du GraphPane de la boite de dialog
+	 * @return le GraphPane initialisé
+	 */
 	protected abstract Node getMainUI();
 	
+	/**
+	 * Création des Book(node/lien/item/personnage) en fonction des valeurs saisie.
+	 * @return La validation de la création du book(node/lien/item/personnage)
+	 */
 	protected abstract EventHandler<ActionEvent> getValidButtonEventHandler();
 	
+	/**
+	 * Création des boutons valider et annuler
+	 * @return Hbox contenant les boutons
+	 */
 	private HBox getControlButtons() {
 		Button boutonAnnuler = new Button("Annuler");
 		boutonAnnuler.setOnAction(new EventHandler<ActionEvent>() {
@@ -81,7 +117,11 @@ public abstract class AbstractDialog extends Stage {
 		return box;
 	}
 	
-	public void notANumberAlertDialog(NumberFormatException ex){
+	/**
+	 * Alert qui apparait si la saisie de certain texte n'est pas un nombre
+	 * @param ex Exception d'erreur
+	 */
+	protected void notANumberAlertDialog(NumberFormatException ex){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 		
 		alertDialog.setTitle("Erreur");

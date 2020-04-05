@@ -34,7 +34,7 @@ import magic_book.window.gui.PreludeFx;
 import magic_book.window.gui.RectangleFx;
 
 /**
-* Pane comprenant tout le milieu de la fenêtre : l'édition des noeuds
+* Création du centre de la MainWindows (édition des noeuds)
 */
 public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeLinkObserver{
 	
@@ -69,7 +69,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	private NodeFx selectedNodeFx;
 	
 	/**
-	* Le prélude est le premier noeud lors de la création du lien
+	* Le lien vers le premier noeud
 	*/
 	private Line preludeFxFirstNodeLine;
 	
@@ -89,12 +89,12 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	private Book book;
 	
 	/**
-	* Le Pane du GraphPane qui contient tout
+	* Le Pane du GraphPane qui contient les noeuds
 	*/
 	private Pane rootPane;
 	
 	/**
-	* le zoom
+	* Le zoom
 	*/
 	private SimpleFloatProperty zoom;
 	
@@ -154,16 +154,16 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	}
 	
 	/**
-	* Création d'un NodeFx et du rectangle
+	* Création d'un NodeFx 
 	* @param node Contient le noeud qui va être lié au NodeFx
 	* @param x Contient le x du clique de la souris
 	* @param y Contient le y du clique de la souris
-	* @return le rectangle
+	* @return le NodeFx
 	*/
 	public NodeFx createNode(AbstractBookNode node, double x, double y) {
 		NodeFx nodeFx = new NodeFx(node, zoom);
-		nodeFx.setRealX(x);
-		nodeFx.setRealY(y);
+		nodeFx.setRealX(x/zoom.get());
+		nodeFx.setRealY(y/zoom.get());
 		
 		nodeFx.addNodeFxObserver(new NodeFxListener());
 		
@@ -177,9 +177,9 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	}
 	
 	/**
-	* Création d'un noeud
+	* Création d'une boite de dialogue pour renseigner un noeud
 	* @param event Clique de la souris
-	* @return null
+	* @return le noeud créé
 	*/
 	public NodeFx createNodeFxDialog(MouseEvent event){
 		NodeDialog nodeDialog = new NodeDialog(book);
@@ -241,7 +241,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	* Création du prélude et de son NodeFx
 	*/
 	private void createNodePrelude() {
-		PreludeFx preludeFx = new PreludeFx(null, zoom);
+		PreludeFx preludeFx = new PreludeFx(zoom);
 		preludeFx.setRealX(10);
 		preludeFx.setRealY(10);
 		
@@ -289,6 +289,8 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		createNodePrelude();
 		
 		HashMap<AbstractBookNode, NodeFx> nodeNodeFxMapping = new HashMap<>();
+		
+		//Positionnement des noeuds du livre chargé
 		if(!book.getNodes().isEmpty()) {
 			int i = 0;
 			double angle = (Math.PI * 2) / book.getNodes().size();
@@ -313,7 +315,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	}
 	
 	/**
-	* Le premier noeud du livre est le prélude
+	* Change le premier noeud du livre
 	* @param newFirstNode Prélude
 	*/	
 	public void setFirstNode(NodeFx newFirstNode) {
@@ -430,7 +432,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	}
 
 	/**
-	* Récupère le NodeFx (rectangle) sélectionné
+	* Récupère le NodeFx sélectionné
 	* @return NodeFx sélectionné
 	*/	
 	public NodeFx getSelectedNodeFx() {
@@ -438,7 +440,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	}
 	
 	/**
-	* Récupère le prélude (rectangle)
+	* Récupère le prélude
 	* @return Prélude
 	*/	
 	public PreludeFx getPreludeFx() {
@@ -495,7 +497,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 
 	
 	/**
-	* Permet de gérer les évènements sur les noeuds (rectangle)
+	* Permet de gérer les évènements sur les NodeFx en fonction du mode sélectionné
 	*/
 	class NodeFxListener implements RectangleFxObserver {
 		
@@ -570,7 +572,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	}
 	
 	/**
-	* Permet de gérer les évènements sur les liens (ligne)
+	* Permet de gérer les évènements sur les liens en fontion du mode sélectionné
 	*/
 	class NodeLinkFxListener implements NodeLinkFxObserver {
 

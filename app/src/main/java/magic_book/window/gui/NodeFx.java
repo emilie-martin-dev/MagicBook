@@ -9,10 +9,21 @@ import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 
+/**
+ * Représente graphiquement un noeud du livre
+ */
 public class NodeFx extends RectangleFx {
 	
+	/**
+	 * Noeud lié au rectangle
+	 */
 	private AbstractBookNode node;
 
+	/**
+	 * Initialisation du rectangle en fonction du type de noeud
+	 * @param node Noeud rattaché
+	 * @param zoom Valeur du zoom
+	 */
 	public NodeFx(AbstractBookNode node, FloatProperty zoom) {
 		super(Color.GREEN, zoom);
 		
@@ -21,16 +32,27 @@ public class NodeFx extends RectangleFx {
 		updateNodeColor();
 	}
 
+	/**
+	 * Donne le noeud rattaché
+	 * @return Noeud rattaché
+	 */
 	public AbstractBookNode getNode() {
 		return node;
 	}
 
+	/**
+	 * Modifie le noeud rattaché
+	 * @param node Nouveau noeud à rattacher
+	 */
 	public void setNode(AbstractBookNode node) {
 		this.node = node;
 		
 		updateNodeColor();
 	}
 	
+	/**
+	 * Modifie la couleur en fonction du type de noeud
+	 */
 	public void updateNodeColor(){
 		if(node instanceof BookNodeCombat){
 			setDefaultColor(Color.GOLD);

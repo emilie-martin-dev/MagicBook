@@ -26,16 +26,39 @@ import magic_book.window.UiConsts;
 import magic_book.window.dialog.CharacterDialog;
 import magic_book.window.dialog.ItemDialog;
 
+/**
+ * Création du coté gauche de la fenêtre Windows (Mode, Personnages, Items)
+ */
 public class LeftPane extends ScrollPane implements BookItemObserver, BookCharacterObserver {
 	
+	/**
+	 * GraphPane sur lequel on met à jour le mode
+	 */
 	private GraphPane graphPane;
 	
+	/**
+	 * Groupe qui contient la liste des boutons pour le mode
+	 */
 	private ToggleGroup toggleGroup;
+	/**
+	 * TreeView pour les items
+	 */
 	private TreeView<BookItem> treeViewItem;
+	/**
+	 * TreeView pour les personnages
+	 */
 	private TreeView<BookCharacter> treeViewPerso;
 	
+	/**
+	 * Livre contenant toutes les informations
+	 */
 	private Book book;
 	
+	/**
+	 * Constructeur
+	 * @param graphPane Centre de la fenêtre MainWindows
+	 * @param book Livre contenant toutes les informations
+	 */
 	public LeftPane(GraphPane graphPane, Book book){
 		this.graphPane = graphPane;
 		
@@ -48,9 +71,14 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		setBook(book);
 	}
 	
+	/**
+	 * Création de tout le panel : bouton de mode, vue sur les items, vue sur les personnages
+	 * @return Tout le panel
+	 */
 	private Node createLeftPanel() {
 		VBox leftContent = new VBox();
 		
+		//Création des boutons de mode
 		ToggleButton selectToogle = createToggleButton("icons/select.png", Mode.SELECT);
 		ToggleButton addNodeToggle = createToggleButton("icons/add_node.png", Mode.ADD_NODE);
 		ToggleButton addNodeLinkToggle = createToggleButton("icons/add_link.png", Mode.ADD_NODE_LINK);
@@ -67,15 +95,20 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		leftContent.setSpacing(UiConsts.DEFAULT_MARGIN);
 		leftContent.getChildren().add(flow);
 		
-		VBox itemPerso = gestionPerso();
+		//Vue sur les items et personnages
+		VBox itemPerso = gestionPersosItems();
 		leftContent.getChildren().add(itemPerso);
 		
 		return leftContent;
 	}
 	
-	private VBox gestionPerso(){
+	/**
+	 * Création de la vue sur les items et les personnages
+	 * @return VBox contenant la vue
+	 */
+	private VBox gestionPersosItems(){
 
-		//Création des TreeItem avec les items/persos
+		//---Création des TreeItem avec les items/persos
 		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", 0, 0, null, null, 0));
 		rootPerso.setExpanded(true);
 		treeViewPerso = new TreeView<> (rootPerso);
@@ -85,12 +118,13 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		
 		treeViewItem = new TreeView<> (rootItem);
 
-		//Création des context menus pour ajouter/supprimer des personnages
+		//---Création des context menus pour ajouter/supprimer des personnages
 		ContextMenu contextMenuPerso = new ContextMenu();
 		MenuItem menuPersoAdd = new MenuItem("Ajouter un Personnage");
 		MenuItem menuPersoUpdate = new MenuItem("Modifier un Personnage");
 		MenuItem menuPersoDel = new MenuItem("Supprimer un Personnage");
 
+		//Si un clique a été enregistré sur "Ajouter un personnage"
 		menuPersoAdd.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -103,6 +137,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 			}
 		});
 
+		//Si un clique a été enregistré sur "Modifier un personnage"
 		menuPersoUpdate.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -121,6 +156,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 			}
 		});
 		
+		//Si un clique a été enregistré sur "Supprimer un personnage"
 		menuPersoDel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -132,12 +168,13 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		contextMenuPerso.getItems().addAll(menuPersoAdd, menuPersoUpdate, menuPersoDel);
 		treeViewPerso.setContextMenu(contextMenuPerso);
 
-		//Création des context menus pour ajouter/supprimer des items
+		//---Création des context menus pour ajouter/supprimer des items
 		ContextMenu contextMenuItem = new ContextMenu();
 		MenuItem menuItemAdd = new MenuItem("Ajouter un Item");
 		MenuItem menuItemUpdate = new MenuItem("Modifier un Item");
 		MenuItem menuItemDel = new MenuItem("Supprimer un Item");
 
+		//Si un clique a été enregistré sur "Ajouter un item"
 		menuItemAdd.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -149,6 +186,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 			}
 		});
 		
+		//Si un clique a été enregistré sur "Modifier un item"
 		menuItemUpdate.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -168,6 +206,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 			}
 		});
 
+		//Si un clique a été enregistré sur "Supprimer un item"
 		menuItemDel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -185,6 +224,10 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		return vBox;
 	}
 	
+	/**
+	 * Si un livre est ouvert, toute la vue sur les items et personnages se met à jour
+	 * @param book Nouveau livre contenant toutes les informations
+	 */
 	public void setBook(Book book) {
 		if(this.book != null) {
 			this.book.removeCharacterObserver(this);
@@ -210,6 +253,12 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		}
 	}
 
+	/**
+	 * Création d'un bouton de mode
+	 * @param path Adresse de l'image
+	 * @param mode Mode attribué à ce bouton
+	 * @return Le bouton créer
+	 */
 	private ToggleButton createToggleButton(String path, Mode mode) {
 		InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
 		ImageView imageView = new ImageView(new Image(stream));

@@ -8,19 +8,59 @@ import magic_book.core.file.json.SectionJson;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.item.BookItemLink;
 
+/**
+ * Classe mère des noeud composé de choix
+ * @param <T> Représente les BookNodeLink ou les BookNodeLinkRandom
+ */
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
 	
+	/**
+	 * Nombre d'item à prendre, au maximum, sur le noeud (-1 représente l'infini)
+	 */
 	private Integer nbItemsAPrendre;
+	/**
+	 *  Liste des items disponible sur le noeud
+	 */
 	private List<BookItemLink> itemLinks;
+	/**
+	 * Liste des items pouvant être acheté sur le noeud
+	 */
 	private List<BookItemLink> shopItemLinks;
+	/**
+	 *  Liste de BookNodeLink ou de BookNodeLinkRandom représentant tout les choix possible à partir de ce noeud
+	 */
 	private List<T> choices;
+	/**
+	 * Obligation ou non de manger
+	 */
 	private boolean mustEat;
+	/**
+	 * Perte ou gain de vie
+	 */
 	private int hp;
 	
+	/**
+	 * Constructeur de AbstractBookNodeWithChoice
+	 * @param text Texte du noeud basic
+	 * @param nbItemsAPrendre Nombre d'item maximum pouvant être pris sur ce noeud (-1 représente l'infini)
+	 * @param itemLinks Liste des items disponible sur ce noeud
+	 * @param shopItemLinks Liste des items pouvant être acheté sur ce noeud
+	 * @param choices Liste de BookNodeLink représentant tout les choix possible à partir de ce noeud
+	 */
 	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<T> choices){
 		this(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices, false, 0);
 	}
 	
+	/**
+	 * Constructeur de AbstrcatBookNodeWithChoice avec super
+	 * @param text Texte du noeud basic
+	 * @param nbItemsAPrendre Nombre d'item maximum pouvant être pris sur ce noeud (-1 représente l'infini)
+	 * @param itemLinks Liste des items disponible sur ce noeud
+	 * @param shopItemLinks Liste des items pouvant être acheté sur ce noeud
+	 * @param choices Liste de BookNodeLink représentant tout les choix possible à partir de ce noeud
+	 * @param mustEat Obligation ou non de manger
+	 * @param hp Perte ou gain de vie
+	 */
 	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<T> choices, boolean mustEat, int hp){
 		super(text);
 		
@@ -41,6 +81,11 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 			this.shopItemLinks = new ArrayList<>();
 	}
 	
+	/**
+	 * Donne un texte décrivant les items disponible sur ce noeud
+	 * @param book Livre contenant toute les informations
+	 * @return Texte comprennant le nom ainsi que le nombre des items disponible
+	 */
 	public String getItemDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -65,6 +110,11 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		return buffer.toString();
 	}
 	
+	/**
+	 * Donne un texte décrivant les items pouvant être acheté sur ce noeud
+	 * @param book Livre contenant toute les informations
+	 * @return Texte comprenant le nom des items
+	 */
 	public String getShopDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -81,6 +131,11 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		return buffer.toString();
 	}
 	
+	/**
+	 * Donne un texte notifiant l'obligation de manger
+	 * @param book Livre contenant toute les informations
+	 * @return Texte si le joueur est encore en vie
+	 */
 	public String getMiscellaneousDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -208,15 +263,28 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		}
 	}
 	
+	/**
+	 * Ajoute un choix parmis la liste de choix existant
+	 * @param nodeLink BookNodeLink ou BookNodeLinkRandom à ajouté
+	 */
 	public void addChoice(T nodeLink) {
 		this.choices.add(nodeLink);
 	}
 
+	/**
+	 * Enlève un choix et ajoute un nouveau choix
+	 * @param oldNodeLink Choix représenté par un BookNodeLink ou un BookNodeLinkRandom à supprimer
+	 * @param newNodeLink  Choix représenté par un BookNodeLink ou un BookNodeLinkRandom à ajouter
+	 */
 	public void updateChoice(T oldNodeLink, T newNodeLink) {
 		removeChoice(oldNodeLink);
 		addChoice(newNodeLink);
 	}
 	
+	/**
+	 * Supprime un choix
+	 * @param nodeLink  BookNodeLink ou BookNodeLinkRandom à supprimer
+	 */
 	public void removeChoice(T nodeLink) {
 		if(this.choices.contains(nodeLink))
 			choices.remove(nodeLink);
@@ -227,54 +295,98 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 		return choices;
 	}
 	
-	public void addChoices(T newChoices){
-		this.choices.add(newChoices);
-	}
-	
+	/**
+	 * Ajoute un item à acheter dans le noeud
+	 * @param newShopItemLink Nouvelle item à acheter
+	 */
 	public void addShopItemLink(BookItemLink newShopItemLink){
 		this.shopItemLinks.add(newShopItemLink);
 	}
 
+	/**
+	 * Ajoute un item disponible dans le noeud
+	 * @param newItemLink Nouvelle item disponible
+	 */
 	public void addItemLink(BookItemLink newItemLink){
 		this.itemLinks.add(newItemLink);
 	}
 
+	/**
+	 * Donne le nombre d'items pouvant être pris
+	 * @return Nombre d'items
+	 */
 	public Integer getNbItemsAPrendre() {
 		return nbItemsAPrendre;
 	}
 
+	/**
+	 * Modifie le nombre d'items maximum à prendre
+	 * @param nbItemsAPrendre Nombre maximum d'items
+	 */
 	public void setNbItemsAPrendre(Integer nbItemsAPrendre) {
 		this.nbItemsAPrendre = nbItemsAPrendre;
 	}
 
+	/**
+	 * Donne la liste d'items disponible sur ce noeud
+	 * @return Liste d'items
+	 */
 	public List<BookItemLink> getItemLinks() {
 		return itemLinks;
 	}
 
+	/**
+	 * Modifie la liste des items disponible sur ce noeud
+	 * @param itemLinks Nouvelle list d'items disponible
+	 */
 	public void setItemLinks(List<BookItemLink> itemLinks) {
 		this.itemLinks = itemLinks;
 	}
 
+	/**
+	 * Donne la liste des items pouvant être acheté
+	 * @return Liste des items pouvant être acheté
+	 */
 	public List<BookItemLink> getShopItemLinks() {
 		return shopItemLinks;
 	}
 
+	/**
+	 * Modifie la liste des items pouvant être acheté
+	 * @param shopItemLinks Nouvelle liste des items pouvant être acheté
+	 */
 	public void setShopItemLinks(List<BookItemLink> shopItemLinks) {
 		this.shopItemLinks = shopItemLinks;
 	}
 
+	/**
+	 * Donne si il est obligé manger ou non
+	 * @return True ou False
+	 */
 	public boolean isMustEat() {
 		return mustEat;
 	}
 
+	/**
+	 * Modifie le boolean si il est obligé de manger ou non
+	 * @param mustEat True ou False
+	 */
 	public void setMustEat(boolean mustEat) {
 		this.mustEat = mustEat;
 	}
 
+	/**
+	 * Donne le nombre de point de vie à gagner ou à perdre
+	 * @return Point de vie
+	 */
 	public int getHp() {
 		return hp;
 	}
 
+	/**
+	 * Modifie le nombre de point de vie gagné ou perdu
+	 * @param hp Nombre de point de vie positif ou négatif
+	 */
 	public void setHp(int hp) {
 		this.hp = hp;
 	}

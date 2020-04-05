@@ -19,24 +19,65 @@ import magic_book.core.item.BookItemWeapon;
 import magic_book.core.item.BookItemWithDurability;
 import magic_book.window.UiConsts;
 
+/**
+ * Boite de dialog pour l'ajout des items
+ */
 public class ItemDialog extends AbstractDialog {
 	
+	/**
+	 * Item de type Healing
+	 */
 	private static final String HEALING = "Healing";
+	/**
+	 * Item de type key
+	 */
 	private static final String KEY_ITEM = "Key";
+	/**
+	 * Item de type money
+	 */
 	private static final String MONEY = "Money";
+	/**
+	 * Item de type weapon
+	 */
 	private static final String WEAPON = "Weapon";
+	/**
+	 * Item de type defense
+	 */
 	private static final String DEFENSE = "Défense";
 
+	/**
+	 * Item créer
+	 */
 	private BookItem item;
 	
+	/**
+	 * Id de l'item
+	 */
 	private TextField idTextField;
+	/**
+	 * Nom de l'item
+	 */
 	private TextField nameTextField;
-
+	/**
+	 * Point de vie donné
+	 */
 	private TextField vieTextField;
+	/**
+	 * Point de degat
+	 */
 	private TextField degatTextField;
+	/**
+	 * Point de defense
+	 */
 	private TextField defenseTextField;
+	/**
+	 * Point d'usure
+	 */
 	private TextField usureTextField;
 	
+	/**
+	 * Type de l'item
+	 */
 	private ChoiceBox<String> itemType;
 	
 	private Label vieLabel;
@@ -44,9 +85,17 @@ public class ItemDialog extends AbstractDialog {
 	private Label defenseLabel;
 	private Label usureLabel;
 	
+	/**
+	 * Livre contenant toutes les informations
+	 */
 	private Book book;
+	
 	private String baseId = "";
 	
+	/**
+	 * Initialisation des valeurs et de la fenêtre de dialog
+	 * @param book Le livre contenant toutes les informations
+	 */
 	public ItemDialog(Book book) {
 		super("Ajout d'un item");
 
@@ -54,6 +103,11 @@ public class ItemDialog extends AbstractDialog {
 		this.showAndWait();
 	}
 
+	/**
+	 * Edition de la boite de dialog ainsi que la mise en place de l'affichage en fonction du type d'item
+	 * @param item Item existant
+	 * @param book Le livre contenant toutes les informations
+	 */
 	public ItemDialog(BookItem item, Book book) {
 		super("Edition de " + item.getName());
 		
@@ -62,27 +116,37 @@ public class ItemDialog extends AbstractDialog {
 		idTextField.setText(item.getId());
 		nameTextField.setText(item.getName());
 		
+		//Si c'est un item de type arme
 		if(item instanceof BookItemWeapon) {
 			itemType.setValue(WEAPON);
 			BookItemWeapon itemWeapon = (BookItemWeapon) item;
 			
 			degatTextField.setText(""+itemWeapon.getDamage());
-		} else if (item instanceof BookItemDefense){
+		}
+		//Si c'est un item de type defense
+		else if (item instanceof BookItemDefense){
 			itemType.setValue(DEFENSE);
 			BookItemDefense itemDefense = (BookItemDefense) item;
 			
 			defenseTextField.setText(""+itemDefense.getResistance());
-		} else if (item instanceof BookItemHealing){
+		}
+		//Si c'est un item de type soin
+		else if (item instanceof BookItemHealing){
 			itemType.setValue(HEALING);
 			BookItemHealing itemHealing = (BookItemHealing) item;
 			
 			vieTextField.setText(""+itemHealing.getHp());
-		} else if (item instanceof BookItemMoney){			
+		}
+		//Si c'est un item de type argent
+		else if (item instanceof BookItemMoney){			
 			itemType.setValue(MONEY);
-		} else {
+		}
+		//Si c'est un simple item
+		else {
 			itemType.setValue(KEY_ITEM);
 		}
 		
+		//Si l'item à de la durabilité
 		if(item instanceof BookItemWithDurability) {
 			BookItemWithDurability itemWithDurability = (BookItemWithDurability) item;
 			usureTextField.setText(""+itemWithDurability.getDurability());
@@ -105,6 +169,8 @@ public class ItemDialog extends AbstractDialog {
 
 		idTextField = new TextField("");
 		nameTextField = new TextField("");
+		
+		//ChoiceBox afin de choisir le type d'item
 		itemType = new ChoiceBox<>();
 
 		itemType.getItems().add(KEY_ITEM);
@@ -127,6 +193,7 @@ public class ItemDialog extends AbstractDialog {
 		usureLabel = new Label("Usure du matériel : ");
 		usureTextField = new TextField("");
 		
+		//Permet de changer l'affichage si le type d'item est modifié
 		itemType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
@@ -176,18 +243,22 @@ public class ItemDialog extends AbstractDialog {
 	@Override
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
+			//Ne valide pas si toute les valeurs ne sont pas saisie
 			if (idTextField.getText().trim().isEmpty()
 					|| nameTextField.getText().trim().isEmpty()
 					|| itemType.getValue() == null){
 				return;
 			}
 
+			//Ne valide pas si l'ID est déjà pris'
 			if(book != null){
 				if(book.getItems().containsKey(idTextField.getText().trim()) && !baseId.equals(idTextField.getText().trim())){
 					showErrorDialog("L'ID n'est pas disponible");
 					return;
 				}
 			}
+			
+			//---- Créer l'item en fonction du type choisi
 			if(itemType.getValue() == KEY_ITEM){
 				ItemDialog.this.item = new BookItem();
 			} else if(itemType.getValue() == MONEY){
@@ -208,7 +279,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemWeapon;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex.getMessage());
+					notANumberAlertDialog(ex);
 					return;
 				}
 			} else if(itemType.getValue() == DEFENSE){
@@ -227,7 +298,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemDefense;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex.getMessage());
+					notANumberAlertDialog(ex);
 					return;
 				}
 			} else if(itemType.getValue() == HEALING){
@@ -246,7 +317,7 @@ public class ItemDialog extends AbstractDialog {
 					
 					ItemDialog.this.item = bookItemHealing;
 				} catch (NumberFormatException ex){
-					notANumberAlertDialog(ex.getMessage());
+					notANumberAlertDialog(ex);
 					return;
 				}
 			} 
@@ -258,10 +329,10 @@ public class ItemDialog extends AbstractDialog {
 		};
 	}
 	
-	private void notANumberAlertDialog(String message){
-		showErrorDialog(message.replace("For input string: ", "") + " n'est pas un entier");
-	}
-	
+	/**
+	 * Afficher une boite d'alerte si l'ID est déjà utilisé
+	 * @param message Message à afficher
+	 */
 	private void showErrorDialog(String message){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 		
@@ -270,6 +341,10 @@ public class ItemDialog extends AbstractDialog {
 		alertDialog.show();
 	}
 	
+	/**
+	 * Rendre visible ou non les variables de type healing
+	 * @param shown Va permettre d'afficher ou de ne pas afficher 
+	 */
 	private void setHealingFieldsShown(boolean shown){
 		vieLabel.setVisible(shown);
 		vieTextField.setVisible(shown);
@@ -278,6 +353,10 @@ public class ItemDialog extends AbstractDialog {
 			vieTextField.setText("");
 	}
 	
+	/**
+	 * Rendre visible ou non les variables de type Weapon
+	 * @param shown Va permettre d'afficher ou de ne pas afficher 
+	 */
 	private void setWeaponFieldsShown(boolean shown){
 		degatLabel.setVisible(shown);
 		degatTextField.setVisible(shown);
@@ -285,7 +364,11 @@ public class ItemDialog extends AbstractDialog {
 		if(!shown)
 			degatTextField.setText("");
 	}
-			
+	
+	/**
+	 * Rendre visible ou non les variables de type Defense
+	 * @param shown Va permettre d'afficher ou de ne pas afficher 
+	 */
 	private void setDefenseFieldsShown(boolean shown){
 		defenseLabel.setVisible(shown);
 		defenseTextField.setVisible(shown);
@@ -294,6 +377,10 @@ public class ItemDialog extends AbstractDialog {
 			defenseTextField.setText("");
 	}
 	
+	/**
+	 * Rendre visible ou non la durabilité
+	 * @param shown Va permettre d'afficher ou de ne pas afficher 
+	 */
 	private void setDurabilityFieldsShown(boolean shown){
 		usureLabel.setVisible(shown);
 		usureTextField.setVisible(shown);
@@ -302,6 +389,10 @@ public class ItemDialog extends AbstractDialog {
 			usureTextField.setText("");
 	}
 
+	/**
+	 * Donne l'item
+	 * @return L'item
+	 */
 	public BookItem getItem() {
 		return item;
 	}

@@ -26,20 +26,50 @@ import magic_book.window.UiConsts;
 import magic_book.window.component.CharacterComponent;
 import magic_book.window.component.CharacterCreationComponent;
 
+/**
+ * Boite de dialog pour la création / édition du prélude, du personnage principal et de la "Création du personnage"
+ */
 public class PreludeDialog extends AbstractDialog {
 	
+	/**
+	 * Liste de toute les étapes de la création du personnage
+	 */
 	private List<AbstractCharacterCreation> characterCreations;
+	/**
+	 * Personnage principal
+	 */
 	private BookCharacter mainCharacter;
+	/**
+	 * Texte du prélude
+	 */
 	private String textePrelude;
 	
+	/**
+	 * TextArea contenant le texte du prélude
+	 */
 	private TextArea texte;
+	/**
+	 * Contient les différentes étapes de la créationdu personnage
+	 */
 	private Accordion accordion;
-	private ScrollPane scrollPane;
+	/**
+	 * Pane comprenant toutes les informations sur le personnage principal
+	 */
 	private CharacterComponent characterComponent;
+	/**
+	 * Comporte tous les Pane des étapes de la création d'un personnage
+	 */
 	private List<CharacterCreationComponent> characterCreationComponent;
 	
+	/**
+	 * Livre en cours d'édition
+	 */
 	private Book book;
 
+	/**
+	 * Initialisation du prélude
+	 * @param book Le livre en cours d'édition
+	 */
 	public PreludeDialog(Book book) {
 		super("Edition du Prelude", true);
 
@@ -77,6 +107,10 @@ public class PreludeDialog extends AbstractDialog {
 		return tabPane;
 	}
 	
+	/**
+	 * Affichage pour le texte du prélude
+	 * @return Le pane du texte du prélude
+	 */
 	private Node getPreludeTextPane() {
 		GridPane preludeRoot = new GridPane();
 		preludeRoot.setHgap(UiConsts.DEFAULT_MARGIN);
@@ -91,6 +125,10 @@ public class PreludeDialog extends AbstractDialog {
 		return preludeRoot;
 	}
 	
+	/**
+	 * Affichage pour l'ajout des étapes de la creation du personnage
+	 * @return Le pane de la création étapes de la creation du personnage
+	 */
 	private Node getCharacterCreationTab() {
 		VBox characterCreationPane = new VBox();
 		characterCreationPane.setSpacing(UiConsts.DEFAULT_MARGIN);
@@ -105,16 +143,23 @@ public class PreludeDialog extends AbstractDialog {
 		
 		characterCreationPane.getChildren().addAll(accordion, addButton);
 		
-		scrollPane = new ScrollPane(characterCreationPane);
+		ScrollPane scrollPane = new ScrollPane(characterCreationPane);
 		scrollPane.setFitToWidth(true);
 		
 		return scrollPane;
 	}
 	
+	/**
+	 * Méthode pour créer un nouvel élément de la conception du personnage
+	 */
 	private void createTitledPane() {
 		createTitledPane(null);
 	}
 	
+	/**
+	 * Méthode pour créer un nouvel élément de la conception du personnage
+	 * @param characterCreation L'élément de la conception du personnage
+	 */
 	private void createTitledPane(AbstractCharacterCreation characterCreation) {
 		TitledPane titledPane = new TitledPane();
 		Button remove = new Button("Supprimer cette partie");
@@ -140,6 +185,10 @@ public class PreludeDialog extends AbstractDialog {
 		this.characterCreationComponent.add(characterCreationPane);
 	}
 	
+	/**
+	 * Affichage pour la création du personnage principal
+	 * @return personnage principal
+	 */
 	private Node getMainCharacterPane() {
 		characterComponent = new CharacterComponent(null, true);
 		characterComponent.setAlignment(Pos.CENTER);
@@ -171,14 +220,26 @@ public class PreludeDialog extends AbstractDialog {
 		};
 	}
 
+	/**
+	 * Donne le texte du prélude
+	 * @return Le texte du prélude
+	 */
 	public String getTextePrelude() {
 		return textePrelude;
 	}
 
+	/**
+	 * Donne la liste des étapes de la création du personnage principal
+	 * @return La liste des étapes de la création du personnage principal
+	 */
 	public List<AbstractCharacterCreation> getCharacterCreations() {
 		return characterCreations;
 	}
 
+	/**
+	 * Donne le personnage principal créer
+	 * @return Personnage principal
+	 */
 	public BookCharacter getMainCharacter() {
 		return mainCharacter;
 	}

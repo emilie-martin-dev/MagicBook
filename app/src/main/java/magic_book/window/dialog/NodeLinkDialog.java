@@ -19,41 +19,96 @@ import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.window.UiConsts;
 
+/**
+ * Boite de dialog pour la création/édition des liens entre les noeuds
+ */
 public class NodeLinkDialog extends AbstractDialog{
 	
+	/**
+	 * Lien entre les noeuds
+	 */
 	private BookNodeLink nodeLink;
 	
+	/**
+	 * Type de lien
+	 */
 	private String linkType;
 	
+	/**
+	 * Type de lien EVASION
+	 */
 	public static final String EVASION = "Lien pour l'évasion";
+	/**
+	 * Type de lien PERDRE
+	 */
 	public static final String PERDRE = "Lien si le combat est perdu";
+	/**
+	 * Type de lien GAGNE
+	 */
 	public static final String GAGNE = "Lien si le combat est gagné";
 	
+	/**
+	 * Texte du lien
+	 */
 	private TextArea texte;
+	/**
+	 * Chance si le noeud de départ est un noeud aléatoire
+	 */
 	private TextField chanceTextField;
+	/**
+	 * Nombre HP perdu ou gagné en passant par ce lien
+	 */
 	private TextField hpTextField;
+	/**
+	 * Nombre d'argent perdu ou gagné en passant par ce lien
+	 */
 	private TextField goldTextField;
 	
+	/**
+	 * CheckBox de chemin automatique
+	 */
 	private CheckBox autoBox;
+	/**
+	 * Choix du type de lien
+	 */
 	private ChoiceBox<String> choixLienBox;
 
 	private AbstractBookNode firstNode;
 	
+	/**
+	 * BorderPane contenant tout ce qu'il y a dans la boite de dialog
+	 */
 	private BorderPane root;
+	/**
+	 * Pane contenant toutes les informations communes à tout les types de lien
+	 */
 	private GridPane mainUi;
+	/**
+	 * Pane contenant toutes les informations si le noeud de départ est un noeud à choix aléatoire
+	 */
 	private GridPane randomUi;
+	/**
+	 * Pane contenant toutes les informations si le noeud de départ est un noeud de combat
+	 */
 	private GridPane combatUi;
 	
+	/**
+	 * Initialisation des valeurs et de la fenêtre de dialog en fonction du fistNode
+	 * @param firstNode Noeud où le lien va démarer
+	 */
 	public NodeLinkDialog(AbstractBookNode firstNode) {
 		super("Création du choix");
 		
 		this.firstNode = firstNode;
 		
+		//Si le premier noeud est de type aléatoire
 		if(firstNode instanceof BookNodeWithRandomChoices){
 			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
 			
 			showRandomUi();
-		} else if(firstNode instanceof BookNodeCombat){
+		}
+		//Si le premier noeud est de type combat
+		else if(firstNode instanceof BookNodeCombat){
 			List<String> listChoixCombat = choixCombatRestants();
 			
 			for(String choixCombat : listChoixCombat)
@@ -66,18 +121,26 @@ public class NodeLinkDialog extends AbstractDialog{
 		this.showAndWait();
 	}
 
+	/**
+	 * Edition de la fenêtre de dialog
+	 * @param nodeLink Lien déjà existante
+	 * @param firstNode Noeud où le lien démarre
+	 */
 	public NodeLinkDialog(BookNodeLink nodeLink, AbstractBookNode firstNode) {
 		super("Modification du choix");
 		
 		this.firstNode = firstNode;
 		
+		//Si le premier noeud est de type aléatoire
 		if(nodeLink instanceof BookNodeLinkRandom){
 			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
 			
 			chanceTextField.setText(""+nodeLinkRandom.getChance());
 			
 			showRandomUi();
-		} else if(firstNode instanceof BookNodeCombat){
+		}
+		//Si le premier noeud est de type combat
+		else if(firstNode instanceof BookNodeCombat){
 			List<String> listChoixCombat = choixCombatRestants();
 			
 			for(String choix : listChoixCombat) {
@@ -114,6 +177,7 @@ public class NodeLinkDialog extends AbstractDialog{
 
 	@Override
 	protected Node getMainUI() {
+		//Génération des Pane
 		root = new BorderPane();
 		mainUi = new GridPane();
 		randomUi = new GridPane();
@@ -166,7 +230,8 @@ public class NodeLinkDialog extends AbstractDialog{
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			String texteHistoire = (String) texte.getText();
-					
+			
+			//Si le premier noeud est de type aléatoire
 			if(NodeLinkDialog.this.firstNode instanceof BookNodeWithRandomChoices){
 				if (chanceTextField.getText().isEmpty()){
 					return;
@@ -211,17 +276,28 @@ public class NodeLinkDialog extends AbstractDialog{
 		};
 	}
 	
+	/**
+	 * Montre la fenêtre pour un noeud de départ à choix random
+	 */
 	private void showRandomUi() {
 		root.setBottom(randomUi);
 	}
 	
+	/**
+	 * Montre la fenêtre pour un noeud de départ de combat
+	 */
 	private void showCombatUi() {
 		root.setBottom(combatUi);
 	}
 	
+	/**
+	 * Ajoute les choix encore disponible pour un noeud de départ de type combat
+	 * @return Liste des choix entre GAGNE, PERDRE, EVASION
+	 */
 	private List<String> choixCombatRestants(){
 		List<String> listeChoix = new ArrayList();
 		
+		//Si le premier noeud est de type combat, on fait la liste des noeud encore disponible (Evasion, Gagner, Perdu)
 		if(firstNode instanceof BookNodeCombat){
 			BookNodeCombat firstNodeCombat = (BookNodeCombat) firstNode;
 			
@@ -238,10 +314,18 @@ public class NodeLinkDialog extends AbstractDialog{
 		return listeChoix;
 	}
 
+	/**
+	 * Donne le lien en fonction du noeud
+	 * @return Lien
+	 */
 	public BookNodeLink getNodeLink() {
 		return nodeLink;
 	}
 
+	/**
+	 * Donne le type de lien
+	 * @return Type de lien
+	 */
 	public String getLinkType() {
 		return linkType;
 	}
