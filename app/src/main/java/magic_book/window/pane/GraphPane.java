@@ -69,7 +69,7 @@ public class GraphPane extends ScrollPane {
 	private NodeFx selectedNodeFx;
 	
 	/**
-	* Le prélude est le premier noeud lors de la création du lien
+	* Le lien vers le premier noeud
 	*/
 	private Line preludeFxFirstNodeLine;
 	
@@ -89,12 +89,12 @@ public class GraphPane extends ScrollPane {
 	private Book book;
 	
 	/**
-	* Le Pane du GraphPane qui contient tout
+	* Le Pane du GraphPane qui contient les noeuds
 	*/
 	private Pane rootPane;
 	
 	/**
-	* le zoom
+	* Le zoom
 	*/
 	private SimpleFloatProperty zoom;
 	
@@ -159,11 +159,11 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Création d'un NodeFx et du rectangle
+	* Création d'un NodeFx 
 	* @param node Contient le noeud qui va être lié au NodeFx
 	* @param x Contient le x du clique de la souris
 	* @param y Contient le y du clique de la souris
-	* @return le rectangle
+	* @return le NodeFx
 	*/
 	public NodeFx createNode(AbstractBookNode node, double x, double y) {
 		NodeFx nodeFx = new NodeFx(node, zoom);
@@ -179,9 +179,9 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Création d'un noeud
+	* Création d'une boite de dialogue pour renseigner un noeud
 	* @param event Clique de la souris
-	* @return null
+	* @return le noeud créé
 	*/
 	public NodeFx createNodeFxDialog(MouseEvent event){
 		NodeDialog nodeDialog = new NodeDialog(book);
@@ -308,7 +308,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Le premier noeud du livre est le prélude
+	* Change le premier noeud du livre
 	* @param newFirstNode Prélude
 	*/	
 	public void setFirstNode(NodeFx newFirstNode) {
@@ -347,7 +347,7 @@ public class GraphPane extends ScrollPane {
 	}
 
 	/**
-	* Récupère le NodeFx (rectangle) sélectionné
+	* Récupère le NodeFx sélectionné
 	* @return NodeFx sélectionné
 	*/	
 	public NodeFx getSelectedNodeFx() {
@@ -355,7 +355,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Récupère le prélude (rectangle)
+	* Récupère le prélude
 	* @return Prélude
 	*/	
 	public PreludeFx getPreludeFx() {
@@ -411,7 +411,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Permet de gérer les évènements sur les noeuds (rectangle) en fonction du mode sélectionné
+	* Permet de gérer les évènements sur les NodeFx en fonction du mode sélectionné
 	*/
 	class NodeFxListener implements RectangleFxObserver {
 		
@@ -523,7 +523,7 @@ public class GraphPane extends ScrollPane {
 	}
 	
 	/**
-	* Permet de gérer les évènements sur les liens (ligne) en fontion du mode sélectionné
+	* Permet de gérer les évènements sur les liens en fontion du mode sélectionné
 	*/
 	class NodeLinkFxListener implements NodeLinkFxObserver {
 

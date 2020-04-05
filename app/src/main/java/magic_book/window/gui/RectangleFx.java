@@ -12,12 +12,12 @@ import magic_book.observer.fx.RectangleFxObserver;
 import magic_book.window.UiConsts;
 
 /**
- * Rectangle permettant de voir visuellement le noeud
+ * Classe mère pour représenter un noeud (prélude, noeuds)
  */
 public class RectangleFx extends Rectangle {
 
 	/**
-	 * Taille final du rectangle
+	 * Taille basique du rectangle
 	 */
 	public static final int WIDTH = 50;
 	
@@ -27,11 +27,11 @@ public class RectangleFx extends Rectangle {
 	private RectangleFxObservable nodeFxObservable;
 	
 	/**
-	 * Position x du coin gauche du rectangle pour le zoom
+	 * Position x sans le facteur de zoom
 	 */
 	private SimpleFloatProperty realX;
 	/**
-	 * Position y coin gauche du rectangle pour le zoom
+	 * Position y sans le facteur de zoom
 	 */
 	private SimpleFloatProperty realY;
 	
@@ -55,7 +55,7 @@ public class RectangleFx extends Rectangle {
 		nodeFxObservable = new RectangleFxObservable();
 		this.defaultColor = color;
 		
-		//Si le rectangle est sélectionné, on envoie l'évènement et le rectangle sélectionné dans le centre de la fenêtre du MainWindows
+		//Si le rectangle est sélectionné, on envoie l'évènement et "this" pour notifier que le rectangle courant a été cliqué
 		this.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
 			nodeFxObservable.notifyOnNodeFXClicked(RectangleFx.this, event);
 		});
@@ -67,14 +67,14 @@ public class RectangleFx extends Rectangle {
 			}
 		});
 		
-		//Si la souris sort du rectangle, l'opacité revient à la normal
+		//Si la souris sort du rectangle, l'opacité revient à l'opacité normal
 		this.setOnMouseExited(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
 				RectangleFx.this.setOpacity(100f);
 			}
 		});
 		
-		//Permet de modifier la position du rectangle si le rectangle perçois un clic maintenu de la souris
+		//Permet de modifier la position du rectangle si on le déplace
 		this.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
 				RectangleFx.this.setRealX((event.getX() - RectangleFx.this.getWidth() / 2) / zoom.get());
@@ -117,7 +117,7 @@ public class RectangleFx extends Rectangle {
 	}
 
 	/**
-	 * Donne la position du coin gauche du rectangle pour le zoom
+	 * Donne la position x sans le facteur de zoom
 	 * @return position x
 	 */
 	public double getRealX() {
@@ -125,7 +125,7 @@ public class RectangleFx extends Rectangle {
 	}
 
 	/**
-	 * Modifie la position x du coin gauche du rectangle pour le zoom
+	 * Modifie la position x sans le facteur de zoom
 	 * @param realX position du x
 	 */
 	public void setRealX(double realX) {
@@ -133,7 +133,7 @@ public class RectangleFx extends Rectangle {
 	}
 
 	/**
-	 * Donne la position du coin gauche du rectangle pour le zoom
+	 * Donne la position y sans le facteur de zoom
 	 * @return position y
 	 */
 	public double getRealY() {
@@ -141,7 +141,7 @@ public class RectangleFx extends Rectangle {
 	}
 
 	/**
-	 * Modifie la position y du coin gauche du rectangle pour le zoom
+	 * Modifie la position y sans le facteur de zoom
 	 * @param realY position du y
 	 */
 	public void setRealY(double realY) {
@@ -149,7 +149,7 @@ public class RectangleFx extends Rectangle {
 	}
 	
 	/**
-	 * Donne la couleur
+	 * Donne la couleur par défaut
 	 * @return couleur
 	 */
 	public Color getDefaultColor() {
@@ -157,7 +157,7 @@ public class RectangleFx extends Rectangle {
 	}
 
 	/**
-	 * Modifie la couleur par défault du rectangle
+	 * Modifie la couleur par défaut du rectangle
 	 * @param defaultColor Couleur voulue
 	 */
 	public void setDefaultColor(Color defaultColor) {

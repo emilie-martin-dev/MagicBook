@@ -41,7 +41,7 @@ public class Jeu {
 	}
 	
 	/**
-	 * Sauvegarde actuelle de la partie
+	 * État actuelle de la partie
 	 */
 	private BookState state;
 	
@@ -51,12 +51,12 @@ public class Jeu {
 	private InterfacePlayerFourmis player;
 	
 	/**
-	 * Copie actuel du livre, permet de ne pas modifier le livre qui contient toutes les informations
+	 * Copie du livre sur lequel on joue
 	 */
 	private Book book;
 	
 	/**
-	 * Permet d'afficher les messages si c'est le joueur qui joue (true)
+	 * Permet de savoir si on doit afficher les messages
 	 */
 	private boolean showMessages;
 	
@@ -76,7 +76,7 @@ public class Jeu {
 	/**
 	 * Méthode qui est appelé pour jouer en tant que player
 	 * @throw IOException : si l'écriture / la lecture est incorecte
-	 * @throw BookFileException : si le fichier est incorrecte
+	 * @throw BookFileException : si le fichier est incorrect
 	 */
 	public void play() throws IOException, BookFileException {
 		player = new Player();
@@ -89,7 +89,7 @@ public class Jeu {
 	/**
 	 * Estime la dificulté du livre (fourmis)
 	 * @throw IOException : si l'écriture / la lecture est incorecte
-	 * @throw BookFileException : si le fichier est incorrecte
+	 * @throw BookFileException : si le fichier est incorrect
 	 * @param nbrFourmis Nombre de fois que le jeu va se lancer
 	 * @return pourcentage de victoire
 	 */
@@ -109,17 +109,17 @@ public class Jeu {
 	}
 	
 	/**
-	 * Permet de lancer le jeu
+	 * Boucle principal du jeu
 	 * @throw IOException : si l'écriture / la lecture est incorecte
 	 * @throw FileNotFoundException : si le fichier n'est pas trouvé
-	 * @throw BookFileException : si le fichier est incorrecte
-	 * @return Un boolean win: true si la partie est gagné
+	 * @throw BookFileException : si le fichier est incorrect
+	 * @return true si la partie est gagné, false sinon
 	 */
 	private boolean runGame() throws IOException, FileNotFoundException, BookFileException {
 		boolean gameFinish = false;
 		boolean win = false;
 		
-		//Copie du livre afin de ne pas le modifier
+		//Copie du livre afin de ne pas le modifier l'original
 		String tmpPath = ".livreTmpGame";
 		BookWritter bookWritter = new BookWritter();
 		bookWritter.write(tmpPath, bookToRead);
@@ -197,7 +197,7 @@ public class Jeu {
 		showMessage(newState.getMainCharacter().getDescription(book));
 		
 		newState.setBook(this.book);
-		//Récupération des skills et items disponible au prélude
+		// Lancement des différentes phases de la conception du personnage
 		for(AbstractCharacterCreation characterCreation : this.book.getCharacterCreations())
 			player.execPlayerCreation(book, characterCreation, newState);
 		
@@ -205,7 +205,7 @@ public class Jeu {
 	}
 	
 	/**
-	 * Regarde si le personage est encore en vie
+	 * Code commun aux noeuds à choix
 	 * @param node Noeud actuel
 	 * @return Un noeud terminal Failure si le personnage est mort ou null si il est encore en vie
 	 */
@@ -270,7 +270,7 @@ public class Jeu {
 					if(selectedBookNodeLink.isAvailable(state)){
 						choixValide = true;
 					} else {
-						//Affiche les prérequis manquant
+						//Affiche les prérequis
 						for(List<AbstractRequirement> abstractRequirements : selectedBookNodeLink.getRequirements()) {
 							for(AbstractRequirement requirement : abstractRequirements) {
 								showMessage(requirement.getDescription(book));
@@ -540,8 +540,8 @@ public class Jeu {
 	}
 	
 	/**
-	 * Modifie la quantité d'argent et le nombre de point de vie du player si le noeud en enlève ou en donne
-	 * @param node Noeud actuel
+	 * Modifie la quantité d'argent et le nombre de point de vie du player si le choix en enlève ou en donne
+	 * @param node Choix actuel
 	 */
 	private void execBookNodeLink(BookNodeLink bookNodeLink){
 		//Si le lien fait gagner/perdre de l'argent
@@ -563,14 +563,14 @@ public class Jeu {
 	}
 	
 	/**
-	 * Affiche un saut de ligne si le player actuel est un joueur
+	 * Affiche un saut de ligne si on doit afficher le messages
 	 */
 	private void showMessage() {
 		showMessage("");
 	}
 	
 	/**
-	 * Affiche le message si le player actuel est un joueur
+	 * Affiche le message si on doit le faire
 	 * @param str message à afficher
 	 */
 	private void showMessage(String str) {

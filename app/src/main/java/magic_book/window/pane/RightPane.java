@@ -15,7 +15,7 @@ import magic_book.observer.book.BookNodeObserver;
 import magic_book.window.UiConsts;
 
 /**
- * Création de la partie droite de la MainWindows (statistiques du livre)
+ * Partie droite de la MainWindows (statistiques du livre)
  */
 public class RightPane extends ScrollPane implements BookNodeObserver{
 	
@@ -119,7 +119,7 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	}
 	
 	/**
-	 * Met à jour les statistiques
+	 * Met à jour les labels des statistiques
 	 */
 	private void updateStats() {
 		nodeCountLabel.setText(""+nodeCount);

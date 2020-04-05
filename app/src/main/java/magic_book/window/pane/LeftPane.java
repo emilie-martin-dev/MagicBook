@@ -30,20 +30,20 @@ import magic_book.window.dialog.ItemDialog;
 public class LeftPane extends ScrollPane {
 	
 	/**
-	 * Centre de la fenêtre
+	 * GraphPane sur lequel on met à jour le mode
 	 */
 	private GraphPane graphPane;
 	
 	/**
-	 * Bouton de mode
+	 * Groupe qui contient la liste des boutons pour le mode
 	 */
 	private ToggleGroup toggleGroup;
 	/**
-	 * Vue sur les items
+	 * TreeView pour les items
 	 */
 	private TreeView<BookItem> treeViewItem;
 	/**
-	 * Vue sur les personnages
+	 * TreeView pour les personnages
 	 */
 	private TreeView<BookCharacter> treeViewPerso;
 	
@@ -53,7 +53,7 @@ public class LeftPane extends ScrollPane {
 	private Book book;
 	
 	/**
-	 * Initialisation des valeurs du Pane
+	 * Constructeur
 	 * @param graphPane Centre de la fenêtre MainWindows
 	 * @param book Livre contenant toutes les informations
 	 */
@@ -94,7 +94,7 @@ public class LeftPane extends ScrollPane {
 		leftContent.getChildren().add(flow);
 		
 		//Vue sur les items et personnages
-		VBox itemPerso = gestionPerso();
+		VBox itemPerso = gestionPersosItems();
 		leftContent.getChildren().add(itemPerso);
 		
 		return leftContent;
@@ -104,7 +104,7 @@ public class LeftPane extends ScrollPane {
 	 * Création de la vue sur les items et les personnages
 	 * @return VBox contenant la vue
 	 */
-	private VBox gestionPerso(){
+	private VBox gestionPersosItems(){
 
 		//---Création des TreeItem avec les items/persos
 		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", 0, 0, null, null, 0));
