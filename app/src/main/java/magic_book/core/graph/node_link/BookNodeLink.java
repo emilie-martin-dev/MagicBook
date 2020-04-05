@@ -52,15 +52,20 @@ public class BookNodeLink implements Descriptible, JsonExportable<ChoiceJson> {
 		if(requirements.isEmpty()) 
 			return true;
 		
+		// Parcours la liste des OU
 		for(List<AbstractRequirement> groupRequirement : requirements) {
 			boolean satisfied = true;
+			// Parcours la liste des ET
 			for(AbstractRequirement r : groupRequirement) {
+				
+				// Si l'un des prérequis n'est pas respecté, pas besoin de continuer
 				if(!r.isSatisfied(state)) {
 					satisfied = false;
 					break;
 				}
 			}
 			
+			// Si on est allé au bout de la liste sans break, on peut arrêter et return true
 			if(satisfied)
 				return true;
 		}

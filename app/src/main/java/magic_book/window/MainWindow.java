@@ -256,7 +256,7 @@ public class MainWindow extends Stage {
 	}
 	
 	/**
-	 * Met à jour le livre lors de l'ouverture d'un fichier (nouveau au préexistant)
+	 * Met à jour le livre
 	 * @param book Nouveau livre
 	 */
 	private void setBook(Book book) {		
@@ -268,8 +268,8 @@ public class MainWindow extends Stage {
 	}
 	
 	/**
-	 * Chemin du fichier
-	 * @return Si l'enregistrement du fichier a été fait ou non
+	 * Boite de dialogue pour enregistrer le fichier
+	 * @return Si la fenêtre a été validé ou non
 	 */
 	private boolean changeSelectedFile() {
 		FileChooser fileChooser = new FileChooser();

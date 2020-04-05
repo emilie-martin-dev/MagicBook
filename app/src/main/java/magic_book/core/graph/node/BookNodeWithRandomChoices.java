@@ -51,6 +51,7 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		int somme = 0;
 		int nbrChoice = 0;
 		
+		// On cherche les noeuds disponibles et on fait la somme des probabilités
 		for (int i = 0 ; i < this.getChoices().size() ; i++){
 			if(this.getChoices().get(i).isAvailable(state)){
 				listNodeLinkDisponible.add(this.getChoices().get(i));
@@ -63,14 +64,20 @@ public class BookNodeWithRandomChoices extends AbstractBookNodeWithChoices<BookN
 		} else {
 			Random random = new Random();
 			int nbrRandomChoice;
-			if(somme == 0)
+			// Si la somme des proba est à 0, on tire un noeud au hasard
+			if(somme == 0) {
 				nbrRandomChoice = random.nextInt(listNodeLinkDisponible.size());
-			else
+				return this.getChoices().get(nbrRandomChoice);
+			} else {
 				nbrRandomChoice = random.nextInt(somme);
+			}
+			
+			// On cherche le choix tiré
 			for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){
 				if(!this.getChoices().get(i).isAvailable(state)){
 					continue;
 				}
+				
 				nbrRandomChoice -= this.getChoices().get(i).getChance();
 				if(nbrRandomChoice < 0){
 					nbrChoice = i;

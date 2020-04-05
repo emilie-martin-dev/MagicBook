@@ -10,6 +10,9 @@ import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.item.BookItem;
 
+/**
+ * Classe qui devrait permettre de déterminer si un livre est valide ou non. Faute de temps, la classe n'est ni terminée ni utilisée.
+ */
 public class BookValidator {
 
 	public static boolean isCharacterValid(BookCharacter character) {

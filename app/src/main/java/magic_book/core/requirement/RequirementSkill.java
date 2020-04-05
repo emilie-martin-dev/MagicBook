@@ -5,8 +5,14 @@ import magic_book.core.file.json.RequirementJson;
 import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookState;
 
+/**
+ * Requiert d'avoir un skill 
+ */
 public class RequirementSkill extends AbstractRequirement {
 		
+	/**
+	 * Id du skill
+	 */
 	private String skillId;
 	
 	public RequirementSkill() {
@@ -28,6 +34,7 @@ public class RequirementSkill extends AbstractRequirement {
 		return false;
 	}
 	
+	@Override
 	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
 		
@@ -53,10 +60,19 @@ public class RequirementSkill extends AbstractRequirement {
 		skillId = json.getId();
 	}
 
+	
+	/**
+	 * Donne l'id du skill
+	 * @return l'id du skill
+	 */
 	public String getSkillId() {
 		return skillId;
 	}
 
+	/**
+	 * Change l'id du skill
+	 * @param skillId Le nouvel id du skill
+	 */
 	public void setSkillId(String skillId) {
 		this.skillId = skillId;
 	}

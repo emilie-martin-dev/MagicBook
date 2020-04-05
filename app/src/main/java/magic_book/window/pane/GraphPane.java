@@ -119,7 +119,10 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		zoom = new SimpleFloatProperty(1);
 		
 		rootPane.setOnScroll((ScrollEvent event) -> {
+			// On réduit la puissance du scroll
 			float newZoomLevel = ((float)event.getDeltaY() / SCROLL_RATIO) + zoom.getValue();
+			
+			// On limite la valeur possible du zoom
 			if(newZoomLevel < MIN_ZOOM) {
 				newZoomLevel = MIN_ZOOM;
 			} else if(newZoomLevel > MAX_ZOOM) {
@@ -203,6 +206,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
 		nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
 
+		// Lie la line avec les deux autres noeuds
 		nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
 		nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
 
@@ -290,12 +294,15 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		//Positionnement des noeuds du livre chargé
 		if(!book.getNodes().isEmpty()) {
 			int i = 0;
+			// Détermine l'angle entre chaque noeud
 			double angle = (Math.PI * 2) / book.getNodes().size();
 			float radius = (UiConsts.RECTANGLE_FX_SIZE * book.getNodes().size()) / 4;
 
+			// Position du centre du cercle
 			float deltaPosition = radius + UiConsts.RECTANGLE_FX_SIZE;
 
 			for(AbstractBookNode node : book.getNodes().values()) {
+				// Utilisation de la trigonométrie pour placer les noeuds
 				NodeFx createdNodeFx = createNode(node, deltaPosition + Math.cos(i * angle) * radius, deltaPosition + Math.sin(i * angle) * radius);
 				nodeNodeFxMapping.put(node, createdNodeFx);
 				i++;
@@ -303,6 +310,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		
 			for(AbstractBookNode node : book.getNodes().values()) {
 				for(BookNodeLink choice : node.getChoices()) {
+					// Ajoute les liens
 					createNodeLink(choice, nodeNodeFxMapping.get(node), nodeNodeFxMapping.get(book.getNodes().get(choice.getDestination())));
 				}
 			}
@@ -354,14 +362,17 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		NodeFx nodeFxToDelete = null;
 		for(NodeFx nodeFx : listeNoeud) {
 			if(nodeFx.getNode() == node) {
+				// On cherche le noeud à supprimer
 				rootPane.getChildren().remove(nodeFx);
 				nodeFxToDelete = nodeFx;
 				break;
 			}
 		}
 		
+		// On le supprime
 		listeNoeud.remove(nodeFxToDelete);
 				
+		// Si c'était le premier noeud on cache la ligne qui le reliait au prélude
 		if(preludeFx.getFirstNode() == nodeFxToDelete) {
 			preludeFxFirstNodeLine.setVisible(false);
 			preludeFx.setFirstNode(null);
@@ -373,6 +384,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		NodeFx start = null;
 		NodeFx end = null;
 		
+		// On cherche le noeud de début et le noeud de fin
 		for(NodeFx nodeFx : listeNoeud) {
 			if(nodeFx.getNode() == node) 
 				start = nodeFx;
@@ -383,6 +395,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 				break;
 		}
 		
+		// Si on les a trouvé on ajoute le lien entre eux
 		if(start != null && end != null)
 			createNodeLink(nodeLink, start, end);
 	}
@@ -391,6 +404,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	public void nodeLinkEdited(BookNodeLink oldNodeLink, BookNodeLink newNodeLink) {
 		for(NodeLinkFx nodeLinkFx : listeNoeudLien) {
 			if(nodeLinkFx.getNodeLink() == oldNodeLink) {
+				// On cherche le noeud et on le met à jour
 				nodeLinkFx.setNodeLink(newNodeLink);
 				break;
 			}
@@ -402,6 +416,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		List<NodeLinkFx> postRemove = new ArrayList<>();
 		for(NodeLinkFx nodeLinkFx : listeNoeudLien) {
 			if(nodeLinkFx.getNodeLink() == nodeLink) {
+				//On cherche les noeuds correspondant et on les supprime du GraphPane et de la liste (après cette boucle)
 				nodeLinkFx.unregisterComponent(rootPane);
 				postRemove.add(nodeLinkFx);
 			}
@@ -510,11 +525,15 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 					}
 				}
 			} else if(mode == Mode.ADD_NODE_LINK) {
+				// Si le premier clic est sur un noeud qui ne peut pas contenir de choix
 				if(selectedNodeFx == null && !(nodeFx.getNode() instanceof AbstractBookNodeWithChoices)) {
 					return;
+				//Si c'est le premier clic sur un noeud qui peut contenir des choix
 				} else if(selectedNodeFx == null && nodeFx.getNode() instanceof AbstractBookNodeWithChoices) {
 					selectedNodeFx = nodeFx;
+				// 2 ème clic
 				} else {
+					// SI c'est un noeud de combat on vérifie qu'il reste des choix de libre
 					if (selectedNodeFx.getNode() instanceof BookNodeCombat){
 						BookNodeCombat firstNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
 						if(firstNodeCombat.getEvasionBookNodeLink() != null 
@@ -530,12 +549,14 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 						}
 					}
 					
+					//On affiche la boite de dialogue pour afficher le noeud
 					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
 					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
 					if(bookNodeLink != null) {
 						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
 						
+						// Si c'est un noeud combat, on met à jour le lien correspondant
 						if(selectedNodeFx.getNode() instanceof BookNodeCombat) {
 							BookNodeCombat bookNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
 							
@@ -549,9 +570,11 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 							
 							createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
 						} else {
+							// Sinon, on ajoute juste le lien au noeud
 							book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
 						}
 					}
+					
 					
 					selectedNodeFx = null;
 				}
@@ -577,9 +600,12 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
 					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode());
+					
+					// Si on a validé les modifications sur un lien
 					if(nodeLinkDialog.getNodeLink() != null) {
 						nodeLinkDialog.getNodeLink().setDestination(book.getNodeIndex(nodeLinkFx.getEnd().getNode()));
 						
+						//On met à jour les liens pour un noeud de combat
 						if(nodeLinkFx.getStart().getNode() instanceof BookNodeCombat) {
 							BookNodeCombat bookNodeCombat = (BookNodeCombat) nodeLinkFx.getStart().getNode();
 

@@ -5,8 +5,14 @@ import magic_book.core.file.json.RequirementJson;
 import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookState;
 
+/**
+ * Requiert un item
+ */
 public class RequirementItem extends AbstractRequirement {
 	
+	/**
+	 * Id de l'item
+	 */
 	private String itemId;
 	
 	public RequirementItem() {
@@ -54,10 +60,18 @@ public class RequirementItem extends AbstractRequirement {
 		itemId = json.getId();
 	}
 	
+	/**
+	 * Donne l'id de l'item
+	 * @return L'id de l'item
+	 */
 	public String getItemId() {
 		return itemId;
 	}
 
+	/**
+	 * Change l'id de l'item
+	 * @param itemId l'id de l'item
+	 */
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}

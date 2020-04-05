@@ -56,6 +56,7 @@ public abstract class AbstractDialog extends Stage {
 	 */
 	private void initDialogUI(String title, boolean hideMargins, boolean useScroll) {
 		BorderPane rootPane = new BorderPane();
+		// Le padding à 0 est utile pour les boites de dialogue avec des onglets
 		int margin = hideMargins ? 0 : UiConsts.DEFAULT_MARGIN_DIALOG;
 		rootPane.setPadding(new Insets(margin, margin, UiConsts.DEFAULT_MARGIN_DIALOG, margin));
 		
@@ -66,6 +67,7 @@ public abstract class AbstractDialog extends Stage {
 		rootPane.setBottom(controlButtons);
 		
 		Parent rootNode = rootPane;
+		//SI l'on demande à ajouter un scroll pour la boite de dialog
 		if(useScroll) {
 			ScrollPane scrollPane = new ScrollPane();
 			scrollPane.setFitToWidth(true);

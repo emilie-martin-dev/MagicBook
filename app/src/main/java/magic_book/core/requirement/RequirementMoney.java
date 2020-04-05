@@ -5,9 +5,18 @@ import magic_book.core.file.json.RequirementJson;
 import magic_book.core.file.json.TypeJson;
 import magic_book.core.game.BookState;
 
+/**
+ * Requiert un certains montant d'argent
+ */
 public class RequirementMoney extends AbstractRequirement {
 
+	/**
+	 * id de la monnaie
+	 */
 	private String moneyId;
+	/**
+	 * Montant d'argent minimum à posséder
+	 */
 	private int amount;
 	
 	public RequirementMoney() {
@@ -54,18 +63,34 @@ public class RequirementMoney extends AbstractRequirement {
 		amount = json.getAmount();
 	}
 	
+	/**
+	 * Donne l'id de la monnaie
+	 * @return L'id de la monnaie
+	 */
 	public String getMoneyId() {
 		return moneyId;
 	}
-
+	
+	/**
+	 * Change l'id de la monnaie
+	 * @param moneyId La nouvelle id de la monnaie
+	 */
 	public void setMoneyId(String moneyId) {
 		this.moneyId = moneyId;
 	}
 
+	/**
+	 * Donne le montant minimum requis
+	 * @return Le montant minimum requis
+	 */
 	public int getAmount() {
 		return amount;
 	}
 
+	/**
+	 * Change le montant minimum requis
+	 * @param amount Le montant minimum requis
+	 */
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
