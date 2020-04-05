@@ -72,7 +72,52 @@
 
 		\subsection{Représentation des personnages, items}
 
+			Nous allons maintenant parler des personnages et des items du livre. Bien qu'il n'y ai pas grand chose à expliquer sur eux, car il s'agit de classes possédant beaucoup de getter et setter, nous souhaitons détailler certains choix faits.
 
+			Commençons par les personnages. Ceux ci sont définits par la classe BookCharacter dans le package magic\_book.core.game. Cette classe possède presque uniquement des getter et setter bien qu'elle possède également quelques méthodes utilitaires.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.45\textwidth, keepaspectratio]{img/book_character.png}
+				\caption{UML sur la gestion des items}
+			\end{figure}
+
+			Concernant les listes de String (skills, immunes, items), il s'agit d'une liste contenant les id. Pour "immunes", il s'agit des id des skills contre lesquels le personnage est immunisé. Cela nous permet aux items et compétences de n'être référencés qu'à un seul et même endroit, c'est à dire, dans la classe Book. Pour la monnaie, le choix a été fait d'utiliser une HashMap<String, Integer> afin de pouvoir gérer différents types de monnaie et leur montant dans une même histoire. Malheureusement, notre format de livre, et donc notre application, ne permet pour le moment pas de gérer pleinement cette fonctionnalité.
+
+			Passons maintenant aux items. Ceux-ci possèdent une classe mère BookItem dans le package magic\_book.core.item.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.66\textwidth, keepaspectratio]{img/book_item.png}
+				\caption{UML sur la gestion des items}
+			\end{figure}
+
+			Avant de détailler notre choix, nous allons expliquer brièvement les deux interfaces que l'on observe. L'une se nomme Descriptible et permet à l'item de se décrire sous forme de String. Bien que la méthode \textit{String toString()} soit déjà prévu à cet effet, celle ci ne permet pas de prendre en argument un livre (classe Book). Bien entendu, c'est logique mais certains objets ont besoin du livre pour se décrire, par exemple, pour retrouver un item / personnage à partir de son id. La seconde interface, JsonExportable sera expliqué plus en détails dans \nameref{subsec:lecture_ecriture_fichier} à la page \pageref{subsec:lecture_ecriture_fichier}. Pour rester bref, disons qu'elle permet, la lecture et l'écriture du fichier en JSON.
+
+			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attribut spécfique à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type money inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère par le mot clé \textit{super.nomMethode(arguments)}.
+
+\begin{lstlisting}[language=Java, caption=Exemple de spécialisation des items]
+@Override
+public String getDescription(Book book) {
+	StringBuffer buffer = new StringBuffer();
+
+	buffer.append(super.getDescription(book));
+
+	buffer.append("Dégats : ");
+	buffer.append(damage);
+	buffer.append("\n");
+
+	return buffer.toString();
+}
+
+@Override
+public ItemJson toJson() {
+	ItemJson itemJson = super.toJson();
+
+	itemJson.setDamage(damage);
+	itemJson.setItemType(ItemType.WEAPON);
+
+	return itemJson;
+}
+\end{lstlisting}
 
 		\subsection{La classe Book}
 
@@ -256,6 +301,7 @@
 \end{lstlisting}
 
 		\subsection{La lecture et l'écriture}
+			\label{subsec:lecture_ecriture_fichier}
 
 			Du fait que la structure en Json n'est pas identique à celle détaillé dans \nameref{sec:representation_livre} (page \pageref{sec:representation_livre}), nous avons fait des classes intermédiaires pour permettre cette lecture. Celles-ci sont disponibles dans le package \textit{magic\_book/core/file/json} et ne contiennent rien de plus que des getter et setter. Aussi, afin de permettre une convertion entre les classes faites pour représenter un fichier json et celles faites pour être utilisées par l'application, une interface \textit{JsonExportable} existe. Celle ci permet de redéfinir 2 méthodes. L'une renvoyant la classe JSON associé à notre classe actuelle, l'autre permettant à partir d'une classe JSON d'obtenir la classe Java correspondante.
 
@@ -418,16 +464,17 @@
 		\textbf{Si c'est un noeud de type combat}, une vérification est réalisé afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, le noeud en cas de victoire est envoyé en noeud de destination. Sinon, une liste d'ennemis est créer afin de ne pas modifié la vie des ennemis. Car ces derniers ne sont pas lié au noeud, mais c'est l'ID de l'ennemis qui est lié au noeud permettant de les appelés plusieurs fois dans plusieurs ou dans le même noeud.\\
 		Le combat commence alors. Le choix est défini par la méthode du player correspondant. Trois choix sont possible:\\
 		\begin{description}
-			\item[Attaque :] un autre choix est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Une fois l'ennemi sélectionné, une méthode attaque est appelé apellant elle même une autre méthode commune entre l'attaque du player et l'attaque d'ennemi. Nommé \textit{getDamageAmount}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player.\\
+			\item[Attaque :]{un autre choix est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Une fois l'ennemi sélectionné, une méthode attaque est appelé apellant elle même une autre méthode commune entre l'attaque du player et l'attaque d'ennemi. Nommé \textit{getDamageAmount}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player.}
 			Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimer de la liste des ennemis.
-			\item[Inventaire :] si ce choix est fait par le player, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense.
-			\item[Evasion :] si le tour avant évasion est inférieur ou égal à 0 et si un noeud de d'évasion existe, le player peut alors s'enfuir. Sinon cela lui passe son tour.
+			\item[Inventaire :]{si ce choix est fait par le player, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense.}
+			\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 et si un noeud de d'évasion existe, le player peut alors s'enfuir. Sinon cela lui passe son tour.}
 		\end{description}
 
 		Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textit{getDamageAmount} permettant aux ennemis d'attaquer un par un.\\
 
-		La fin de combat est déterminé si la liste d'ennemis est vide ou si le player n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat.\\
+		Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textit{getDamageAmount} permettant aux ennemis d'attaquer un par un.
 
+		La fin de combat est déterminé si la liste d'ennemis est vide ou si le player n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat.
 
 		\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le player est encore en vie. Puis une autre méthode est appelé afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.\\
 

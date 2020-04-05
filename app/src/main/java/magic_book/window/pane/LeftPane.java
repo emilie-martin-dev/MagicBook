@@ -39,7 +39,6 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 	
 	public LeftPane(GraphPane graphPane, Book book){
 		this.graphPane = graphPane;
-		this.book = book;
 		
 		this.setMaxWidth(UiConsts.LEFT_PANEL_SIZE);
 		this.setMinWidth(UiConsts.LEFT_PANEL_SIZE);
@@ -47,6 +46,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		this.setFitToWidth(true);
 				
 		this.setContent(createLeftPanel());
+		setBook(book);
 	}
 	
 	private Node createLeftPanel() {

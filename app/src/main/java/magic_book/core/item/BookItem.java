@@ -15,31 +15,31 @@ public class BookItem implements Parsable, Descriptible, JsonExportable<ItemJson
 	public BookItem() {
 		this("", "");
 	}
-	
+
 	public BookItem(String id, String nom) {
 		this.id = id;
 		this.name = nom;
 	}
-	
+
 	@Override
 	public String getDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
-		
+
 		buffer.append("Nom : ");
 		buffer.append(name);
 		buffer.append("\n");
-		
+
 		return buffer.toString();
 	}
 
 	@Override
 	public ItemJson toJson() {
 		ItemJson itemJson = new ItemJson();
-		
+
 		itemJson.setId(id);
 		itemJson.setName(name);
 		itemJson.setItemType(ItemType.KEY_ITEM);
-		
+
 		return itemJson;
 	}
 
@@ -74,7 +74,6 @@ public class BookItem implements Parsable, Descriptible, JsonExportable<ItemJson
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	@Override
 	public String toString() {
