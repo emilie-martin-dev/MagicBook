@@ -61,7 +61,7 @@
 			\end{lstlisting}
 
 		\subsection{Prérequis pour un choix}
-			Les prérequis des liens sont défini par une classe mère AbstractRequirement puis une classe par type de requirements. Il y a la classe \textbf{RequirementItem}, \textbf{RequirementMoney} ainsi que \textbf{RequirementSkill}. Tous extends de AbstractRequirement afin de pouvoir redéfinir la méthode isSatisfied(), prenant en paramètre l'état du jeu (BookState). Tous prennent un ID en compte, permettant de retrouver l'item / skill / monnaie demandé. Seul le RequirementMoney possède une méthode qui diffère, c'est la quantité de money requis.\\
+			Les prérequis des liens sont défini par une classe mère AbstractRequirement puis une classe par type de prérequis (requirements). Il y a la classe \textbf{RequirementItem}, \textbf{RequirementMoney} ainsi que \textbf{RequirementSkill}. Tous extends de AbstractRequirement afin de pouvoir redéfinir la méthode isSatisfied(), prenant en paramètre l'état du jeu (BookState). Tous prennent un ID en compte, permettant de retrouver l'item / skill / monnaie demandé. Seul le RequirementMoney possède une méthode qui diffère, c'est la quantité de money requis.\\
 			Pour savoir si un item / skill est présent dans l'inventaire du personnage principal, une for est utilisée afin de regarder les items / skill possédés. Si l'ID de l'item / skill n'est pas possédé, le personnage principal ne peut satisfaire les prérequis. Pour l'argent grâce à l'ID de la monnaie, cela permet de savoir si le player en possède suffisament. Actuellement, une seule monnaie est disponible, se nommant "gold". En effet, nous n'avons pas eu le temps de le gérer dans les fichiers et dans le jeu.
 
 			\begin{lstlisting}[gobble=12, language=java, caption=exemple de isSatisfied(), label=isSatisfied]
@@ -530,7 +530,7 @@
 			\label{subsec:lecture_ecriture_fichier}
 
 			Du fait que la structure en Json n'est pas identique à celle détaillé dans \nameref{sec:representation_livre} (page \pageref{sec:representation_livre}), nous avons fait des classes intermédiaires pour permettre cette lecture. Celles-ci sont disponibles dans le package \textit{magic\_book/core/file/json} et ne contiennent rien de plus que des getter et setter. Aussi, afin de permettre une convertion entre les classes faites pour représenter un fichier json et celles faites pour être utilisées par l'application, une interface \textit{JsonExportable} existe. Celle ci permet de redéfinir 2 méthodes. L'une renvoyant la classe JSON associé à notre classe actuelle, l'autre permettant à partir d'une classe JSON d'obtenir la classe Java correspondante.
-			
+
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.66\textwidth, keepaspectratio]{img/json_exportable.png}
 				\caption{L'interface JsonExportable et quelques classes qui l'implémentent}
@@ -789,9 +789,9 @@
 		\subsection{Jeu}
 		Une classe à été créer se nommant \textbf{Jeu}, permettant de gérer les méthodes de jeu communes entre le \textit{Player} et les \textit{Fourmis}.\\
 		Un construteur est d'abord appelé, à partir de la MainWindow, afin d'envoyer le livre contenant toutes les informations. Puis, en fonction du mode sélectionner (\textbf{Générer la difficulté} ou \textbf{jouer}), la méthode correspondante au player est appelé.\\
-		Une fois dans la méthode choisis, le livre est alors copié afin de ne pas le modifier par erreur pendant le jeu. Un BookState, qui correspond à la sauvegarde de la partie, est alors créé. Si le prélude contient un personnage principal, alors celui ci est enregistré dans la sauvegarde de la partie (le BookState). Dans le cas contraire, un autre personnage principal est créer afin de pouvoir jouer au jeu.
+		Une fois dans la méthode choisis, la méthode \textit{runGame()} est alors appelé. Le livre est copié, afin de ne pas le modifier par erreur pendant le jeu. Un BookState, qui correspond à l'état de la partie, est alors créé. Si le prélude contient un personnage principal, alors celui-ci est enregistré dans le BookState. Dans le cas contraire, un autre personnage principal est créé afin de pouvoir jouer au jeu (voir méthode si dessous).
 
-		\begin{lstlisting}[gobble=12, language=java]
+		\begin{lstlisting}[language=java, caption=createNewState()]
 			BookState newState = new BookState()
 			if(this.book.getMainCharacter() == null){
 				//Création d'un BookCharacter
@@ -804,10 +804,11 @@
 
 			return newState;
 		\end{lstlisting}
-		Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur est appelé en focntion du player actuel. Comme cela, le player choisit parmi une liste de skill et d'items disponible en début de partie afin de les avoir pour commencer le jeu.\\
-		Une fois le BookState créer, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. Une méthode est appelé en fonction de son type de noeud. La méthode correspondante au type de noeud s'exécute et renvoie le noeud de destination, en fonction du choix du player et/ou de la mort du player. Durant l'exécution des différentes méthodes et en fonction du player, d'autre méthode externe sont appelé nottament dans la classe Fourmis ou Player.
 
-		\begin{lstlisting}[gobble=12, language=java]
+		Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur (\textit{execPlayerCreation}, voir \ref{execPlayerCreationCode}) est appelé en fonction du player actuel. Comme cela, le player choisit parmi une liste de skill et d'items disponible en début de partie afin de les avoir pour commencer le jeu.\\
+		Une fois le BookState créé, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. La boucle while du runGame() est donc lancé et ne s'arrètera qu'une fois la partie terminé. Comme vous pouvez le remarquer, sur le code ci-dessous, chaque méthode correspond à un type de noeud en particulier. Les méthodes s'exécutent alors, puis renvoie le noeud de destination, en fonction du choix du player et / ou de la mort du player. Durant l'exécution des différentes méthodes et en fonction du player, d'autres méthodes externe sont appelées nottament dans la classe Fourmis ou Player.
+
+		\begin{lstlisting}[language=java, caption=Méthode runGame()]
 			while(!gameFinish){
 				if(currentNode instanceof BookNodeCombat){
 					//execNodeCombat(bookNodeCombat);
@@ -828,28 +829,71 @@
 			return win;
 		\end{lstlisting}
 
-		Pour chaque type de noeud, sauf pour un noeud terminal, une méthode commune est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie puis regarde si le player est toujours en vie. Si ce dernier n'est plus en vie, un noeud terminal est alors renvoyé en noeud de destination. S'il est encore en vie et que le noeud propose des items, ils sont proposés au player en appelant la méthode correspondante entre Fourmis ou Player. A chaque detination choisi, une autre méthode est appelé afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent.
+		Pour chaque type de noeud, sauf pour un noeud terminal, une méthode commune est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie, puis regarde si le player est toujours en vie. Si ce dernier n'est plus en vie, un noeud terminal est alors renvoyé en noeud de destination. S'il est encore en vie et que le noeud propose des items, ils sont proposés au player en appelant la méthode correspondante entre Fourmis ou Player. A chaque detination choisi, une autre méthode est appelé afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent.
 
 		\textbf{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices}. Cette dernière renvoi un noeud terminal si aucun choix n'est valide, ce qu'il veut dire, si le player n'a aucun choix ou s'il ne possède pas les items/skill pour aller vers ce choix.\\
 		Si le player est encore en vie et si il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du player. Si le player a les prérequis pour aller vers cette destination, alors le noeud choisi est renvoyé en noeud de destination. Sinon, le player doit faire un autre choix.
 
-		\textbf{Si c'est un noeud de type combat}, une vérification est réalisé afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, le noeud en cas de victoire est envoyé en noeud de destination. Sinon, une liste d'ennemis est créer afin de ne pas modifié la vie des ennemis. Car ces derniers ne sont pas lié au noeud, mais c'est l'IDde l'ennemis qui est lié au noeud permettant de les appelés plusieurs fois dans plusieurs ou dans le même noeud.\\
+
+		\begin{figure}[H]
+			\centering\includegraphics[width=0.70\textwidth]{img/JeuBookNodeWithChoices.png}
+			\caption{Jeu BookNodeWithChoices}
+			\label{fig:JeuBookNodeWithChoices}
+		\end{figure}
+
+
+		\textbf{Si c'est un noeud de type combat}, une vérification est réalisé afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, le noeud en cas de victoire est envoyé en noeud de destination. Sinon, une liste d'ennemis est créer afin de ne pas modifié la vie des ennemis. Car ces derniers ne sont pas lié au noeud, mais c'est l'ID de l'ennemis qui est lié au noeud permettant de les appelés plusieurs fois dans plusieurs ou dans le même noeud.\\
 		Le combat commence alors. Le choix est défini par la méthode du player correspondant. Trois choix sont possible:
 
 		\begin{description}
-			\item[Attaque :]{un autre choix est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Une fois l'ennemi sélectionné, une méthode attaque est appelé apellant elle même une autre méthode commune entre l'attaque du player et l'attaque d'ennemi. Nommé \textit{getDamageAmount}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player.}
-			Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimer de la liste des ennemis.
+			\item[Attaque :]{un autre choix (cf ligne 2) est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Une fois l'ennemi sélectionné, une méthode attaque (cf ligne 7) est appelé apellant elle même une autre méthode commune entre l'attaque du player et l'attaque d'ennemi. Nommé \textit{getDamageAmount}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player.}
+			Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimer de la liste des ennemis (cv logne 9)
 			\item[Inventaire :]{si ce choix est fait par le player, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense.}
-			\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 et si un noeud de d'évasion existe, le player peut alors s'enfuir. Sinon cela lui passe son tour.}
+			\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 (voir cf 13) et si un noeud de d'évasion existe, le player peut alors s'enfuir. Sinon cela lui passe son tour.}
 		\end{description}
 
-		Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textit{getDamageAmount} permettant aux ennemis d'attaquer un par un.
+		\begin{lstlisting}[caption=JeuCombat]
+		while(!finCombat){
+			ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
+
+			if (choixCombat == ChoixCombat.ATTAQUER) {
+
+				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
+				attaque(ennemi);
+				if(!ennemi.isAlive()){
+					listEnnemis.remove(ennemi);
+				}
+			}
+			else if(choixCombat == ChoixCombat.EVASION) {
+				if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null){
+					execBookNodeLink(node.getEvasionBookNodeLink());
+					return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
+				}
+			}
+
+			ennemiTour(listEnnemis);
+
+			if(!state.getMainCharacter().isAlive()) {
+				//Vérification d'un noeud Failure
+				if(node.getLooseBookNodeLink() != null)  {
+					execBookNodeLink(node.getLooseBookNodeLink());
+					return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
+				} else
+					return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
+			}
+
+			if(listEnnemis.isEmpty())
+				finCombat = true;
+
+			evasionRound -= 1;
+			}
+		\end{lstlisting}
 
 		Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textit{getDamageAmount} permettant aux ennemis d'attaquer un par un.
 
 		La fin de combat est déterminé si la liste d'ennemis est vide ou si le player n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat.
 
-		\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le player est encore en vie. Puis une autre méthode est appelé afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
+		\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le player est encore en vie. Puis une autre méthode, nommé getRandomChoices() ( voir \ref{getRandomChoices} à la page \pageref{getRandomChoices}) est appelé de la classe BookNodeLinkRandom afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
 
 		\textbf{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un bolean sur l'état de la fin de partie.
 
@@ -871,8 +915,57 @@
 	\subsection{Player}
 		La classe \textbf{Player} permet de jouer au jeu en tant que joueur. Elle permet de faire des choix grâce aux Scanner. Des messages sont aussi affiché afin de guider le joueur dans ses choix.\\
 		Notament la méthode \textit{choixYesNo} qui permet de choisir oui ou non et de renvoyer le boolean true ou false. Cette méthode permet, par exemple, de savoir si le player veut supprimer, prendre un item ou un skill.\\
-		Pour la méthode commune \textit{prendItems}, cette dernière fait appel à d'autre méthode dans la classe Player. Comme itemAdd() permettant de choisir l'item à ajouter dans l'inventaire. Ou encore itemPlein() qui demande au joueur s'il veut supprimer un item. Si le joueur répond oui, la méthode itemSupp() est appelé afin de choisir l'item à supprimer et à mettre à jour l'inventaire.\\
-		Pour la méthode \textit{execPlayerCreation} au moment de l'ajout des skill, le joueur doit confimer ou non s'il veut un skill. Si oui, la méthode skillAdd est appelé jusqu'à ce que le maximum d'item à été pris ou qu'ilne reste plus de skill à prendre.
+		Pour la méthode commune \textit{prendItems}, cette dernière fait appel à d'autre méthode dans la classe Player. Comme \textit{itemAdd} (cf ligne 15) permettant de choisir l'item à ajouter dans l'inventaire. Ou encore \textit{itemPlein} (cf ligne 8) qui demande au joueur s'il veut supprimer un item. Si le joueur répond oui (condition à ligne 10), la méthode \textit{itemSupp} (implémenté dans la méthode \textit{itemPlein}) est appelé afin de choisir l'item à supprimer et à mettre à jour l'inventaire grâce au state pris en charge dans la méthode0\textit{prendreItems}
+
+		\begin{lstlisting}[gobble=12, language=java, label=prendreItems]
+			public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
+				while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
+					//affichage des choix
+					//Voulez vous un item
+					if(choixYesNo()){
+						int itemMax = state.getMainCharacter().getItemsMax();
+						if(itemMax == state.getMainCharacter().getItems().size()){
+							itemPlein(state);
+							//Choisir item:
+							if(choixYesNo())
+								nbItemMax = 0;
+							else
+								itemSupp(state);
+						} else {
+							itemAdd(state, bookItemLinks);
+						}
+
+					} else {
+						nbItemMax = 0;
+					}
+
+					if(bookItemLinks.isEmpty())
+						nbItemMax = 0;
+				}
+			}
+				\end{lstlisting}
+
+		Pour la méthode \textit{execPlayerCreation} au moment de l'ajout des skill, le joueur doit confimer ou non s'il veut un skill. Si oui, la méthode skillAdd est appelé jusqu'à ce que le maximum de skill à été pris ou qu'il n'en reste plus à prendre. Pour les items, la méthode \textit{prendItems}, défini ici\ref{prendreItems} est utilisé.
+
+		\begin{lstlisting}[gobble=12, language=java, label=execPlayerCreationCode]
+		public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
+				if(characterCreation instanceof CharacterCreationItem){
+					CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
+					prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
+				}
+				else if(characterCreation instanceof CharacterCreationSkill){
+					CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
+
+					int nbItemMax = characterCreationSkill.getAmountToPick();
+
+					while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
+						int i = 0;
+						skillAdd(state, characterCreationSkill);
+						nbItemMax--;
+					}
+				}
+			}
+		\end{lstlisting}
 
 	\subsection{Fourmis}
 		La classe \textbf{Fourmis} permet de jouer en tant que joueur fictif. Elle effectue des choix random en fonction des différentes méthodes de l'interface.
