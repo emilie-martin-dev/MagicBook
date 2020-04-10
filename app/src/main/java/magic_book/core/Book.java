@@ -72,14 +72,13 @@ public class Book {
 		if(this.characterCreations == null)
 			this.characterCreations = new ArrayList<>();
 
-		for(Map.Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()){
-			nodesInv.put(entry.getValue(), entry.getKey());
-		}
-
 		this.bookNodeObservable = new BookNodeObservable();
 		this.bookNodeLinkObservable = new BookNodeLinkObservable();
 		this.bookItemObservable = new BookItemObservable();
 		this.bookCharacterObservable = new BookCharacterObservable();
+		
+		computeNodesInv();
+		computeMissingIndexes();
 	}
 
 	public void addNode(AbstractBookNode node) {
@@ -290,6 +289,26 @@ public class Book {
 		return this.characters.get(MAIN_CHARACTER_ID);
 	}
 
+	private void computeMissingIndexes() {
+		int i = 2;
+		int n = (nodes.containsKey(1)) ? 1 : 0;
+		while(n < nodes.size()) {
+			if(!nodes.containsKey(i)) {
+				missingIndexes.add(i);
+			} else {
+				n++;
+			}
+				
+			i++;
+		}	
+	}
+	
+	private void computeNodesInv() {
+		for(Map.Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()){
+			nodesInv.put(entry.getValue(), entry.getKey());
+		}
+	}
+	
 	public int getNodeIndex(AbstractBookNode node) {
 		return nodesInv.containsKey(node) ? nodesInv.get(node) : -1;
 	}
@@ -344,6 +363,9 @@ public class Book {
 
 	public void setNodes(HashMap<Integer, AbstractBookNode> nodes) {
 		this.nodes = nodes;
+		
+		computeNodesInv();
+		computeMissingIndexes();
 	}
 
 	public HashMap<String, BookItem> getItems() {
