@@ -38,6 +38,9 @@ import magic_book.core.item.BookItemHealing;
 import magic_book.core.item.BookItemMoney;
 import magic_book.core.item.BookItemWeapon;
 
+/**
+ * Permet d'un livre au format JSON, idéalement, cette classe ne devrait plus contenir les méthode "getEvery" car la classe Book devrait implémenter JsonExportable.
+ */
 public class BookReader {
 	
 	private HashMap<String, BookItem> items;
@@ -46,6 +49,13 @@ public class BookReader {
 	private HashMap<String, BookSkill> skills;
 	private List<AbstractCharacterCreation> characterCreations;
 	
+	/**
+	 * Lecture du livre JSON
+	 * @param path Le fichier à lire
+	 * @return Le livre lu
+	 * @throws FileNotFoundException Exception si le fichier n'existe pas
+	 * @throws BookFileException Exception si le livre est invalide
+	 */
 	public Book read(String path) throws FileNotFoundException, BookFileException {		
 		BookJson bookJson = readFileWithGson(path);
 		
@@ -58,6 +68,12 @@ public class BookReader {
 		return new Book(bookJson.getPrelude(), nodes, items, characters, skills, characterCreations);
 	}
 
+	/**
+	 * Lecture du fichier JSON avec GSON
+	 * @param path Le fichier à lire
+	 * @return Le livre au format JSON
+	 * @throws FileNotFoundException Exception si le fichier n'existe pas 
+	 */
 	private BookJson readFileWithGson(String path) throws FileNotFoundException {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(BookNodeStatus.class, new BookNodeStatusDeserializer());
@@ -68,6 +84,11 @@ public class BookReader {
 		return gson.fromJson(bufferedReader, BookJson.class);
 	}
 
+	/**
+	 * Lecture des skills
+	 * @param bookJson Le livre au format JSON
+	 * @return Les différents skills
+	 */
 	private HashMap<String, BookSkill> getEverySkills(BookJson bookJson) {
 		HashMap<String, BookSkill> skills = new HashMap<>();
 		
@@ -81,6 +102,12 @@ public class BookReader {
 		return skills;
 	}
 
+	/**
+	 * Lecture des items
+	 * @param bookJson Le livre au format JSON
+	 * @return La liste des items
+	 * @throws BookFileException Exception si un item est invalide
+	 */
 	private HashMap<String, BookItem> getEveryItems(BookJson bookJson) throws BookFileException {
 		HashMap<String, BookItem> items = new HashMap<>();
 		
@@ -109,7 +136,12 @@ public class BookReader {
 		return items;
 	}
 	
-	private HashMap<String, BookCharacter> getEveryCharacters(BookJson bookJson) throws BookFileException {
+	/**
+	 * Lecture des personnages du livre
+	 * @param bookJson Le livre au format JSON
+	 * @return Les personnages du livre
+	 */
+	private HashMap<String, BookCharacter> getEveryCharacters(BookJson bookJson) {
 		HashMap<String, BookCharacter> characters = new HashMap<>();
 		
 		for(CharacterJson c : bookJson.getSetup().getCharacters()) {
@@ -122,6 +154,12 @@ public class BookReader {
 		return characters;
 	}
 	
+	/**
+	 * Lecture des étapes de la création du personnage
+	 * @param bookJson Le livre au format JSON
+	 * @return La liste des étapes de la création du personnage
+	 * @throws BookFileException Exception si une étape est invalide
+	 */
 	private List<AbstractCharacterCreation> getCharacterCreations(BookJson bookJson) throws BookFileException {
 		List<AbstractCharacterCreation> characterCreations = new ArrayList<>();
 		
@@ -146,6 +184,12 @@ public class BookReader {
 		return characterCreations;
 	}
 	
+	/**
+	 * Lecture des noeuds
+	 * @param bookJson Le livre au format JSON
+	 * @return La liste des noeuds
+	 * @throws BookFileException Exception si un noeud du livre est invalide
+	 */
 	private HashMap<Integer, AbstractBookNode> getEveryNodes(BookJson bookJson) throws BookFileException {
 		HashMap<Integer, AbstractBookNode> nodes = new HashMap<>();
 		for(Map.Entry<Integer, SectionJson> entry : bookJson.getSections().entrySet()) {

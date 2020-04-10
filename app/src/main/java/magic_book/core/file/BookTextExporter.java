@@ -13,8 +13,17 @@ import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node_link.BookNodeLink;
 
+/**
+ * Exporte le livre au format texte
+ */
 public class BookTextExporter {
 
+	/**
+	 * Permet de générer le livre au format texte
+	 * @param book Le à écrire au format texte
+	 * @param path Le chemin où écrire le livre
+	 * @throws IOException Exception en cas d'erreur IO
+	 */
 	public static void generateBook(Book book, String path) throws IOException {
 		HashMap<Integer, AbstractBookNode> nodes = book.getNodes();
 		nodes = shuffle(nodes);
@@ -46,6 +55,11 @@ public class BookTextExporter {
 		fileWritter.close();
 	}
 	
+	/**
+	 * Permet de mélanger l'ordre des noeuds du livre dans une nouvelle map
+	 * @param nodes La liste des noeuds originaux
+	 * @return Une nouvelle liste avec des noeuds mélangés
+	 */
 	private static HashMap<Integer, AbstractBookNode> shuffle(HashMap<Integer, AbstractBookNode> nodes) {
 		HashMap<Integer, AbstractBookNode> shuffle = new HashMap<>();
 		List<Integer> leftNumber = new ArrayList<>();
@@ -86,12 +100,23 @@ public class BookTextExporter {
 		return shuffle;
 	}
 
+	/**
+	 * Permet d'écrire une séparation entre les parties du livre ainsi que les paragraphes
+	 * @param fileWritter Le flux dans lequel écrire
+	 * @throws IOException Exception en cas d'erreur IO 
+	 */
 	private static void writeSeparator(FileWriter fileWritter) throws IOException {
 		fileWritter.write("\n");
 		fileWritter.write("==================================================\n");
 		fileWritter.write("\n");
 	}
 
+	/**
+	 * Permet d'écrire les différentes étapes de la création du personnage
+	 * @param book Le livre à exporter au format texte
+	 * @param fileWritter Le flux dans lequel écrire
+	 * @throws IOException Exception en cas d'erreur IO 
+	 */
 	private static void writeCharacterCreation(Book book, FileWriter fileWritter) throws IOException {
 		for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
 			fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
@@ -100,6 +125,14 @@ public class BookTextExporter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param node Le noeud à écrire
+	 * @param nodesIndex Une liste qui associe à un noeud son numéro de paragraphe. Permet de retrouver facilement la destination d'un choix
+	 * @param book Le livre à exporter au format texte
+	 * @param fileWritter Le flux dans lequel écrire
+	 * @throws IOException Exception en cas d'erreur IO 
+	 */
 	private static void writeNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter fileWritter) throws IOException {
 		fileWritter.write("Paragraphe " + nodesIndex.get(node) + " :\n");
 		fileWritter.write("\n");

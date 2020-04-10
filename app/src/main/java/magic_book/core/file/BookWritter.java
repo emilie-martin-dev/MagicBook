@@ -23,8 +23,17 @@ import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.item.BookItem;
 
+/**
+ * Permet d'écrire le livre au format JSON, idéalement, cette classe ne devrait plus contenir les méthode "convertInto" car la classe Book devrait implémenter JsonExportable.
+ */
 public class BookWritter {
 	
+	/**
+	 * Écrit le livre au format JSON
+	 * @param path Chemin vers lequel enregistrer le livre
+	 * @param book Le livre à enregistrer
+	 * @throws IOException Exception lors de l'écriture
+	 */
 	public void write(String path, Book book) throws IOException {		
 		BookJson bookJson = convertIntoBookJson(book);
 		
@@ -34,6 +43,11 @@ public class BookWritter {
 		out.close();
 	}
 
+	/**
+	 * On convertit le livre en son équivalent JSON
+	 * @param book Le livre à convertir
+	 * @return 
+	 */
 	private BookJson convertIntoBookJson(Book book) {
 		BookJson bookJson = new BookJson();
 		bookJson.setPrelude(book.getTextPrelude());
@@ -43,6 +57,11 @@ public class BookWritter {
 		return bookJson;
 	}
 
+	/**
+	 * On récupère le SetupJson
+	 * @param book Le livre à convertir
+	 * @return le SetupJson généré
+	 */
 	private SetupJson convertIntoSetupJson(Book book) {
 		SetupJson setup = new SetupJson();
 		
@@ -51,22 +70,26 @@ public class BookWritter {
 		List<SkillJson> skills = new ArrayList<>();
 		List<CharacterCreationJson> characterCreations = new ArrayList<>();
 		
+		// Ajoute les skills
 		for(Entry<String, BookSkill> entry : book.getSkills().entrySet()) {
 			SkillJson skillJson = entry.getValue().toJson();
 			
 			skills.add(skillJson);
 		}
 		
+		// Ajoute les personnages
 		for(BookCharacter character : book.getCharacters().values()) {
 			CharacterJson characterJson = character.toJson();
 			
 			characters.add(characterJson);
 		}
 		
+		// Ajoute les items
 		for(BookItem bookItem : book.getItems().values()) {
 			items.add(bookItem.toJson());
 		}
 		
+		// Ajoute les phases de la création du personnage
 		for(AbstractCharacterCreation abstractCharacterCreation : book.getCharacterCreations()) {
 			CharacterCreationJson characterCreationJson = abstractCharacterCreation.toJson();
 			characterCreations.add(characterCreationJson);
@@ -80,6 +103,11 @@ public class BookWritter {
 		return setup;
 	}
 
+	/**
+	 * On convertit les noeuds en une map de sections
+	 * @param book Le livre à convertir
+	 * @return La Map qui contient la liste des SectionJson
+	 */
 	private Map<Integer, SectionJson> convertIntoSectionJson(Book book) {
 		HashMap<Integer, SectionJson> sections = new HashMap<>();
 

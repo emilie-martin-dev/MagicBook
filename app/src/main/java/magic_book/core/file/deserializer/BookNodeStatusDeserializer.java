@@ -7,7 +7,9 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import magic_book.core.graph.node.BookNodeStatus;
 
-
+/**
+ * Désérializer pour GSON afin qu'il puisse correctement lire les status des noeuds
+ */
 public class BookNodeStatusDeserializer implements JsonDeserializer<BookNodeStatus> {
 
 	@Override
