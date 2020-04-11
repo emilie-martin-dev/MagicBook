@@ -8,13 +8,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import magic_book.core.Book;
@@ -62,7 +64,7 @@ public class NodeDialog extends AbstractDialog {
 	/**
 	 * Nombre de tour avant l'évasion
 	 */
-	private TextField texteEvasion;
+	private TextField evasionRoundTextField;
 	/**
 	 * Nombre de gain/perte de point de vie
 	 */
@@ -72,7 +74,7 @@ public class NodeDialog extends AbstractDialog {
 	 */
 	private TextField nbrItemTextField;
 	/**
-	 * Le noeud créer
+	 * Le noeud créé
 	 */
 	private AbstractBookNode node = null;
 	/**
@@ -80,148 +82,160 @@ public class NodeDialog extends AbstractDialog {
 	 */
 	private ChoiceBox<String> nodeType;
 	/**
-	 * Bouton d'ajout d'ennemi(s)
+	 * Bouton d'ajout d'un ennemi
 	 */
-	private Button bouton;
+	private Button addEnnemiButton;
 	/**
-	 * BorderPane qui contient toutes les informations de la boite de dialog
+	 * Pane contenant les champs communs aux noeuds de type abstractNodeWithChoice
 	 */
-	private BorderPane rootBorder;
+	private GridPane abstractNodeWithChoicePane;
+	/**
+	 * GridPane contenant les informations des noeuds de combat
+	 */
+	private GridPane combatPane;
+	/**
+	 * Contients tous les champs pour éditer le noeud 
+	 */
+	private VBox nodeFieldsPane;
 	/**
 	 * Pane contenant les informations communes à toutes les types de noeuds
 	 */
-	private GridPane root;
+	private GridPane nodeTextTypePane;
 	/**
-	 * Pane contenant tout les ennemis ajouté
+	 * Pane contenant tout les ennemis ajoutés
 	 */
-	private GridPane rootCharacter;
+	private GridPane ennemisPane;
 	/**
 	 * Liste de comboBox contenant les ennemis ajoutés
 	 */
-	private List<ComboBox<String>> listCombo = new ArrayList<>();
+	private List<ComboBox<String>> ennemisComboBox = new ArrayList<>();
 	/**
 	 * Livre contenant toutes les informations
 	 */
 	private Book book;
 	
 	/**
+	 * L'onglet qui permet de sélectionner les items qui peuvent être pris 
+	 */
+	private Tab itemsTab;
+	
+	/**
+	 * Le TabPane qui permet de gérer les différents onglets de l boite de dialogue
+	 */
+	private TabPane tabPane;
+			
+	/**
 	 * Permet l'ajout d'items disponible sur ce noeud ainsi que le montant des items disponible
 	 */
 	private ItemListComponent itemLinksList;
 	
 	/**
-	 * Pane contenant les informations si c'est un noeuds basic
-	 */
-	private GridPane basicPane;
-	/**
-	 * VBox contenant les informations si c'est un noeuds de combat
-	 */
-	private VBox combatPane;
-	
-	/**
-	 * Initialisations des valeurs et de l'affichage de départ de la boite de dialog
+	 * Constructeur pour créer un nouveau noeud
 	 * @param book Livre contenant toutes les informations
 	 */
 	public NodeDialog(Book book) {
-		super("Creation d'une page", false, true);
+		super("Creation d'un noeud", true);
 		
 		this.book = book;
+		showNodeWithChoice();
 		
-		itemLinksList = new ItemListComponent(book);
-		basicPane.add(itemLinksList, 0, 2, 2, 1);
-		
-		rootBorder.setBottom(basicPane);
-		
-		this.setMaxHeight(400d);
-		this.setHeight(400d);
 		this.showAndWait();
 	}
 
 	/**
-	 * Edition de la boite de dialog ainsi que la mise en place de l'affichage en fonction du type de noeud
+	 * Constructeur pour éditer un noeud
 	 * @param book Livre contenant toutes les informations
-	 * @param node Noeud existant
+	 * @param node Le noeud à éditer
 	 */
 	public NodeDialog(Book book, AbstractBookNode node) {
-		super("Edition de la page", false, true);
+		super("Edition d'un noeud", true);
 		
 		this.book = book;
 		
 		texte.setText(node.getText());
 		
-		itemLinksList = new ItemListComponent(book);
-		basicPane.add(itemLinksList, 0, 2, 2, 1);
-		
-		//Si le noeud existant est un noeud à choix (autre qu'un noeud terminal) cela affiche les hp, le nombre d'item, le nom des items à prendre
-		if(node instanceof AbstractBookNodeWithChoices){
-			AbstractBookNodeWithChoices bookNode = (AbstractBookNodeWithChoices) node;
-			
-			itemLinksList.setBookItemLinks(bookNode.getItemLinks());
-		
-			nbrItemTextField.setText(""+bookNode.getNbItemsAPrendre());
-			hpTextField.setText(""+bookNode.getHp());	
-		}
-		
-		//Si le noeud existant est un noeud Terminal cela n'affiche que le Texte
 		if(node instanceof BookNodeTerminal) {
+			showNodeTerminal();
+			
 			BookNodeTerminal terminalNode = (BookNodeTerminal) node;
-			
-			rootBorder.setBottom(null);
-			
 			nodeType.setValue(terminalNode.getBookNodeStatus() == BookNodeStatus.FAILURE ? FAILURE : VICTORY);
-		} 
-		//Si le noeud existant est un noeud de combat, cela affiche le Pane de combat
-		else if (node instanceof BookNodeCombat){
-			BookNodeCombat bookNode = (BookNodeCombat) node;
+		} else if (node instanceof BookNodeCombat){
+			showNodeCombat();
 			
-			if(!bookNode.getEnnemiesId().isEmpty()){
-				for(String ennemiId : bookNode.getEnnemiesId()){
-					ComboBox comboBox = addComboBox();
+			BookNodeCombat nodeCombat = (BookNodeCombat) node;
+			
+			// On ajoute la liste des ennemis
+			if(!nodeCombat.getEnnemiesId().isEmpty()){
+				for(String ennemiId : nodeCombat.getEnnemiesId()){
+					ComboBox comboBox = addEnnemiComboBox();
 					comboBox.setValue(ennemiId);
 				}
 			}
 			
-			texteEvasion.setText("" + bookNode.getEvasionRound());
-		
-			rootBorder.setBottom(combatPane);
+			evasionRoundTextField.setText("" + nodeCombat.getEvasionRound());
 			
 			nodeType.setValue(COMBAT);
+		} else if (node instanceof BookNodeWithRandomChoices){
+			showNodeWithRandomChoice();
 			
-		} 
-		//Si le noeud existant est un noeud random
-		else if (node instanceof BookNodeWithRandomChoices){
 			nodeType.setValue(RANDOM);
-			rootBorder.setBottom(basicPane);
-		}
-		//Si le noeud existant est un noeud basic
-		else {
+		} else if (node instanceof BookNodeWithChoices){
+			showNodeWithChoice();
+			
 			nodeType.setValue(BASIC);
-			rootBorder.setBottom(basicPane);
+		} else {
+			// Si on arrive ici, un type de noeud n'est pas encore pris en compte. On empêche donc l'édition de celui-ci
+			Alert a = new Alert(Alert.AlertType.ERROR);
+			a.setTitle("Erreur lors de l'edition du noeud");
+			a.setHeaderText("Ce type de noeud n'est pas encore disponible à l'édition");
+			a.showAndWait(); 
+			close();
 		}
 		
-		this.setMaxHeight(400);
-		this.setHeight(400d);
+		// Change toutes les valeurs communes aux noeuds de type AbstractBookNodeWithChoices
+		if(node instanceof AbstractBookNodeWithChoices){
+			AbstractBookNodeWithChoices abstractBookNodeWithChoices = (AbstractBookNodeWithChoices) node;
+			
+			itemLinksList.setBookItemLinks(abstractBookNodeWithChoices.getItemLinks());
+		
+			nbrItemTextField.setText(""+abstractBookNodeWithChoices.getNbItemsAPrendre());
+			hpTextField.setText(""+abstractBookNodeWithChoices.getHp());	
+		}
+		
 		this.showAndWait();
 	}
 	
 	@Override
-	protected Node getMainUI() {
-		//Génération des Pane
-		rootBorder = new BorderPane();
-		root = new GridPane();
-		rootCharacter = new GridPane();
-		basicPane = new GridPane();
-		combatPane = new VBox();
-
-		root.setHgap(UiConsts.DEFAULT_MARGIN);
-		root.setVgap(UiConsts.DEFAULT_MARGIN);
+	protected Node getMainUI() {		
+		tabPane = new TabPane();
 		
-		Label textLabel = new Label("Texte :");
+		Tab nodeTab = new Tab("Noeud");
+		
+		nodeTab.setClosable(false);
+		nodeTab.setContent(getNodeTab());
+		
+		tabPane.getTabs().addAll(nodeTab);
+		
+		return tabPane;
+	}
+	
+	/**
+	 * Permet de récupérer le contenu de l'onglet d'édition du noeud
+	 * @return Le Node qui contient le contenu de l'onglet 
+	 */
+	private Node getNodeTab() {
+		nodeFieldsPane = new VBox();
+		nodeFieldsPane.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+		nodeFieldsPane.setSpacing(UiConsts.DEFAULT_MARGIN);
+		
+		// Construction des champs en commun à tous les noeuds
+		nodeTextTypePane = new GridPane();
+		nodeTextTypePane.setHgap(UiConsts.DEFAULT_MARGIN);
+		nodeTextTypePane.setVgap(UiConsts.DEFAULT_MARGIN);
+
 		texte = new TextArea();
 		texte.setWrapText(true);
-		Label labelChoix = new Label("Choix du type du noeud :");
 		
-		//ChoiceBox définissant le type de noeud
 		nodeType = new ChoiceBox<>();
 
 		nodeType.getItems().add(BASIC);
@@ -231,71 +245,99 @@ public class NodeDialog extends AbstractDialog {
 		nodeType.getItems().add(FAILURE);
 		nodeType.setValue(BASIC);
 		
-		hpTextField = new TextField("0");
-		texteEvasion = new TextField("0");
-		nbrItemTextField = new TextField("0");
-		
-		bouton = new Button("Ajouter un personnage");
-		
-		//Si le bouton d'ajout de personnage est appuyé
-		bouton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent t) {
-				//Ajout d'une ComboBox pour l'ajout d'un ennemi
-				addComboBox();
-			}
-		});
-		
+		// Change les champs affichés si on change le type de noeud
 		nodeType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
-				//Réinitialisation du bas la boite de dialog
-				rootBorder.setBottom(null);
-				//Si le type de noeud est défini sur Combat
-				if (nodeType.getValue() == COMBAT){
-					rootBorder.setBottom(combatPane);
-				}
-				//Si le type de noeud est défini sur Basic ou Random
-				else if (nodeType.getValue() == BASIC ||  nodeType.getValue() == RANDOM){
-					rootBorder.setBottom(basicPane);
+			public void changed(ObservableValue<? extends String> ov, String t, String t1) {				
+				if (nodeType.getValue() == VICTORY || nodeType.getValue() == FAILURE){
+					showNodeTerminal();
+				} else if (nodeType.getValue() == BASIC){
+					showNodeWithChoice();
+				} else if (nodeType.getValue() == RANDOM){
+					showNodeWithRandomChoice();
+				} if(nodeType.getValue() == COMBAT) {
+					showNodeCombat();
 				}
 			}
 		});
 		
-		//Ajout des parties commune à toutes les boites de dialog
-		root.add(textLabel, 0, 0);
-		root.add(texte, 0, 1, 2, 1);
-		root.add(labelChoix, 0, 2);
-		root.add(nodeType, 1, 2);
+		nodeTextTypePane.add(new Label("Texte :"), 0, 0);
+		nodeTextTypePane.add(texte, 0, 1, 2, 1);
+		nodeTextTypePane.add(new Label("Choix du type du noeud :"), 0, 2);
+		nodeTextTypePane.add(nodeType, 1, 2);
 		
-		//Ajout des parties commune pour les noeuds de type basic ou random
-		basicPane.add(new Label("hp (gain ou perte) :"), 0, 0);
-		basicPane.add(hpTextField, 1, 0);
-		basicPane.add(new Label("Nombre d'items max :"), 0, 1);
-		basicPane.add(nbrItemTextField, 1, 1);
+		// Construction des champs en commun à tous les noeuds avec des choix
+		abstractNodeWithChoicePane = new GridPane();
+		abstractNodeWithChoicePane.setHgap(UiConsts.DEFAULT_MARGIN);
+		abstractNodeWithChoicePane.setVgap(UiConsts.DEFAULT_MARGIN);
 		
-		basicPane.setHgap(UiConsts.DEFAULT_MARGIN);
-		basicPane.setVgap(UiConsts.DEFAULT_MARGIN);
+		hpTextField = new TextField("0");
+		nbrItemTextField = new TextField("0");
 		
-		//Ajout des parties si le noeud est de type combat
-		GridPane combatGridPane = new GridPane();
-		combatGridPane.add(new Label("Nombre de tour avant evasion :"), 0, 0);
-		combatGridPane.add(texteEvasion, 1, 0);
-		combatGridPane.add(bouton, 0, 1);
-		combatGridPane.add(rootCharacter, 0, 2, 2, 1);
+		abstractNodeWithChoicePane.add(new Label("hp (gain ou perte) :"), 0, 0);
+		abstractNodeWithChoicePane.add(hpTextField, 1, 0);
+		abstractNodeWithChoicePane.add(new Label("Nombre d'items max :"), 0, 1);
+		abstractNodeWithChoicePane.add(nbrItemTextField, 1, 1);
 		
-		combatGridPane.setHgap(UiConsts.DEFAULT_MARGIN);
-		combatGridPane.setVgap(UiConsts.DEFAULT_MARGIN);
+		// Construction des champs pour les noeuds de combat
+		combatPane = new GridPane();
+		combatPane.setHgap(UiConsts.DEFAULT_MARGIN);
+		combatPane.setVgap(UiConsts.DEFAULT_MARGIN);
 		
-		rootBorder.setCenter(root);
+		evasionRoundTextField = new TextField("0");
+		addEnnemiButton = new Button("Ajouter un personnage");
+		addEnnemiButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent t) {
+				addEnnemiComboBox();
+			}
+		});
 		
-		rootCharacter.setVgap(UiConsts.DEFAULT_MARGIN);
-		rootCharacter.setHgap(UiConsts.DEFAULT_MARGIN);
+		ennemisPane = new GridPane();
+		ennemisPane.setVgap(UiConsts.DEFAULT_MARGIN);
+		ennemisPane.setHgap(UiConsts.DEFAULT_MARGIN);
 		
-		combatPane.setSpacing(UiConsts.DEFAULT_MARGIN);
-		combatPane.getChildren().addAll(combatGridPane);
+		combatPane.add(new Label("Nombre de tour avant evasion :"), 0, 0);
+		combatPane.add(evasionRoundTextField, 1, 0);
+		combatPane.add(addEnnemiButton, 0, 1);
+		combatPane.add(ennemisPane, 0, 2, 2, 1);
 		
-		return rootBorder;
+		return nodeFieldsPane;
+	}
+	
+	/**
+	 * Permet de récupérer le contenu de l'onglet des items récupérables
+	 * @return Le Node qui contient le contenu de l'onglet 
+	 */
+	private Node getItemsTabContent() {
+		if(itemLinksList == null) {
+			itemLinksList = new ItemListComponent(book);
+			itemLinksList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+		}
+		
+		return itemLinksList;
+	}
+	
+	/**
+	 * Créé l'onglet pour ajouter l'items que l'on peut prendre
+	 */
+	private void createItemsTab() {
+		deleteItemsTab();
+		
+		itemsTab = new Tab("Items");
+
+		itemsTab.setClosable(false);
+		itemsTab.setContent(getItemsTabContent());
+		
+		tabPane.getTabs().add(itemsTab);
+	}
+	
+	/**
+	 * Supprime l'onglet pour ajouter l'items que l'on peut prendre
+	 */
+	private void deleteItemsTab() {
+		if(itemsTab != null)
+			tabPane.getTabs().remove(itemsTab);
 	}
 
 	@Override
@@ -303,21 +345,15 @@ public class NodeDialog extends AbstractDialog {
 		return (ActionEvent e) -> {
 			String texteHistoire = texte.getText();
 			
-			//Création d'un noeud basic
 			if(nodeType.getValue() == BASIC) {
 				NodeDialog.this.node = new BookNodeWithChoices();
-			}
-			//Création d'un noeud random
-			else if (nodeType.getValue() == RANDOM){
+			} else if (nodeType.getValue() == RANDOM){
 				NodeDialog.this.node = new BookNodeWithRandomChoices();
-			}
-			//Création d'un noeud de combat
-			else if (nodeType.getValue() == COMBAT){
+			} else if (nodeType.getValue() == COMBAT){
 				int tourEvasion = 0;
 				
-				//La valeur saisie doit être un entier
 				try {
-					tourEvasion = Integer.parseInt(texteEvasion.getText());
+					tourEvasion = Integer.parseInt(evasionRoundTextField.getText());
 				} catch (NumberFormatException ex){
 					notANumberAlertDialog(ex);
 					return;
@@ -328,13 +364,12 @@ public class NodeDialog extends AbstractDialog {
 				bookNode.setEnnemiesId(getSelectedEnnemis());
 
 				NodeDialog.this.node = bookNode;
-			}
-			//Création d'un noeud terminal
-			else {
+			} else if (nodeType.getValue() == FAILURE || nodeType.getValue() == VICTORY){
 				NodeDialog.this.node = new BookNodeTerminal(texteHistoire, nodeType.getValue() == VICTORY ? BookNodeStatus.VICTORY : BookNodeStatus.FAILURE);
+			} else {
+				return;
 			}
 			
-			//Modification/Création des valeurs saisie
 			if(nodeType.getValue() == BASIC || nodeType.getValue() == RANDOM || nodeType.getValue() == COMBAT) {
 				if (hpTextField.getText().isEmpty() || nbrItemTextField.getText().isEmpty()){
 					return;
@@ -354,7 +389,7 @@ public class NodeDialog extends AbstractDialog {
 				
 				bookNodeWithChoices.setHp(hpInt);
 				bookNodeWithChoices.setNbItemsAPrendre(itemInt);
-				bookNodeWithChoices.setItemLinks(NodeDialog.this.itemLinksList.getBookItemLinks());
+				bookNodeWithChoices.setItemLinks(this.itemLinksList.getBookItemLinks());
 			}
 				
 			NodeDialog.this.node.setText(texteHistoire);
@@ -364,10 +399,10 @@ public class NodeDialog extends AbstractDialog {
 	}
 	
 	/**
-	 * Créer et ajoute une ComboBox au Pane rootCharacter
-	 * @return ComboxBox avec la liste ennemis
+	 * Créé une liste pour sélectionner un item
+	 * @return La liste créée
 	 */
-	private ComboBox<String> addComboBox(){
+	private ComboBox<String> addEnnemiComboBox(){
 		ComboBox<String> ennemiBox = new ComboBox<>();
 		
 		ennemiBox.getItems().add(" ");
@@ -375,26 +410,76 @@ public class NodeDialog extends AbstractDialog {
 			ennemiBox.getItems().add(listEnnemiBo.getValue().getId());
 		}		
 		
-		rootCharacter.add(ennemiBox, listCombo.size()%4, listCombo.size()/4);
-		listCombo.add(ennemiBox);
+		ennemisPane.add(ennemiBox, ennemisComboBox.size() % 4, ennemisComboBox.size() / 4);
+		ennemisComboBox.add(ennemiBox);
 		
 		return ennemiBox;
 	}
 	
 	/**
-	 * Dresse une liste d'ennemis en regardant les valeurs des ComboBox
-	 * @return Liste d'ennemis
+	 * Récupère la liste des ennemis sélectionnés
+	 * @return La liste des ennemis
 	 */
 	private List<String> getSelectedEnnemis(){
 		List<String> listEnnemis = new ArrayList();
 		
-		for(ComboBox<String> comboBox : listCombo){
+		for(ComboBox<String> comboBox : ennemisComboBox){
 			if(comboBox.getValue() != null && !comboBox.getValue().equals(" ")){
 				listEnnemis.add(comboBox.getValue());
 			}
 		}
 		
 		return listEnnemis;
+	}
+	
+	/**
+	 * Supprime tout ce qui est affiché et ajoute les éléments communs à tous les noeuds
+	 */
+	private void clearNode() {
+		nodeFieldsPane.getChildren().clear();
+		nodeFieldsPane.getChildren().add(nodeTextTypePane);
+	}	
+	
+	/**
+	 * Affiche les champs pour un noeud terminal
+	 */
+	private void showNodeTerminal() {
+		clearNode();
+	}
+	
+	/**
+	 * Affiche les champs pour un noeud AbstractBookNodeWithChoices
+	 */
+	private void showAbstractNodeWithChoice() {
+		clearNode();
+		
+		nodeFieldsPane.getChildren().add(abstractNodeWithChoicePane);
+		
+		createItemsTab();
+	}
+	
+	/**
+	 * Affiche les champs pour un noeud avec des choix
+	 */
+	private void showNodeWithChoice() {
+		showAbstractNodeWithChoice();
+	}
+	
+	/**
+	 * Affiche les champs pour un noeud avec des choix aléatoire
+	 */
+	private void showNodeWithRandomChoice() {
+		showAbstractNodeWithChoice();
+	}
+	
+	/**
+	 * Affiche les champs pour un noeud combat
+	 */
+	private void showNodeCombat() {
+		showAbstractNodeWithChoice();
+		
+		nodeFieldsPane.getChildren().add(combatPane);
+		nodeFieldsPane.getChildren().add(ennemisPane);
 	}
 	
 	/**
