@@ -185,9 +185,9 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 	*/
 	public void createNodeFxDialog(MouseEvent event){
 		NodeDialog nodeDialog = new NodeDialog(book);
-		AbstractBookNode node = nodeDialog.getNode();
 		
-		if(node != null) {
+		if(nodeDialog.isValid()) {
+			AbstractBookNode node = nodeDialog.getNode();
 			lastXClick = event.getX();
 			lastYClick = event.getY();
 			
@@ -251,7 +251,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 				if(event.getClickCount() == 2) {
 					PreludeDialog dialog = new PreludeDialog(book);
 					
-					if(dialog.getTextePrelude() != null) {
+					if(dialog.isValid()) {
 						book.setTextPrelude(dialog.getTextePrelude());
 						book.setMainCharacter(dialog.getMainCharacter());
 						book.setCharacterCreations(dialog.getCharacterCreations());
@@ -520,7 +520,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 				selectedNodeFx = nodeFx;
 				if(event.getClickCount() == 2) {
 					NodeDialog dialog = new NodeDialog(book, selectedNodeFx.getNode());
-					if(dialog.getNode() != null) {
+					if(dialog.isValid()) {
 						book.updateNode(nodeFx.getNode(), dialog.getNode());
 					}
 				}
@@ -551,9 +551,9 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 					
 					//On affiche la boite de dialogue pour afficher le noeud
 					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
-					BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 
-					if(bookNodeLink != null) {
+					if(nodeLinkDialog.isValid()) {
+						BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
 						bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
 						
 						// Si c'est un noeud combat, on met à jour le lien correspondant
@@ -602,7 +602,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode());
 					
 					// Si on a validé les modifications sur un lien
-					if(nodeLinkDialog.getNodeLink() != null) {
+					if(nodeLinkDialog.isValid()) {
 						nodeLinkDialog.getNodeLink().setDestination(book.getNodeIndex(nodeLinkFx.getEnd().getNode()));
 						
 						//On met à jour les liens pour un noeud de combat

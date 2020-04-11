@@ -129,9 +129,10 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 			@Override
 			public void handle(ActionEvent event) {
 				CharacterDialog characterDialog = new CharacterDialog(LeftPane.this.book);
-				BookCharacter perso = characterDialog.getCharacter();
 				
-				if(perso != null) {
+				if(characterDialog.isValid()) {
+					BookCharacter perso = characterDialog.getCharacter();
+				
 					book.addCharacter(perso);
 				}
 			}
@@ -146,10 +147,11 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 					BookCharacter oldCharacter = selectedItem.getValue();
 					
 					CharacterDialog characterDialog = new CharacterDialog(oldCharacter, LeftPane.this.book);
-					BookCharacter newCharacter = characterDialog.getCharacter();
 					
-					if(newCharacter == null)
+					if(!characterDialog.isValid())
 						return;
+					
+					BookCharacter newCharacter = characterDialog.getCharacter();
 					
 					book.updateCharacter(oldCharacter, newCharacter);
 				}
@@ -179,9 +181,9 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 			@Override
 			public void handle(ActionEvent event) {
 				ItemDialog itemDialog = new ItemDialog(LeftPane.this.book);
-				BookItem item = itemDialog.getItem();
-				if(item != null) {
-					book.addItem(item);
+				
+				if(itemDialog.isValid()) {
+					book.addItem(itemDialog.getItem());
 				}
 			}
 		});
@@ -195,11 +197,12 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 					BookItem oldItem = selectedItem.getValue();
 					
 					ItemDialog newItemDialog = new ItemDialog(oldItem, LeftPane.this.book);
-					BookItem newItem = newItemDialog.getItem();
 					
-					if(newItem == null){
+					if(!newItemDialog.isValid()){
 						return;
 					}
+					
+					BookItem newItem = newItemDialog.getItem();
 					
 					book.updateItem(oldItem, newItem);
 				}

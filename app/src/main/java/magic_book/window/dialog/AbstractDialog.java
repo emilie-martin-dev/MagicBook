@@ -2,6 +2,7 @@ package magic_book.window.dialog;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -20,6 +21,11 @@ import magic_book.window.UiConsts;
  * Classe mère de toute les boites de dialogue
  */
 public abstract class AbstractDialog extends Stage {
+	
+	/**
+	 * Permet de savoir si on a cliqué sur le bouton "Valider"
+	 */
+	private boolean isValid;
 	
 	/**
 	 * Titre de la boite de dialogue
@@ -46,6 +52,8 @@ public abstract class AbstractDialog extends Stage {
 	 */
 	public AbstractDialog(String title, boolean hideMarginTop, boolean useScroll) {
 		initDialogUI(title, hideMarginTop, useScroll);
+		
+		this.isValid = false;
 	}
 	
 	/**
@@ -110,6 +118,9 @@ public abstract class AbstractDialog extends Stage {
 		
 		Button boutonValider = new Button("Valider");
 		boutonValider.setOnAction(getValidButtonEventHandler());
+		boutonValider.addEventHandler(ActionEvent.ACTION, (ActionEvent e) -> {
+			this.isValid = true;
+		});
 		
 		HBox box = new HBox();
 		box.setSpacing(10d);
@@ -130,6 +141,9 @@ public abstract class AbstractDialog extends Stage {
 		alertDialog.setContentText(ex.getMessage().replace("For input string: ", "") + " n'est pas un entier");
 		alertDialog.show();
 	}
-	
 
+	public boolean isValid() {
+		return isValid;
+	}
+	
 }
