@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
+import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node.BookNodeWithChoices;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
@@ -24,17 +25,19 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	 */
 	private Book book;
 	
-	
 	/**
 	 * Nombre total de noeud
 	 */
 	private int nodeCount;
 	
 	/**
-	 * Nombre total de noeud terminal
+	 * Nombre total de noeud gagnants
 	 */
-	private int nodeTerminalCount;
-	
+	private int nodeVictoryCount;
+		/**
+	 * Nombre total de noeud perdants
+	 */
+	private int nodeFailureCount;
 	/**
 	 * Nombre total de noeud à choix random
 	 */
@@ -50,14 +53,40 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	 */
 	private int nodeCombatCount;
 	
-	
+	/**
+	 * Label pour afficher uniquement le compteur du nombre de noeud
+	 */
 	private Label nodeCountLabel;
-	private Label nodeTerminalCountLabel;
-	private Label nodeChoiceCountLabel;
-	private Label nodeRandomCountLabel;
-	private Label nodeCombatCountLabel;
-	private Label difficultePourcentageLabel;
 	
+	/**
+	 * Label pour afficher uniquement le compteur du nombre de noeud gagnants
+	 */
+	private Label nodeVictoryCountLabel;
+	
+	/**
+	 * Label pour afficher uniquement le compteur du nombre de noeud perdants
+	 */
+	private Label nodeFailureCountLabel;
+	
+	/**
+	 * Label pour afficher uniquement le compteur du nombre de noeud à choix
+	 */
+	private Label nodeChoiceCountLabel;
+	
+	/**
+	 * Label pour afficher uniquement le compteur du nombre de noeud à choix aléatoire
+	 */
+	private Label nodeRandomCountLabel;
+	
+	/**
+	 * Label pour afficher uniquement le compteur du nombre de noeud de combat
+	 */
+	private Label nodeCombatCountLabel;
+	
+	/**
+	 * Label pour afficher uniquement le compteur de la difficulté
+	 */
+	private Label difficultePourcentageLabel;
 	
 	/**
 	 * Initialisation des valeurs qui compose le panel des statistiques
@@ -65,7 +94,8 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	 */
 	public RightPane(Book book){		
 		nodeCount = 0;
-		nodeTerminalCount = 0;
+		nodeVictoryCount = 0;
+		nodeFailureCount = 0;
 		nodeRandomCount = 0;
 		nodeChoiceCount = 0;
 		nodeCombatCount = 0;
@@ -89,9 +119,13 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		nodeCountLabel = new Label("");
 		nodeCountBox.getChildren().addAll(new Label("Total de noeuds : "), nodeCountLabel);
 		
-		HBox nodeTerminalCountBox = new HBox();
-		nodeTerminalCountLabel = new Label("");
-		nodeTerminalCountBox.getChildren().addAll(new Label("Noeuds terminaux : "), nodeTerminalCountLabel);
+		HBox nodeVictoryCountBox = new HBox();
+		nodeVictoryCountLabel = new Label("");
+		nodeVictoryCountBox.getChildren().addAll(new Label("Noeuds gagnants : "), nodeVictoryCountLabel);
+		
+		HBox nodeFailureCountBox = new HBox();
+		nodeFailureCountLabel = new Label("");
+		nodeFailureCountBox.getChildren().addAll(new Label("Noeuds perdants : "), nodeFailureCountLabel);
 		
 		HBox nodeChoiceCountBox = new HBox();
 		nodeChoiceCountLabel = new Label("");
@@ -111,7 +145,7 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		
 		VBox statsLayout = new VBox();
 		statsLayout.setSpacing(UiConsts.DEFAULT_MARGIN);
-		statsLayout.getChildren().addAll(nodeCountBox, nodeChoiceCountBox, nodeRandomCountBox, nodeCombatCountBox, difficulteBox);
+		statsLayout.getChildren().addAll(nodeCountBox, nodeChoiceCountBox, nodeRandomCountBox, nodeCombatCountBox, nodeVictoryCountBox, nodeFailureCountBox, difficulteBox);
 		
 		updateStats();
 
@@ -123,7 +157,8 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	 */
 	private void updateStats() {
 		nodeCountLabel.setText(""+nodeCount);
-		nodeTerminalCountLabel.setText(""+nodeTerminalCount);
+		nodeVictoryCountLabel.setText(""+nodeVictoryCount);
+		nodeFailureCountLabel.setText(""+nodeFailureCount);
 		nodeChoiceCountLabel.setText(""+nodeChoiceCount);
 		nodeRandomCountLabel.setText(""+nodeRandomCount);
 		nodeCombatCountLabel.setText(""+nodeCombatCount);
@@ -135,7 +170,12 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	 */
 	private void addToCounter(AbstractBookNode node) {
 		if(node instanceof BookNodeTerminal) {
-			nodeTerminalCount++;
+			BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) node;
+			if(bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY) {
+				nodeVictoryCount++;
+			} else if (bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.FAILURE) {
+				nodeFailureCount++;
+			}
 		} else if(node instanceof BookNodeCombat) {
 			nodeCombatCount++;
 		} else if(node instanceof BookNodeWithRandomChoices) {
@@ -153,7 +193,12 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 	 */
 	private void removeToCounter(AbstractBookNode node) {
 		if(node instanceof BookNodeTerminal) {
-			nodeTerminalCount--;
+			BookNodeTerminal bookNodeTerminal = (BookNodeTerminal) node;
+			if(bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY) {
+				nodeVictoryCount--;
+			} else if (bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.FAILURE) {
+				nodeFailureCount--;
+			}
 		} else if(node instanceof BookNodeCombat) {
 			nodeCombatCount--;
 		} else if(node instanceof BookNodeWithRandomChoices) {
@@ -181,6 +226,9 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 
 	@Override
 	public void nodeEdited(AbstractBookNode oldNode, AbstractBookNode newNode) {
+		removeToCounter(oldNode);
+		addToCounter(newNode);
+		
 		updateStats();
 	}
 	
@@ -200,7 +248,8 @@ public class RightPane extends ScrollPane implements BookNodeObserver{
 		if(this.book != null)
 			this.book.removeNodeObserver(this);
 		
-		nodeTerminalCount = 0;
+		nodeVictoryCount = 0;
+		nodeFailureCount = 0;
 		nodeCombatCount = 0;
 		nodeRandomCount = 0;
 		nodeChoiceCount = 0;
