@@ -120,6 +120,11 @@ public class NodeDialog extends AbstractDialog {
 	private Tab itemsTab;
 	
 	/**
+	 * L'onglet qui permet de sélectionner les items qui peuvent être acheté
+	 */
+	private Tab shopTab;
+	
+	/**
 	 * Le TabPane qui permet de gérer les différents onglets de l boite de dialogue
 	 */
 	private TabPane tabPane;
@@ -128,6 +133,11 @@ public class NodeDialog extends AbstractDialog {
 	 * Permet l'ajout d'items disponible sur ce noeud ainsi que le montant des items disponible
 	 */
 	private ItemListComponent itemLinksList;
+	
+	/**
+	 * Permet l'ajout d'items disponible sur ce noeud ainsi que le montant des items disponible
+	 */
+	private ItemListComponent shopLinksList;
 	
 	/**
 	 * Constructeur pour créer un nouveau noeud
@@ -197,6 +207,7 @@ public class NodeDialog extends AbstractDialog {
 			AbstractBookNodeWithChoices abstractBookNodeWithChoices = (AbstractBookNodeWithChoices) node;
 			
 			itemLinksList.setBookItemLinks(abstractBookNodeWithChoices.getItemLinks());
+			shopLinksList.setBookItemLinks(abstractBookNodeWithChoices.getShopItemLinks());
 		
 			nbrItemTextField.setText(""+abstractBookNodeWithChoices.getNbItemsAPrendre());
 			hpTextField.setText(""+abstractBookNodeWithChoices.getHp());	
@@ -309,35 +320,49 @@ public class NodeDialog extends AbstractDialog {
 	 * Permet de récupérer le contenu de l'onglet des items récupérables
 	 * @return Le Node qui contient le contenu de l'onglet 
 	 */
-	private Node getItemsTabContent() {
-		if(itemLinksList == null) {
-			itemLinksList = new ItemListComponent(book);
-			itemLinksList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+	private Node getTabContent(ItemListComponent itemList, String tabLabel) {
+		if(itemList == null) {
+			itemList = new ItemListComponent(book);
+			itemList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
 		}
+
+		if(tabLabel.equals("Items"))
+			itemLinksList = itemList;
+		else
+			shopLinksList = itemList;
 		
-		return itemLinksList;
+		return itemList;
 	}
+	
+	private void createTab(){
+		itemsTab = createItemsTab(itemsTab, "Items");
+		shopTab = createItemsTab(shopTab, "Shop");
+	}
+	
 	
 	/**
 	 * Créé l'onglet pour ajouter l'items que l'on peut prendre
 	 */
-	private void createItemsTab() {
-		deleteItemsTab();
+	private Tab createItemsTab(Tab tab, String tabLabel) {
+		deleteItemsTab(tab);
 		
-		itemsTab = new Tab("Items");
+		tab = new Tab(tabLabel);
 
-		itemsTab.setClosable(false);
-		itemsTab.setContent(getItemsTabContent());
+		tab.setClosable(false);
+		if(tabLabel.equals("Items"))
+			tab.setContent(getTabContent(itemLinksList, "Items"));
+		else
+			tab.setContent(getTabContent(shopLinksList, "Shop"));
 		
-		tabPane.getTabs().add(itemsTab);
+		tabPane.getTabs().addAll(tab);
+		return tab;
 	}
 	
 	/**
 	 * Supprime l'onglet pour ajouter l'items que l'on peut prendre
 	 */
-	private void deleteItemsTab() {
-		if(itemsTab != null)
-			tabPane.getTabs().remove(itemsTab);
+	private void deleteItemsTab(Tab tab) {
+		tabPane.getTabs().remove(tab);
 	}
 
 	@Override
@@ -390,6 +415,7 @@ public class NodeDialog extends AbstractDialog {
 				bookNodeWithChoices.setHp(hpInt);
 				bookNodeWithChoices.setNbItemsAPrendre(itemInt);
 				bookNodeWithChoices.setItemLinks(this.itemLinksList.getBookItemLinks());
+				bookNodeWithChoices.setShopItemLinks(this.shopLinksList.getBookItemLinks());
 			}
 				
 			NodeDialog.this.node.setText(texteHistoire);
@@ -455,7 +481,7 @@ public class NodeDialog extends AbstractDialog {
 		
 		nodeFieldsPane.getChildren().add(abstractNodeWithChoicePane);
 		
-		createItemsTab();
+		createTab();
 	}
 	
 	/**
