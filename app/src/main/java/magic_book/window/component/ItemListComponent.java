@@ -38,6 +38,14 @@ public class ItemListComponent extends VBox {
 	 */
 	private Button updateItemSelected;
 	/**
+	 * Prix d'achat de l'item
+	 */
+	private TextField priceTextField;
+	/**
+	 * Prix de vente de l'item
+	 */
+	private TextField sellingPriceTextField;
+	/**
 	 * Nombre d'item disponible (par item)
 	 */
 	private TextField amountTextField;
@@ -48,11 +56,18 @@ public class ItemListComponent extends VBox {
 	private Book book;
 	
 	/**
+	 * Permet de savoi si c'est un shop ou nom
+	 */
+	private Boolean shopList;
+	
+	/**
 	 * Création de la VBox des items
 	 * @param book Livre contenant toutes les informations
+	 * @param shopList Boolean si c'est une liste d'items à acheter
 	 */
-	public ItemListComponent(Book book) {
+	public ItemListComponent(Book book, Boolean shopList) {
 		this.book = book;
+		this.shopList = shopList;
 		
 		this.setSpacing(UiConsts.DEFAULT_MARGIN);
 		
@@ -81,6 +96,10 @@ public class ItemListComponent extends VBox {
 				amountTextField.setDisable(false);
 				updateItemSelected.setDisable(false);
 				amountTextField.setText(""+selectedItemsListView.getSelectionModel().getSelectedItem().getAmount());
+				if(shopList){
+					priceTextField.setText(""+selectedItemsListView.getSelectionModel().getSelectedItem().getPrice());
+					sellingPriceTextField.setText(""+selectedItemsListView.getSelectionModel().getSelectedItem().getSellingPrice());
+				}
 			}
 		});
 		
@@ -119,6 +138,8 @@ public class ItemListComponent extends VBox {
 	 * @return Pane pour l'edition d'un item de la liste
 	 */
 	public GridPane createItemLinkPane() {
+		priceTextField = new TextField();
+		sellingPriceTextField = new TextField();
 		amountTextField = new TextField();
 		
 		updateItemSelected = new Button("Modifier");
@@ -126,21 +147,35 @@ public class ItemListComponent extends VBox {
 			BookItemLink itemLink = selectedItemsListView.getSelectionModel().getSelectedItem();
 			if(itemLink != null) {
 				int amount = 1;
-				
+				int price = 1;
+				int sellingPrice = 1;
 				try {
 					amount = Integer.valueOf(amountTextField.getText());
+					price = Integer.valueOf(priceTextField.getText());
+					sellingPrice = Integer.valueOf(sellingPriceTextField.getText());
+					
 				} catch(NumberFormatException ex) {
 					return;
 				}
 				
 				itemLink.setAmount(amount);
+				itemLink.setPrice(price);
+				itemLink.setSellingPrice(sellingPrice);
 			}
 		});
 		
 		GridPane selectedItemLinkPane = new GridPane();
 		selectedItemLinkPane.add(new Label("Montant : "), 0, 0);
 		selectedItemLinkPane.add(amountTextField, 1, 0);
-		selectedItemLinkPane.add(updateItemSelected, 0, 1);
+		if(shopList){
+			selectedItemLinkPane.add(new Label("Prix d'achat : "), 0, 1);
+			selectedItemLinkPane.add(priceTextField, 1, 1);
+			selectedItemLinkPane.add(new Label("Prix de vente : "), 0, 2);
+			selectedItemLinkPane.add(sellingPriceTextField, 1, 2);
+			selectedItemLinkPane.add(updateItemSelected, 0, 3);
+		} else {
+			selectedItemLinkPane.add(updateItemSelected, 0, 1);
+		}
 		
 		return selectedItemLinkPane;
 	}

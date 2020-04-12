@@ -14,7 +14,7 @@ public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> 
 	private boolean auto;
 
 	public BookItemLink() {
-		this("", 1, -1, false, -1);
+		this("", 1, 0, false, 0);
 	}
 	
 	public BookItemLink(String id, int amount, int price, boolean auto, int sellingPrice) {
@@ -42,10 +42,10 @@ public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> 
 		if(amount != 1) 
 			itemLinkJson.setAmount(amount);
 		
-		if(price != -1)
+		if(price != 0)
 			itemLinkJson.setPrice(price);
 		
-		if(sellingPrice != -1)
+		if(sellingPrice != 0)
 			itemLinkJson.setSellingPrice(sellingPrice);
 		
 		if(auto)
@@ -63,7 +63,7 @@ public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> 
 			this.amount = json.getAmount();
 		}
 		
-		this.price = -1;
+		this.price = 0;
 		if(json.getPrice()!= null) {
 			this.price = json.getPrice();
 		}
@@ -73,7 +73,7 @@ public class BookItemLink implements Descriptible, JsonExportable<ItemLinkJson> 
 			this.auto = json.isAuto();
 		}
 		
-		this.sellingPrice = -1;		
+		this.sellingPrice = 0;		
 		if(json.getSellingPrice() != null) {
 			this.sellingPrice = json.getSellingPrice();
 		}

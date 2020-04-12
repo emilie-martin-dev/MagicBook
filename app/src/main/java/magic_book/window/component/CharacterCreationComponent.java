@@ -73,7 +73,7 @@ public class CharacterCreationComponent extends GridPane {
 		this.add(new Label("Type"), 0, 2);
 		this.add(characterCreationType, 1, 2);
 		
-		itemLinksList = new ItemListComponent(book);
+		itemLinksList = new ItemListComponent(book, false);
 
 		characterCreationType.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String t, String t1) -> {
 			this.getChildren().remove(itemLinksList);
