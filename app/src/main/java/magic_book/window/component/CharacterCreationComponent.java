@@ -25,6 +25,10 @@ public class CharacterCreationComponent extends GridPane {
 	 * Type item
 	 */
 	private static final String TYPE_ITEM = "Item";
+	/**
+	 * Type item
+	 */
+	private static final String TYPE_SHOP = "Shop";
 
 	/**
 	 * Le type d'étape que l'on souhaite
@@ -32,9 +36,15 @@ public class CharacterCreationComponent extends GridPane {
 	private ComboBox<String> characterCreationType;
 	
 	/**
-	 * Pane de l'ajout d'item
+	 * Pane de l'ajout d'item à prendre
 	 */
 	private ItemListComponent itemLinksList;
+	
+	/**
+	 * Pane de l'ajout d'item à acheter
+	 */
+	private ItemListComponent shopLinksList;
+	
 	/**
 	 * Texte juste après le prélude
 	 */
@@ -65,8 +75,10 @@ public class CharacterCreationComponent extends GridPane {
 		characterCreationType.getItems().add(TYPE_TEXT);
 		characterCreationType.setValue(TYPE_TEXT);
 		
-		if(!book.getItems().isEmpty())
+		if(!book.getItems().isEmpty()){
 			characterCreationType.getItems().add(TYPE_ITEM);
+			characterCreationType.getItems().add(TYPE_SHOP);
+		}
 
 		this.add(new Label("Texte :"), 0, 0);
 		this.add(texte, 0, 1, 2, 1);
@@ -74,13 +86,18 @@ public class CharacterCreationComponent extends GridPane {
 		this.add(characterCreationType, 1, 2);
 		
 		itemLinksList = new ItemListComponent(book, false);
+		shopLinksList = new ItemListComponent(book, true);
 
 		characterCreationType.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String t, String t1) -> {
 			this.getChildren().remove(itemLinksList);
+			this.getChildren().remove(shopLinksList);
 			
-			if(characterCreationType.getValue().equals(TYPE_ITEM)) {
+			if(characterCreationType.getValue().equals(TYPE_ITEM))
+				System.out.println("CharacterCreationComponent de ITEM");
 				addItemLinksComponent();
-			}
+
+			if(characterCreationType.getValue().equals(TYPE_SHOP))
+				addShopLinksComponent();
 		});
 
 		if(abstractCharacterCreation != null)
@@ -88,10 +105,17 @@ public class CharacterCreationComponent extends GridPane {
 	}
 
 	/**
-	 * Permet d'afficher le Pane qui ajoute les items si jamais TYPE_ITEM est sélectionné dans la ChoiceBox
+	 * Permet d'afficher le Pane qui ajoute les items à prendre si jamais TYPE_ITEM est sélectionné dans la ChoiceBox
 	 */
 	private void addItemLinksComponent() {
 		this.add(itemLinksList, 0, 3, 2, 1);
+	}
+	
+	/**
+	 * Permet d'afficher le Pane qui ajoute les items à acheter si jamais TYPE_SHOP est sélectionné dans la ChoiceBox
+	 */
+	private void addShopLinksComponent() {
+		this.add(shopLinksList, 0, 3, 2, 1);
 	}
 
 	/**
@@ -99,14 +123,23 @@ public class CharacterCreationComponent extends GridPane {
 	 * @return Étape de la création du personnage
 	 */
 	public AbstractCharacterCreation getCharacterCreation() {
+		System.out.println("getCharacteCreationr");
 		AbstractCharacterCreation characterCreation = null;
 
-		if(characterCreationType.getValue() == TYPE_ITEM) {
+		if(!itemLinksList.getBookItemLinks().isEmpty() || !shopLinksList.getBookItemLinks().isEmpty()) {
+			
+			System.out.println("getCharacteCreationr de ITEM");
 			CharacterCreationItem characterCreationItem = new CharacterCreationItem();
-			characterCreationItem.setItemLinks(itemLinksList.getBookItemLinks());
+			
+			if(!itemLinksList.getBookItemLinks().isEmpty())
+				characterCreationItem.setItemLinks(itemLinksList.getBookItemLinks());
+			if(!shopLinksList.getBookItemLinks().isEmpty())
+				characterCreationItem.setItemShopLinks(shopLinksList.getBookItemLinks());
 
 			characterCreation = characterCreationItem;
-		} else if(characterCreationType.getValue() == TYPE_TEXT) {
+		}
+		if(characterCreationType.getValue() == TYPE_TEXT) {
+			System.out.println("getCharacteCreationr de TEXT");
 			characterCreation = new CharacterCreationText();
 		}
 
@@ -117,16 +150,21 @@ public class CharacterCreationComponent extends GridPane {
 
 	/**
 	 * Permet de changer l'étape à éditer
-	 * @param characterCreation étape à éiter
+	 * @param characterCreation étape à éditer
 	 */
 	public void setCharacterCreation(AbstractCharacterCreation characterCreation) {
+		System.out.println("setCharacter");
 		if(characterCreation instanceof CharacterCreationItem) {
+			System.out.println("setCaracter de Item");
 			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
-			
-			itemLinksList.setBookItemLinks(characterCreationItem.getItemLinks());
-			characterCreationType.setValue(TYPE_ITEM);
+			if(!characterCreationItem.getItemLinks().isEmpty()){
+				itemLinksList.setBookItemLinks(characterCreationItem.getItemLinks());
+				characterCreationType.setValue(TYPE_ITEM);
+			}
+			if(!characterCreationItem.getItemShopLinks().isEmpty()){
+				shopLinksList.setBookItemLinks(characterCreationItem.getItemShopLinks());
+			}
 		}
-
 		texte.setText(characterCreation.getText());
 	}
 

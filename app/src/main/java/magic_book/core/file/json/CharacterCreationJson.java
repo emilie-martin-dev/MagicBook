@@ -10,6 +10,7 @@ public class CharacterCreationJson {
 	@SerializedName("amount_to_pick")
 	private Integer amountToPick;
 	private List<ItemLinkJson> items;
+	private List<ItemLinkJson> itemsShop;
 	private List<String> skills;
 
 	public String getText() {
@@ -51,5 +52,13 @@ public class CharacterCreationJson {
 	public void setSkills(List<String> skills) {
 		this.skills = skills;
 	}	
+
+	public List<ItemLinkJson> getItemsShop() {
+		return itemsShop;
+	}
+
+	public void setItemsShop(List<ItemLinkJson> itemsShop) {
+		this.itemsShop = itemsShop;
+	}
 	
 }
