@@ -120,6 +120,11 @@ public class NodeDialog extends AbstractDialog {
 	private Tab itemsTab;
 	
 	/**
+	 * L'onglet qui permet de sélectionner les items qui peuvent être acheté
+	 */
+	private Tab shopTab;
+	
+	/**
 	 * Le TabPane qui permet de gérer les différents onglets de l boite de dialogue
 	 */
 	private TabPane tabPane;

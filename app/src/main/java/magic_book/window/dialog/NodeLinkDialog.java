@@ -8,16 +8,21 @@ import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
 import magic_book.core.graph.node.BookNodeWithRandomChoices;
 import magic_book.core.graph.node_link.BookNodeLink;
 import magic_book.core.graph.node_link.BookNodeLinkRandom;
+import magic_book.core.requirement.AbstractRequirement;
 import magic_book.window.UiConsts;
+import magic_book.window.component.RequirementComponent;
 
 /**
  * Boite de dialogue pour la création/édition des liens entre les noeuds
@@ -65,6 +70,21 @@ public class NodeLinkDialog extends AbstractDialog{
 	private TextField goldTextField;
 	
 	/**
+	 * L'onglet qui permet de sélectionner les prérequis
+	 */
+	private Tab requirementTab;
+	
+	/**
+	 * Le TabPane qui permet de gérer les différents onglets de l boite de dialogue
+	 */
+	private TabPane tabPane;
+	
+	/**
+	 * Permet l'ajout de prérequis
+	 */
+	private RequirementComponent requirement;
+	
+	/**
 	 * CheckBox de chemin automatique
 	 */
 	private CheckBox autoBox;
@@ -92,14 +112,17 @@ public class NodeLinkDialog extends AbstractDialog{
 	 */
 	private GridPane combatUi;
 	
+	private Book book;
+	
 	/**
 	 * Initialisation des valeurs et de la fenêtre de dialog en fonction du fistNode
 	 * @param firstNode Noeud où le lien va démarer
 	 */
-	public NodeLinkDialog(AbstractBookNode firstNode) {
+	public NodeLinkDialog(AbstractBookNode firstNode, Book book) {
 		super("Création du choix");
 		
 		this.firstNode = firstNode;
+		this.book = book;
 		
 		//Si le premier noeud est de type aléatoire
 		if(firstNode instanceof BookNodeWithRandomChoices){			
@@ -116,6 +139,8 @@ public class NodeLinkDialog extends AbstractDialog{
 			showCombatUi();
 		}
 		
+		showNodeLink();
+		
 		this.showAndWait();
 	}
 
@@ -124,10 +149,11 @@ public class NodeLinkDialog extends AbstractDialog{
 	 * @param nodeLink Lien déjà existante
 	 * @param firstNode Noeud où le lien démarre
 	 */
-	public NodeLinkDialog(BookNodeLink nodeLink, AbstractBookNode firstNode) {
+	public NodeLinkDialog(BookNodeLink nodeLink, AbstractBookNode firstNode, Book book) {
 		super("Modification du choix");
 		
 		this.firstNode = firstNode;
+		this.book = book;
 		
 		//Si le premier noeud est de type aléatoire
 		if(nodeLink instanceof BookNodeLinkRandom){
@@ -160,7 +186,6 @@ public class NodeLinkDialog extends AbstractDialog{
 				choixLienBox.getItems().add(PERDRE);			
 				choixLienBox.setValue(PERDRE);
 			}
-
 			showCombatUi();
 		}
 		
@@ -170,11 +195,27 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		texte.setText(nodeLink.getText());	
 		
+		showNodeLink();
+		requirement.setRequirement(nodeLink.getRequirements());
+		
 		this.showAndWait();
 	}
 
 	@Override
-	protected Node getMainUI() {
+	protected Node getMainUI() {	
+		tabPane = new TabPane();
+		
+		Tab nodeTab = new Tab("Lien");
+		
+		nodeTab.setClosable(false);
+		nodeTab.setContent(createNodeLinkPane());
+		
+		tabPane.getTabs().addAll(nodeTab);
+		
+		return tabPane;
+	}
+	
+	private BorderPane createNodeLinkPane(){
 		//Génération des Pane
 		root = new BorderPane();
 		mainUi = new GridPane();
@@ -240,6 +281,7 @@ public class NodeLinkDialog extends AbstractDialog{
 					
 					BookNodeLinkRandom nodeLinkRandom = new BookNodeLinkRandom();
 					nodeLinkRandom.setChance(chanceInt);
+					nodeLinkRandom.setRequirements(getRequirement());
 					
 					nodeLink = nodeLinkRandom;
 				} catch (NumberFormatException ex){
@@ -267,6 +309,7 @@ public class NodeLinkDialog extends AbstractDialog{
 
 			nodeLink.setText(texteHistoire);
 			nodeLink.setAuto(autoBox.isSelected());
+			nodeLink.setRequirements(getRequirement());
 			
 			linkType = choixLienBox.getValue();
 
@@ -312,6 +355,43 @@ public class NodeLinkDialog extends AbstractDialog{
 		return listeChoix;
 	}
 
+	private void showNodeLink(){
+		requirementTab = createRequirementTab();
+	}
+	
+	private Tab createRequirementTab() {
+		deleteItemsTab(requirementTab);
+		
+		requirementTab = new Tab("Requirement");
+
+		requirementTab.setClosable(false);
+		
+		if(requirement == null) {
+			requirement = new RequirementComponent(book);
+			requirementTab.setContent(requirement);
+			System.out.println("REQUIREMENT NULL");
+			requirement.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+		}
+		
+		tabPane.getTabs().addAll(requirementTab);
+		return requirementTab;
+	}
+	
+	private List<List<AbstractRequirement>> getRequirement(){
+		if(requirement == null)
+			return null;
+		
+		List<List<AbstractRequirement>> listAbstractRequirement = new ArrayList();
+		listAbstractRequirement.add(requirement.getRequirementItem());
+		listAbstractRequirement.add(requirement.getRequirementMoney());
+		
+		return listAbstractRequirement;
+	}
+	
+	private void deleteItemsTab(Tab tab) {
+		tabPane.getTabs().remove(tab);
+	}
+	
 	/**
 	 * Donne le lien en fonction du noeud
 	 * @return Lien
