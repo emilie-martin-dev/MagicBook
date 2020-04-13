@@ -85,7 +85,7 @@ public class PreludeDialog extends AbstractDialog {
 		
 		this.showAndWait();
 	}
-
+	
 	@Override
 	protected Node getMainUI() {
 		TabPane tabPane = new TabPane();
@@ -120,7 +120,7 @@ public class PreludeDialog extends AbstractDialog {
 		texte = new TextArea();
 		texte.setWrapText(true);
 		preludeRoot.add(new Label("Texte :"), 0, 0);
-		preludeRoot.add(texte, 0, 1, 2, 1);
+		preludeRoot.add(texte, 0, 1);
 		
 		return preludeRoot;
 	}
@@ -132,16 +132,21 @@ public class PreludeDialog extends AbstractDialog {
 	private Node getCharacterCreationTab() {
 		VBox characterCreationPane = new VBox();
 		characterCreationPane.setSpacing(UiConsts.DEFAULT_MARGIN);
-		characterCreationPane.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
 		
 		accordion = new Accordion();
+		accordion.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
 		
 		Button addButton = new Button("Ajouter");
 		addButton.setOnAction((ActionEvent e) -> {
 			createTitledPane();
 		});
 		
-		characterCreationPane.getChildren().addAll(accordion, addButton);
+		VBox buttonBox = new VBox();
+		buttonBox.setAlignment(Pos.CENTER_RIGHT);
+		buttonBox.getChildren().add(addButton);
+		buttonBox.setPadding(new Insets(0, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
+		
+		characterCreationPane.getChildren().addAll(accordion, buttonBox);
 		
 		ScrollPane scrollPane = new ScrollPane(characterCreationPane);
 		scrollPane.setFitToWidth(true);
@@ -162,25 +167,25 @@ public class PreludeDialog extends AbstractDialog {
 	 */
 	private void createTitledPane(AbstractCharacterCreation characterCreation) {
 		TitledPane titledPane = new TitledPane();
-		Button remove = new Button("Supprimer cette partie");
-		
-		HBox removeBox = new HBox();
-		removeBox.getChildren().add(remove);
-		removeBox.setAlignment(Pos.CENTER_RIGHT);
-		removeBox.setPadding(new Insets(0, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
 		
 		CharacterCreationComponent characterCreationPane = new CharacterCreationComponent(book, characterCreation);
+		Button remove = new Button("Supprimer cette partie");
 		
-		VBox titledPaneBox = new VBox();
-		titledPaneBox.setSpacing(UiConsts.DEFAULT_MARGIN);
-		titledPaneBox.getChildren().addAll(characterCreationPane, removeBox);
-		
-		remove.setOnAction((ActionEvent e) -> {
+		remove.setOnAction((ActionEvent e) -> {	
 			accordion.getPanes().remove(titledPane);
 			this.characterCreationComponent.remove(characterCreationPane);
 		});
 		
+		HBox removeBox = new HBox();
+		removeBox.getChildren().add(remove);
+		removeBox.setAlignment(Pos.CENTER_RIGHT);
+		
+		VBox titledPaneBox = new VBox();
+		titledPaneBox.getChildren().addAll(characterCreationPane, removeBox);
+		titledPaneBox.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+		
 		titledPane.setContent(titledPaneBox);
+		
 		accordion.getPanes().add(titledPane);
 		this.characterCreationComponent.add(characterCreationPane);
 	}

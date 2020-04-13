@@ -138,6 +138,8 @@ public class ItemListComponent extends VBox {
 		});
 		
 		GridPane selectedItemLinkPane = new GridPane();
+		selectedItemLinkPane.setVgap(UiConsts.DEFAULT_MARGIN);
+		selectedItemLinkPane.setHgap(UiConsts.DEFAULT_MARGIN);
 		selectedItemLinkPane.add(new Label("Montant : "), 0, 0);
 		selectedItemLinkPane.add(amountTextField, 1, 0);
 		selectedItemLinkPane.add(updateItemSelected, 0, 1);

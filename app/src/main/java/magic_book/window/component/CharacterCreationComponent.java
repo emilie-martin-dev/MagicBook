@@ -56,7 +56,6 @@ public class CharacterCreationComponent extends GridPane {
 	public CharacterCreationComponent(Book book, AbstractCharacterCreation abstractCharacterCreation) {
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
-		this.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
 
 		texte = new TextArea();
 		texte.setWrapText(true);

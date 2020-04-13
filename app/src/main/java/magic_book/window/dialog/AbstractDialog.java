@@ -69,7 +69,7 @@ public abstract class AbstractDialog extends Stage {
 		rootPane.setPadding(new Insets(margin, margin, UiConsts.DEFAULT_MARGIN_DIALOG, margin));
 		
 		HBox controlButtons = getControlButtons();
-		controlButtons.setPadding(new Insets(UiConsts.DEFAULT_MARGIN, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
+		controlButtons.setPadding(new Insets(UiConsts.DEFAULT_MARGIN, (hideMargins) ? UiConsts.DEFAULT_MARGIN_DIALOG : 0, 0, 0));
 		
 		rootPane.setCenter(getMainUI());
 		rootPane.setBottom(controlButtons);
@@ -123,7 +123,7 @@ public abstract class AbstractDialog extends Stage {
 		});
 		
 		HBox box = new HBox();
-		box.setSpacing(10d);
+		box.setSpacing(UiConsts.DEFAULT_MARGIN);
 		box.setAlignment(Pos.BASELINE_RIGHT);
 		box.getChildren().addAll(boutonAnnuler, boutonValider);
 		
