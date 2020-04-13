@@ -1,35 +1,25 @@
 package magic_book.window.pane;
 
 import java.io.InputStream;
-import java.util.Map;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import magic_book.core.Book;
-import magic_book.core.game.BookCharacter;
-import magic_book.core.item.BookItem;
-import magic_book.observer.book.BookCharacterObserver;
-import magic_book.observer.book.BookItemObserver;
 import magic_book.window.Mode;
 import magic_book.window.UiConsts;
-import magic_book.window.dialog.CharacterDialog;
-import magic_book.window.dialog.ItemDialog;
+import magic_book.window.component.treebookelement.TreeBookCharacterComponent;
+import magic_book.window.component.treebookelement.TreeBookItemComponent;
 
 /**
  * Création du coté gauche de la fenêtre Windows (Mode, Personnages, Items)
  */
-public class LeftPane extends ScrollPane implements BookItemObserver, BookCharacterObserver {
+public class LeftPane extends ScrollPane {
 	
 	/**
 	 * GraphPane sur lequel on met à jour le mode
@@ -43,11 +33,11 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 	/**
 	 * TreeView pour les items
 	 */
-	private TreeView<BookItem> treeViewItem;
+	private TreeBookItemComponent treeBookItemComponent;
 	/**
 	 * TreeView pour les personnages
 	 */
-	private TreeView<BookCharacter> treeViewPerso;
+	private TreeBookCharacterComponent treeBookCharacterComponent;
 	
 	/**
 	 * Livre contenant toutes les informations
@@ -67,7 +57,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		this.setPadding(UiConsts.DEFAULT_INSET);
 		this.setFitToWidth(true);
 				
-		this.setContent(createLeftPanel());
+		this.setContent(createLeftPanel(book));
 		setBook(book);
 	}
 	
@@ -75,7 +65,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 	 * Création de tout le panel : bouton de mode, vue sur les items, vue sur les personnages
 	 * @return Tout le panel
 	 */
-	private Node createLeftPanel() {
+	private Node createLeftPanel(Book book) {
 		VBox leftContent = new VBox();
 		
 		//Création des boutons de mode
@@ -96,7 +86,7 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 		leftContent.getChildren().add(flow);
 		
 		//Vue sur les items et personnages
-		VBox itemPerso = gestionPersosItems();
+		VBox itemPerso = gestionPersosItems(book);
 		leftContent.getChildren().add(itemPerso);
 		
 		return leftContent;
@@ -106,122 +96,12 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 	 * Création de la vue sur les items et les personnages
 	 * @return VBox contenant la vue
 	 */
-	private VBox gestionPersosItems(){
-
-		//---Création des TreeItem avec les items/persos
-		TreeItem<BookCharacter> rootPerso = new TreeItem<> (new BookCharacter("0", "Personnage", 0, 0, null, null, 0));
-		rootPerso.setExpanded(true);
-		treeViewPerso = new TreeView<> (rootPerso);
+	private VBox gestionPersosItems(Book book){
 		
-		TreeItem<BookItem> rootItem = new TreeItem<> (new BookItem("0","Items"));
-		rootItem.setExpanded(true);
-		
-		treeViewItem = new TreeView<> (rootItem);
+		treeBookItemComponent = new TreeBookItemComponent(book);
+		treeBookCharacterComponent = new TreeBookCharacterComponent(book);
 
-		//---Création des context menus pour ajouter/supprimer des personnages
-		ContextMenu contextMenuPerso = new ContextMenu();
-		MenuItem menuPersoAdd = new MenuItem("Ajouter un Personnage");
-		MenuItem menuPersoUpdate = new MenuItem("Modifier un Personnage");
-		MenuItem menuPersoDel = new MenuItem("Supprimer un Personnage");
-
-		//Si un clique a été enregistré sur "Ajouter un personnage"
-		menuPersoAdd.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				CharacterDialog characterDialog = new CharacterDialog(LeftPane.this.book);
-				
-				if(characterDialog.isValid()) {
-					BookCharacter perso = characterDialog.getCharacter();
-				
-					book.addCharacter(perso);
-				}
-			}
-		});
-
-		//Si un clique a été enregistré sur "Modifier un personnage"
-		menuPersoUpdate.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
-				if(selectedItem != null) {
-					BookCharacter oldCharacter = selectedItem.getValue();
-					
-					CharacterDialog characterDialog = new CharacterDialog(oldCharacter, LeftPane.this.book);
-					
-					if(!characterDialog.isValid())
-						return;
-					
-					BookCharacter newCharacter = characterDialog.getCharacter();
-					
-					book.updateCharacter(oldCharacter, newCharacter);
-				}
-			}
-		});
-		
-		//Si un clique a été enregistré sur "Supprimer un personnage"
-		menuPersoDel.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
-				book.removeCharacter(selectedItem.getValue());
-			}
-		});
-		
-		contextMenuPerso.getItems().addAll(menuPersoAdd, menuPersoUpdate, menuPersoDel);
-		treeViewPerso.setContextMenu(contextMenuPerso);
-
-		//---Création des context menus pour ajouter/supprimer des items
-		ContextMenu contextMenuItem = new ContextMenu();
-		MenuItem menuItemAdd = new MenuItem("Ajouter un Item");
-		MenuItem menuItemUpdate = new MenuItem("Modifier un Item");
-		MenuItem menuItemDel = new MenuItem("Supprimer un Item");
-
-		//Si un clique a été enregistré sur "Ajouter un item"
-		menuItemAdd.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				ItemDialog itemDialog = new ItemDialog(LeftPane.this.book);
-				
-				if(itemDialog.isValid()) {
-					book.addItem(itemDialog.getItem());
-				}
-			}
-		});
-		
-		//Si un clique a été enregistré sur "Modifier un item"
-		menuItemUpdate.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
-				if(selectedItem != null) {
-					BookItem oldItem = selectedItem.getValue();
-					
-					ItemDialog newItemDialog = new ItemDialog(oldItem, LeftPane.this.book);
-					
-					if(!newItemDialog.isValid()){
-						return;
-					}
-					
-					BookItem newItem = newItemDialog.getItem();
-					
-					book.updateItem(oldItem, newItem);
-				}
-			}
-		});
-
-		//Si un clique a été enregistré sur "Supprimer un item"
-		menuItemDel.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
-				book.removeItem(selectedItem.getValue());
-			}
-		});
-		
-		contextMenuItem.getItems().addAll(menuItemAdd, menuItemUpdate, menuItemDel);
-		treeViewItem.setContextMenu(contextMenuItem);
-
-		VBox vBox = new VBox(treeViewPerso, treeViewItem);
+		VBox vBox = new VBox(treeBookCharacterComponent, treeBookItemComponent);
 		vBox.setSpacing(UiConsts.DEFAULT_MARGIN);
 
 		return vBox;
@@ -231,29 +111,11 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 	 * On change de livre, toute la vue sur les items et personnages se met à jour
 	 * @param book Nouveau livre contenant toutes les informations
 	 */
-	public void setBook(Book book) {
-		if(this.book != null) {
-			this.book.removeCharacterObserver(this);
-			this.book.removeItemObserver(this);
-		}
-			
+	public void setBook(Book book) {			
 		this.book = book;
 		
-		this.book.addCharacterObserver(this);
-		this.book.addItemObserver(this);
-		
-		treeViewPerso.getRoot().getChildren().clear();
-		treeViewItem.getRoot().getChildren().clear();
-		
-		for(Map.Entry<String, BookCharacter> entry : book.getCharacters().entrySet()) {
-			if(!entry.getKey().equals(Book.MAIN_CHARACTER_ID))
-				characterAdded(entry.getValue());
-		}
-		
-		
-		for(Map.Entry<String, BookItem> entry : book.getItems().entrySet()) {
-			itemAdded(entry.getValue());
-		}
+		treeBookCharacterComponent.setBook(book);
+		treeBookItemComponent.setBook(book);
 	}
 
 	/**
@@ -291,58 +153,5 @@ public class LeftPane extends ScrollPane implements BookItemObserver, BookCharac
 
 		return toggleButton;
 	}
-
-	@Override
-	public void itemAdded(BookItem item) {
-		treeViewItem.getRoot().getChildren().add(new TreeItem<> (item));	
-	}
-
-	@Override
-	public void itemEdited(BookItem oldItem, BookItem newItem) {
-		for(TreeItem<BookItem> treeItem : treeViewItem.getRoot().getChildren()) {
-			if(treeItem.getValue() == oldItem) {
-				treeItem.setValue(newItem);
-				break;
-			}
-		}
-		
-		treeViewItem.refresh();
-	}
-
-	@Override
-	public void itemDeleted(BookItem item) {
-		for(TreeItem<BookItem> treeItem : treeViewItem.getRoot().getChildren()) {
-			if(treeItem.getValue() == item) {
-				treeViewItem.getRoot().getChildren().remove(treeItem);
-				break;
-			}
-		}
-	}
-
-	@Override
-	public void characterAdded(BookCharacter character) {
-		treeViewPerso.getRoot().getChildren().add(new TreeItem<> (character));
-	}
-
-	@Override
-	public void characterEdited(BookCharacter oldCharacter, BookCharacter newCharacter) {
-		for(TreeItem<BookCharacter> treeItem : treeViewPerso.getRoot().getChildren()) {
-			if(treeItem.getValue() == oldCharacter) {
-				treeItem.setValue(newCharacter);
-				break;
-			}
-		}
-		
-		treeViewPerso.refresh();
-	}
-
-	@Override
-	public void characterDeleted(BookCharacter character) {
-		for(TreeItem<BookCharacter> treeItem : treeViewPerso.getRoot().getChildren()) {
-			if(treeItem.getValue() == character) {
-				treeViewPerso.getRoot().getChildren().remove(treeItem);
-				break;
-			}
-		}
-	}
+	
 }
