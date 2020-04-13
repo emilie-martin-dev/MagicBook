@@ -20,23 +20,16 @@ import magic_book.core.item.BookItemMoney;
 import magic_book.core.requirement.AbstractRequirement;
 import magic_book.core.requirement.RequirementItem;
 import magic_book.core.requirement.RequirementMoney;
+import magic_book.core.requirement.RequirementSkill;
 import magic_book.window.UiConsts;
 
-/**
- * Permet de sélectionner des items parmis ceux disponibles
- */
 public class RequirementComponent extends VBox {
 
 	private Button addItem;
 	private Button addSkill;
-	
-	/**
-	 * Livre contenant toutes les informations
-	 */
+
 	private Book book;
 	
-	private int x;
-	private int y;
 	private int compt;
 	
 	private GridPane itemPane;
@@ -112,9 +105,6 @@ public class RequirementComponent extends VBox {
 	private ComboBox<String> addItemComboBox(){
 		ComboBox<String> itemBox = new ComboBox<>();
 		
-		x = (itemComboBox.size() / UiConsts.DEFAULT_MARGIN)*2;
-		y = itemComboBox.size() % UiConsts.DEFAULT_MARGIN;
-		
 		itemBox.getItems().add(" ");
 		for(Map.Entry<String, BookItem> listItem : book.getItems().entrySet()){
 			itemBox.getItems().add(listItem.getValue().getId());
@@ -132,7 +122,7 @@ public class RequirementComponent extends VBox {
 			}
 		});
 
-		addItemPane.add(itemBox, x, y);
+		addItemPane.add(itemBox, (itemComboBox.size() / UiConsts.DEFAULT_MARGIN)*2, itemComboBox.size() % UiConsts.DEFAULT_MARGIN);
 		
 		itemComboBox.put(compt,itemBox);
 		compt+=1;
@@ -192,20 +182,37 @@ public class RequirementComponent extends VBox {
 		return listMoney;
 	}
 	
+	public List<AbstractRequirement> getRequirementSkill() {
+		List<AbstractRequirement> listSkill = new ArrayList();
+		
+		for(ComboBox<String> skillBox : skillComboBox){
+			if(skillBox.getValue() != null && !skillBox.getValue().equals(" ")){
+				RequirementSkill skill = new RequirementSkill(skillBox.getValue());
+				listSkill.add(skill);
+			}
+		}
+		return listSkill;
+	}
+	
 	public void setRequirement(List<List<AbstractRequirement>> listAbstractRequirement){
 		for(List<AbstractRequirement> listAbstract : listAbstractRequirement){
-			for(AbstractRequirement listItem : listAbstract){
-				if(listItem instanceof RequirementItem){
-					RequirementItem item = (RequirementItem) listItem;
+			for(AbstractRequirement listRequirement : listAbstract){
+				if(listRequirement instanceof RequirementItem){
+					RequirementItem item = (RequirementItem) listRequirement;
 					ComboBox itemBox = addItemComboBox();
 					itemBox.setValue(item.getItemId());
 				}
-				else if(listItem instanceof RequirementMoney){
-					RequirementMoney money = (RequirementMoney) listItem;
+				else if(listRequirement instanceof RequirementMoney){
+					RequirementMoney money = (RequirementMoney) listRequirement;
 					ComboBox itemBox = addItemComboBox();
 					itemBox.setValue(money.getMoneyId());
 					showItemMoney(compt-1);
 					moneyTextField.setText(String.valueOf(money.getAmount()));
+				}
+				else if(listRequirement instanceof RequirementSkill){
+					RequirementSkill skill = (RequirementSkill) listRequirement;
+					ComboBox skillBox = addSkillComboBox();
+					skillBox.setValue(skill.getSkillId());
 				}
 			}
 		}
