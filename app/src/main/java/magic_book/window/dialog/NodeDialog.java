@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
@@ -302,7 +303,11 @@ public class NodeDialog extends AbstractDialog {
 		combatPane.add(addEnnemiButton, 0, 1);
 		combatPane.add(ennemisPane, 0, 2, 2, 1);
 		
-		return nodeFieldsPane;
+		ScrollPane scrollPane = new ScrollPane();
+		scrollPane.setContent(nodeFieldsPane);
+		scrollPane.setFitToWidth(true);
+		
+		return scrollPane;
 	}
 	
 	/**
@@ -315,7 +320,11 @@ public class NodeDialog extends AbstractDialog {
 			itemLinksList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
 		}
 		
-		return itemLinksList;
+		ScrollPane scrollPane = new ScrollPane();
+		scrollPane.setContent(itemLinksList);
+		scrollPane.setFitToWidth(true);
+		
+		return scrollPane;
 	}
 	
 	/**

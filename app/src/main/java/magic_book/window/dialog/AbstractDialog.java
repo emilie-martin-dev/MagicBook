@@ -32,7 +32,7 @@ public abstract class AbstractDialog extends Stage {
 	 * @param title Le message à afficher
 	 */
 	public AbstractDialog(String title) {
-		this(title, false, false);
+		this(title, false);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public abstract class AbstractDialog extends Stage {
 	 * @param hideMarginTop Marge pour le prélude
 	 * @param useScroll Scroll du Pane
 	 */
-	public AbstractDialog(String title, boolean hideMarginTop, boolean useScroll) {
+	public AbstractDialog(String title, boolean hideMarginTop, boolean useScroll) {		
 		initDialogUI(title, hideMarginTop, useScroll);
 		
 		this.isValid = false;
@@ -86,7 +86,8 @@ public abstract class AbstractDialog extends Stage {
 		
 		Scene scene = new Scene(rootNode);
 		this.initModality(Modality.APPLICATION_MODAL);
-		this.setResizable(false);
+		this.setMaxWidth(540d);
+		this.setMaxHeight(380d);
 		this.setTitle(title);
 		this.setScene(scene);
 	}
