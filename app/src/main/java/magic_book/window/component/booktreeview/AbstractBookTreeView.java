@@ -19,6 +19,9 @@ public abstract class AbstractBookTreeView<T> extends TreeView<T> {
 	 */
 	private Book book;
 	
+	/**
+	 * Le TreeItem parent. Ne peut être supprimé
+	 */
 	private TreeItem<T> rootItem;
 	
 	/**
@@ -65,26 +68,66 @@ public abstract class AbstractBookTreeView<T> extends TreeView<T> {
 		this.setMaxHeight(MAX_HEIGHT);
 	}
 	
+	/**
+	 * Permet de se désinscrire de l'ancien book et de se mettre à jour suivant le nouveau
+	 * @param oldBook L'ancien livre
+	 * @param newBook Le nouveau livre
+	 */
 	protected abstract void bookChanged(Book oldBook, Book newBook);
 	
+	/**
+	 * Créé le TreeItem parent
+	 * @return Le TreeItem parent
+	 */
 	protected abstract T createRootElement();
 	
+	/**
+	 * Action réalisée quand on clique sur le menu ajouter
+	 */	
 	protected abstract void addBookElementContextMenu();
 	
+	/**
+	 * Action réalisée quand on clique sur le menu mettre à jour
+	 * @param element L'élément actuellement sélectionné sur la TreeView
+	 */
 	protected abstract void updateBookElementContextMenu(T element);
 	
+	/**
+	 * Action réalisée quand on clique sur le menu supprimer
+	 * @param element L'élément actuellement sélectionné sur la TreeView
+	 */
 	protected abstract void removeBookElementContextMenu(T element);
 	
+	/**
+	 * Retourne le texte pour le menu d'ajout
+	 * @return le texte pour le menu d'ajout
+	 */
 	protected abstract String getAddContextMenuString();
 	
+	/**
+	 * Retourne le texte pour le menu de mise à jour
+	 * @return le texte pour le menu de mise à jour
+	 */
 	protected abstract String getUpdateContextMenuString();
 	
+	/**
+	 * Retourne le texte pour le mise de suppression
+	 * @return le texte pour le menu de suppression
+	 */
 	protected abstract String getDeleteContextMenuString();
 
+	/**
+	 * Retourne le TreeItem parent
+	 * @return 
+	 */
 	public TreeItem<T> getRootItem() {
 		return rootItem;
 	}
 	
+	/**
+	 * Change le livre
+	 * @param book Le livre
+	 */
 	public void setBook(Book book) {
 		rootItem.getChildren().clear();
 		
@@ -93,6 +136,10 @@ public abstract class AbstractBookTreeView<T> extends TreeView<T> {
 		this.book = book;
 	}
 
+	/**
+	 * Retourne le livre
+	 * @return Le livre
+	 */
 	public Book getBook() {
 		return book;
 	}

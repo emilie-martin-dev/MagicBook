@@ -10,7 +10,7 @@ import magic_book.core.item.BookItemLink;
 
 /**
  * Classe mère des noeud composé de choix
- * @param <T> Représente les BookNodeLink ou les BookNodeLinkRandom
+ * @param <T> Le type de choix
  */
 public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> extends AbstractBookNode {
 	
@@ -27,7 +27,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	 */
 	private List<BookItemLink> shopItemLinks;
 	/**
-	 *  Liste de BookNodeLink ou de BookNodeLinkRandom représentant tous les choix possible à partir de ce noeud
+	 *  Liste de choix possible à partir de ce noeud
 	 */
 	private List<T> choices;
 	/**
@@ -45,7 +45,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	 * @param nbItemsAPrendre Nombre d'item maximum pouvant être pris sur ce noeud (-1 représente l'infini)
 	 * @param itemLinks Liste des items disponible sur ce noeud
 	 * @param shopItemLinks Liste des items pouvant être acheté sur ce noeud
-	 * @param choices Liste de BookNodeLink représentant tout les choix possible à partir de ce noeud
+	 * @param choices Liste de choix possible à partir de ce noeud
 	 */
 	public AbstractBookNodeWithChoices(String text, Integer nbItemsAPrendre, List<BookItemLink> itemLinks, List<BookItemLink> shopItemLinks, List<T> choices){
 		this(text, nbItemsAPrendre, itemLinks, shopItemLinks, choices, false, 0);
@@ -57,7 +57,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	 * @param nbItemsAPrendre Nombre d'item maximum pouvant être pris sur ce noeud (-1 représente l'infini)
 	 * @param itemLinks Liste des items disponible sur ce noeud
 	 * @param shopItemLinks Liste des items pouvant être acheté sur ce noeud
-	 * @param choices Liste de BookNodeLink représentant tout les choix possible à partir de ce noeud
+	 * @param choices Liste de choix possible à partir de ce noeud
 	 * @param mustEat Obligation ou non de manger
 	 * @param hp Perte ou gain de vie
 	 */
@@ -113,7 +113,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	/**
 	 * Décrit les items qui peuvent être achetés
 	 * @param book Livre contenant toute les informations
-	 * @return Texte comprenant le les items
+	 * @return Texte comprenant les items pouvant être achetés
 	 */
 	public String getShopDescription(Book book) {
 		StringBuffer buffer = new StringBuffer();
@@ -265,7 +265,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	
 	/**
 	 * Ajoute un choix parmis la liste de choix existant
-	 * @param nodeLink BookNodeLink ou BookNodeLinkRandom à ajouté
+	 * @param nodeLink Le choix à ajouter
 	 */
 	public void addChoice(T nodeLink) {
 		this.choices.add(nodeLink);
@@ -273,8 +273,8 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 
 	/**
 	 * Met à jour un choix
-	 * @param oldNodeLink Ancien choix représenté par un BookNodeLink ou un BookNodeLinkRandom 
-	 * @param newNodeLink Nouveau choix représenté par un BookNodeLink ou un BookNodeLinkRandom
+	 * @param oldNodeLink Ancien choix
+	 * @param newNodeLink Nouveau choix
 	 */
 	public void updateChoice(T oldNodeLink, T newNodeLink) {
 		removeChoice(oldNodeLink);
@@ -283,7 +283,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	
 	/**
 	 * Supprime un choix
-	 * @param nodeLink  BookNodeLink ou BookNodeLinkRandom à supprimer
+	 * @param nodeLink Choix à supprimer
 	 */
 	public void removeChoice(T nodeLink) {
 		if(this.choices.contains(nodeLink))
@@ -297,7 +297,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 	
 	/**
 	 * Ajoute un item à acheter dans le noeud
-	 * @param newShopItemLink Nouvelle item à acheter
+	 * @param newShopItemLink Nouvel item à acheter
 	 */
 	public void addShopItemLink(BookItemLink newShopItemLink){
 		this.shopItemLinks.add(newShopItemLink);
@@ -305,7 +305,7 @@ public abstract class AbstractBookNodeWithChoices <T extends BookNodeLink> exten
 
 	/**
 	 * Ajoute un item disponible dans le noeud
-	 * @param newItemLink Nouvelle item disponible
+	 * @param newItemLink Nouvel item disponible
 	 */
 	public void addItemLink(BookItemLink newItemLink){
 		this.itemLinks.add(newItemLink);
