@@ -13,8 +13,8 @@ import javafx.scene.layout.VBox;
 import magic_book.core.Book;
 import magic_book.window.Mode;
 import magic_book.window.UiConsts;
-import magic_book.window.component.treebookelement.TreeBookCharacterComponent;
-import magic_book.window.component.treebookelement.TreeBookItemComponent;
+import magic_book.window.component.booktreeview.BookTreeViewCharacter;
+import magic_book.window.component.booktreeview.BookTreeViewItem;
 
 /**
  * Création du coté gauche de la fenêtre Windows (Mode, Personnages, Items)
@@ -33,11 +33,11 @@ public class LeftPane extends ScrollPane {
 	/**
 	 * TreeView pour les items
 	 */
-	private TreeBookItemComponent treeBookItemComponent;
+	private BookTreeViewItem treeBookItemComponent;
 	/**
 	 * TreeView pour les personnages
 	 */
-	private TreeBookCharacterComponent treeBookCharacterComponent;
+	private BookTreeViewCharacter treeBookCharacterComponent;
 	
 	/**
 	 * Livre contenant toutes les informations
@@ -98,8 +98,8 @@ public class LeftPane extends ScrollPane {
 	 */
 	private VBox gestionPersosItems(Book book){
 		
-		treeBookItemComponent = new TreeBookItemComponent(book);
-		treeBookCharacterComponent = new TreeBookCharacterComponent(book);
+		treeBookItemComponent = new BookTreeViewItem(book);
+		treeBookCharacterComponent = new BookTreeViewCharacter(book);
 
 		VBox vBox = new VBox(treeBookCharacterComponent, treeBookItemComponent);
 		vBox.setSpacing(UiConsts.DEFAULT_MARGIN);

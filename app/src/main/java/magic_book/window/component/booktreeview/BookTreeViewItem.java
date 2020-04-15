@@ -1,4 +1,4 @@
-package magic_book.window.component.treebookelement;
+package magic_book.window.component.booktreeview;
 
 import java.util.Map;
 import javafx.scene.control.TreeItem;
@@ -8,9 +8,9 @@ import magic_book.observer.book.BookItemObserver;
 import magic_book.window.dialog.ItemDialog;
 
 
-public class TreeBookItemComponent extends AbstractTreeBookElementComponent<BookItem> implements BookItemObserver {
+public class BookTreeViewItem extends AbstractBookTreeView<BookItem> implements BookItemObserver {
 
-	public TreeBookItemComponent(Book book) {
+	public BookTreeViewItem(Book book) {
 		super(book);
 	}
 

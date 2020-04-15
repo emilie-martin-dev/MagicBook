@@ -1,4 +1,4 @@
-package magic_book.window.component.treebookelement;
+package magic_book.window.component.booktreeview;
 
 import java.util.Map;
 import javafx.scene.control.TreeItem;
@@ -7,9 +7,9 @@ import magic_book.core.game.BookCharacter;
 import magic_book.observer.book.BookCharacterObserver;
 import magic_book.window.dialog.CharacterDialog;
 
-public class TreeBookCharacterComponent extends AbstractTreeBookElementComponent<BookCharacter> implements BookCharacterObserver {
+public class BookTreeViewCharacter extends AbstractBookTreeView<BookCharacter> implements BookCharacterObserver {
 
-	public TreeBookCharacterComponent(Book book) {
+	public BookTreeViewCharacter(Book book) {
 		super(book);
 	}
 

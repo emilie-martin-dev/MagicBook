@@ -1,4 +1,4 @@
-package magic_book.window.component.treebookelement;
+package magic_book.window.component.booktreeview;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.ContextMenu;
@@ -10,7 +10,7 @@ import magic_book.core.Book;
 /**
  * Création du coté gauche de la fenêtre Windows (Mode, Personnages, Items)
  */
-public abstract class AbstractTreeBookElementComponent<T> extends TreeView<T> {
+public abstract class AbstractBookTreeView<T> extends TreeView<T> {
 	
 	private static final double MAX_HEIGHT = 250d;
 	
@@ -25,7 +25,7 @@ public abstract class AbstractTreeBookElementComponent<T> extends TreeView<T> {
 	 * Constructeur
 	 * @param book Livre contenant toutes les informations
 	 */
-	public AbstractTreeBookElementComponent(Book book){
+	public AbstractBookTreeView(Book book){
 		rootItem = new TreeItem<>(createRootElement());
 		rootItem.setExpanded(true);
 		
