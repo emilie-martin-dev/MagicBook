@@ -64,7 +64,16 @@ public class BookCharacter implements Parsable, Descriptible, JsonExportable<Cha
 	 * Création d'un personnage
 	 */
 	public BookCharacter() {
-		this("", "", 0, 0, null, null, 0);
+		this("", "");
+	}
+	
+	/**
+	 * Création d'un personnage normal
+	 * @param id L'id du personnage
+	 * @param name Nom du personnage
+	 */
+	public BookCharacter(String id, String name) {
+		this(id, name, 0, 0, null, null, 0);
 	}
 
 	/**
