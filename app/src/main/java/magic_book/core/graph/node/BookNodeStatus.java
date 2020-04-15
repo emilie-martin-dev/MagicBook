@@ -1,7 +1,7 @@
 package magic_book.core.graph.node;
 
 /**
- * Statut d'une partie
+ * Statut du noeud 
  */
 public enum BookNodeStatus {
 	/**

@@ -9,7 +9,7 @@ import magic_book.core.parser.Descriptible;
 import magic_book.core.parser.TextParser;
 
 /**
- * Classe mère de toutes les classes représentant les noeuds
+ * Classe mère de tous les noeuds
  */
 public abstract class AbstractBookNode implements Descriptible, JsonExportable<SectionJson> {
 	
@@ -28,7 +28,8 @@ public abstract class AbstractBookNode implements Descriptible, JsonExportable<S
 	
 	/**
 	 * Méthode permetant de donner la liste des choix
-	 * @return Liste de choix de BookNodeLink ou un BookNodeLinkRandom
+	 * @param <T> Le type du choix
+	 * @return Liste de choix
 	 */
 	public abstract <T extends BookNodeLink> List<T> getChoices();
 

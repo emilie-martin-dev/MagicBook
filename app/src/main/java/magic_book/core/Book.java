@@ -22,6 +22,8 @@ import magic_book.observer.book.BookNodeLinkObservable;
 import magic_book.observer.book.BookNodeLinkObserver;
 import magic_book.observer.book.BookNodeObservable;
 import magic_book.observer.book.BookNodeObserver;
+import magic_book.observer.book.BookSkillObservable;
+import magic_book.observer.book.BookSkillObserver;
 
 public class Book {
 
@@ -38,6 +40,7 @@ public class Book {
 	private BookNodeLinkObservable bookNodeLinkObservable;
 	private BookItemObservable bookItemObservable;
 	private BookCharacterObservable bookCharacterObservable;
+	private BookSkillObservable bookSkillObservable;
 
 	private List<Integer> missingIndexes;
 	private HashMap<AbstractBookNode, Integer> nodesInv;
@@ -76,6 +79,7 @@ public class Book {
 		this.bookNodeLinkObservable = new BookNodeLinkObservable();
 		this.bookItemObservable = new BookItemObservable();
 		this.bookCharacterObservable = new BookCharacterObservable();
+		this.bookSkillObservable = new BookSkillObservable();
 		
 		computeNodesInv();
 		computeMissingIndexes();
@@ -288,6 +292,25 @@ public class Book {
 	public BookCharacter getMainCharacter() {
 		return this.characters.get(MAIN_CHARACTER_ID);
 	}
+	
+	public void addSkill(BookSkill skill) {
+		skills.put(skill.getId(), skill);
+
+		bookSkillObservable.notifySkillAdded(skill);
+	}
+
+	public void updateSkill(BookSkill oldSkill, BookSkill newSkill) {
+		skills.remove(oldSkill.getId());
+		skills.put(newSkill.getId(), newSkill);
+
+		bookSkillObservable.notifySkillEdited(oldSkill, newSkill);
+	}
+
+	public void removeSkill(BookSkill skill) {
+		skills.remove(skill.getId());
+
+		bookSkillObservable.notifySkillDeleted(skill);
+	}
 
 	private void computeMissingIndexes() {
 		int i = 2;
@@ -343,6 +366,14 @@ public class Book {
 
 	public void removeItemObserver(BookItemObserver observer) {
 		bookItemObservable.removeObserver(observer);
+	}
+	
+	public void addSkillObserver(BookSkillObserver observer) {
+		bookSkillObservable.addObserver(observer);
+	}
+
+	public void removeSkillObserver(BookSkillObserver observer) {
+		bookSkillObservable.removeObserver(observer);
 	}
 
 	public String getTextPrelude() {
