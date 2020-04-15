@@ -15,6 +15,7 @@ import magic_book.window.Mode;
 import magic_book.window.UiConsts;
 import magic_book.window.component.booktreeview.BookTreeViewCharacter;
 import magic_book.window.component.booktreeview.BookTreeViewItem;
+import magic_book.window.component.booktreeview.BookTreeViewSkill;
 
 /**
  * Création du coté gauche de la fenêtre Windows (Mode, Personnages, Items)
@@ -33,16 +34,15 @@ public class LeftPane extends ScrollPane {
 	/**
 	 * TreeView pour les items
 	 */
-	private BookTreeViewItem treeBookItemComponent;
+	private BookTreeViewItem bookTreeViewItem;
 	/**
 	 * TreeView pour les personnages
 	 */
-	private BookTreeViewCharacter treeBookCharacterComponent;
-	
+	private BookTreeViewCharacter bookTreeViewCharacter;
 	/**
-	 * Livre contenant toutes les informations
+	 * TreeView pour les skills
 	 */
-	private Book book;
+	private BookTreeViewSkill bookTreeViewSkill;
 	
 	/**
 	 * Constructeur
@@ -85,23 +85,23 @@ public class LeftPane extends ScrollPane {
 		leftContent.setSpacing(UiConsts.DEFAULT_MARGIN);
 		leftContent.getChildren().add(flow);
 		
-		//Vue sur les items et personnages
-		VBox itemPerso = gestionPersosItems(book);
-		leftContent.getChildren().add(itemPerso);
+		//Box pour les treeview
+		VBox treeViews = bookTreeViews(book);
+		leftContent.getChildren().add(treeViews);
 		
 		return leftContent;
 	}
 	
 	/**
-	 * Création de la vue sur les items et les personnages
+	 * Création des treeview
 	 * @return VBox contenant la vue
 	 */
-	private VBox gestionPersosItems(Book book){
+	private VBox bookTreeViews(Book book){
+		bookTreeViewItem = new BookTreeViewItem(book);
+		bookTreeViewCharacter = new BookTreeViewCharacter(book);
+		bookTreeViewSkill = new BookTreeViewSkill(book);
 		
-		treeBookItemComponent = new BookTreeViewItem(book);
-		treeBookCharacterComponent = new BookTreeViewCharacter(book);
-
-		VBox vBox = new VBox(treeBookCharacterComponent, treeBookItemComponent);
+		VBox vBox = new VBox(bookTreeViewCharacter, bookTreeViewItem, bookTreeViewSkill);
 		vBox.setSpacing(UiConsts.DEFAULT_MARGIN);
 
 		return vBox;
@@ -111,11 +111,10 @@ public class LeftPane extends ScrollPane {
 	 * On change de livre, toute la vue sur les items et personnages se met à jour
 	 * @param book Nouveau livre contenant toutes les informations
 	 */
-	public void setBook(Book book) {			
-		this.book = book;
-		
-		treeBookCharacterComponent.setBook(book);
-		treeBookItemComponent.setBook(book);
+	public void setBook(Book book) {
+		bookTreeViewCharacter.setBook(book);
+		bookTreeViewItem.setBook(book);
+		bookTreeViewSkill.setBook(book);
 	}
 
 	/**
