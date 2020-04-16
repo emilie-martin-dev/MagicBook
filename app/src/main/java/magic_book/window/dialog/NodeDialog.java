@@ -481,6 +481,8 @@ public class NodeDialog extends AbstractDialog {
 	private void clearNode() {
 		nodeFieldsPane.getChildren().clear();
 		nodeFieldsPane.getChildren().add(nodeTextTypePane);
+		tabPane.getTabs().remove(itemsTab);
+		tabPane.getTabs().remove(shopTab);
 	}	
 	
 	/**
