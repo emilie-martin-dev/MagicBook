@@ -49,7 +49,7 @@ public class PreludeDialog extends AbstractDialog {
 	 */
 	private TextArea texte;
 	/**
-	 * Contient les différentes étapes de la créationdu personnage
+	 * Contient les différentes étapes de la création du personnage
 	 */
 	private Accordion accordion;
 	/**

@@ -51,18 +51,35 @@ public class ItemListComponent extends VBox {
 	 * Création de la VBox des items
 	 * @param book Livre contenant toutes les informations
 	 */
-	public ItemListComponent(Book book) {
+	public ItemListComponent(Book book, Boolean everyPane) {
 		this.book = book;
-		
 		this.setSpacing(UiConsts.DEFAULT_MARGIN);
 		
+		if(everyPane)
+			createItemListComponent();
+		
+	}
+	
+	private void createItemListComponent(){
+		createAddItemLink(null);
+		createAddItemView();
+		createItemEditingLinkPane();
+	}
+	
+	public void createAddItemLink(ComboBox comboBoxChoices) {
 		itemComboBox = new ComboBox<>();
-		itemComboBox.getItems().addAll(book.getItems().values());
+	
+		if(comboBoxChoices != null){
+			itemComboBox = comboBoxChoices;
+		} else {
+			itemComboBox.getItems().addAll(book.getItems().values());
+		}
 		
 		//Bouton "Ajouter" pour ajouter les items
 		Button addItemSelected = new Button("Ajouter");
 		addItemSelected.setOnAction((ActionEvent e) -> {
 			//Ajoute l'item si un item est sélectionné dans la ComboBox
+			System.out.println("itemComboBox.getValue().getId()"+itemComboBox.getValue().getId());
 			if(itemComboBox.getValue() != null)
 				addItemLink(itemComboBox.getValue().getId());
 		});
@@ -71,6 +88,10 @@ public class ItemListComponent extends VBox {
 		itemSelectionBox.setSpacing(UiConsts.DEFAULT_MARGIN);
 		itemSelectionBox.getChildren().addAll(itemComboBox, addItemSelected);
 	
+		this.getChildren().add(itemSelectionBox);
+	}
+	
+	public void createAddItemView() {
 		//Permet d'afficher les items ajoutés
 		selectedItemsListView = new ListView<>();
 		selectedItemsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);		
@@ -86,7 +107,7 @@ public class ItemListComponent extends VBox {
 		
 		selectedItemsListView.setContextMenu(createMenuContextItemLink());
 		
-		this.getChildren().addAll(itemSelectionBox, selectedItemsListView, createItemLinkPane());
+		this.getChildren().add(selectedItemsListView);
 	}
 	
 	/**
@@ -118,7 +139,7 @@ public class ItemListComponent extends VBox {
 	 * Pane pour l'edition d'un item de la liste
 	 * @return Pane pour l'edition d'un item de la liste
 	 */
-	public GridPane createItemLinkPane() {
+	public void createItemEditingLinkPane() {
 		amountTextField = new TextField();
 		
 		updateItemSelected = new Button("Modifier");
@@ -144,7 +165,7 @@ public class ItemListComponent extends VBox {
 		selectedItemLinkPane.add(amountTextField, 1, 0);
 		selectedItemLinkPane.add(updateItemSelected, 0, 1);
 		
-		return selectedItemLinkPane;
+		this.getChildren().add(selectedItemLinkPane);
 	}
 	
 	/**

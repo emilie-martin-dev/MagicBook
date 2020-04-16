@@ -316,7 +316,7 @@ public class NodeDialog extends AbstractDialog {
 	 */
 	private Node getItemsTabContent() {
 		if(itemLinksList == null) {
-			itemLinksList = new ItemListComponent(book);
+			itemLinksList = new ItemListComponent(book, true);
 			itemLinksList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
 		}
 		
