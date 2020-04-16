@@ -24,6 +24,7 @@ import magic_book.core.game.BookCharacter;
 import magic_book.core.game.BookSkill;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationShop;
 import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.game.character_creation.CharacterCreationText;
 import magic_book.core.graph.node.AbstractBookNode;
@@ -170,6 +171,8 @@ public class BookReader {
 				characterCreation = new CharacterCreationText();
 			} else if(characterCreationJson.getType() == TypeJson.ITEM) {
 				characterCreation = new CharacterCreationItem();
+			} else if(characterCreationJson.getType() == TypeJson.SHOP) {
+				characterCreation = new CharacterCreationShop();
 			} else if(characterCreationJson.getType() == TypeJson.SKILL) {
 				characterCreation = new CharacterCreationSkill();
 			} else {
