@@ -54,23 +54,26 @@ public class ItemListComponent extends VBox {
 	 * Livre contenant toutes les informations
 	 */
 	private Book book;
-	
-	/**
-	 * Permet de savoi si c'est un shop ou nom
-	 */
-	private Boolean shopList;
+
 	
 	/**
 	 * Création de la VBox des items
 	 * @param book Livre contenant toutes les informations
-	 * @param shopList Boolean si c'est une liste d'items à acheter
+	 * @param everyPane Boolean si il faut afficher tout les Pane ou non
 	 */
-	public ItemListComponent(Book book, Boolean shopList) {
+	public ItemListComponent(Book book, Boolean everyPane) {
 		this.book = book;
-		this.shopList = shopList;
-		
 		this.setSpacing(UiConsts.DEFAULT_MARGIN);
-		
+		if(everyPane)
+			createPane();
+	}
+	
+	public void createPane(){
+		createAddItemLink();
+		createItemListView(false);
+		createItemEditeLinkPane(false);
+	}
+	public void createAddItemLink(){
 		itemComboBox = new ComboBox<>();
 		itemComboBox.getItems().addAll(book.getItems().values());
 		
@@ -85,6 +88,11 @@ public class ItemListComponent extends VBox {
 		HBox itemSelectionBox = new HBox();
 		itemSelectionBox.setSpacing(UiConsts.DEFAULT_MARGIN);
 		itemSelectionBox.getChildren().addAll(itemComboBox, addItemSelected);
+		
+		this.getChildren().add(itemSelectionBox);
+	}
+	
+	public void createItemListView(Boolean shopList){
 	
 		//Permet d'afficher les items ajoutés
 		selectedItemsListView = new ListView<>();
@@ -105,7 +113,7 @@ public class ItemListComponent extends VBox {
 		
 		selectedItemsListView.setContextMenu(createMenuContextItemLink());
 		
-		this.getChildren().addAll(itemSelectionBox, selectedItemsListView, createItemLinkPane());
+		this.getChildren().add(selectedItemsListView);
 	}
 	
 	/**
@@ -137,7 +145,7 @@ public class ItemListComponent extends VBox {
 	 * Pane pour l'edition d'un item de la liste
 	 * @return Pane pour l'edition d'un item de la liste
 	 */
-	public GridPane createItemLinkPane() {
+	public void createItemEditeLinkPane(Boolean shopList) {
 		priceTextField = new TextField();
 		sellingPriceTextField = new TextField();
 		amountTextField = new TextField();
@@ -151,8 +159,10 @@ public class ItemListComponent extends VBox {
 				int sellingPrice = 1;
 				try {
 					amount = Integer.valueOf(amountTextField.getText());
-					price = Integer.valueOf(priceTextField.getText());
-					sellingPrice = Integer.valueOf(sellingPriceTextField.getText());
+					if(shopList){
+						price = Integer.valueOf(priceTextField.getText());
+						sellingPrice = Integer.valueOf(sellingPriceTextField.getText());
+					}
 					
 				} catch(NumberFormatException ex) {
 					return;
@@ -177,7 +187,7 @@ public class ItemListComponent extends VBox {
 			selectedItemLinkPane.add(updateItemSelected, 0, 1);
 		}
 		
-		return selectedItemLinkPane;
+		this.getChildren().add(selectedItemLinkPane);
 	}
 	
 	/**

@@ -325,7 +325,14 @@ public class NodeDialog extends AbstractDialog {
 	 */
 	private Node getTabContent(ItemListComponent itemList, String tabLabel, Boolean shop) {
 		if(itemList == null) {
-			itemList = new ItemListComponent(book, shop);
+			if(shop){
+				itemList = new ItemListComponent(book, false);
+				itemList.createAddItemLink();
+				itemList.createItemListView(shop);
+				itemList.createItemEditeLinkPane(shop);
+			} else {
+				itemList = new ItemListComponent(book, true);
+			}
 			itemList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
 		}
 

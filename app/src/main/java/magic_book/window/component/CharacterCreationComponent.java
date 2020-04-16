@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import magic_book.core.Book;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.game.character_creation.CharacterCreationItem;
+import magic_book.core.game.character_creation.CharacterCreationShop;
 import magic_book.core.game.character_creation.CharacterCreationText;
 import magic_book.window.UiConsts;
 
@@ -85,15 +86,17 @@ public class CharacterCreationComponent extends GridPane {
 		this.add(new Label("Type"), 0, 2);
 		this.add(characterCreationType, 1, 2);
 		
-		itemLinksList = new ItemListComponent(book, false);
-		shopLinksList = new ItemListComponent(book, true);
+		itemLinksList = new ItemListComponent(book, true);
+		shopLinksList = new ItemListComponent(book, false);
+		shopLinksList.createAddItemLink();
+		shopLinksList.createItemListView(true);
+		shopLinksList.createItemEditeLinkPane(true);
 
 		characterCreationType.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String t, String t1) -> {
 			this.getChildren().remove(itemLinksList);
 			this.getChildren().remove(shopLinksList);
 			
 			if(characterCreationType.getValue().equals(TYPE_ITEM))
-				System.out.println("CharacterCreationComponent de ITEM");
 				addItemLinksComponent();
 
 			if(characterCreationType.getValue().equals(TYPE_SHOP))
@@ -123,23 +126,22 @@ public class CharacterCreationComponent extends GridPane {
 	 * @return Étape de la création du personnage
 	 */
 	public AbstractCharacterCreation getCharacterCreation() {
-		System.out.println("getCharacteCreationr");
 		AbstractCharacterCreation characterCreation = null;
 
-		if(!itemLinksList.getBookItemLinks().isEmpty() || !shopLinksList.getBookItemLinks().isEmpty()) {
-			
-			System.out.println("getCharacteCreationr de ITEM");
+		if(characterCreationType.getValue() == TYPE_ITEM) {
 			CharacterCreationItem characterCreationItem = new CharacterCreationItem();
-			
-			if(!itemLinksList.getBookItemLinks().isEmpty())
-				characterCreationItem.setItemLinks(itemLinksList.getBookItemLinks());
-			if(!shopLinksList.getBookItemLinks().isEmpty())
-				characterCreationItem.setItemShopLinks(shopLinksList.getBookItemLinks());
+			characterCreationItem.setItemLinks(itemLinksList.getBookItemLinks());
 
 			characterCreation = characterCreationItem;
 		}
+		
+		if(characterCreationType.getValue() == TYPE_SHOP) {
+			CharacterCreationShop characterCreationShop = new CharacterCreationShop();
+			characterCreationShop.setItemShopLinks(shopLinksList.getBookItemLinks());
+
+			characterCreation = characterCreationShop;
+		}
 		if(characterCreationType.getValue() == TYPE_TEXT) {
-			System.out.println("getCharacteCreationr de TEXT");
 			characterCreation = new CharacterCreationText();
 		}
 
@@ -153,17 +155,15 @@ public class CharacterCreationComponent extends GridPane {
 	 * @param characterCreation étape à éditer
 	 */
 	public void setCharacterCreation(AbstractCharacterCreation characterCreation) {
-		System.out.println("setCharacter");
 		if(characterCreation instanceof CharacterCreationItem) {
-			System.out.println("setCaracter de Item");
 			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
-			if(!characterCreationItem.getItemLinks().isEmpty()){
-				itemLinksList.setBookItemLinks(characterCreationItem.getItemLinks());
-				characterCreationType.setValue(TYPE_ITEM);
-			}
-			if(!characterCreationItem.getItemShopLinks().isEmpty()){
-				shopLinksList.setBookItemLinks(characterCreationItem.getItemShopLinks());
-			}
+			itemLinksList.setBookItemLinks(characterCreationItem.getItemLinks());
+			characterCreationType.setValue(TYPE_ITEM);
+		}
+		if(characterCreation instanceof CharacterCreationShop) {
+			CharacterCreationShop characterCreationShop = (CharacterCreationShop) characterCreation;
+			shopLinksList.setBookItemLinks(characterCreationShop.getItemShopLinks());
+			characterCreationType.setValue(TYPE_SHOP);
 		}
 		texte.setText(characterCreation.getText());
 	}
