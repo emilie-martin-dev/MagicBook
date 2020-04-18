@@ -316,70 +316,31 @@ public class NodeDialog extends AbstractDialog {
 		return nodeFieldsPane;
 	}
 	
-	/**
-	 * Permet de récupérer le contenu de l'onglet des items récupérables/achetable
-	 * @param itemList List d'items à prendre/acheter
-	 * @param tabLabel Libélé de l'onglet
-	 * @param shop Onglet shop ou non
-	 * @return Le Node qui contient le contenu de l'onglet 
-	 */
-	private Node getTabContent(ItemListComponent itemList, String tabLabel, Boolean shop) {
-		if(itemList == null) {
-			if(shop){
-				itemList = new ItemListComponent(book, false);
-				itemList.createAddItemLink();
-				itemList.createItemListView(shop);
-				itemList.createItemEditeLinkPane(shop);
-			} else {
-				itemList = new ItemListComponent(book, true);
-			}
-			itemList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
-		}
-
-		if(tabLabel.equals("Items"))
-			itemLinksList = itemList;
-		else
-			shopLinksList = itemList;
-		
-		return itemList;
-	}
-	
-	/**
-	 * Permet de créer les onglets pour ajouter les items que l'on peut prendre et acheter
-	 */	
-	private void createTab(){
-		itemsTab = createItemsTab(itemsTab, "Items");
-		shopTab = createItemsTab(shopTab, "Shop");
-	}
-	
 	
 	/**
 	 * Créer l'onglet Items et Shop
-	 * @param Tab Onglet "Items" ou "Shop"
-	 * @param tabLabel Nommination de l'onglet
-	 * @return Onglet créer
 	 */
-	private Tab createItemsTab(Tab tab, String tabLabel) {
-		deleteItemsTab(tab);
+	private void createAbstractNodeWithChoicesTabs() {
+		itemsTab = new Tab("Items");
+		itemsTab.setClosable(false);
+		itemLinksList = getItemShopTabContent(itemLinksList, false);
+		itemsTab.setContent(itemLinksList);
 		
-		tab = new Tab(tabLabel);
-
-		tab.setClosable(false);
-		if(tabLabel.equals("Items"))
-			tab.setContent(getTabContent(itemLinksList, tabLabel, false));
-		else
-			tab.setContent(getTabContent(shopLinksList, tabLabel, true));
+		shopTab = new Tab("Shop");
+		shopTab.setClosable(false);
+		shopLinksList = getItemShopTabContent(shopLinksList, true);
+		shopTab.setContent(shopLinksList);
 		
-		tabPane.getTabs().addAll(tab);
-		return tab;
+		tabPane.getTabs().addAll(itemsTab, shopTab);
 	}
-	
-	/**
-	 * Supprime l'onglet en paramètre pour ajouter les items que l'on peut prendre/acheter
-	 * @param Tab Onglet "Items" ou "Shop"
-	 */
-	private void deleteItemsTab(Tab tab) {
-		tabPane.getTabs().remove(tab);
+
+	private ItemListComponent getItemShopTabContent(ItemListComponent listComponent, boolean isShop) {
+		if(listComponent == null) {
+			listComponent = new ItemListComponent(book, isShop);
+			listComponent.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+		}
+
+		return listComponent;
 	}
 
 	@Override
@@ -500,7 +461,7 @@ public class NodeDialog extends AbstractDialog {
 		
 		nodeFieldsPane.getChildren().add(abstractNodeWithChoicePane);
 		
-		createTab();
+		createAbstractNodeWithChoicesTabs();
 	}
 	
 	/**

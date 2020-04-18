@@ -9,7 +9,7 @@ import magic_book.core.file.json.TypeJson;
 import magic_book.core.item.BookItemLink;
 
 /**
- * Étape de la "Création du personnage" dans lequel on peut choisir ses items de départ
+ * Étape de la "Création du personnage" dans lequel on peut acheter des items de départ
  */
 public class CharacterCreationShop extends AbstractCharacterCreation {
 
@@ -53,7 +53,7 @@ public class CharacterCreationShop extends AbstractCharacterCreation {
 		buffer.append("\n");
 		buffer.append("Choisissez ");
 		buffer.append(amountToPick);
-		buffer.append(" shop : \n\n");
+		buffer.append(" items : \n\n");
 		
 		for(int i = 0 ; i < itemShopLinks.size() ; i++) {
 			buffer.append(itemShopLinks.get(i).getDescription(book));
@@ -70,12 +70,12 @@ public class CharacterCreationShop extends AbstractCharacterCreation {
 		
 		characterCreationJson.setAmountToPick(amountToPick);
 		
-		characterCreationJson.setItemsShop(new ArrayList<>());
+		characterCreationJson.setShop(new ArrayList<>());
 		for(BookItemLink itemShopLinks : itemShopLinks) {
-			characterCreationJson.getItems().add(itemShopLinks.toJson());
+			characterCreationJson.getShop().add(itemShopLinks.toJson());
 		}
 		
-		characterCreationJson.setType(TypeJson.ITEM);
+		characterCreationJson.setType(TypeJson.SHOP);
 		
 		return characterCreationJson;
 	}
@@ -86,8 +86,8 @@ public class CharacterCreationShop extends AbstractCharacterCreation {
 		
 		this.itemShopLinks.clear();
 		
-		if(json.getItemsShop() != null) {
-			for(ItemLinkJson itemShopLinkJson : json.getItemsShop()) {
+		if(json.getShop() != null) {
+			for(ItemLinkJson itemShopLinkJson : json.getShop()) {
 				BookItemLink bookItemsShopLink = new BookItemLink();
 				bookItemsShopLink.fromJson(itemShopLinkJson);
 
@@ -100,7 +100,7 @@ public class CharacterCreationShop extends AbstractCharacterCreation {
 	
 	/**
 	 * Ajoute l'item à la liste d'item à acheter
-	 * @param itemShopLink Nouvelle item à ajouter dans la liste d'item à acheter
+	 * @param itemShopLink Nouvelle item à ajouter 
 	 */
 	public void addItemShopLink(BookItemLink itemShopLink) {
 		this.itemShopLinks.add(itemShopLink);

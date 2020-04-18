@@ -54,26 +54,27 @@ public class ItemListComponent extends VBox {
 	 * Livre contenant toutes les informations
 	 */
 	private Book book;
-
 	
 	/**
-	 * Création de la VBox des items
+	 * Constructeur
 	 * @param book Livre contenant toutes les informations
-	 * @param everyPane Boolean si il faut afficher tout les Pane ou non
+	 * @param isShop True si il faut afficher les champs pour le shop
 	 */
-	public ItemListComponent(Book book, Boolean everyPane) {
+	public ItemListComponent(Book book, boolean isShop) {
 		this.book = book;
 		this.setSpacing(UiConsts.DEFAULT_MARGIN);
-		if(everyPane)
-			createPane();
+		
+		createAddItemLinkUi();
+		createSelectedItemLinkUi(isShop);
+		createItemLinkEditPane(isShop);
+		
+		disableItemLinkEdition();
 	}
 	
-	public void createPane(){
-		createAddItemLink();
-		createItemListView(false);
-		createItemEditeLinkPane(false);
-	}
-	public void createAddItemLink(){
+	/**
+	 * Créé l'UI pour le bouton d'ajout et la liste déroulante
+	 */
+	private void createAddItemLinkUi(){
 		itemComboBox = new ComboBox<>();
 		itemComboBox.getItems().addAll(book.getItems().values());
 		
@@ -92,8 +93,11 @@ public class ItemListComponent extends VBox {
 		this.getChildren().add(itemSelectionBox);
 	}
 	
-	public void createItemListView(Boolean shopList){
-	
+	/**
+	 * Créé la liste contenant les items que l'on a rendu disponible 
+	 * @param isShop Si l'on doit changer les champs du shop lorsque l'on sélectionne un item
+	 */
+	private void createSelectedItemLinkUi(boolean isShop){
 		//Permet d'afficher les items ajoutés
 		selectedItemsListView = new ListView<>();
 		selectedItemsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);		
@@ -103,24 +107,26 @@ public class ItemListComponent extends VBox {
 			if(selectedItemsListView.getSelectionModel().getSelectedItem() != null) {
 				amountTextField.setDisable(false);
 				updateItemSelected.setDisable(false);
+				sellingPriceTextField.setDisable(false);
+				priceTextField.setDisable(false);
 				amountTextField.setText(""+selectedItemsListView.getSelectionModel().getSelectedItem().getAmount());
-				if(shopList){
+				if(isShop){
 					priceTextField.setText(""+selectedItemsListView.getSelectionModel().getSelectedItem().getPrice());
 					sellingPriceTextField.setText(""+selectedItemsListView.getSelectionModel().getSelectedItem().getSellingPrice());
 				}
 			}
 		});
 		
-		selectedItemsListView.setContextMenu(createMenuContextItemLink());
+		selectedItemsListView.setContextMenu(createSelectedItemLinkMenuContext());
 		
 		this.getChildren().add(selectedItemsListView);
 	}
 	
 	/**
-	 * Supprime l'item sélectionné
-	 * @return Menu contenant la possibilité de suppression d'item
+	 * Context Menu pour la liste des items sélectionnés
+	 * @return Menu Context pour la liste des items sélectionnés
 	 */
-	public ContextMenu createMenuContextItemLink() {
+	private ContextMenu createSelectedItemLinkMenuContext() {
 		ContextMenu contextMenuItemLink = new ContextMenu();
 		
 		MenuItem menuItemLinkDelete = new MenuItem("Supprimer l'item");
@@ -143,9 +149,9 @@ public class ItemListComponent extends VBox {
 	
 	/**
 	 * Pane pour l'edition d'un item de la liste
-	 * @return Pane pour l'edition d'un item de la liste
+	 * @param isShop True si c'est un shop, on affiche donc les champs correspondants 
 	 */
-	public void createItemEditeLinkPane(Boolean shopList) {
+	private void createItemLinkEditPane(boolean isShop) {
 		priceTextField = new TextField();
 		sellingPriceTextField = new TextField();
 		amountTextField = new TextField();
@@ -155,29 +161,30 @@ public class ItemListComponent extends VBox {
 			BookItemLink itemLink = selectedItemsListView.getSelectionModel().getSelectedItem();
 			if(itemLink != null) {
 				int amount = 1;
-				int price = 1;
-				int sellingPrice = 1;
+				int price = 0;
+				int sellingPrice = 0;
 				try {
 					amount = Integer.valueOf(amountTextField.getText());
-					if(shopList){
+					
+					if(isShop){
 						price = Integer.valueOf(priceTextField.getText());
 						sellingPrice = Integer.valueOf(sellingPriceTextField.getText());
+						
+						itemLink.setPrice(price);
+						itemLink.setSellingPrice(sellingPrice);
 					}
 					
+					itemLink.setAmount(amount);
 				} catch(NumberFormatException ex) {
 					return;
 				}
-				
-				itemLink.setAmount(amount);
-				itemLink.setPrice(price);
-				itemLink.setSellingPrice(sellingPrice);
 			}
 		});
 		
 		GridPane selectedItemLinkPane = new GridPane();
 		selectedItemLinkPane.add(new Label("Montant : "), 0, 0);
 		selectedItemLinkPane.add(amountTextField, 1, 0);
-		if(shopList){
+		if(isShop){
 			selectedItemLinkPane.add(new Label("Prix d'achat : "), 0, 1);
 			selectedItemLinkPane.add(priceTextField, 1, 1);
 			selectedItemLinkPane.add(new Label("Prix de vente : "), 0, 2);
@@ -191,19 +198,24 @@ public class ItemListComponent extends VBox {
 	}
 	
 	/**
-	 * L'édition de l'item n'est pas disponible quand aucun item n'est sélectionné
+	 * Désactive les champs pour l'édition de l'item
 	 */
-	public void disableItemLinkEdition() {
-		amountTextField.setDisable(true);
+	private void disableItemLinkEdition() {
 		updateItemSelected.setDisable(true);
+		amountTextField.setDisable(true);
+		sellingPriceTextField.setDisable(true);
+		priceTextField.setDisable(true);
+		
 		amountTextField.setText("");
+		sellingPriceTextField.setText("");
+		priceTextField.setText("");
 	}
 	
 	/**
-	 * Ajoute un item dans le noeud
+	 * Ajoute un item selon son id dans le noeud
 	 * @param id L'item ajouté
 	 */
-	public void addItemLink(String id) {
+	private void addItemLink(String id) {
 		BookItemLink bookItemLink = new BookItemLink();
 		bookItemLink.setId(id);
 		
@@ -211,10 +223,10 @@ public class ItemListComponent extends VBox {
 	}
 	
 	/**
-	 * Ajoute l'item dans la liste d'item sélectionné
+	 * Ajoute un item préexistant dans la liste d'item sélectionné
 	 * @param bookItemLink 
 	 */
-	public void addItemLink(BookItemLink bookItemLink) {
+	private void addItemLink(BookItemLink bookItemLink) {
 		selectedItemsListView.getItems().add(bookItemLink);
 
 		itemComboBox.getItems().remove(book.getItems().get(bookItemLink.getId()));
@@ -229,7 +241,7 @@ public class ItemListComponent extends VBox {
 	}
 	
 	/**
-	 * Modifie laliste d'item disponible dans le noeud
+	 * Modifie la liste d'item disponible dans le noeud
 	 * @param itemLinks Nouvelle liste d'item(s)
 	 */
 	public void setBookItemLinks(List<BookItemLink> itemLinks) {
