@@ -9,40 +9,40 @@ import magic_book.core.file.json.TypeJson;
 import magic_book.core.item.BookItemLink;
 
 /**
- * Étape de la "Création du personnage" dans lequel on peut choisir ses items de départ
+ * Étape de la "Création du personnage" dans lequel on peut acheter des items de départ
  */
-public class CharacterCreationItem extends AbstractCharacterCreation {
+public class CharacterCreationShop extends AbstractCharacterCreation {
 
 	/**
 	 * Nombre d'item pouvant être pris
 	 */
 	private int amountToPick;
 	/**
-	 * Liste des items disponibles
+	 * Liste des items à acheter
 	 */
-	private List<BookItemLink> itemLinks;
+	private List<BookItemLink> itemShopLinks;
 	
 	/**
 	 * Constructeur basique
 	 */
-	public CharacterCreationItem() {
+	public CharacterCreationShop() {
 		this("", null, -1);
 	}
 	
 	/**
 	 * Constructeur complet
 	 * @param text Texte à afficher
-	 * @param itemLinks Liste des items disponibles
+	 * @param itemShopLinks Liste des items à acheter
 	 * @param amountToPick Nombre d'item maximum pouvant être pris
 	 */
-	public CharacterCreationItem(String text, List<BookItemLink> itemLinks, int amountToPick) {
+	public CharacterCreationShop(String text, List<BookItemLink> itemShopLinks, int amountToPick) {
 		super(text);
 		
-		this.itemLinks = itemLinks;
+		this.itemShopLinks = itemShopLinks;
 		this.amountToPick = amountToPick;
-		
-		if(this.itemLinks == null)
-			this.itemLinks = new ArrayList<>();
+	
+		if(this.itemShopLinks == null)
+			this.itemShopLinks = new ArrayList<>();
 	}
 	
 	@Override
@@ -55,9 +55,9 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 		buffer.append(amountToPick);
 		buffer.append(" items : \n\n");
 		
-		for(int i = 0 ; i < itemLinks.size() ; i++) {
-			buffer.append(itemLinks.get(i).getDescription(book));
-			if(i < itemLinks.size() - 1) 
+		for(int i = 0 ; i < itemShopLinks.size() ; i++) {
+			buffer.append(itemShopLinks.get(i).getDescription(book));
+			if(i < itemShopLinks.size() - 1) 
 				buffer.append("\n");
 		}
 		
@@ -70,12 +70,12 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 		
 		characterCreationJson.setAmountToPick(amountToPick);
 		
-		characterCreationJson.setItems(new ArrayList<>());
-		for(BookItemLink itemLink : itemLinks) {
-			characterCreationJson.getItems().add(itemLink.toJson());
+		characterCreationJson.setShop(new ArrayList<>());
+		for(BookItemLink itemShopLinks : itemShopLinks) {
+			characterCreationJson.getShop().add(itemShopLinks.toJson());
 		}
 		
-		characterCreationJson.setType(TypeJson.ITEM);
+		characterCreationJson.setType(TypeJson.SHOP);
 		
 		return characterCreationJson;
 	}
@@ -84,14 +84,14 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 	public void fromJson(CharacterCreationJson json) {
 		super.fromJson(json);
 		
-		this.itemLinks.clear();
+		this.itemShopLinks.clear();
 		
-		if(json.getItems() != null) {
-			for(ItemLinkJson itemLinkJson : json.getItems()) {
-				BookItemLink bookItemsLink = new BookItemLink();
-				bookItemsLink.fromJson(itemLinkJson);
+		if(json.getShop() != null) {
+			for(ItemLinkJson itemShopLinkJson : json.getShop()) {
+				BookItemLink bookItemsShopLink = new BookItemLink();
+				bookItemsShopLink.fromJson(itemShopLinkJson);
 
-				itemLinks.add(bookItemsLink);
+				itemShopLinks.add(bookItemsShopLink);
 			}
 		}
 
@@ -99,27 +99,27 @@ public class CharacterCreationItem extends AbstractCharacterCreation {
 	}
 	
 	/**
-	 * Ajoute l'item à la liste d'item à prendre
-	 * @param itemLink Nouvelle item à ajouter
+	 * Ajoute l'item à la liste d'item à acheter
+	 * @param itemShopLink Nouvelle item à ajouter 
 	 */
-	public void addItemLink(BookItemLink itemLink) {
-		this.itemLinks.add(itemLink);
+	public void addItemShopLink(BookItemLink itemShopLink) {
+		this.itemShopLinks.add(itemShopLink);
 	}
 
 	/**
-	 * Donnne la liste d'item disponibles
-	 * @return Liste d'item à prendre
+	 * Donnne la liste d'item à acheter
+	 * @return Liste d'item à acheter
 	 */
-	public List<BookItemLink> getItemLinks() {
-		return itemLinks;
+	public List<BookItemLink> getItemShopLinks() {
+		return itemShopLinks;
 	}
 
 	/**
-	 * Modifie la liste d'item à prendre
-	 * @param itemLinks Nouvelle liste d'item à prendre
+	 * Modifie la liste d'item à acheter
+	 * @param itemShopLinks Nouvelle liste d'item à acheter
 	 */
-	public void setItemLinks(List<BookItemLink> itemLinks) {
-		this.itemLinks = itemLinks;
+	public void setItemShopLinks(List<BookItemLink> itemShopLinks) {
+		this.itemShopLinks = itemShopLinks;
 	}
 
 	/**

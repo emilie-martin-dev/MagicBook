@@ -26,6 +26,10 @@ public class CharacterCreationJson {
 	 */
 	private List<ItemLinkJson> items;
 	/**
+	 * Les items disponibles à la vente
+	 */
+	private List<ItemLinkJson> shop;
+	/**
 	 * Les skills que l'on peut prendre
 	 */
 	private List<String> skills;
@@ -110,5 +114,21 @@ public class CharacterCreationJson {
 	public void setSkills(List<String> skills) {
 		this.skills = skills;
 	}	
+
+	/**
+	 * Retourne les items disponibles à la vente
+	 * @return Les items disponibles à la vente
+	 */
+	public List<ItemLinkJson> getShop() {
+		return shop;
+	}
+	
+	/**
+	 * Change les items disponibles à la vente
+	 * @param shop Les items disponibles à la vente
+	 */
+	public void setShop(List<ItemLinkJson> shop) {
+		this.shop = shop;
+	}
 	
 }

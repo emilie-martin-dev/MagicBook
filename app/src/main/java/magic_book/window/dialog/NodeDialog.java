@@ -121,6 +121,11 @@ public class NodeDialog extends AbstractDialog {
 	private Tab itemsTab;
 	
 	/**
+	 * L'onglet qui permet de sélectionner les items qui peuvent être acheté
+	 */
+	private Tab shopTab;
+	
+	/**
 	 * Le TabPane qui permet de gérer les différents onglets de l boite de dialogue
 	 */
 	private TabPane tabPane;
@@ -131,6 +136,11 @@ public class NodeDialog extends AbstractDialog {
 	private ItemListComponent itemLinksList;
 	
 	/**
+	 * Permet l'ajout d'items à acheter sur ce noeud ainsi que le montant des items à acheter
+	 */
+	private ItemListComponent shopLinksList;
+	
+	/**
 	 * Constructeur pour créer un nouveau noeud
 	 * @param book Livre contenant toutes les informations
 	 */
@@ -138,6 +148,8 @@ public class NodeDialog extends AbstractDialog {
 		super("Creation d'un noeud", true);
 		
 		this.book = book;
+		createPostBookSetUi();
+		
 		showNodeWithChoice();
 		
 		this.showAndWait();
@@ -152,7 +164,8 @@ public class NodeDialog extends AbstractDialog {
 		super("Edition d'un noeud", true);
 		
 		this.book = book;
-		
+		createPostBookSetUi();
+				
 		texte.setText(node.getText());
 		
 		if(node instanceof BookNodeTerminal) {
@@ -198,6 +211,7 @@ public class NodeDialog extends AbstractDialog {
 			AbstractBookNodeWithChoices abstractBookNodeWithChoices = (AbstractBookNodeWithChoices) node;
 			
 			itemLinksList.setBookItemLinks(abstractBookNodeWithChoices.getItemLinks());
+			shopLinksList.setBookItemLinks(abstractBookNodeWithChoices.getShopItemLinks());
 		
 			nbrItemTextField.setText(""+abstractBookNodeWithChoices.getNbItemsAPrendre());
 			hpTextField.setText(""+abstractBookNodeWithChoices.getHp());	
@@ -218,6 +232,14 @@ public class NodeDialog extends AbstractDialog {
 		tabPane.getTabs().addAll(nodeTab);
 		
 		return tabPane;
+	}
+	
+	private void createPostBookSetUi() {
+		itemLinksList = new ItemListComponent(book, false);
+		itemLinksList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+		
+		shopLinksList = new ItemListComponent(book, true);
+		shopLinksList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
 	}
 	
 	/**
@@ -309,44 +331,33 @@ public class NodeDialog extends AbstractDialog {
 		
 		return scrollPane;
 	}
-	
+
 	/**
-	 * Permet de récupérer le contenu de l'onglet des items récupérables
-	 * @return Le Node qui contient le contenu de l'onglet 
+	 * Créer l'onglet Items et Shop
 	 */
-	private Node getItemsTabContent() {
-		if(itemLinksList == null) {
-			itemLinksList = new ItemListComponent(book);
-			itemLinksList.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
-		}
+	private void createAbstractNodeWithChoicesTabs() {
+		itemsTab = new Tab("Items");
+		itemsTab.setClosable(false);
+		itemsTab.setContent(getItemShopTabContent(itemLinksList));
 		
+		shopTab = new Tab("Shop");
+		shopTab.setClosable(false);
+		shopTab.setContent(getItemShopTabContent(shopLinksList));
+		
+		tabPane.getTabs().addAll(itemsTab, shopTab);
+	}
+
+	/**
+	 * Permet de récupérer le contenu de l'onglet shop ou item
+	 * @param listComponent Le composant de sélection des items 
+	 * @return Le contenu de l'onglet shop ou item
+	 */
+	private Node getItemShopTabContent(ItemListComponent listComponent) {		
 		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setContent(itemLinksList);
+		scrollPane.setContent(listComponent);
 		scrollPane.setFitToWidth(true);
 		
 		return scrollPane;
-	}
-	
-	/**
-	 * Créé l'onglet pour ajouter l'items que l'on peut prendre
-	 */
-	private void createItemsTab() {
-		deleteItemsTab();
-		
-		itemsTab = new Tab("Items");
-
-		itemsTab.setClosable(false);
-		itemsTab.setContent(getItemsTabContent());
-		
-		tabPane.getTabs().add(itemsTab);
-	}
-	
-	/**
-	 * Supprime l'onglet pour ajouter l'items que l'on peut prendre
-	 */
-	private void deleteItemsTab() {
-		if(itemsTab != null)
-			tabPane.getTabs().remove(itemsTab);
 	}
 
 	@Override
@@ -399,6 +410,7 @@ public class NodeDialog extends AbstractDialog {
 				bookNodeWithChoices.setHp(hpInt);
 				bookNodeWithChoices.setNbItemsAPrendre(itemInt);
 				bookNodeWithChoices.setItemLinks(this.itemLinksList.getBookItemLinks());
+				bookNodeWithChoices.setShopItemLinks(this.shopLinksList.getBookItemLinks());
 			}
 				
 			NodeDialog.this.node.setText(texteHistoire);
@@ -447,6 +459,8 @@ public class NodeDialog extends AbstractDialog {
 	private void clearNode() {
 		nodeFieldsPane.getChildren().clear();
 		nodeFieldsPane.getChildren().add(nodeTextTypePane);
+		tabPane.getTabs().remove(itemsTab);
+		tabPane.getTabs().remove(shopTab);
 	}	
 	
 	/**
@@ -464,7 +478,7 @@ public class NodeDialog extends AbstractDialog {
 		
 		nodeFieldsPane.getChildren().add(abstractNodeWithChoicePane);
 		
-		createItemsTab();
+		createAbstractNodeWithChoicesTabs();
 	}
 	
 	/**
