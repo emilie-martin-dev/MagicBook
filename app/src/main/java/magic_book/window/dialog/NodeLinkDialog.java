@@ -4,16 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import magic_book.core.Book;
 import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeCombat;
@@ -93,6 +101,9 @@ public class NodeLinkDialog extends AbstractDialog{
 	 */
 	private ChoiceBox<String> choixLienBox;
 
+	/**
+	 * Premier noeud qui est cliqué (commencement du lien)
+	 */
 	private AbstractBookNode firstNode;
 	
 	/**
@@ -112,17 +123,32 @@ public class NodeLinkDialog extends AbstractDialog{
 	 */
 	private GridPane combatUi;
 	
+	/**
+	 * Livre contenant toute les informations
+	 */
 	private Book book;
+	
+	/**
+	 * Accordion des requirements
+	 */
+	private Accordion accordion;
+	
+	/**
+	 * Liste des RequirementComponent
+	 */
+	private List<RequirementComponent> requirementComponentList;
 	
 	/**
 	 * Initialisation des valeurs et de la fenêtre de dialog en fonction du fistNode
 	 * @param firstNode Noeud où le lien va démarer
 	 */
 	public NodeLinkDialog(AbstractBookNode firstNode, Book book) {
-		super("Création du choix");
+		super("Création du choix", true);
 		
 		this.firstNode = firstNode;
 		this.book = book;
+		
+		requirementComponentList = new ArrayList();
 		
 		//Si le premier noeud est de type aléatoire
 		if(firstNode instanceof BookNodeWithRandomChoices){			
@@ -150,11 +176,11 @@ public class NodeLinkDialog extends AbstractDialog{
 	 * @param firstNode Noeud où le lien démarre
 	 */
 	public NodeLinkDialog(BookNodeLink nodeLink, AbstractBookNode firstNode, Book book) {
-		super("Modification du choix");
+		super("Modification du choix", true);
 		
 		this.firstNode = firstNode;
 		this.book = book;
-		
+		requirementComponentList = new ArrayList();
 		//Si le premier noeud est de type aléatoire
 		if(nodeLink instanceof BookNodeLinkRandom){
 			BookNodeLinkRandom nodeLinkRandom = (BookNodeLinkRandom) nodeLink;
@@ -195,8 +221,10 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		texte.setText(nodeLink.getText());	
 		
-		showNodeLink();
-		requirement.setRequirement(nodeLink.getRequirements());
+		if(nodeLink.getRequirements() != null)
+			showRequirement(nodeLink.getRequirements());
+		else
+			showNodeLink();
 		
 		this.showAndWait();
 	}
@@ -269,7 +297,6 @@ public class NodeLinkDialog extends AbstractDialog{
 	protected EventHandler<ActionEvent> getValidButtonEventHandler() {
 		return (ActionEvent e) -> {
 			String texteHistoire = (String) texte.getText();
-			
 			//Si le premier noeud est de type aléatoire
 			if(NodeLinkDialog.this.firstNode instanceof BookNodeWithRandomChoices){
 				if (chanceTextField.getText().isEmpty()){
@@ -281,7 +308,6 @@ public class NodeLinkDialog extends AbstractDialog{
 					
 					BookNodeLinkRandom nodeLinkRandom = new BookNodeLinkRandom();
 					nodeLinkRandom.setChance(chanceInt);
-					nodeLinkRandom.setRequirements(getRequirement());
 					
 					nodeLink = nodeLinkRandom;
 				} catch (NumberFormatException ex){
@@ -354,6 +380,13 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		return listeChoix;
 	}
+	
+	private void showRequirement(List<List<AbstractRequirement>> listAbstractRequirement){
+		showNodeLink();
+		for(List<AbstractRequirement> listAbstract : listAbstractRequirement)
+			createAccordion(listAbstract);
+		
+	}
 
 	private void showNodeLink(){
 		requirementTab = createRequirementTab();
@@ -366,15 +399,62 @@ public class NodeLinkDialog extends AbstractDialog{
 
 		requirementTab.setClosable(false);
 		
-		if(requirement == null) {
-			requirement = new RequirementComponent(book);
-			requirementTab.setContent(requirement);
-			System.out.println("REQUIREMENT NULL");
-			requirement.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
-		}
-		
+		requirementTab.setContent(createPaneRequirement());
 		tabPane.getTabs().addAll(requirementTab);
 		return requirementTab;
+	}
+	
+	private Node createPaneRequirement(){
+		VBox requirementPane = new VBox();
+		requirementPane.setSpacing(UiConsts.DEFAULT_MARGIN);
+		
+		accordion = new Accordion();
+		accordion.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
+		
+		Button addButton = new Button("Ajouter");
+		addButton.setOnAction((ActionEvent e) -> {
+			createAccordion(null);
+		});
+		
+		VBox buttonBox = new VBox();
+		buttonBox.setAlignment(Pos.CENTER_RIGHT);
+		buttonBox.getChildren().add(addButton);
+		buttonBox.setPadding(new Insets(0, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
+		
+		requirementPane.getChildren().addAll(accordion, buttonBox);
+		
+		ScrollPane scrollPane = new ScrollPane(requirementPane);
+		scrollPane.setFitToWidth(true);
+		
+		return scrollPane;
+	}
+	
+	private void createAccordion(List<AbstractRequirement> listAbstract) {
+		TitledPane titledPane = new TitledPane();
+		
+		requirement = new RequirementComponent(book);
+		Button remove = new Button("Supprimer cette partie");
+		
+		if(listAbstract != null)
+			requirement.setRequirement(listAbstract);
+		
+		remove.setOnAction((ActionEvent e) -> {	
+			accordion.getPanes().remove(titledPane);
+			this.requirementComponentList.remove(requirement);
+		});
+		
+		HBox removeBox = new HBox();
+		removeBox.getChildren().add(remove);
+		removeBox.setAlignment(Pos.CENTER_RIGHT);
+		
+		VBox titledPaneBox = new VBox();
+		titledPaneBox.getChildren().addAll(requirement, removeBox);
+		titledPaneBox.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
+		
+		titledPane.setContent(titledPaneBox);
+		
+		accordion.getPanes().add(titledPane);
+		this.requirementComponentList.add(requirement);
 	}
 	
 	private List<List<AbstractRequirement>> getRequirement(){
@@ -382,8 +462,11 @@ public class NodeLinkDialog extends AbstractDialog{
 			return null;
 		
 		List<List<AbstractRequirement>> listAbstractRequirement = new ArrayList();
-		listAbstractRequirement.add(requirement.getRequirementItem());
-		listAbstractRequirement.add(requirement.getRequirementMoney());
+		for (RequirementComponent listRequirementComponent : requirementComponentList){
+			List<AbstractRequirement> listRequirement = listRequirementComponent.getRequirement();
+			if(!listRequirement.isEmpty())
+				listAbstractRequirement.add(listRequirementComponent.getRequirement());
+		}
 		
 		return listAbstractRequirement;
 	}
