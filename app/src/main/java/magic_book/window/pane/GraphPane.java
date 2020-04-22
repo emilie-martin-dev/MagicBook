@@ -550,7 +550,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 					}
 					
 					//On affiche la boite de dialogue pour afficher le noeud
-					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode());
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode(), book);
 
 					if(nodeLinkDialog.isValid()) {
 						BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
@@ -599,7 +599,7 @@ public class GraphPane extends ScrollPane implements BookNodeObserver, BookNodeL
 		public void onNodeLinkFXClicked(NodeLinkFx nodeLinkFx, MouseEvent event) {
 			if(mode == Mode.SELECT) {
 				if(event.getClickCount() == 2) {
-					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode());
+					NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode(), book);
 					
 					// Si on a validé les modifications sur un lien
 					if(nodeLinkDialog.isValid()) {
