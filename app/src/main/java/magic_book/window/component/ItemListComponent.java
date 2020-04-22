@@ -235,6 +235,15 @@ public class ItemListComponent extends VBox {
 	}
 	
 	/**
+	 * Change les items disponibles dans la liste
+	 * @param itemsAvailable Les items disponibles
+	 */
+	public void setAvailableItem(List<BookItem> itemsAvailable) {
+		itemComboBox.getItems().clear();
+		itemComboBox.getItems().addAll(itemsAvailable);
+	}
+	
+	/**
 	 * Liste d'item(s) disponible dans le noeud
 	 * @return Liste d'item(s)
 	 */

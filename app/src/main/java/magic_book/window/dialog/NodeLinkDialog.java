@@ -78,19 +78,9 @@ public class NodeLinkDialog extends AbstractDialog{
 	private TextField goldTextField;
 	
 	/**
-	 * L'onglet qui permet de sélectionner les prérequis
-	 */
-	private Tab requirementTab;
-	
-	/**
-	 * Le TabPane qui permet de gérer les différents onglets de l boite de dialogue
+	 * Le TabPane qui permet de gérer les différents onglets de la boite de dialogue
 	 */
 	private TabPane tabPane;
-	
-	/**
-	 * Permet l'ajout de prérequis
-	 */
-	private RequirementComponent requirement;
 	
 	/**
 	 * CheckBox de chemin automatique
@@ -165,8 +155,6 @@ public class NodeLinkDialog extends AbstractDialog{
 			showCombatUi();
 		}
 		
-		showNodeLink();
-		
 		this.showAndWait();
 	}
 
@@ -221,24 +209,27 @@ public class NodeLinkDialog extends AbstractDialog{
 		
 		texte.setText(nodeLink.getText());	
 		
-		if(nodeLink.getRequirements() != null)
-			showRequirement(nodeLink.getRequirements());
-		else
-			showNodeLink();
+		if(nodeLink.getRequirements() != null) {
+			for(List<AbstractRequirement> andRequirements : nodeLink.getRequirements())
+				createAccordion(andRequirements);
+		}
 		
 		this.showAndWait();
 	}
 
 	@Override
-	protected Node getMainUI() {	
+	protected Node getMainUI() {
 		tabPane = new TabPane();
 		
-		Tab nodeTab = new Tab("Lien");
+		Tab nodeLink = new Tab("Lien");
+		nodeLink.setClosable(false);
+		nodeLink.setContent(createNodeLinkPane());
 		
-		nodeTab.setClosable(false);
-		nodeTab.setContent(createNodeLinkPane());
+		Tab requirementTab = new Tab("Requirement");
+		requirementTab.setClosable(false);
+		requirementTab.setContent(createPaneRequirement());
 		
-		tabPane.getTabs().addAll(nodeTab);
+		tabPane.getTabs().addAll(nodeLink, requirementTab);
 		
 		return tabPane;
 	}
@@ -246,6 +237,8 @@ public class NodeLinkDialog extends AbstractDialog{
 	private BorderPane createNodeLinkPane(){
 		//Génération des Pane
 		root = new BorderPane();
+		root.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
+		
 		mainUi = new GridPane();
 		randomUi = new GridPane();
 		combatUi = new GridPane();
@@ -381,29 +374,6 @@ public class NodeLinkDialog extends AbstractDialog{
 		return listeChoix;
 	}
 	
-	private void showRequirement(List<List<AbstractRequirement>> listAbstractRequirement){
-		showNodeLink();
-		for(List<AbstractRequirement> listAbstract : listAbstractRequirement)
-			createAccordion(listAbstract);
-		
-	}
-
-	private void showNodeLink(){
-		requirementTab = createRequirementTab();
-	}
-	
-	private Tab createRequirementTab() {
-		deleteItemsTab(requirementTab);
-		
-		requirementTab = new Tab("Requirement");
-
-		requirementTab.setClosable(false);
-		
-		requirementTab.setContent(createPaneRequirement());
-		tabPane.getTabs().addAll(requirementTab);
-		return requirementTab;
-	}
-	
 	private Node createPaneRequirement(){
 		VBox requirementPane = new VBox();
 		requirementPane.setSpacing(UiConsts.DEFAULT_MARGIN);
@@ -429,18 +399,18 @@ public class NodeLinkDialog extends AbstractDialog{
 		return scrollPane;
 	}
 	
-	private void createAccordion(List<AbstractRequirement> listAbstract) {
+	private void createAccordion(List<AbstractRequirement> andRequirements) {
 		TitledPane titledPane = new TitledPane();
 		
-		requirement = new RequirementComponent(book);
+		RequirementComponent requirementComponent = new RequirementComponent(book);
 		Button remove = new Button("Supprimer cette partie");
 		
-		if(listAbstract != null)
-			requirement.setRequirement(listAbstract);
+		if(andRequirements != null)
+			requirementComponent.setRequirement(andRequirements);
 		
 		remove.setOnAction((ActionEvent e) -> {	
 			accordion.getPanes().remove(titledPane);
-			this.requirementComponentList.remove(requirement);
+			this.requirementComponentList.remove(requirementComponent);
 		});
 		
 		HBox removeBox = new HBox();
@@ -448,31 +418,27 @@ public class NodeLinkDialog extends AbstractDialog{
 		removeBox.setAlignment(Pos.CENTER_RIGHT);
 		
 		VBox titledPaneBox = new VBox();
-		titledPaneBox.getChildren().addAll(requirement, removeBox);
+		titledPaneBox.getChildren().addAll(requirementComponent, removeBox);
 		titledPaneBox.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
 		
 		titledPane.setContent(titledPaneBox);
 		
 		accordion.getPanes().add(titledPane);
-		this.requirementComponentList.add(requirement);
+		this.requirementComponentList.add(requirementComponent);
 	}
 	
 	private List<List<AbstractRequirement>> getRequirement(){
-		if(requirement == null)
-			return null;
+		if(requirementComponentList.isEmpty())
+			return new ArrayList<>();
 		
 		List<List<AbstractRequirement>> listAbstractRequirement = new ArrayList();
-		for (RequirementComponent listRequirementComponent : requirementComponentList){
-			List<AbstractRequirement> listRequirement = listRequirementComponent.getRequirement();
-			if(!listRequirement.isEmpty())
-				listAbstractRequirement.add(listRequirementComponent.getRequirement());
+		for (RequirementComponent requirementComponent : requirementComponentList){
+			List<AbstractRequirement> andRequirements = requirementComponent.getRequirement();
+			if(!andRequirements.isEmpty())
+				listAbstractRequirement.add(andRequirements);
 		}
 		
 		return listAbstractRequirement;
-	}
-	
-	private void deleteItemsTab(Tab tab) {
-		tabPane.getTabs().remove(tab);
 	}
 	
 	/**
