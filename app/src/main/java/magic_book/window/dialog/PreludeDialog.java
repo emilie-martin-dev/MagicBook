@@ -171,7 +171,8 @@ public class PreludeDialog extends AbstractDialog {
 		CharacterCreationComponent characterCreationPane = new CharacterCreationComponent(book, characterCreation);
 		Button remove = new Button("Supprimer cette partie");
 		
-		remove.setOnAction((ActionEvent e) -> {	
+		remove.setOnAction((ActionEvent e) -> {
+			titledPane.setContent(new HBox());
 			accordion.getPanes().remove(titledPane);
 			this.characterCreationComponent.remove(characterCreationPane);
 		});
