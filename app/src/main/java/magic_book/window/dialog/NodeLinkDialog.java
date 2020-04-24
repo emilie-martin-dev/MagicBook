@@ -225,7 +225,7 @@ public class NodeLinkDialog extends AbstractDialog{
 		nodeLink.setClosable(false);
 		nodeLink.setContent(createNodeLinkPane());
 		
-		Tab requirementTab = new Tab("Requirement");
+		Tab requirementTab = new Tab("Prérequis");
 		requirementTab.setClosable(false);
 		requirementTab.setContent(createPaneRequirement());
 		
@@ -270,7 +270,7 @@ public class NodeLinkDialog extends AbstractDialog{
 		mainUi.add(texte, 0, 1, 4, 1);	
 		mainUi.add(new Label("HP (gain ou perte)"), 0, 2);
 		mainUi.add(hpTextField, 1, 2);
-		mainUi.add(new Label("Gold (gain ou perte)"), 0, 3);
+		mainUi.add(new Label("Monnaie (gain ou perte)"), 0, 3);
 		mainUi.add(goldTextField, 1, 3);
 		mainUi.add(autoBox, 0, 4);
 		autoBox.setSelected(false);

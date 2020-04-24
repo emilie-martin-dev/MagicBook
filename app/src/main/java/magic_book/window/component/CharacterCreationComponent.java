@@ -21,7 +21,12 @@ public class CharacterCreationComponent extends GridPane {
 	 * Type texte
 	 */
 	private static final String TYPE_TEXT = "Texte";
-	//private static final String TYPE_SKILL = "Skills";
+	
+	/**
+	 * Type skill
+	 */
+	private static final String TYPE_SKILL = "Compétence";
+	
 	/**
 	 * Type item
 	 */

@@ -66,7 +66,7 @@ public class CharacterComponent extends GridPane {
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
 		
 		Label idLabel = new Label("Id : ");
-		Label nameLabel = new Label("Name: ");
+		Label nameLabel = new Label("Nom: ");
 		Label hpLabel = new Label("Hp : ");
 		Label combatSkillLabel = new Label("Dégats : ");
 		Label itemMaxLabel = new Label("Item max : ");

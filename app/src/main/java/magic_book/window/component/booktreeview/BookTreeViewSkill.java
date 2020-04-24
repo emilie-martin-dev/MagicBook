@@ -28,7 +28,7 @@ public class BookTreeViewSkill extends AbstractBookTreeView<BookSkill> implement
 
 	@Override
 	protected BookSkill createRootElement() {
-		return new BookSkill("", "Skills");
+		return new BookSkill("", "Compétences");
 	}
 
 	@Override
@@ -84,17 +84,17 @@ public class BookTreeViewSkill extends AbstractBookTreeView<BookSkill> implement
 
 	@Override
 	protected String getAddContextMenuString() {
-		return "Ajouter un skill";
+		return "Ajouter une compétence";
 	}
 
 	@Override
 	protected String getUpdateContextMenuString() {
-		return "Modifier un skill";
+		return "Modifier une compétence";
 	}
 
 	@Override
 	protected String getDeleteContextMenuString() {
-		return "Supprimer un skill";
+		return "Supprimer une compétence";
 	}
 
 }

@@ -86,7 +86,7 @@ public class RequirementComponent extends VBox {
 		addSkillPane.setVgap(UiConsts.DEFAULT_MARGIN);
 		addSkillPane.setHgap(UiConsts.DEFAULT_MARGIN);
 
-		addSkill = new Button("Ajouter un skill");
+		addSkill = new Button("Ajouter une compétences");
 		addSkill.setOnAction((ActionEvent e) -> {
 			addSkillComboBox();
 		});
