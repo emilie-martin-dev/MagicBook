@@ -1,15 +1,23 @@
 package magic_book.window.component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import magic_book.core.Book;
+import magic_book.core.game.BookSkill;
 import magic_book.core.game.character_creation.AbstractCharacterCreation;
 import magic_book.core.game.character_creation.CharacterCreationItem;
 import magic_book.core.game.character_creation.CharacterCreationShop;
+import magic_book.core.game.character_creation.CharacterCreationSkill;
 import magic_book.core.game.character_creation.CharacterCreationText;
+import magic_book.core.item.BookItemLink;
 import magic_book.window.UiConsts;
 
 /**
@@ -21,7 +29,11 @@ public class CharacterCreationComponent extends GridPane {
 	 * Type texte
 	 */
 	private static final String TYPE_TEXT = "Texte";
-	//private static final String TYPE_SKILL = "Skills";
+	
+	/**
+	 * Type skill
+	 */
+	private static final String TYPE_SKILL = "Skills";
 	/**
 	 * Type item
 	 */
@@ -47,9 +59,29 @@ public class CharacterCreationComponent extends GridPane {
 	private ItemListComponent shopLinksList;
 	
 	/**
+	 * Pane de l'ajout de skill à apprendre
+	 */
+	private GridPane skillPane;
+
+	/**
+	 * Pane contenant les comboBox des skills
+	 */
+	private GridPane addSkillPane;
+
+	/**
+	 * Liste des ComboBox contenant les skills
+	 */
+	private List<ComboBox> skillComboBox;
+	
+	/**
 	 * Texte juste après le prélude
 	 */
 	private TextArea texte;
+	
+	/**
+	 * Livre contenant toutes les informations
+	 */
+	private Book book;
 
 	/**
 	 * Création d'un CharacterCreationComponent
@@ -57,6 +89,8 @@ public class CharacterCreationComponent extends GridPane {
 	 */
 	public CharacterCreationComponent(Book book) {
 		this(book, null);
+		this.book = book;
+		skillComboBox = new ArrayList();
 	}
 	
 	/**
@@ -68,6 +102,8 @@ public class CharacterCreationComponent extends GridPane {
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
 
+		this.book = book;
+		
 		texte = new TextArea();
 		texte.setWrapText(true);
 
@@ -79,6 +115,9 @@ public class CharacterCreationComponent extends GridPane {
 			characterCreationType.getItems().add(TYPE_ITEM);
 			characterCreationType.getItems().add(TYPE_SHOP);
 		}
+		if(!book.getSkills().isEmpty()){
+			characterCreationType.getItems().add(TYPE_SKILL);
+		}
 
 		this.add(new Label("Texte :"), 0, 0);
 		this.add(texte, 0, 1, 2, 1);
@@ -87,16 +126,21 @@ public class CharacterCreationComponent extends GridPane {
 		
 		itemLinksList = new ItemListComponent(book, false);
 		shopLinksList = new ItemListComponent(book, true);
+		skillComboBox = new ArrayList();
 
 		characterCreationType.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String t, String t1) -> {
 			this.getChildren().remove(itemLinksList);
 			this.getChildren().remove(shopLinksList);
+			this.getChildren().remove(skillPane);
 			
 			if(characterCreationType.getValue().equals(TYPE_ITEM))
 				addItemLinksComponent();
 
 			if(characterCreationType.getValue().equals(TYPE_SHOP))
 				addShopLinksComponent();
+			
+			if(characterCreationType.getValue().equals(TYPE_SKILL))
+				addSkillLinksComponent();
 		});
 
 		if(abstractCharacterCreation != null)
@@ -116,6 +160,47 @@ public class CharacterCreationComponent extends GridPane {
 	private void addShopLinksComponent() {
 		this.add(shopLinksList, 0, 3, 2, 1);
 	}
+	
+	/**
+	 * Affiche la liste des skills que l'on peut apprendre
+	 */
+	private void addSkillLinksComponent() {
+		skillPane = new GridPane();
+		skillPane.setVgap(UiConsts.DEFAULT_MARGIN);
+		skillPane.setHgap(UiConsts.DEFAULT_MARGIN);
+		
+		addSkillPane = new GridPane();
+		addSkillPane.setVgap(UiConsts.DEFAULT_MARGIN);
+		addSkillPane.setHgap(UiConsts.DEFAULT_MARGIN);
+
+		Button addSkill = new Button("Ajouter un skill");
+		addSkill.setOnAction((ActionEvent e) -> {
+			addSkillComboBox();
+		});
+		
+		skillPane.add(addSkill, 0, 1);
+		skillPane.add(addSkillPane, 0, 2);
+		
+		this.add(skillPane, 0, 3);
+	}
+	
+	/**
+	 * Ajoute une comboBox contenant les skills
+	 * @return ComboBox contenant les skills
+	 */
+	private ComboBox<String> addSkillComboBox(){
+		ComboBox<String> comboSkills = new ComboBox<>();
+		comboSkills.getItems().add(" ");
+		for(Map.Entry<String, BookSkill> listSkillBook : this.book.getSkills().entrySet()){
+			comboSkills.getItems().add(listSkillBook.getValue().getId());
+		}
+		comboSkills.setValue(" ");
+		
+		addSkillPane.add(comboSkills, skillComboBox.size() % 4, skillComboBox.size() / 4);
+		
+		skillComboBox.add(comboSkills);
+		return comboSkills;
+	}
 
 	/**
 	 * Retourne l'étape de la création du personnage
@@ -134,6 +219,17 @@ public class CharacterCreationComponent extends GridPane {
 			characterCreationShop.setItemShopLinks(shopLinksList.getBookItemLinks());
 
 			characterCreation = characterCreationShop;
+		} else if(characterCreationType.getValue() == TYPE_SKILL) {
+			List<String> listSkill = new ArrayList();
+			for(ComboBox<String> skillBox : skillComboBox){
+				if(!(skillBox.getValue() == " ")){
+					listSkill.add(skillBox.getValue());
+				}
+			}
+			CharacterCreationSkill characterCreationSkill = new CharacterCreationSkill();
+			characterCreationSkill.setSkillLinks(listSkill);
+
+			characterCreation = characterCreationSkill;
 		} else if(characterCreationType.getValue() == TYPE_TEXT) {
 			characterCreation = new CharacterCreationText();
 		}
@@ -156,6 +252,13 @@ public class CharacterCreationComponent extends GridPane {
 			CharacterCreationShop characterCreationShop = (CharacterCreationShop) characterCreation;
 			shopLinksList.setBookItemLinks(characterCreationShop.getItemShopLinks());
 			characterCreationType.setValue(TYPE_SHOP);
+		} else if(characterCreation instanceof CharacterCreationSkill) {
+			characterCreationType.setValue(TYPE_SKILL);
+			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
+			for(String idSkill : characterCreationSkill.getSkillLinks()){
+				ComboBox skillBox = addSkillComboBox();
+				skillBox.setValue(idSkill);
+			}
 		}
 		
 		texte.setText(characterCreation.getText());
