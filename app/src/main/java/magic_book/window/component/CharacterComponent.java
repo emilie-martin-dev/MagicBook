@@ -95,6 +95,8 @@ public class CharacterComponent extends GridPane {
 		
 		//Si c'est le personnage principal
 		if(mainCharacter){
+			this.getChildren().remove(idLabel);
+			this.getChildren().remove(idTextField);
 			this.add(itemMaxLabel, 0, 5);
 			this.add(itemMaxTextField, 1, 5);
 			this.add(argentLabel, 0, 6);
@@ -108,11 +110,14 @@ public class CharacterComponent extends GridPane {
 	 * @return Le personnage créer
 	 */
 	public BookCharacter getCharacter(Book book) {
-		//Si l'id et le name non pas de valeur de saisie
-		if (idTextField.getText().trim().isEmpty()
-				|| nameTextField.getText().trim().isEmpty()) {
+		//Si le name n'a pas de valeur de saisie
+		if(nameTextField.getText().trim().isEmpty())
 			return null;
-		}
+		
+		//Si ce n'est pas le personnage principal et l'id n'a pas de valeur de saisie
+		if(!mainCharacter)
+			if (idTextField.getText().trim().isEmpty())
+				return null;
 		
 		if(book != null){
 			//Permet de ne pas utiliser id pour le personnage principal
