@@ -11,22 +11,22 @@
       "text": "",
       "choices": [
         {
-          "text": "vic",
+          "text": "",
           "section": 3
-        },
-        {
-          "text": "marche pas",
-          "section": 2
         }
       ]
     },
     "2": {
-      "text": "bas",
+      "text": "",
       "choices": []
     },
     "3": {
       "text": "",
       "end_type": "VICTORY"
+    },
+    "4": {
+      "text": "",
+      "choices": []
     }
   }
 }

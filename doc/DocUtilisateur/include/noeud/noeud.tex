@@ -1,11 +1,11 @@
 \chapter{Présentation des noeuds}
 
-	\section{Le prélude}
+	\section{Le prélude}\label{section:prelude}
         Le prélude permet d'afficher des paragraphes au début du livre, ajouter des items/skills à prendre/acheter, ainsi que de créer son personnage. Pour accèder au prélude, l'utilisateur doit d'abord selectionner le mode \includegraphics[height=10pt]{img/modeSelected.png}, puis double cliquer sur le prélude, situer dans la fenêtre d'édition, défini par un carré rose fushia.
 		Trois onglet sont alors afficher. Le premier permet de définir le texte à afficher au tout début. Le deuxième permet de définir les items à prendre et/ou à acheter ainsi que les compétences disponible au debut du livre. Et enfin, le dernier onglet concernet la création du personnage.
 
 		\subsection{Création du personnage}
-			Cette onglet à un bouton \includegraphics[height=10pt]{img/preludeAjouterBouton.png}, permettant ainsi d'éditer d'autre paragraphes à afficher avant le commencement du livre. Ces textes peuvent être accompagné par une particularité: être accompagner d'un shop vendant des items, d'items à prendre ou encore, de compétences à apprendre.\\
+			Cette onglet à un bouton \includegraphics[height=10pt]{img/ajouterBouton.png}, permettant ainsi d'éditer d'autre paragraphes à afficher avant le commencement du livre. Ces textes peuvent être accompagné par une particularité: être accompagner d'un shop vendant des items, d'items à prendre ou encore, de compétences à apprendre.\\
 			\newline
 			\begin{minipage}{0.85\textwidth}
 				Cette particularité peut être sélectionnée grâce à une liste déroulante. Pour que cette liste s'affiche, un item et/ou une compétence doit être créer (Voir le chapitre \ref{chapter:inclus} à la page \pageref{chapter:inclus}).\\
@@ -20,7 +20,7 @@
 			Le bouton \includegraphics[height=10pt]{img/preludeSupprimerBouton.png} permet de supprimer le texte ainsi que la particularité associé.
 
 			\subsubsection{Particularité item et shop}\phantomsection \label{subsubsection:Item/Shop}
-				Une liste déroulante s'affiche avec tout les items encore non sélectionné. Pour ajouter un item, il faut d'abord en sélectionner un, puis cliquer sur le bouton \includegraphics[height=10pt]{img/preludeAjouterBouton.png}. Une fois l'item ajouter, il peut être supprimer grâce à un clique droit sur l'item voulu.
+				Une liste déroulante s'affiche avec tout les items encore non sélectionné. Pour ajouter un item, il faut d'abord en sélectionner un, puis cliquer sur le bouton \includegraphics[height=10pt]{img/ajouterBouton.png}. Une fois l'item ajouter, il peut être supprimer grâce à un clique droit sur l'item voulu.
 				L'utilisateur peut aussi le sélectionner afin de renseigner des informations sur cette item:
 				\begin{itemize}
 					\item Particularité Item : le nombre d'item disponible peut être modifié grâce au champ disponible en bas.
@@ -28,7 +28,7 @@
 				\end{itemize}
 				Si un champ est changer, l'utilisateur doit alors cliquer sur le bouton modifier pour valider le nombre.
 
-			\subsubsection{Particularité compétence}
+			\subsubsection{Particularité compétence}\phantomsection \label{subsubsection:compétences}
 				Le bouton \includegraphics[height=10pt]{img/preludeAjouterSkillBouton.png} permet d'ajouter une liste déroulante. Chaque liste déroulante contient la liste des compétences dispobible.
 
 		\subsection{Personnage de base}
@@ -73,3 +73,6 @@
 
 	\section{Positionnement des noeuds}
 		Les noeuds peuvent être déplacés grâce au mode \includegraphics[height=10pt]{img/modeSelected.png}. Un simple clique/glisse suffit pour déplacer n'importe quel noeud.
+
+	\section{Supression des noeuds}
+		Ces noeuds, sauf le prélude, peuveut être supprimer à l'aide du mode \includegraphics[height=0.4cm]{img/modeSupression.png}. Un simple clique sur le noeud voulu est alors necessaire. Une boite va alors s'ouvrir permettant de vérifié si l'utilisateur est bien sûr de son action. Attention, si des liens étais présent sur ce noeud, ils sont tout simplement supprimé.
