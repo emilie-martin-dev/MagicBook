@@ -1,25 +1,75 @@
 \chapter{Présentation des noeuds}
 
 	\section{Le prélude}
+        Le prélude permet d'afficher des paragraphes au début du livre, ajouter des items/skills à prendre/acheter, ainsi que de créer son personnage. Pour accèder au prélude, l'utilisateur doit d'abord selectionner le mode \includegraphics[height=10pt]{img/modeSelected.png}, puis double cliquer sur le prélude, situer dans la fenêtre d'édition, défini par un carré rose fushia.
+		Trois onglet sont alors afficher. Le premier permet de définir le texte à afficher au tout début. Le deuxième permet de définir les items à prendre et/ou à acheter ainsi que les compétences disponible au debut du livre. Et enfin, le dernier onglet concernet la création du personnage.
 
 		\subsection{Création du personnage}
+			Cette onglet à un bouton \includegraphics[height=10pt]{img/preludeAjouterBouton.png}, permettant ainsi d'éditer d'autre paragraphes à afficher avant le commencement du livre. Ces textes peuvent être accompagné par une particularité: être accompagner d'un shop vendant des items, d'items à prendre ou encore, de compétences à apprendre.\\
+			\newline
+			\begin{minipage}{0.85\textwidth}
+				Cette particularité peut être sélectionnée grâce à une liste déroulante. Pour que cette liste s'affiche, un item et/ou une compétence doit être créer (Voir le chapitre \ref{chapter:inclus} à la page \pageref{chapter:inclus}).\\
+			\end{minipage}
+			\hfill
+			\begin{minipage}{1.5cm}
+				\includegraphics[width=1cm]{img/preludeListeDeroulante.png}
+			\end{minipage}
 
-			\subsubsection{Particularité item et shop}
+
+			Cette onglet permet donc, par exemple, de décrire l'histoire du personnage ainsi que de choisir avec quel objets/compétences on veut commencer. L'histoire peut alors changer en fonctions des objets/compétences que l'on a dès le départs.
+			Le bouton \includegraphics[height=10pt]{img/preludeSupprimerBouton.png} permet de supprimer le texte ainsi que la particularité associé.
+
+			\subsubsection{Particularité item et shop}\phantomsection \label{subsubsection:Item/Shop}
+				Une liste déroulante s'affiche avec tout les items encore non sélectionné. Pour ajouter un item, il faut d'abord en sélectionner un, puis cliquer sur le bouton \includegraphics[height=10pt]{img/preludeAjouterBouton.png}. Une fois l'item ajouter, il peut être supprimer grâce à un clique droit sur l'item voulu.
+				L'utilisateur peut aussi le sélectionner afin de renseigner des informations sur cette item:
+				\begin{itemize}
+					\item Particularité Item : le nombre d'item disponible peut être modifié grâce au champ disponible en bas.
+					\item Particularité Shop : le nombre d'item disponible à la vente, ainsi que son prix d'achat et son prix de vente peuvent être modfié grâce aux champs en bas.
+				\end{itemize}
+				Si un champ est changer, l'utilisateur doit alors cliquer sur le bouton modifier pour valider le nombre.
 
 			\subsubsection{Particularité compétence}
+				Le bouton \includegraphics[height=10pt]{img/preludeAjouterSkillBouton.png} permet d'ajouter une liste déroulante. Chaque liste déroulante contient la liste des compétences dispobible.
 
 		\subsection{Personnage de base}
+			Le personnage principal est créer ici. Son nom, les points de vie, les points de dégats ainsi que la quantité d'items pouvant être porter et le nombre de monnaie possédé au départ peut alors être renseigné. Une coche est également présent afin de permettre à l'utilisateur de choisir si le personnage principal aura la possibilité de faire un double dégât ou non. La chance d'un double dommage est de 2/5.
+			Si un champ contenant normalement un nombre est rempli par du texte, un message d'erreur aparait. Il en est de même si un champ n'est pas rempli.\\
+		\newline
+		Une fois l'onglet \textit{Personnage de base} rempli, l'utilisateur peut alors valider. Dans le cas contraire, un message d'erreur apparait.
+		L'utilisateur peut aussi annuler. Aucune modification sera alors enregistré.
 
 	\section{Les noeuds}
+		La création d'un noeud se fait à partir du mode \includegraphics[height=10pt]{img/modeEdition.png}. Ce mode permet de créer un paragraphe. Une fois le mode sélectionné, il faut alors cliquer n'importe où dans la zone d'édition. Une fenêtre va alors apparaître.
 
-		\subsection{Noeud basic}
+		\subsection{Noeuds à choix}
+			Ces noeuds contiennent trois onglets: édition du noeud (\textit{Noeud}), ajout des items à prendre (\textit{Item}), ajout des items à acheter (\textit{Shop}).
 
-		\subsection{Noeud aléatoire}
+			\begin{itemize}
+				\item \textit{Noeud} : contient un paragraphe, un champ de texte de gain/perte de vie, un champ de texte permettant à l'utilisateur de définir un nombre maximum d'item à prendre/acheter sur ce noeud.
+				\begin{center}
+					\includegraphics[height=1cm]{img/noeudBasic.png}
+				\end{center}
 
-		\subsection{Noeud combat}
+				\item \textit{Item} et \textit{Shop} : voir la subsection \textbf{Particularité item et shop} \ref{subsubsection:Item/Shop} à la page \pageref{subsubsection:Item/Shop}\\
+			\end{itemize}
+
+			Tout les champs des noeuds, sauf le champ contenant le paragraphe (\textit{Texte}), ne peut contenir des lettres.
+
+			\subsubsection{Noeud basic}
+				Ce noeud permet d'avoir un simple paragraphe à choix.
+
+			\subsubsection{Noeud aléatoire}
+				Ce noeud ne diffère pas du noeud basique sur sa présentation, mais à la création de son/ses lien(s) (voir la section \ref{subsection:lienAléatoire} à la page \pageref{subsection:lienAléatoire}).
+
+			\subsubsection{Noeud combat}
+				Ce noeud contient deux nouvelle données à remplir. Tout d'abord, l'utilisateu peut définir le nombre de tours avant évasion. Puis il y a un bouton \includegraphics[height=10pt]{img/noeudAddPersonnage} permettant d'ajouter des ennemis grâce à une liste déroulante qui apparait. Chaque ennemis peut être ajouter plusieurs fois permettant ainsi de laisser la liberté à l'utilisateur d'avoir plusieurs même ennemis.
+				Ce noeud diffère également lors de la création de son/ses lien(s) (voir la section \ref{subsection:lienCombat} à la page \pageref{subsection:lienCombat}).
 
 		\subsection{Noeud terminaux}
+			Ces noeuds permettent de définir si le joueur à gagné ou perdu. Le livre est donc fini à cette endroit. Le livre ne peut pas être lancé tant que tout les noeuds ne finissent pas sur un noeud terminaux. En effet, il est impossible au joueur de terminer sur un autre noeud qu'un noeud terminaux.
 
-	\section{Modficiation des noeuds}
+	\section{Modification des noeuds}
+		Ces différents noeud présenté sont modifiables à l'aide du mode \includegraphics[height=0.4cm]{img/modeSelected.png}. Un double clique est nécessaire afin de pouvoir éditer le noeud voulu.
 
 	\section{Positionnement des noeuds}
+		Les noeuds peuvent être déplacés grâce au mode \includegraphics[height=10pt]{img/modeSelected.png}. Un simple clique/glisse suffit pour déplacer n'importe quel noeud.

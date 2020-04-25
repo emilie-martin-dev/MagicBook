@@ -1,0 +1,32 @@
+{
+  "prelude": "",
+  "setup": {
+    "character_creation": [],
+    "skills": [],
+    "items": [],
+    "characters": []
+  },
+  "sections": {
+    "1": {
+      "text": "",
+      "choices": [
+        {
+          "text": "vic",
+          "section": 3
+        },
+        {
+          "text": "marche pas",
+          "section": 2
+        }
+      ]
+    },
+    "2": {
+      "text": "bas",
+      "choices": []
+    },
+    "3": {
+      "text": "",
+      "end_type": "VICTORY"
+    }
+  }
+}
