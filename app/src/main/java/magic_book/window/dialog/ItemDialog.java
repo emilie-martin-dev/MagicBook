@@ -27,7 +27,7 @@ public class ItemDialog extends AbstractDialog {
 	/**
 	 * Item de type Healing
 	 */
-	private static final String HEALING = "Soin";
+	private static final String HEALING = "Potion";
 	/**
 	 * Item de type key
 	 */

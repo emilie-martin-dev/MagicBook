@@ -68,7 +68,7 @@ public class CharacterComponent extends GridPane {
 		Label idLabel = new Label("Id : ");
 		Label nameLabel = new Label("Nom: ");
 		Label hpLabel = new Label("Hp : ");
-		Label combatSkillLabel = new Label("Dégats : ");
+		Label combatSkillLabel = new Label("Dégâts : ");
 		Label itemMaxLabel = new Label("Item max : ");
 		Label argentLabel = new Label("Argent : ");
 		
@@ -76,7 +76,7 @@ public class CharacterComponent extends GridPane {
 		nameTextField = new TextField();
 		hpTextField = new TextField();
 		combatSkillTextField = new TextField();
-		doubleDamageCheckBox = new CheckBox("Double dégats");
+		doubleDamageCheckBox = new CheckBox("Double dégâts");
 		itemMaxTextField = new TextField();
 		argentTextField = new TextField();
 		
