@@ -1,5 +1,6 @@
 \documentclass[beamer]{BetterDocument}
 
+\addbibresource{ressources.bib}
 \beamerBackground{img/background.jpg}
 
 \definecolor{titlecolor}{HTML}{FFFFFF}
@@ -18,32 +19,73 @@
 
 	\begin{frame}
 		\frametitle{Table des matières}
+
 		\tableofcontents
 	\end{frame}
 
-	\section{Présentation de l'application}
+	% Apparait dans le sommaire mais ne met pas le titre de la section sur la diapo (en haut à gauche)
+	\section{Présentation d'un LDVH}
+	\section{}
 	\begin{frame}
-		\frametitle{L'interface d'édition}
-		\begin{graphicsRow}
-			\graphicsCol{\includegraphics[width=0.5\paperwidth, keepaspectratio]{img/editeur.png}}
-			\hfill
-	        \graphicsCol{\includegraphics[width=0.3\paperwidth, keepaspectratio]{img/editeur_item.png}}
-		\end{graphicsRow}
+		\frametitle{Présentation d'un LDVH}
+
+		\center\includegraphics[height=0.4\paperheight, keepaspectratio]{img/ldvh1.jpg}\\
+		\textit{cf : \cite{book:loupSolitaire}}
+	\end{frame}
+
+	\section{Présentation de l'application}
+	\subsection{L'interface d'édition}
+	\begin{frame}
+		\frametitle{Fenêtre principale}
+
+		\center\includegraphics[width=0.8\paperwidth, keepaspectratio]{img/editeur.png}
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Le mode jeu}
-		\begin{graphicsRow}
-			\graphicsCol{\includegraphics[width=0.45\paperwidth, keepaspectratio]{img/jeu_choix.png}}
-			\hfill
-	        \graphicsCol{\includegraphics[width=0.38\paperwidth, keepaspectratio]{img/jeu_combat.png}}
-		\end{graphicsRow}
+		\frametitle{Exemple de boite de dialogue}
+
+		\center\includegraphics[width=0.4\paperwidth, keepaspectratio]{img/editeur_item.png}
+	\end{frame}
+
+	\subsection{L'interface de jeu}
+	\begin{frame}
+		\frametitle{Paragraphe à choix}
+
+		\center\includegraphics[width=0.8\paperwidth, keepaspectratio]{img/jeu_choix.png}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Paragraphe de combat}
+
+		\center\includegraphics[width=0.7\paperwidth, keepaspectratio]{img/jeu_combat.png}
 	\end{frame}
 
 	\section{Estimation de la difficulté d'un livre}
 	\subsection{Fonctionnement}
 	\begin{frame}
 		\frametitle{L'idée d'origine}
+
+		\begin{algorithm}[H]
+			\caption{estimer(n, noeudDepart): float}
+  			\scriptsize
+			\DontPrintSemicolon
+			victoire $\gets$ 0\;
+
+			\For{i allant de 0 à n-1}{
+				noeudEnCours $\gets$ noeudDepart\;
+				\While{noeudEnCours.getStatus() != VICTORY \&\& noeudEnCours.getStatus() != FAILURE}{
+					Random rand : Random\;
+					nChoix $\gets$ noeudEnCours.getChoices().size()\;
+					noeudEnCours = noeudEnCours.getChoices().get(rand.nextInt(nChoix))\;
+				}
+				\;
+				\uIf{nodeTerminal.getStatus() == BookNodeStatus.VICTORY}{
+					victoire $\gets$ victoire + 1\;
+				}
+			}
+			\;
+			\Return{(100*victoire)/n}
+		\end{algorithm}
 	\end{frame}
 
 	\begin{frame}
@@ -53,10 +95,130 @@
 	\subsection{Problèmes et idées d'amélioration}
 	\begin{frame}
 		\frametitle{Les points noirs actuels}
+
+		\begin{itemize}
+			\item{Code en commun concernant la sélection des items}
+			\item{Pas de gestion des shop}
+			\item{Pas de durabilité pour les items}
+			\item{L'IA achète et prends les items de manière aléatoire}
+			\item{L'IA n'est pas efficace lors d'un combat}
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}
 		\frametitle{Pistes de réflexions}
+
+		\begin{itemize}
+			\item{Code en commun concernant la sélection des items}
+			\begin{itemize}
+				\item{Retourner l'item à sélectionner}
+				\item{Gérer l'item retourné}
+			\end{itemize}
+
+			\item{Pas de gestion des shop / Pas de durabilité pour les items}
+			\begin{itemize}
+				\item{Implémenter la fonctionnalité}
+			\end{itemize}
+
+			\item{L'IA achète et prends les items de manière aléatoire}
+			\begin{itemize}
+				\item{Ajouter un champs de "viabilité"}
+				\item{Déterminer la rareté et l'importance d'un item}
+			\end{itemize}
+
+			\item{L'IA n'est pas efficace lors d'un combat}
+			\begin{itemize}
+				\item{Optimiser l'utilisation des potions}
+				\item{Toujours sélectionner la meilleure arme et armure}
+				\item{Déterminer quel est l'ennemie à privilégier}
+				\item{Comment gérer l'évasion ?}
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
+
+	\section{Export du livre au format texte}
+	\begin{frame}
+		\frametitle{Exemple d'export d'un livre}
+
+		\center\includegraphics[width=0.8\paperwidth, keepaspectratio]{img/export_txt.png}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Algorithme de mélange}
+
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{L'interface \textbf{Descriptible}}
+
+		\center\includegraphics[height=0.7\paperheight, keepaspectratio]{img/descriptible.png}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Algorithme d'écriture}
+
+		\begin{lstlisting}[gobble=12, language=java]
+			FileWriter fileWritter = new FileWriter(path);
+
+			fileWritter.write(book.getTextPrelude());
+			fileWritter.write("\n");
+
+			writeSeparator(fileWritter);
+
+			for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
+				fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
+				if(i < book.getCharacterCreations().size() - 1)
+					fileWritter.write("\n");
+			}
+
+			writeSeparator(fileWritter);
+
+			for(int i = 0 ; i < nodes.size() ; i++) {
+				writeNode(nodes.get(i+1), nodesInv, book, fileWritter);
+
+				if(i < nodes.size() - 1){
+					writeSeparator(fileWritter);
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+
+	\begin{frame}[fragile]
+		\frametitle{Algorithme d'écriture}
+
+		\begin{lstlisting}
+			private static void writeNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter fileWritter) throws IOException {
+				fileWritter.write("Paragraphe " + nodesIndex.get(node) + " :\n");
+				fileWritter.write("\n");
+
+				fileWritter.write(node.getDescription(book));
+
+				if(!node.getChoices().isEmpty()) {
+					fileWritter.write("\nCorrespondance entre les choix et les paragraphes : \n\n");
+
+					// Permet de connaitre les paragraphes suivants en fonction du choix
+					for(BookNodeLink nodeLink : node.getChoices()) {
+						if(!nodeLink.getText().isEmpty()) {
+							fileWritter.write("- ");
+							fileWritter.write(nodeLink.getText());
+							fileWritter.write(" ");
+						}
+
+						fileWritter.write("- Paragraphe suivant : ");
+						fileWritter.write(""+nodesIndex.get(book.getNodes().get(nodeLink.getDestination())));
+						fileWritter.write("\n");
+					}
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+
+	\section{}
+	\subsection{}
+	\begin{frame}[allowframebreaks]
+	  \frametitle{Références}
+
+	  \printbibliography
+	 \end{frame}
 
 \end{document}

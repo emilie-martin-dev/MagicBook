@@ -137,7 +137,7 @@
 \RequirePackage[T1]{fontenc}%
 \RequirePackage[french]{babel}%
 \RequirePackage[linesnumbered,ruled,onelanguage]{algorithm2e} % Permet d'écrire des algorithmes
-\RequirePackage[style=apa]{biblatex} % Permet un meilleur controle de la biblio
+\RequirePackage[style=authortitle]{biblatex} % Permet un meilleur controle de la biblio
 \RequirePackage[labelfont=bf]{caption} % Met en gras les captions
 \RequirePackage{fancyhdr} % Permet d'utiliser les headers et footers
 \RequirePackage{float} % Permet d'utiliser le modificateur H sur les floattants
@@ -323,7 +323,7 @@
 		}
 	}
 
-	% Permet de créer une ligne pour aligner les images
+	% Permet de créer une ligne pour aligner les images verticalement
 	\newenvironment{graphicsRow}
 	{
 		\begin{minipage}{\textwidth}
@@ -332,7 +332,7 @@
 		\end{minipage}
 	}
 
-	% Permet de créer une colonne pour aligner les images
+	% Permet de créer une colonne pour aligner les images verticalement
 	\newcommand{\graphicsCol}[1] {
 		\raisebox{-0.5\height}{#1}
 	}
