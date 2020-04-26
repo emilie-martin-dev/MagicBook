@@ -65,11 +65,19 @@ public class Jeu {
 	private Book bookToRead;
 	
 	/**
+	 * Le chemin temporaire pour sauvegarder le fichier
+	 */
+	private static final String TMP_FILE_PATH = ".livreTmpGame";
+	
+	/**
 	 * Création du jeu
 	 * @param book Livre contenant toutes les informations et mis en la variable bookToRead
 	 */
-	public Jeu(Book book){
+	public Jeu(Book book) throws IOException{
 		this.bookToRead = book;
+		
+		BookWritter bookWritter = new BookWritter();
+		bookWritter.write(TMP_FILE_PATH, bookToRead);
 	}
 	
 	/**
@@ -83,6 +91,8 @@ public class Jeu {
 		showMessages = true;
 		
 		runGame();
+		
+		cleanUp();
 	}
 	
 	/**
@@ -104,6 +114,8 @@ public class Jeu {
 			}
 		}
 		
+		cleanUp();
+		
 		return ((float)victoire / (float)nbrFourmis) * 100f;
 	}
 	
@@ -119,14 +131,9 @@ public class Jeu {
 		boolean win = false;
 		
 		//Copie du livre afin de ne pas le modifier l'original
-		String tmpPath = ".livreTmpGame";
-		BookWritter bookWritter = new BookWritter();
-		bookWritter.write(tmpPath, bookToRead);
 		BookReader bookReader = new BookReader();
-		Book bookCopy = bookReader.read(tmpPath);
-		File file = new File(tmpPath);
-		file.delete();
-
+		Book bookCopy = bookReader.read(TMP_FILE_PATH);
+		
 		this.book = bookCopy;
 
 		showMessage(this.book.getTextPrelude());
@@ -559,6 +566,15 @@ public class Jeu {
 			showMessage("Vous avez pris "+ bookNodeLink.getHp() + " hp");
 			showMessage("Vous avez"+ state.getMainCharacter().getHp() + " hp");
 		}
+	}
+	
+	/**
+	 * Libère les ressources temporaires
+	 */
+	public void cleanUp() {
+		File file = new File(TMP_FILE_PATH);
+		if(file.exists())
+			file.delete();
 	}
 	
 	/**

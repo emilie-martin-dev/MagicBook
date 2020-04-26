@@ -180,7 +180,7 @@ public class MainWindow extends Stage {
 		menuBookDifficulty.setOnAction((ActionEvent e) -> {
 			try {
 				Jeu jeu = new Jeu(book);
-				float difficulte = jeu.fourmis(5000);
+				float difficulte = jeu.fourmis(2500);
 				rightPane.difficultyChanged(difficulte);
 			} catch (IOException | BookFileException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
