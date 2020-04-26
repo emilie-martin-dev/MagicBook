@@ -577,34 +577,9 @@ public class BookTest extends AbstractTest {
 		Assert.assertTrue("Test choice - node4", book.getNodes().get(4).getChoices().get(0) == nodeLink4);
 	}
 
-	/*
-	public void addItem() {
-	}
+	// NB : Nous ne testons pas les méthodes d'ajouts / modifications et suppressions d'items / skills / personnage
+	// 		En effet ce sont des méthodes qui agissent de la même manière que des getter et setter. Aucun traitement
+	// 		particulié ne leur est attribué.
 
-	public void updateItem() {
-	}
-
-	public void removeItem() {
-	}
-
-	public void addCharacter() {
-	}
-
-	public void updateCharacter() {
-	}
-
-	public void removeCharacter() {
-	}
-
-	public void addSkill() {
-	}
-
-	public void updateSkill() {
-	}
-
-	public void removeSkill() {
-	}
-
-	*/
 
 }
