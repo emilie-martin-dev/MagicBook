@@ -21,7 +21,7 @@ import magic_book.core.item.BookItemWeapon;
  * Permet au joueur de jouer en utilisant la console
  */
 public class Player implements InterfacePlayerFourmis {
-	
+
 	public Player(){
 	}
 
@@ -39,14 +39,14 @@ public class Player implements InterfacePlayerFourmis {
 
 			Scanner scanner = new Scanner(System.in);
 			int choix = scanner.nextInt();
-			
+
 			if(choix < 1 || choix > 3) {
 				System.out.println("Le choix est invalide");
 				continue;
 			}
-			
+
 			choixCombat = ChoixCombat.values()[choix-1];
-			
+
 			//Choisi un objet dans l'inventaire puis retourne au choix
 			if (choixCombat == ChoixCombat.INVENTAIRE){
 				if(!state.getMainCharacter().getItems().isEmpty())
@@ -58,10 +58,10 @@ public class Player implements InterfacePlayerFourmis {
 				choixValide = true;
 			}
 		}
-		
+
 		return choixCombat;
 	}
-	
+
 	/**
 	* Le joueur effectue un choix par oui ou non
 	* @return Choix décidé par le joueur
@@ -69,17 +69,16 @@ public class Player implements InterfacePlayerFourmis {
 	private boolean choixYesNo(){
 		System.out.println("0 - oui");
 		System.out.println("1 - non");
-		System.out.println("Que choisissez-vous ?");
 		Scanner scanner = new Scanner(System.in);
 		int choixJoueur = -1;
-		
+
 		while(choixJoueur != 0 && choixJoueur != 1) {
 			choixJoueur = scanner.nextInt();
 		}
-		
+
 		return choixJoueur == 0;
 	}
-	
+
 	/**
 	* Si l'item est plein, affichage de tout les items du joueur
 	* @param state Sauvegarde actuelle de la partie
@@ -88,14 +87,14 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("Votre inventaire est plein");
 		System.out.println("Voulez vous supprimer un item ?");
 		System.out.println("Vos Item: ");
-		
+
 		int i = 0;
 		for(String itemState : state.getMainCharacter().getItems()){
 			System.out.println(i + " - "+state.getBook().getItems().get(itemState));
 			i++;
 		}
 	}
-	
+
 	/**
 	* Supprime l'item choisi de l'inventaire du joueur
 	* @param state Sauvegarde actuelle de la partie
@@ -103,12 +102,12 @@ public class Player implements InterfacePlayerFourmis {
 	private void itemSupp(BookState state){
 		System.out.println("Quel item voulez-vous supprimer ?");
 		boolean choixValide = false;
-		
+
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			int choix = scanner.nextInt();
-			
-			if(choix >= 0 && choix <= (state.getMainCharacter().getItems().size()-1)){				
+
+			if(choix >= 0 && choix <= (state.getMainCharacter().getItems().size()-1)){
 				state.getMainCharacter().getItems().remove(choix);
 				choixValide = true;
 			} else if(choix == -1) {
@@ -117,9 +116,9 @@ public class Player implements InterfacePlayerFourmis {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
-		
+
 	}
-		
+
 	/**
 	* Ajoute l'item choisi dans l'inventaire du joueur
 	* @param state Sauvegarde actuelle de la partie
@@ -129,28 +128,28 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("Quel item voulez-vous ?");
 		boolean choixValide = false;
 		int choix = -1;
-		
+
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			choix = scanner.nextInt();
-			
+
 			if(choix >= 0 && choix <= (bookItemLinks.size()-1)){
 				choixValide = true;
 			} else {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
-		
+
 		BookItemLink itemLink = bookItemLinks.get(choix);
 		System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
-		state.getMainCharacter().getItems().add(itemLink.getId());	
-		
+		state.getMainCharacter().getItems().add(itemLink.getId());
+
 		itemLink.setAmount(itemLink.getAmount()-1);
-				
+
 		if(itemLink.getAmount() == 0)
 			bookItemLinks.remove(itemLink);
 	}
-	
+
 	@Override
 	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 		while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
@@ -160,7 +159,7 @@ public class Player implements InterfacePlayerFourmis {
 				System.out.println(i+" - "+state.getBook().getItems().get(itemLink.getId()).getName());
 				i++;
 			}
-			
+
 			System.out.println("Voulez vous un item ?");
 			if(choixYesNo()){
 				int itemMax = state.getMainCharacter().getItemsMax();
@@ -177,11 +176,11 @@ public class Player implements InterfacePlayerFourmis {
 				} else {
 					itemAdd(state, bookItemLinks);
 				}
-				
+
 			} else {
 				nbItemMax = 0;
 			}
-			
+
 			if(bookItemLinks.isEmpty())
 				nbItemMax = 0;
 		}
@@ -194,30 +193,30 @@ public class Player implements InterfacePlayerFourmis {
 	@Override
 	public void useInventaire(BookState state){
 		List<String> itemsPerso = state.getMainCharacter().getItems();
-		
+
 		System.out.println("Vos Item: ");
 		int i = 0;
 		for(String itemState : itemsPerso){
 			System.out.println(i + " - "+itemState);
 			i++;
 		}
-		
+
 		boolean choixValide = false;
 		BookItem bookItem = null;
 		int choix = -1;
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			choix = scanner.nextInt();
-			
+
 			if(choix >= 0 && choix <= 2){
 				choixValide = true;
 			} else {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
-		
+
 		bookItem = state.getBook().getItems().get(itemsPerso.get(choix));
-		
+
 		if(bookItem instanceof BookItemDefense){
 			state.setBookItemDefense((BookItemDefense) bookItem);
 		} else if(bookItem instanceof BookItemHealing){
@@ -231,11 +230,11 @@ public class Player implements InterfacePlayerFourmis {
 			System.out.println("Cette objet n'est pas utilisable en combat");
 		}
 	}
-	
+
 	@Override
 	public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
 		System.out.println(characterCreation.getText());
-		
+
 		//Choix des items du début
 		if(characterCreation instanceof CharacterCreationItem){
 			CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
@@ -244,9 +243,9 @@ public class Player implements InterfacePlayerFourmis {
 		//Choix des skill du début
 		else if(characterCreation instanceof CharacterCreationSkill){
 			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
-			
+
 			int nbItemMax = characterCreationSkill.getAmountToPick();
-			
+
 			while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
 				System.out.println("Les skills suivant sont disponible:");
 				int i = 0;
@@ -264,7 +263,7 @@ public class Player implements InterfacePlayerFourmis {
 	@Override
 	public int makeAChoice(AbstractBookNodeWithChoices node) {
 		Scanner scanner = new Scanner(System.in);
-		
+
 		return scanner.nextInt();
 	}
 
@@ -273,7 +272,7 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("Qui voulez vous attaquer ?");
 		int choix = -1;
 		boolean choixValide = false;
-		
+
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			choix = scanner.nextInt();
@@ -283,7 +282,7 @@ public class Player implements InterfacePlayerFourmis {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
-		
+
 		return listEnnemis.get(choix);
 	}
 
