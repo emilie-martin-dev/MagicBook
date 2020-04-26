@@ -172,6 +172,7 @@ public class PreludeDialog extends AbstractDialog {
 		Button remove = new Button("Supprimer cette partie");
 		
 		remove.setOnAction((ActionEvent e) -> {
+			// Sans la ligne suivante, l'accordion ne se redimensionne pas après la suppression de la tiledPane
 			titledPane.setContent(new HBox());
 			accordion.getPanes().remove(titledPane);
 			this.characterCreationComponent.remove(characterCreationPane);

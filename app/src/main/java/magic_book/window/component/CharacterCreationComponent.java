@@ -222,7 +222,7 @@ public class CharacterCreationComponent extends GridPane {
 		} else if(characterCreationType.getValue() == TYPE_SKILL) {
 			List<String> listSkill = new ArrayList();
 			for(ComboBox<String> skillBox : skillComboBox){
-				if(!(skillBox.getValue() == " ")){
+				if(!skillBox.getValue().trim().isEmpty()){
 					listSkill.add(skillBox.getValue());
 				}
 			}
@@ -254,6 +254,7 @@ public class CharacterCreationComponent extends GridPane {
 			characterCreationType.setValue(TYPE_SHOP);
 		} else if(characterCreation instanceof CharacterCreationSkill) {
 			characterCreationType.setValue(TYPE_SKILL);
+			skillComboBox.clear();
 			CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
 			for(String idSkill : characterCreationSkill.getSkillLinks()){
 				ComboBox skillBox = addSkillComboBox();
