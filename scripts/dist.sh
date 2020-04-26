@@ -30,7 +30,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Copie des fichiers"
-cd $gradleDistDir
+cd "$gradleDistDir"
 
 if [ -d "$gradleDistDir/$zipName" ]; then
 	rm -rf "$gradleDistDir/$zipName"
