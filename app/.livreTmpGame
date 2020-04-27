@@ -1,0 +1,48 @@
+{
+  "prelude": "",
+  "setup": {
+    "character_creation": [],
+    "skills": [],
+    "items": [
+      {
+        "id": "épée",
+        "name": "Aiguille",
+        "damage": 20,
+        "durability": 10,
+        "item_type": "WEAPON"
+      }
+    ],
+    "characters": []
+  },
+  "sections": {
+    "1": {
+      "text": "Le marchand vous propose du troc. Une émeraude contre l\u0027épée \"Aiguille\"",
+      "choices": [
+        {
+          "text": "L\u0027échange est convenable.",
+          "section": 3,
+          "requirements": [
+            [
+              {
+                "id": "épée",
+                "type": "ITEM"
+              }
+            ]
+          ]
+        },
+        {
+          "text": "C\u0027est du vol !",
+          "section": 4
+        }
+      ]
+    },
+    "3": {
+      "text": "",
+      "end_type": "VICTORY"
+    },
+    "4": {
+      "text": "",
+      "end_type": "VICTORY"
+    }
+  }
+}
