@@ -1,48 +1,152 @@
 {
-  "prelude": "",
+  "prelude": "Ceci est le prélude",
   "setup": {
-    "character_creation": [],
+    "character_creation": [
+      {
+        "text": "",
+        "type": "ITEM",
+        "amount_to_pick": -1,
+        "items": [
+          {
+            "id": "gold",
+            "amount": 2
+          }
+        ]
+      }
+    ],
     "skills": [],
     "items": [
       {
-        "id": "épée",
-        "name": "Aiguille",
-        "damage": 20,
-        "durability": 10,
+        "id": "gold",
+        "name": "Gold Crowns",
+        "item_type": "MONEY"
+      },
+      {
+        "id": "axe",
+        "name": "Axe",
+        "damage": 3,
+        "durability": 6,
         "item_type": "WEAPON"
       }
     ],
-    "characters": []
+    "characters": [
+      {
+        "id": "main_character",
+        "name": "ok",
+        "hp": 100,
+        "combat_skill": 50,
+        "double_damage": true,
+        "item_max": 2,
+        "money": 50
+      },
+      {
+        "id": "zombie_crew",
+        "name": "Zombie Crew",
+        "hp": 18,
+        "combat_skill": 2,
+        "double_damage": true,
+        "item_max": 0
+      }
+    ]
   },
   "sections": {
     "1": {
-      "text": "Le marchand vous propose du troc. Une émeraude contre l\u0027épée \"Aiguille\"",
+      "text": "Noeud de depart",
       "choices": [
         {
-          "text": "L\u0027échange est convenable.",
-          "section": 3,
+          "text": "prendre item",
+          "section": 7
+        },
+        {
+          "text": "besoin item",
+          "section": 2,
           "requirements": [
             [
               {
-                "id": "épée",
+                "id": "axe",
                 "type": "ITEM"
               }
             ]
           ]
-        },
-        {
-          "text": "C\u0027est du vol !",
-          "section": 4
         }
       ]
     },
+    "2": {
+      "text": "Noeud normal avec 2 hp en moins",
+      "choices": [
+        {
+          "text": "Aller au noeud de combat",
+          "section": 3
+        },
+        {
+          "text": "Vers et gagner 10 pièces",
+          "section": 6,
+          "gold": 10
+        }
+      ],
+      "hp": -2
+    },
     "3": {
-      "text": "",
-      "end_type": "VICTORY"
+      "text": "Noeud combat",
+      "choices": [],
+      "combat": {
+        "win": {
+          "text": "Gagner",
+          "section": 5
+        },
+        "evasion": {
+          "text": "Evader",
+          "section": 5
+        },
+        "loose": {
+          "text": "Perdu",
+          "section": 4
+        },
+        "enemies": [
+          "zombie_crew",
+          "zombie_crew"
+        ],
+        "evasion_round": 0
+      }
     },
     "4": {
-      "text": "",
+      "text": "Defaite",
+      "end_type": "FAILURE"
+    },
+    "5": {
+      "text": "Victoire",
       "end_type": "VICTORY"
+    },
+    "6": {
+      "text": "Random",
+      "choices": [
+        {
+          "text": "Vers defaite",
+          "section": 4,
+          "weight": 4
+        },
+        {
+          "text": "Vers victoire",
+          "section": 5,
+          "weight": 1
+        }
+      ],
+      "is_random_pick": true
+    },
+    "7": {
+      "text": "Vous pouvez prendre l\u0027item requis",
+      "items": [
+        {
+          "id": "axe"
+        }
+      ],
+      "amount_to_pick": -1,
+      "choices": [
+        {
+          "text": "Retourner au début",
+          "section": 1
+        }
+      ]
     }
   }
 }
