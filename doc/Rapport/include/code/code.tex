@@ -3,7 +3,14 @@
 	\section{Représentation d'un livre}
 
 		\subsection{Représentation des noeuds}
-			Il y a quatre types de noeuds représentées par des classes (Voir figure \ref{fig:BookNode}): \textbf{BookNodeWithChoices}, \textbf{BookNodeWithRandomChoices}, \textbf{BookNodeCombat} et \textbf{BookNodeTerminal}.
+			Nous étions d'abord partie sur une forme basique de noeud. C'était un noeud tout simple qui comportait un paragraphe, un type et une liste de choix. Sauf que cela ne suffisait pas, car même si on définissait plusieurs \textbf{BookNodeType}, on ne pouvait pas implenter tout ce qu'on voulait. En effet, on devait penser autrement, c'est a dire, une classe par type. On pourait donc plus facilement gérer les différents lien, méthode propre au types de noeud ainsi que leurs différents valeurs notament, par exemple , au noeud de combat.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.70\textwidth]{img/BookNodeBefore.png}
+				\caption{Représentation des Node avant}
+			\end{figure}
+
+			Il y a donc, quatre types de noeuds représentées par des classes (Voir figure \ref{fig:BookNode}): \textbf{BookNodeWithChoices}, \textbf{BookNodeWithRandomChoices}, \textbf{BookNodeCombat} et \textbf{BookNodeTerminal}. Toutes ces classes représentes les différents type de noeuds existants. Cela permet donc d'avoir différentes méthodes qui les représentes. Mais tous extends direct ou indirectement de \textbf{AbstractBookNode}. Cette dernière contient juste un texte correspondant aux paragraphes de chaque noeuds.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.70\textwidth]{img/BookNode.png}
@@ -11,18 +18,16 @@
 				\label{fig:BookNode}
 			\end{figure}
 
-			Tous extends direct ou indirectement de \textbf{AbstractBookNode}. Cette dernière contient juste un texte correspondant aux paragraphes de chaque noeuds.
 
-			Pour le \textbf{BookNodeTerminal}, il prend en compte, en plus du texte de \textbf{AbstractBookNode}, une énumération (\textbf{BookNodeStatus}) qui ne prend en compte que \textbf{FAILURE} ou \textbf{VICTORY}.
+			Pour le \textbf{BookNodeTerminal}, il prend en compte, en plus du texte de \textbf{AbstractBookNode}, une énumération de la classe \textbf{BookNodeStatus}: \textbf{FAILURE} ou \textbf{VICTORY}. C'est donc cette classe qui va déterminer la finalité du livre: si le joueur à gagné ou perdu.
 
-			Pour l'ensemble des autres noeuds, on retrouve une liste de choix et une perte/gain de vie. Pour cette raison, elles extends toutes d'une même classe \textbf{AbstractBookNodeWithChoice} permettant ainsi de définir des variables tel que la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste de choix disponible. Ce dernier est défini par une List<T> car cela peut être un \textbf{BookNodeLink} ou un \textbf{BookNodeLinkRandom}. Nous avons fait le choix d'utiliser un généric sur la classe \textbf{AbstractBookNodeWithChoice} afin de définir la classe utilisé pour la liste de choix. De cette manière, on empêche un noeud random (\textbf{BookNodeWithRandomChoices}) de contenir des choix "normaux" (\textbf{BookNodeLink}). Il ne peut contenir que des \textbf{BookNodeLinkRandom}, c'est à dire des choix avec une probabilité d'être choisi.
+			Pour l'ensemble des autres noeuds, on retrouve une liste de choix et une perte/gain de vie. Pour cette raison, elles extendent toutes d'une même classe, \textbf{AbstractBookNodeWithChoice}, permettant ainsi de définir des variables tel que: la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste des choix disponible. Ce dernier est défini par une List<T> car cela peut être un choix de type \textbf{BookNodeLink} ou un choix de type \textbf{BookNodeLinkRandom}. Tout depend du type de noeud. Car les lien "aléatoire", donc de type \textbf{BookNodeLinkRandom}, a besoin d'une valeur de plus: la chance. Pour plus d'explication sur ces liens, vous pouvez aller voir la subsection \ref{sub:liens} à la page \pageref{sub:liens}. Nous avons donc fait le choix d'utiliser un généric dans la classe \textbf{AbstractBookNodeWithChoice} afin de définir la classe utilisé pour la liste de choix. De cette manière, on empêche un noeud random (\textbf{BookNodeWithRandomChoices}) de contenir des choix "normaux" (\textbf{BookNodeLink}). Il ne peut contenir que des \textbf{BookNodeLinkRandom}, c'est à dire des choix avec une probabilité d'être choisi.
 
-			Pour le BookNodeCombat, le choix a été fait d'ajouter 3 BookNodeLink afin de représenter les différentes issues du combat : victoire, evasion, defaite. Une liste contenant les ID des ennemis que l'on doit combattre y est également renseignée. De plus, ce noeud peut également posséder les même attributs que AbstractBookNodeWithChoices. Raison pour lesquels il en hérite. Nous avons donc redéfini les méthodes spécifiques aux choix, c'est à dire celle pour récupérer les choix, celle pour les supprimer et celle pour les mettre à jour. La liste de la classe mère n'est plus utilisable. Il s'agit d'une grosse erreur de notre part. En effet, cette classe demande un traitement spécial à presque tous les endroits où l'on peut gérer des noeuds. Il aurait plutot fallu ajouter les choix dans la liste parente et avoir un moyen de faire une distinction afin de savoir lequel est celui de victoire, de défaite ou d'évasion. On aurait pas eu à redéfinir autant de fois des comportements particuliers pour ce noeud avec des instanceof. Par manque de temps et au vu des changements importants que cela nécessitait, pour faire cela proprement nous n'avons pas pus changer cela.
+			Pour le \textbf{BookNodeCombat}, le choix a été fait d'ajouter trois \textbf{BookNodeLink} afin de représenter les différentes issues du combat : victoire, evasion, defaite. Cela permet donc d'avoir, au maximum, un lien en fonction de la finalité du combat. Bien sûr tout les liens ne sont pas obligatoire. Mais cela génère alors un noeud terminal de défaite si le lien est inexistant, peu importe la finalité du combat (voir la section sur le Jeu \ref{sec:Jeu} à la page \pageref{sec:Jeu}). Une liste contenant les ID des ennemis que l'on doit combattre y est également renseignée. Les ID seuls sont nécessaire car ils sont uniques, donc peut être facilement retrouvé dans la liste des personnages présente dans la sauvegarde du livre. Ce noeud posséde les même attributs que AbstractBookNodeWithChoices, raison pour lesquels il en hérite. Nous avons donc redéfini les méthodes spécifiques aux choix, c'est à dire celle pour récupérer les choix, celle pour les supprimer et celle pour les mettre à jour. La liste de la classe mère n'est plus utilisable. Il s'agit d'une grosse erreur de notre part. En effet, cette classe demande un traitement spécial à presque tous les endroits où l'on peut gérer des noeuds. Il aurait plutot fallu ajouter les choix dans la liste parente et avoir un moyen de faire une distinction afin de savoir lequel est celui de victoire, de défaite ou d'évasion. On aurait pas eu à redéfinir autant de fois des comportements particuliers pour ce noeud avec des instanceof. Par manque de temps et au vu des changements importants que cela nécessitait, pour faire cela proprement nous n'avons pas pus changer cela.
 
-			Pour le \textbf{BookNodeWithRandomChoices}, une méthode a été ajoutée, afin de sélectionner un choix de manière aléatoire en fonction de la probabilité de chaque lien. Pour cela, on ajoute d'abord tous les liens disponibles dans une liste nommée listNodeLinkDisponible. C'est à dire, les liens où le joueur peut avoir accès en fonction des prérequis demandés. Si aucun lien n'est disponible, cela retourne null. Dans le cas contraire, on choisit un nombre aléatoire en fonction de la somme totale des probabilités des liens valides ( Voir listing \ref{fig:getRandomChoices}).\\
-			En fonction de ce nombre, la probabilité de chaque lien valide est enlevée du nombre tiré jusqu'à ce qu'il soit égal ou inférieur à zéro. Le choix sélectionné est alors retourné (c'est la destination).
+			Pour le \textbf{BookNodeWithRandomChoices}, une méthode a été ajoutée, afin de sélectionner un choix de manière aléatoire en fonction de la probabilité de chaque lien. Pour cela, on ajoute d'abord tous les liens disponibles. C'est à dire, les liens où le joueur peut avoir accès en fonction des prérequis demandés. Si aucun lien n'est disponible, cela retourne null. La suite ce passe dans la partie jeu, soit à la section \ref{sec:Jeu} à la page \pageref{sec:Jeu}. Dans le cas contraire, cela choisit un nombre aléatoire en fonction de la somme totale des probabilités des liens valides (Voir listing \ref{lst:getRandomChoices}). Puis, en fonction de ce nombre, la probabilité de chaque lien valide est enlevée du nombre tiré jusqu'à ce qu'il soit égal ou inférieur à zéro. Le choix sélectionné est alors retourné (c'est la destination). Nous avons décider de procéder comme cela car, c'était pour nous, la meilleur solution pour effectuer un choix le plus aléatoirement possible, tout en ayant des valeurs défini par l'utilisateur. Nous aurions pu simplement faire simple choix aléatoire, mais étant un éditeur d'un livre de l'utilisateur, nous avons pensé qu'un ajout de "chance" serait plus apprécié par celui-ci.
 
-			\begin{lstlisting}[gobble=12, language=java, label=fig:getRandomChoices, caption=getRandomChoice()]
+			\begin{lstlisting}[gobble=12, language=java, label=lst:getRandomChoices, caption=getRandomChoice()]
 				int nbrChoice = 0;
 				Random random = new Random();
 				int nbrRandomChoice = random.nextInt(somme);
@@ -40,31 +45,41 @@
 			\end{lstlisting}
 
 
-		\subsection{Représentation des liens}
-			Les noeuds sont liés par des liens. Ces liens sont soit défini par la classe \textbf{BookNodeLink} ou \textbf{BookNodeLinkRandom}. Pour éviter les redondances, cette dernière extends de \textbf{BookNodeLink}. Elles prennent donc toutes les deux un texte, une destination (défini par le numéro du noeud) et enfin, une liste de prérequis.  Pour la destination, nous avons d'abord mis un \textbf{AbstractBookNode}, mais beaucoup de manipulations étaient nécesssaires lorsqu'un changement était apporté au noeud. Nous avons alors choisi de changer et de mettre le numéro du noeud suivant. Pour plus d'information sur la gestion actuelle des noeuds, voir \nameref{book} à la page \pageref{book}.
-			Pour le \textbf{BookNodeLinkRandom}, la classe à besoin d'une variable pour gérer la probabilité, afin de définir la chance d'aller vers ce noeud. Cette probabilité est ensuite totalisé sur tous les noeuds disponibles, comme vu précédement \nameref{fig:getRandomChoices}.\\
-			La classe \textbf{BookNodeLink} est composé d'une méthode, nommé \textbf{isAvailable()} permettant de savoir si le personnage principal rempli les conditions, défini par List<List<AbstractRequirement>>, pour aller vers ce lien. Pour savoir si le player peu aller vers ce lien, un appel de la fonction isSatisfied()\ref{isSatisfied}, vu un peu plus loin, sera utilisé afin de savoir si le personnage rempli la condition demandée (item et/ou compétence et/ou monnaie). Si le player satisfait tous les prérequis demandés, cela retourne true. False dans le cas contraire.
+		\subsection{Représentation des liens}\label{sub:liens}
+			Les noeuds sont liés par des liens. Ces liens sont soit définis par la classe \textbf{BookNodeLink} ou \textbf{BookNodeLinkRandom}. Pour éviter les redondances, cette dernière extends de \textbf{BookNodeLink}. Elles prennent donc toutes les deux un texte, une destination (défini par le numéro du noeud) et enfin, une liste de prérequis. Pour la destination, nous avons d'abord mis un \textbf{AbstractBookNode}, mais beaucoup de manipulations étaient nécesssaires lorsqu'un changement était apporté au noeud. Nous avons alors choisi de changer et de mettre le numéro du noeud suivant. Pour plus d'information sur la gestion actuelle des noeuds, voir la subsection \nameref{book} à la page \pageref{book}.
 
-			\begin{lstlisting}[gobble=12, language=java, caption=exemple de isAvailable(), label=isAvailable]
-				for(List<AbstractRequirement> groupRequirement : requirements) {
-					boolean satisfied = true;
-					for(AbstractRequirement r : groupRequirement) {
-							if(!r.isSatisfied(state)) {
-								satisfied = false;
-								break;
-							}
-						}
+			Pour le \textbf{BookNodeLinkRandom}, la classe à besoin d'une variable pour gérer la probabilité, afin de définir la chance d'aller vers ce noeud. Cette probabilité est ensuite totalisé sur tous les noeuds disponibles, comme vu précédement \nameref{lst:getRandomChoices}.\\
 
-					if(satisfied)
+			La classe \textbf{BookNodeLink} est composé d'une méthode, nommé \textit{isAvailable()} permettant de savoir si le personnage principal rempli les conditions, défini par List<List<AbstractRequirement>>, pour aller vers ce lien. Nous avons décidé de réalisé une liste de liste qui contiendrait les types de Requirement possible afin d'avoir la possibilité d'inclure un "ou" entre les listes. Par exemple: les conditions emprunter un lien peut est soit ["Arme","Potion"] ou ["Flèche","Lancer un sort"].\\
+			La classe \textbf{Jeu}, décrite un peu plus bas (voir \ref{sec:Jeu}), veut alors aller a une destination mais doit emprunter un lien. La méthode \textit{isAvailable()} est donc appelé pour savoir si le joueur peu aller vers ce lien. Cette méthode appelle une fonction nommé \textit{isSatisfied()} (voir \ref{lst:isSatisfied}), situé dans le AbstractRequirement. Elle permet de comparer l'inventaire et les compétences du joueur en parcourant tout les prérequis demandés. Si c'est le cas, cela retourne true. False dans le cas contraire. Le joueur peu alors accéder ou pas à ce lien, et donc au noeud choisis.
+
+			\begin{lstlisting}[gobble=12, language=java, caption=exemple de isAvailable()]
+				public boolean isAvailable(BookState state) {
+					if(requirements.isEmpty())
 						return true;
+
+					for(List<AbstractRequirement> groupRequirement : requirements) {
+						boolean satisfied = true;
+						for(AbstractRequirement r : groupRequirement) {
+								if(!r.isSatisfied(state)) {
+									satisfied = false;
+									break;
+								}
+							}
+
+						if(satisfied)
+							return true;
+					}
+
+					return false;
 				}
 			\end{lstlisting}
 
 		\subsection{Prérequis pour un choix}
-			Les prérequis des liens sont défini par une classe mère AbstractRequirement puis une classe par type de prérequis (requirements). Il y a la classe \textbf{RequirementItem}, \textbf{RequirementMoney} ainsi que \textbf{RequirementSkill}. Tous extends de AbstractRequirement afin de pouvoir redéfinir la méthode isSatisfied(), prenant en paramètre l'état du jeu (BookState). Tous prennent un ID en compte, permettant de retrouver l'item / compétence / monnaie demandé. Seul le RequirementMoney possède une méthode qui diffère, c'est la quantité de money requis.\\
-			Pour savoir si un item / compétence est présent dans l'inventaire du personnage principal, une for est utilisée afin de regarder les items / compétences possédés. Si l'ID de l'item / compétence n'est pas possédé, le personnage principal ne peut satisfaire les prérequis. Pour l'argent grâce à l'ID de la monnaie, cela permet de savoir si le player en possède suffisament. Actuellement, une seule monnaie est disponible, se nommant "gold". En effet, nous n'avons pas eu le temps de le gérer dans les fichiers et dans le jeu.
+			Les prérequis des liens sont défini par une classe mère AbstractRequirement puis une classe par type de prérequis (requirements). Il y a la classe \textbf{RequirementItem}, \textbf{RequirementMoney} ainsi que \textbf{RequirementSkill}. Tous extends de AbstractRequirement afin de pouvoir redéfinir la méthode \textit{isSatisfied()}, prenant en paramètre l'état du jeu (BookState). Ce paramètre permet donc de comparer le personnage principal, donc le joueur, avec le prérequi demandé par le lien. Cela renvoie donc un boolean sur la finalité de cette comparaison. Tous prennent un ID en compte, permettant de retrouver l'item / compétence / monnaie demandé. Seul le RequirementMoney possède une méthode qui diffère, c'est la quantité de money requis.\\
+			Pour savoir si un item / compétence est présent dans l'inventaire du personnage principal, une for est utilisée afin de regarder les items / compétences possédés. Si l'ID de l'item / compétence n'est pas possédé, le personnage principal ne peut satisfaire les prérequis. Pour l'argent grâce à l'ID de la monnaie, cela permet de savoir si le joueur en possède suffisament. Actuellement, une seule monnaie est disponible, se nommant "gold". En effet, nous n'avons pas eu le temps de le gérer dans les fichiers et dans le jeu.
 
-			\begin{lstlisting}[gobble=12, language=java, caption=exemple de isSatisfied(), label=isSatisfied]
+			\begin{lstlisting}[gobble=12, language=java, caption=exemple de isSatisfied(), label=lst:isSatisfied]
 			public boolean isSatisfied(BookState state) {
 				for (String i : state.getMainCharacter().getItems()){
 					if(i.equals(itemId)) {
@@ -791,7 +806,7 @@
 		Un construteur est d'abord appelé, à partir de la MainWindow, afin d'envoyer le livre contenant toutes les informations. Puis, en fonction du mode sélectionner (\textbf{Générer la difficulté} ou \textbf{Jouer}), la méthode correspondante au joueur est appelé.\\
 
 		Soit la méthode \textit{play()} est appelé si \textbf{Jouer} est sélectionné. C'est donc le player qui va jouer. Cela veut dire que les messages vont alors s'afficher dans le terminal (\textit{showMessages}) et le player est défini sur la classe \textit{Player}. Cela permetra d'appeler le bon joueur lors de l'appélation des méthodes où un choix est nécessaires.
-		Une fois le jeu lancer grâce au \textit{runGame()}, expliqué dans le code \ref{runGame}, les ressources temporaires qui ont été généré sont supprimés.
+		Une fois le jeu lancer grâce au \textit{runGame()}, expliqué dans le code \ref{lst:runGame}, les ressources temporaires qui ont été généré sont supprimés.
 
 		\begin{lstlisting}[language=java, caption=play()]
 			public void play() throws IOException, BookFileException {
@@ -805,7 +820,7 @@
 			}
 		\end{lstlisting}
 
-		Soit la méthode \textit{fourmis()} est appelé si \textbf{Générer la difficulté} est sélectionné. Ce sont donc plusieurs fourmis qui vont jouer une par une afin de générer la difficulté du livre. Les messages sur le terminal sont donc non affiché. Puis vient le lancement des fourmis. Pour cela une boucle "for" est simplement necessaire. Le player est donc défini sur la classe \textbf{Fourmis} permettant ainsi d'utiliser les méthodes de cette classe afin de réaliser des choix random. Puis la méthode \textit{runGame()}, expliqué dans le code \ref{runGame}, renvoi donc la finalité du livre: soit un boolean true en cas de victoire ou false en cas de défaite.\\
+		Soit la méthode \textit{fourmis()} est appelé si \textbf{Générer la difficulté} est sélectionné. Ce sont donc plusieurs fourmis qui vont jouer une par une afin de générer la difficulté du livre. Les messages sur le terminal sont donc non affiché. Puis vient le lancement des fourmis. Pour cela une boucle "for" est simplement necessaire. Le player est donc défini sur la classe \textbf{Fourmis} permettant ainsi d'utiliser les méthodes de cette classe afin de réaliser des choix random. Puis la méthode \textit{runGame()}, expliqué dans le code \ref{lst:runGame}, renvoi donc la finalité du livre: soit un boolean true en cas de victoire ou false en cas de défaite.\\
 		On a donc une classe qui permet réaliser des choix random ainsi qu'une méthode qui renvoie la finalité du livre. Cela permet donc de lancer un certain nombre de "fourmis" qui vont parcourir tout le livre, réalisé des choix, gagner ou perdre. Toutes les victoires vont être comptés, ce qui va permettre de savoir combien de fourmis ont gagnés. Soit calculé la difficulté du livre.
 
 		\begin{lstlisting}[language=java, caption=fourmis()]
@@ -851,9 +866,9 @@
 			return newState;
 		\end{lstlisting}
 
-		Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur (\textit{execPlayerCreation}, voir \ref{execPlayerCreationCode}) est appelé en fonction du player actuel. Comme cela, le player choisit parmi une liste de skill et d'items disponible en début de partie afin de les avoir pour commencer le jeu. Ci-dessous, vous pouvez voir le code permettant, ici, au player de choisir, d'après une liste, avec quels item ou compétences le joueur veut-il commencer le jeu. Cela permet ainsi d'avoir différentes finalité en fonction de ce que choisis le joueur.\\
+		Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur (\textit{execPlayerCreation}, voir \ref{lst:execPlayerCreation}) est appelé en fonction du player actuel. Comme cela, le player choisit parmi une liste de compétences et d'items disponible en début de partie afin de les avoir pour commencer le jeu. Ci-dessous, vous pouvez voir le code permettant, ici, au player de choisir, d'après une liste, avec quels item ou compétences le joueur veut-il commencer le jeu. Cela permet ainsi d'avoir différentes finalité en fonction de ce que choisis le joueur.\\
 
-		\begin{lstlisting}[language=java, caption=Méthode execPlayerCreation() du player]
+		\begin{lstlisting}[language=java, caption=Méthode execPlayerCreation() du player, label=lst:execPlayerCreation]
 		public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
 
 				if(characterCreation instanceof CharacterCreationItem){
@@ -876,9 +891,9 @@
 			}
 		\end{lstlisting}
 
-		Une fois le BookState créé, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. La boucle while du runGame() est donc lancé et ne s'arrètera qu'une fois la partie terminée. Comme vous pouvez le remarquer, sur le code ci-dessous, chaque méthode correspond à un type de noeud en particulier. Les méthodes s'exécutent alors, puis renvoie le noeud de destination, en fonction du choix du joueur et / ou de la mort du joueur. Durant l'exécution des différentes méthodes et en fonction du joueur, d'autres méthodes externe sont appelées nottament dans la classe \textbf{Fourmis} ou \textbf{Player}.
+		Une fois le \textbf{BookState} créé, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. La boucle while du \textit{runGame()} est donc lancé et ne s'arrètera qu'une fois la partie terminée. Comme vous pouvez le remarquer, sur le code ci-dessous, chaque méthode correspond à un type de noeud en particulier. Les méthodes s'exécutent alors, puis renvoie le noeud de destination, en fonction du choix du joueur et / ou de la mort du joueur. Durant l'exécution des différentes méthodes et en fonction du joueur, d'autres méthodes externe sont appelées nottament dans la classe \textbf{Fourmis} ou \textbf{Player}.
 
-		\begin{lstlisting}[language=java, label=runGame, caption=Méthode runGame()]
+		\begin{lstlisting}[language=java, label=lst:runGame, caption=Méthode runGame()]
 			while(!gameFinish){
 				if(currentNode instanceof BookNodeCombat){
 					//execNodeCombat(bookNodeCombat);
@@ -901,7 +916,7 @@
 
 		Pour chaque type de noeud, sauf pour un noeud terminal car il ne contient pas ces options, une méthode commune, nommé \textit{execAbstractNodeWithChoices()} est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie (méthode \textit{execNodeHp()}), puis regarde si le joueur est toujours en vie. Si ce dernier n'est plus en vie, un noeud terminal de défaite est alors renvoyé en noeud de destination. S'il est encore en vie et que le noeud propose des items, ils sont proposés au joueur en appelant la méthode correspondante entre \textbf{Fourmis} ou \textbf{Player}. Ces classes sont appelé car le player doit faire un choix grâce au Scanner et la fourmis doit effectuer un choix random.\\
 
-		\begin{lstlisting}[language=java, caption=Méthode execAbstractNodeWithChoices(), label=fig:JeuexecAbstractNodeWithChoices]
+		\begin{lstlisting}[language=java, caption=Méthode execAbstractNodeWithChoices(), label=lst:execAbstractNodeWithChoices]
 		public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
 			//Affichage pour le joueur
 
@@ -922,7 +937,7 @@
 		Puis, à chaque destination du joueur, sauf si celui ci a été entrainer vers un noeud terminal de défaite créer par la classe jeu et donc, non existante, une autre méthode est appelé (nommé \textit{execBookNodeLink()}) afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent. Si c'est le cas, le joueur est alors "mis à jour". Si le joueur n'a plus de vie, même si le lien le portait vers un noeud de victoire, un noeud de défaite est créé. Le joueur à alors perdu. \\
 
 		\textbf{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices()}, comme vous pouvez le constater dans la figure \ref{fig:JeuBookNodeWithChoices}.\\
-		Tout d'abord, comme tout noeuds non terminaux, la méthode fait appel à \textit{execAbstractNodeWithChoices()}, vu un peu plus haut (voir \ref{fig:JeuexecAbstractNodeWithChoices}). Puis, vérifie si un choix est possible: si le joueur n'a aucun choix ou s'il ne possède pas les items/compétences pour aller vers ce choix. Si ce n'est pas le cas, la méthode renvoi un noeud terminal de défaite. Ainsi, le joueur n'est pas bloqué. Dans le cas contraire, s'il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du joueur (\textit{player.makeAchoice()}). Car ici, un choix est demandé, soit le Scanner du player ou le random de la fourmis. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, vu juste en dessous de la figure du haut, est appelé. Si le joueur est toujours en vie, le noeud choisi est renvoyé en noeud de destination. Sinon, le joueur doit faire un autre choix car il y a minimum un choix possible.\\
+		Tout d'abord, comme tout noeuds non terminaux, la méthode fait appel à \textit{execAbstractNodeWithChoices()}, vu un peu plus haut (voir \ref{lst:execAbstractNodeWithChoices}). Puis, vérifie si un choix est possible: si le joueur n'a aucun choix ou s'il ne possède pas les items/compétences pour aller vers ce choix. Si ce n'est pas le cas, la méthode renvoi un noeud terminal de défaite. Ainsi, le joueur n'est pas bloqué. Dans le cas contraire, s'il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du joueur (\textit{player.makeAchoice()}). Car ici, un choix est demandé, soit le Scanner du player ou le random de la fourmis. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, vu juste en dessous de la figure du haut, est appelé. Si le joueur est toujours en vie, le noeud choisi est renvoyé en noeud de destination. Sinon, le joueur doit faire un autre choix car il y a minimum un choix possible.\\
 
 		\begin{figure}[H]
 			\centering\includegraphics[width=0.70\textwidth]{img/codeJeuPrerequis.png}
@@ -1001,7 +1016,7 @@
 
 		La fin de combat est déterminé si la liste d'ennemis est vide ou si le joueur n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat. Bien sur, si le noeud de destination n'est pas existant, la noeud terminal de défaite est créer pour éviter de bloquer le jeu.
 
-		\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le joueur est encore en vie. Puis une autre méthode, nommé \textit{getRandomChoices()} (Voir \ref{fig:getRandomChoices} à la page \pageref{fig:getRandomChoices}) est appelé de la classe BookNodeLinkRandom afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
+		\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le joueur est encore en vie. Puis une autre méthode, nommé \textit{getRandomChoices()} (Voir \ref{lst:getRandomChoices} à la page \pageref{lst:getRandomChoices}) est appelé de la classe BookNodeLinkRandom afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
 
 		\textbf{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un boolean sur l'état de la fin de partie. Ce boolean permet de quitter la boucle while de la méthode \textit{runGame()} et permet ainsi donc d'arreter le jeu. Cela permet de continuer l'édition du livre pour le player et permet de savoir si la partie est gagné ou perdu pour la fourmis (voir la subsection fourmis \ref{sub:fourmis}).
 
@@ -1030,10 +1045,10 @@
 
 		Pour la méthode commune \textit{prendItems()}, cette dernière fait appel à d'autre méthodes présente dans la classe \textbf{Player}.
 
-		Par exemple, \textit{itemAdd()} (cf ligne 20 dans le code \ref{prendreItemsPlayer}) qui elle permet de choisir l'item à ajouter dans l'inventaire. Une variable "choixValide" permet de ne pas valider un numéro de choix non valide. Le player peut donc alors répondre entre 0 et le nombre d'items disponibles ou "-1". Le "-1" permet d'annuler l'ajout d'item. Une fois l'item choisi, l'ID de l'item est alors ajouter dans la liste de l'inventaire afin de pouvoir retrouver l'item si le joueur l'utilise.\\
+		Par exemple, \textit{itemAdd()} (cf ligne 20 dans le code \ref{lst:prendreItemsPlayer}) qui elle permet de choisir l'item à ajouter dans l'inventaire. Une variable "choixValide" permet de ne pas valider un numéro de choix non valide. Le player peut donc alors répondre entre 0 et le nombre d'items disponibles ou "-1". Le "-1" permet d'annuler l'ajout d'item. Une fois l'item choisi, l'ID de l'item est alors ajouter dans la liste de l'inventaire afin de pouvoir retrouver l'item si le joueur l'utilise.\\
 		Cette méthode a été créé permettant de séparer le code de la méthode \textit{prendItems()} pour une meilleure visibilité. Elle pourrait aussi servir, par exemple, dans l'ajout d'un item obligatoire. Dans ce cas, la méthode \textit{prendItems()} n'est plus uilisé mais directement \textit{itemAdd()}. Mais cette exemple n'est pas représentatif de l'état actuel de MagicBook qui ne permet pas de rendre un item obligatoire. Mais c'est une idée d'amélioration.\\
 
-		\begin{lstlisting}[gobble=12, language=java, label=itemAdd, caption=itemAdd()]
+		\begin{lstlisting}[gobble=12, language=java, caption=itemAdd()]
 			private void itemAdd(BookState state, List<BookItemLink> bookItemLinks){
 				System.out.println("Quel item voulez-vous ?");
 				boolean choixValide = false;
@@ -1062,9 +1077,9 @@
 
 		\end{lstlisting}
 
-		La méthode \textit{itemPlein()} (cf ligne 11 dans le code \ref{prendreItemsPlayer}), qui elle, affiche les items à supprimer.
+		La méthode \textit{itemPlein()} (cf ligne 11 dans le code \ref{lst:prendreItemsPlayer}), qui elle, affiche les items à supprimer.
 
-		\begin{lstlisting}[gobble=12, language=java, label=itemPlein, caption=itemPlein()]
+		\begin{lstlisting}[gobble=12, language=java, caption=itemPlein()]
 			private void itemPlein(BookState state){
 				System.out.println("Votre inventaire est plein");
 				System.out.println("Voulez vous supprimer un item ?");
@@ -1078,9 +1093,9 @@
 			}
 		\end{lstlisting}
 
-		Un choix \textit{choixYesNo()} est alors posé. Si le player répond oui (cf ligne 15 dans le code \ref{prendreItemsPlayer}), la méthode \textit{itemSupp()} (cf ligne 18 dans le code \ref{prendreItemsPlayer}) est appelé afin de choisir l'item à supprimer. Une boucle while est alors parcouru afin d'être sûr d'avoir un choix valide. Le player peut donc alors répondre entre 0 et le nombre d'item dans l'inventaire ou "-1". Cette dernière valeur permet d'annuler la supression d'item et de retourner au choix de l'item. Une fois l'item choisi, cela met l'inventaire du player à jour grâce au state pris en charge dans la méthode \textit{prendreItems()}. S'il répond non au choix \textit{choixYesNo()}, la boucle (lancé en cf ligne 2 dans le code \ref{prendreItemsPlayer}) est arrété, le jeu continu.
+		Un choix \textit{choixYesNo()} est alors posé. Si le player répond oui (cf ligne 15 dans le code \ref{lst:prendreItemsPlayer}), la méthode \textit{itemSupp()} (cf ligne 18 dans le code \ref{lst:prendreItemsPlayer}) est appelé afin de choisir l'item à supprimer. Une boucle while est alors parcouru afin d'être sûr d'avoir un choix valide. Le player peut donc alors répondre entre 0 et le nombre d'item dans l'inventaire ou "-1". Cette dernière valeur permet d'annuler la supression d'item et de retourner au choix de l'item. Une fois l'item choisi, cela met l'inventaire du player à jour grâce au state pris en charge dans la méthode \textit{prendreItems()}. S'il répond non au choix \textit{choixYesNo()}, la boucle (lancé en cf ligne 2 dans le code \ref{lst:prendreItemsPlayer}) est arrété, le jeu continu.
 
-		\begin{lstlisting}[gobble=12, language=java, label=itemSupp, caption=itemSupp()]
+		\begin{lstlisting}[gobble=12, language=java, caption=itemSupp()]
 			private void itemSupp(BookState state){
 				System.out.println("Quel item voulez-vous supprimer ?");
 				boolean choixValide = false;
@@ -1104,7 +1119,7 @@
 
 		Bien sûr cette méthode n'est appelé que si l'inventaire est plein. Autrement, \textit{itemAdd()} est directement appelé. On aurait pu très bien laisser le choix au player de supprimer quand même un item si son inventaire n'était pas plein. Mais c'est un livre à choix avec des prérequis, tout les items peuvent donc être important, et il n'y a pas de pénalité de déplacement si l'inventaire est plein. Cette fonctionalité de supprimer un item dans l'inventaire n'a alors pas été jugé nécessaire à ajouter en option libre.
 
-		\begin{lstlisting}[gobble=12, language=java, label=prendreItemsPlayer, caption=prendreItems() du Player]
+		\begin{lstlisting}[gobble=12, language=java, label=lst:prendreItemsPlayer, caption=prendreItems() du Player]
 			public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 				while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
 					System.out.println("Les items suivant sont disponible:");
@@ -1138,9 +1153,9 @@
 
 		\end{lstlisting}
 
-		Pour la méthode \textit{execPlayerCreation()} est est presque la même que celle de la fourmis : elle utilise aussi la méthode \textit{prendItems()}, défini ici\ref{prendreItemsPlayer} au moment de l'ajout des items. Mais au moment de l'ajout de compétences, la méthode \textit{skillAdd()} est appelé jusqu'à ce que le maximum de compétences autorisé a été pris ou qu'il n'en reste plus à prendre.\\
+		Pour la méthode \textit{execPlayerCreation()} est est presque la même que celle de la fourmis : elle utilise aussi la méthode \textit{prendItems()}, défini ici\ref{lst:prendreItemsPlayer} au moment de l'ajout des items. Mais au moment de l'ajout de compétences, la méthode \textit{skillAdd()} est appelé jusqu'à ce que le maximum de compétences autorisé a été pris ou qu'il n'en reste plus à prendre.\\
 
-		\begin{lstlisting}[gobble=12, language=java, label=execPlayerCreationPlayer, caption=execPlayerCreation() du Player]
+		\begin{lstlisting}[gobble=12, language=java, caption=execPlayerCreation() du Player]
 			public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
 				//Affichage du texte du début dans "création du personnage"
 
@@ -1167,7 +1182,7 @@
 
 		Le player doit alors confirmer ou non s'il veut une compétence grâce à la méthode \textit{choixYesNo()}, permettant ainsi de ne pas obliger le joueur à prendre une compétence. Si "true" est retourné, le choix de la compétence est alors demandé, puis celle-ci est ajouté. Si "false" est retourné, la liste est supprimé. Il n'y a donc plus de compétences à prendre, le jeu continue.
 
-		\begin{lstlisting}[gobble=12, language=java, label=skillAdd, caption=skillAdd()]
+		\begin{lstlisting}[gobble=12, language=java, caption=skillAdd()]
 			private void skillAdd(BookState state, CharacterCreationSkill characterCreationSkill){
 				System.out.println("Voulez vous un skill ?");
 				if(choixYesNo()){
@@ -1205,7 +1220,7 @@
 
 		La méthode \textit{combatChoice} permet de choisir entre ATTAQUE, EVASION, INVENTAIRE. Nous avons choisi de faire un random sur les trois choix et non pas sur deux choix même si le tour d'évasion n'est pas disponible, permettant ainsi d'avoir la possibilité que la fourmi passe aussi son tour, comme le joueur, afin d'avoir la même chance lors des combats. Elle peut aussi utiliser son inventaire lors du combat.
 
-		\begin{lstlisting}[gobble=12, language=java, label=combatChoiceFourmis, caption=combatChoice() de Fourmis]
+		\begin{lstlisting}[gobble=12, language=java, caption=combatChoice() de Fourmis]
 			public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
 				boolean choixValide = false;
 				Random random = new Random();
@@ -1230,7 +1245,7 @@
 
 		 Ainsi, elle peut se soigner, prendre des armes et/ou des items de défense. Malheureusement, la foumis n'est pas "intelligente" et ne prend pas donc la meilleur arme ou ne se soigne pas alors qu'elle va mourir. Mais c'est un gros point à améliorer. Elle choisi donc au hasard un des items et peut même prendre un items non utile dans le combat. Elle revient donc sur les trois choix ATTAQUE, EVASION, INVENTAIRE sans avoir pris une arme ou autre lors du choix de l'item dans son inventaire.
 
-		\begin{lstlisting}[gobble=12, language=java, label=useInventaireFourmis, caption=combatChoice() de Fourmis]
+		\begin{lstlisting}[gobble=12, language=java, caption=useInventaire() de Fourmis]
 			public void useInventaire(BookState state){
 				List<String> listItemState = state.getMainCharacter().getItems();
 
@@ -1254,7 +1269,7 @@
 
 		Autre point, lors de l'utilisation de la méthode \textit{prendreItems()}, la fourmis prend tout les items disponible, tant qu'elle a encore de la place, que le maximum d'objet à prendre n'est pas à 0 et si des objets sont encore disponible.
 
-		\begin{lstlisting}[gobble=12, language=java, label=prendreItemsFourmis, caption=prendreItems() de Fourmis]
+		\begin{lstlisting}[gobble=12, language=java, caption=prendreItems() de Fourmis]
 			public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 				int choix = 0;
 
@@ -1285,13 +1300,14 @@
 
 		Des boucles infini sont donc à prévoir si par exemple, un objet est requis pour accéder au choix 2 et qu'il faut aller dans le choix 1 pour prendre l'item. Vu qu'au moins un choix est disponible, aucun noeud terminal n'est généré. Sauf que si l'item de la fourmis est plein, l'item ne peut pas être pris et aucun item est supprimé. Si la supression est active, quel est l'item à suprimmer ? Comment définir un item important ? A la santé du personnage, au nombre d'objet non possédé d'un certain type (exemple: defense) ? A un nombre "d'importance" prédéfini à l'édition du livre ? Cette piste de réflexion serait donc à exploiter dans les améliorations à apporter.
 
-		\begin{figure}[H]
-			\centering\includegraphics{img/fourmisPrendreItemInfiniExemple.png}
-		\end{figure}[H]
+		\begin{figure}
+			\centering\includegraphics[width=5cm]{img/fourmisPrendreItemInfiniExemple.png}
+			\caption{prendreItem exmple de boucle infini}
+		\end{figure}
 
-		A la méthode \textit{execPlayerCreationFourmis()}, soit, à la création du personnage, le même problème se pose. En effet, la méthode \textit{prendreItems()} est utilisé. Pour l'ajout de compétence, le problème est moins important. En effet, les compétences ne peuvent pas être aprise autre part qu'à la création du personnage. En effet, c'est une autre amélioration prévu. Nous avons donc décidé d'ajouter le nombre maximal de compétence. Mais si les compétences avait des effets, comment définir qu'une compétence est plus importante qu'une autre ? Peur être avoir aussi un nombre prédéfini, comme les items, qui désigne son importance. Puis copier la méthode pour choisir un noeud aléatoire. Il faudrait aditionner tout les nombres désignant l'importance, choisir un nombre aléatoire, puis soustraire chaque nombres désignant l'importance jusqu'à être égal ou inférieur à zero. Ces une piste de réflexion possible, mais pas la seule solution.
+		A la méthode \textit{execPlayerCreation()}, soit, à la création du personnage, le même problème se pose. En effet, la méthode \textit{prendreItems()} est utilisé. Pour l'ajout de compétence, le problème est moins important. En effet, les compétences ne peuvent pas être aprise autre part qu'à la création du personnage. En effet, c'est une autre amélioration prévu. Nous avons donc décidé d'ajouter le nombre maximal de compétence. Mais si les compétences avait des effets, comment définir qu'une compétence est plus importante qu'une autre ? Peur être avoir aussi un nombre prédéfini, comme les items, qui désigne son importance. Puis copier la méthode pour choisir un noeud aléatoire. Il faudrait aditionner tout les nombres désignant l'importance, choisir un nombre aléatoire, puis soustraire chaque nombres désignant l'importance jusqu'à être égal ou inférieur à zero. Ces une piste de réflexion possible, mais pas la seule solution.
 
-		\begin{lstlisting}[gobble=12, language=java, label=execPlayerCreationFourmis, caption=execPlayerCreation() de Fourmis]
+		\begin{lstlisting}[gobble=12, language=java, caption=execPlayerCreation() de Fourmis]
 			public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state) {
 
 				if(characterCreation instanceof CharacterCreationItem){
@@ -1319,9 +1335,11 @@
 		\begin{itemize}
 			\item Attaque de la fourmis: deuxième de la liste
 			\item Reste liste ennemis: [20pts,5pts,5pts]
-			\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 10pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 10pts vie restant)
+			\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 10pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 10pts vie restant)\\
 		\end{itemize}
-		En tant que player, il changerait d'ennemis. La fourmi devra alors avoir l'intelligence de changer d'adversaire. Elle gagnera alors de combat.
+
+		En tant que player, il changerait d'ennemis. La fourmi devra alors avoir l'intelligence de changer d'adversaire. Elle gagnera alors de combat.\\
+
 		\begin{itemize}
 			\item Attaque de la fourmis: premier de la liste
 			\item Perte de 10pts de vie sur le premier ennemi
