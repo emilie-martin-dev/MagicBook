@@ -219,7 +219,7 @@ public class Jeu {
 	 * @param node Noeud actuel
 	 * @return Un noeud terminal Failure si le personnage est mort ou null si il est encore en vie
 	 */
-	public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
+	private AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
 		showMessage(node.getText());
 		//Regarde si il y a une perte/gain de point de vie dans le noeud
 		execNodeHp(node);
@@ -244,7 +244,7 @@ public class Jeu {
 	 * @param node Noeud basic
 	 * @return La prochaine destination
 	 */
-	public AbstractBookNode execNodeWithChoices(BookNodeWithChoices node){
+	private AbstractBookNode execNodeWithChoices(BookNodeWithChoices node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
 		if(returnedNode != null)
 			return returnedNode;
@@ -308,7 +308,7 @@ public class Jeu {
 	 * Exécute un noeud terminal
 	 * @param node Noeud terminal
 	 */
-	public void execNodeTerminal(BookNodeTerminal node){
+	private void execNodeTerminal(BookNodeTerminal node){
 		showMessage(node.getText());
 
 		if(node.getBookNodeStatus() == BookNodeStatus.VICTORY)
@@ -322,7 +322,7 @@ public class Jeu {
 	 * @param node Noeud de combat
 	 * @return La prochaine destination
 	 */
-	public AbstractBookNode execNodeCombat(BookNodeCombat node){
+	private AbstractBookNode execNodeCombat(BookNodeCombat node){
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
 		if(returnedNode != null)
 			return returnedNode;
@@ -499,7 +499,7 @@ public class Jeu {
 	 * @param node Noeud aléatoire
 	 * @return La prochaine destination
 	 */
-	public AbstractBookNode execNodeWithRandomChoices(BookNodeWithRandomChoices node) {
+	private AbstractBookNode execNodeWithRandomChoices(BookNodeWithRandomChoices node) {
 		AbstractBookNode returnedNode = execAbstractNodeWithChoices(node);
 
 		if(returnedNode != null)

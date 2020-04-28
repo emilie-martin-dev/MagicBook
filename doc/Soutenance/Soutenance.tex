@@ -90,6 +90,8 @@
 
 	\begin{frame}
 		\frametitle{Les améliorations apportées}
+
+		\center\includegraphics[height=0.7\paperheight, keepaspectratio]{img/FourmisAmelio.png}
 	\end{frame}
 
 	\subsection{Problèmes et idées d'amélioration}
@@ -137,6 +139,7 @@
 	\end{frame}
 
 	\section{Export du livre au format texte}
+	\subsection{Mélange des noeuds du livre}
 	\begin{frame}
 		\frametitle{Exemple d'export d'un livre}
 
@@ -146,8 +149,51 @@
 	\begin{frame}
 		\frametitle{Algorithme de mélange}
 
+		\begin{algorithm}[H]
+			\caption{melanger(nodes): map<int, AbstractBookNode>}
+			\scriptsize
+			\DontPrintSemicolon
+
+			shuffle : map<int, AbstractBookNode>\;
+			leftNumber : int[1..nodes.length-1]\;
+			postNodes : AbstractBookNode[]\;
+			rand : Random\;
+			\;
+			\For{entry<int, AbstractBookNode> e : nodes.entrySet()}{
+				\uIf{e.getKey() == 1}{
+					shuffle[1] = e.getValue()\;
+				} \uElseIf{e.getValue() instanceof BookNodeTerminal}{
+					bookNodeTerminal : BookNodeTerminal
+					bookNodeTerminal = (BookNodeTerminal) e.getValue()\;
+					\uIf{bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY}{
+						shuffle[leftNumber[leftNumber.length - 1] + 1] = bookNodeTerminal\;
+						leftNumber.remove(leftNumber.length - 1)\;
+					}
+				} \Else{
+					postNodes.add(e.getValue())\;
+				}
+			}
+		\end{algorithm}
 	\end{frame}
 
+	\begin{frame}
+		\frametitle{Algorithme de mélange (suite)}
+
+		\begin{algorithm}[H]
+			\scriptsize
+			\DontPrintSemicolon
+
+			\For{AbstractBookNode bookNode : postNodes}{
+				int index = rand.nextInt(leftNumber.size())\;
+				shuffle[leftNumber.get(index)+1] = bookNode\;
+				leftNumber.remove(index)\;
+			}
+
+			\Return{shuffle}\;
+		\end{algorithm}
+	\end{frame}
+
+	\subsection{Décrire les éléments du livre}
 	\begin{frame}
 		\frametitle{L'interface \textbf{Descriptible}}
 
@@ -157,7 +203,8 @@
 	\begin{frame}[fragile]
 		\frametitle{Algorithme d'écriture}
 
-		\begin{lstlisting}[gobble=12, language=java]
+		\begin{lstlisting}[gobble=12, language=java,
+    basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
 			FileWriter fileWritter = new FileWriter(path);
 
 			fileWritter.write(book.getTextPrelude());
@@ -167,18 +214,12 @@
 
 			for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
 				fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
-				if(i < book.getCharacterCreations().size() - 1)
-					fileWritter.write("\n");
 			}
 
 			writeSeparator(fileWritter);
 
 			for(int i = 0 ; i < nodes.size() ; i++) {
 				writeNode(nodes.get(i+1), nodesInv, book, fileWritter);
-
-				if(i < nodes.size() - 1){
-					writeSeparator(fileWritter);
-				}
 			}
 		\end{lstlisting}
 	\end{frame}
@@ -186,27 +227,24 @@
 	\begin{frame}[fragile]
 		\frametitle{Algorithme d'écriture}
 
-		\begin{lstlisting}
-			private static void writeNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter fileWritter) throws IOException {
-				fileWritter.write("Paragraphe " + nodesIndex.get(node) + " :\n");
-				fileWritter.write("\n");
+		\begin{lstlisting}[gobble=12, language=java,
+    basicstyle=\ttfamily\fontsize{7}{9}\selectfont]
+			private static void writeNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter out) throws IOException {
+				out.write("Paragraphe " + nodesIndex.get(node) + " :\n");
+				out.write("\n");
 
-				fileWritter.write(node.getDescription(book));
+				out.write(node.getDescription(book));
 
 				if(!node.getChoices().isEmpty()) {
-					fileWritter.write("\nCorrespondance entre les choix et les paragraphes : \n\n");
+					out.write("\nCorrespondance entre les choix et les paragraphes : \n\n");
 
-					// Permet de connaitre les paragraphes suivants en fonction du choix
 					for(BookNodeLink nodeLink : node.getChoices()) {
-						if(!nodeLink.getText().isEmpty()) {
-							fileWritter.write("- ");
-							fileWritter.write(nodeLink.getText());
-							fileWritter.write(" ");
-						}
-
-						fileWritter.write("- Paragraphe suivant : ");
-						fileWritter.write(""+nodesIndex.get(book.getNodes().get(nodeLink.getDestination())));
-						fileWritter.write("\n");
+						out.write("- ");
+						out.write(nodeLink.getText());
+						out.write(" ");
+						out.write("- Paragraphe suivant : ");
+						out.write(""+nodesIndex.get(book.getNodes().get(nodeLink.getDestination())));
+						out.write("\n");
 					}
 				}
 			}

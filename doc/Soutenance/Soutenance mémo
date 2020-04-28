@@ -27,7 +27,7 @@ Transition : Le but de notre application était donc de créer une interface gra
 
 Diapo 4 - Fenêtre principale
 
-- Capture d'écran de notre application
+- C'est une capture d'écran de notre application
 - Livre actuellement ouvert
 - Décrire brièvement les différentes parties :
 	- Menu :
@@ -92,7 +92,15 @@ Transition : Cette méthode est pratique mais elle omet plusieurs points :
 
 Diapo 9 - Les améliorations apportées
 
+- Expliquer pourquoi une interface, pourquoi pas 2 codes différents
+- Expliquer Fourmi et Player implémente interface pour fournir un comportement différent à adopter
+- Expliquer méthode "fourmis" pour estimer la difficulté
+- Exiquer méthode "play" pour le joueur humain
+- Expliquer une méthode execXXX => un type de noeud
+- Parler de la copie du livre pour pas modifier vrai livre
+- Expliquer que code en commun des noeuds dans execAbstractNodeWithChoices
 
+Transition : Bien que cette structure nous permette d'avoir un résultat beaucoup plus proche de la réalité qu'avant, d'autres problèmes sont présents et provoquent une mauvaise estimation d'un livre complexe.
 
 -----
 
@@ -126,34 +134,65 @@ Diapo 12 - Exemple d’export d’un livre
 
 - Affichage semblable au jeu
 - Décrire brièvement
+- Parler des "séparation" avec les "====="
+- Toujours mélangé
+
+Transition : Voyons comment ce mélange s'effectue
 
 -----
 
 Diapo 13 - Algorithme de mélange
 
+- Décrire les variables au debut
+- Boucle pour placer les noeuds avec placement important :
+	- Noeud de départ (pour qu'il soit bien le premier et pas en plein milieu du livre)
+	- Si noeud terminal de victoire, on place le noeud à la fin. Tous les noeuds de victoire sont donc placés à la fin du livre. Noeuds défaite sont placés comme nimporte quel autre noeud
+	- Sinon, on ajoutera le noeud plus tard
 
+Transition : Enfin, (diapo suivante première idée = suite phrase)
 
 -----
 
-Diapo 14 - L’interface Descriptible
+Diapo 14 - Algorithme de mélange (suite)
+
+- On ajoute les noeuds restants de manière totalement aléatoire
+
+-----
+
+Diapo 15 - L’interface Descriptible
 
 - Décrire en partant du haut
 
------
-
-Diapo 15 - Algorithme d’écriture
-
-
+Transition : Cette interface nous permet donc d'écrire très facilement et proprement le livre en cloisonnant le code dans la classe correspondante. En témoigne l'algorihtme qui se charge de l'écriture (diapo suivante)
 
 -----
 
 Diapo 16 - Algorithme d’écriture
 
+- Au préalable on a :
+	- HashMap<Integer, AbstractBookNode> nodes -> Noeuds du livre mélangés
+	- HashMap<AbstractBookNode, Integer> nodesInv -> Inverse de nodes
+- FileWriter pour écrire
+- Écriture du prélude
+- writeSeparator liste de "======"
+- Boucle au travers de tous les éléments du livre et on les décrit avec getDescription
+- Pas exactement le même code (normalement des fonctions et une if pour ne pas afficher de separator apres le dernier element)
+- writeNode permet d'écrire un noeud
 
+Transition : Pour faire cela nous procédons comme suit
 
 -----
 
-Diapo 17 - Références
+Diapo 17 - Algorithme d’écriture
+
+- Expliquer le fonctionnement
+- Expliquer pourquoi on fait une partie "correspondance entre les choix et les paragraphes"
+
+Transition : Ceci conclu notre présentation, voici les références utilisées (passer à la diapo suivante)
+
+-----
+
+Diapo 18 - Références
 
 - Références utilisés dans cette soutenance
 - Ne pas changer de diapo après
