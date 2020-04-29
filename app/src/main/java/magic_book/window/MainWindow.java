@@ -285,7 +285,7 @@ public class MainWindow extends Stage {
 	}
 	
 	/**
-	 * Permet de souvegarder le doccument en fonction du path (chemin du fichier)
+	 * Permet de sauvegarder le document en fonction du path (chemin du fichier)
 	 */
 	private void saveFile() {
 		File saveFile = new File(path);

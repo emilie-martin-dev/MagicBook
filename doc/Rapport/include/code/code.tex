@@ -575,7 +575,7 @@
 	\section{Edition graphique d'un livre}
 
 		\subsection{MainWindow}
-			La MainWindow est notre fenêtre principale. Elle contient un Menu permettant de réaliser plusieurs actions ainsi que trois zones différentes (panel). Le premier panel se nomme le \textbf{LeftPane}. Il se situe à gauche et est composé de différent boutons permettant de changer de mode, de la liste des items et de personnage du livre. Le deuxième panel s'appel le \textbf{GraphPane}. Il est au centre et permet d'ajouter les noeuds ainsi que les liens entre les noeuds, c'est donc la zone d'édition de notre livre. Il contient également le prélude. Le troisième panel se nomme le \textbf{RightPane}. Il permet d'afficher les statistiques du livre comme par exemple, le nombre de noeud ainsi que l'estimation de la difficulté du livre.
+			La MainWindow est notre fenêtre principale. Elle contient un Menu permettant de réaliser plusieurs actions (exporter le livre, jouer, générer la difficulter...) ainsi que trois zones différentes (panel). Le premier panel se nomme le \textbf{LeftPane}. Il se situe à gauche et est composé de différent boutons permettant de changer de mode, de la liste des items, de personnage, de compétences du livre. Le deuxième panel s'appel le \textbf{GraphPane}. Il est au centre et permet d'ajouter les noeuds ainsi que les liens entre les noeuds, c'est donc la zone d'édition de notre livre. Il contient également le prélude. Le troisième panel se nomme le \textbf{RightPane}. Il permet d'afficher les statistiques du livre comme par exemple, le nombre de noeud ainsi que l'estimation de la difficulté du livre.\\
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.50\textwidth]{img/mainwindow.png}
@@ -583,220 +583,399 @@
 				\label{fig:MainWindow}
 			\end{figure}
 
-			Tout d'abord, dans la barre de menu de la fenêtre (menuBar), se trouve plusieurs onglets.
-			Premièrement, dans le menu nommé \textbf{Fichier}, l'utilisateur peut alors ouvrir un nouveau livre vide en cliquant sur \textbf{Nouveau}. Le nouveau livre s'ouvre alors en mettant à jour tous les panels (LeftPane, GraphPane, RightPane), permettant ainsi de partir sur un nouveau livre. Ce menu comporte aussi un MenuItem nommé \textbf{Ouvrir}, permettant ainsi d'ouvrir un fichier Json ou txt. Si dans ce fichier, il manque une virgule ou une accolade ou autre ne permettant pas la lecture du fichier en Json (Voir \nameref{sec:Json} à la page \pageref{sec:Json}), un message d'erreur apparait. Si le fichier n'est pas bien fait, ne permettant pas l'ouverture de ce fichier, une classe nommée \textbf{BookValidator} devait "valider" le livre. Par manque de temps, cette classe n'est pas fonctionnelle. Si le fichier est correcte, le livre est chargé en mettant tous les panels à jour. Il peut aussi enregistrer ou enregistrer-sous le livre en faisant appel au FileChooser et au File.\\
-			Deuxièmement, dans le menu nommé \textbf{Livre}, l'utilisateur peut \textbf{Jouer} ou \textbf{Estimer la difficulté}. Ces deux MenuItem utilisent tous les deux la classe Jeu, décrit un peu plus loin \nameref{sec:Jeu} à la page \pageref{sec:Jeu}. Un autre MenuItem est aussi présent, permettant de \textbf{Générer le livre en txt}. Cela permet à l'utilisateur de pouvoir avoir un livre propre au format texte.\\
-			Troisièmement, dans le menu nommé \textbf{Affichage}, l'utilisateur peut afficher ou non, le LeftPane et/ou le RightPane. Cela permet notament à l'utilisateur de mieux voir la partie édition. Mais était surtout réalisé pour un meilleur affichage en vidéo projecteur de notre projet.
+			Pour afficher cette fenêtre, plusieurs classe sont nécessaires (voir ci-dessous). La \textbf{MainWindow} gère la création de la fenêtre en créant d'abord la barre de menu grâce à la méthode \textit{createMenuBar()}, appeler dans son constructeur, ainsi que les options de la barre. Elle appele également, grâce à son constructeur, les classes \textbf{LeftPane}, \textbf{GraphPane} ainsi que \textbf{RightPane} qui construisent les trois panels principaux. Toutes ces composantes constituant la fenêtre, sont ajouter au BorderPane permettant ainsi de les positionner.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.50\textwidth]{img/fenetre.png}
+				\caption{Classes lié à la fênetre}
+				\label{fig:fenetre}
+			\end{figure}
+
+			\subsubsection{Fichier}
+				L'utilisateur peut ouvrir un nouveau livre vide en cliquant sur \underline{Nouveau}. La classe \textbf{MainWindow} modifie alors le livre actuel en créant un livre vierge. Une méthode \textit{setBook()} est alors appelé afin de modifier le livre dans tout les panels (LeftPane, GraphPane, RightPane), permettant ainsi de partir sur un nouveau livre.
+
+				Ce menu comporte aussi un MenuItem nommé \underline{Ouvrir}, permettant ainsi d'ouvrir un fichier Json ou txt. Si dans ce fichier, il manque une virgule ou une accolade ou autre ne permettant pas la lecture du fichier en Json (Voir \nameref{sec:Json} à la page \pageref{sec:Json}), un message d'erreur apparait. Si le fichier n'est pas bien fait, ne permettant pas l'ouverture de ce fichier, une classe nommée \textbf{BookValidator} devait "valider" le livre. Par manque de temps, cette classe n'est pas fonctionnelle. Si le fichier est valide, cela appel alors la classe \textbf{BookReader} permettant ainsi de lire le fichier en json (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). La méthode \textit{setBook()} est ensuite appelé afin de modifier le livre dans tout les panels (LeftPane, GraphPane, RightPane).
+
+				Les options \underline{Enregistrer} ainsi que \underline{Enregistrer-Sous} sont également présente. Elles appellent toutes les deux les même méthodes : \textit{changeSelectedFile()} ainsi que \textit{saveFile()}. La première méthode permet d'enregistrer le fichier. Si l'utilisateur annule la boite de dialog permettant d'enregistrer le fichier, la méthode \textit{saveFile()} n'est donc pas appelé. Dans le cas contraire, la méthode \textit{saveFile()} permet de sauvegarder le document en fonction du chemin du fichier, défini par la variable "path". Pour "écrire" le fichier qui sera enregistrer, permettant par la suite de l'ouvrir, la classe \textbf{BookWritter} est donc utilisé (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). Si la moindre erreur survient lors de l'enregistrement du fichier écrit, cela annule l'enregistrement.
+				La seule diférence entre \underline{Enregistrer} et \underline{Enregistrer-Sous}, ce passe si la variable "path", soit le chemin du fichier, soit déjà défini. Si c'est le cas, \underline{Enregistrer} appel directement la méthode \textit{saveFile()} car l'utilisateur n'a pas besoin de redéfinire le chemin d'enregistrement du fichier.
+
+				\begin{lstlisting}[gobble=12, language=java, caption=Enregistrement du livre]
+					private void saveFile() {
+						File saveFile = new File(path);
+
+						if(!saveFile.getParentFile().exists())
+							saveFile.mkdirs();
+
+						BookWritter bookWritter = new BookWritter();
+						try {
+							bookWritter.write(path, book);
+						} catch (IOException ex) {
+							Alert a = new Alert(AlertType.ERROR);
+							a.setTitle("Erreur lors de l'écriture du fichier");
+							a.setHeaderText("Impossible d'écrire le fichier sur le disque");
+							a.show();
+						}
+					}
+				\end{lstlisting}
+
+			\subsubsection{Livre}
+				L'utilisateur peut \underline{Jouer} ou \underline{Estimer la difficulté}. Ces deux MenuItem utilisent toutes les deux la classe \textbf{Jeu} décrit un peu plus loin \nameref{sec:Jeu} à la page \pageref{sec:Jeu}. Le livre est alors charger dans cette classe afin d'avoir accès à toutes les informations pour pouvoir jouer.
+
+				Pour l'option \underline{Jouer}, elle utilise la méthode \textit{play()} de la classe \textbf{Jeu}. Si cette méthode relate la moindre erreur, celle si remonte jusqu'à la \textbf{MainWindow}. Un message d'erreur apparait alors. Cette erreur survient normalement si un chemin ne conduit sur aucun lien terminaux ou si un noeud se retrouve sans lien.
+
+				Pour l'option \underline{Estimer la difficulté}, elle utilise la méthode \textit{fourmis()} de la classe \textbf{Jeu}. Une simple valeur indiquant le nombre de "fourmis" voulant être lancé est envoyé dans cette méthode. Puis, une fois la difficulté calculé, ce pourcentage apparait dans le panel des statistiques, soit dans la partie droite de la fenêtre grâce à la méthode \textit{difficultyChanged()} de la classe \textbf{RightPane}.
+
+				Un autre MenuItem est aussi présent, permettant de \underline{Générer le livre en txt}. Cela permet à l'utilisateur de pouvoir avoir un livre propre au format texte.
+				Pour ce faire, un lien entre le prélude et le premier noeud doit être généré. Sinon une erreur apparait en indiquant le problème de l'erreur. En effet, le prélude apparait d'abord, puis le premier noeud. Cela ne peux pas se faire tant que ce lien n'est pas défini. Si le lien est générer, l'utilisateur doit alors indiquer où enregistrer le fichier génerer à l'aide de la classe \textbf{FileChooser}. Si l'utilisateur annule, la génération est annulé. Sinon, cela génère le fichier à l'aide de la classe \textbf{BookTextExporter} à l'adresse spécifié dans \textbf{FileChooser}. Bien sûr, cela s'annule à la moindre erreur.
+
+				\begin{lstlisting}[gobble=12, language=java, caption=Génération du livre en txt]
+					MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
+						menuBookGenerate.setOnAction((ActionEvent e) -> {
+						NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
+						if(firstNodeFx == null) {
+							Alert a = new Alert(Alert.AlertType.WARNING);
+							a.setTitle("Erreur lors de l'export");
+							a.setHeaderText("Merci de sélectionner au préalable le noeud de départ");
+							a.show();
+
+							return;
+						}
+
+						FileChooser fileChooser = new FileChooser();
+						fileChooser.setTitle("Exporter en texte");
+
+						File selectedFile = fileChooser.showSaveDialog(this);
+						if (selectedFile == null) {
+							return;
+						}
+
+						try {
+							BookTextExporter.generateBook(book, selectedFile.getAbsolutePath());
+						} catch (IOException ex) {
+							Alert a = new Alert(Alert.AlertType.ERROR);
+							a.setTitle("Erreur lors de l'export du fichier");
+							a.setHeaderText("Impossible de sauvegarder le fichier sur le disque");
+							a.show();
+						}
+					});
+				\end{lstlisting}
+
+			\subsubsection{Affichage}
+			L'utilisateur peut afficher ou non, le \textbf{LeftPane} et/ou le \textbf{RightPane}. Cela permet notament à l'utilisateur de mieux voir la partie édition. Mais était surtout réalisé pour un meilleur affichage en vidéo projecteur de notre projet.
+			Une simple modification de ce qui est affiché à gauche ou à droite du BorderPane (soit de la variable "root" contenant toute la fenêtre) est nécessaire.
 
 
 		\subsection{LeftPane}
-			Ce panel contient tout d'abord des ToggleButton permettant de sélectionner un mode parmis cinq modes : \textbf{SELECT, ADD NODE, ADD NODE LINK, DELETE, FIRST NODE}. Ces modes sont sélectionnables à l'aide de bouton créé a partir de la méthode createToggleButton(). Cette méthode prend en paramètre une image et un des modes de la classe Mode. Un évènement est associé à chaque boutons permettant de changer le mode. Chaque mode permet d'executer des actions différentes, présenté ci-dessous. Les mêmes évènements de sélection, ainsi que de suppression, sont associés au lien.
+			Ce panel contient tout d'abord des ToggleButton permettant de sélectionner un mode parmis cinq modes : \underline{SELECT, ADD NODE, ADD NODE LINK, DELETE, FIRST NODE}. Ces modes sont sélectionnables à l'aide de bouton créé a partir de la méthode \textit{createToggleButton()}. Cette méthode prend en paramètre une image et un des modes de la classe \textbf{Mode}, qui est une classe ennumérant tout les modes. Un évènement est associé à chaque boutons permettant de changer le mode (voir \ref{sub:GraphPane}). Le mode ensuite déjà selectionné est toujours le mode \underline{SELECT}. On a créer des ToggleButton afin d'avoir deux états: un état on et un état off. Cela permet de "désactiver" les boutons non sélectionné et de n'avoir qu'un seul bouton non sélectionné. Pour sela, un \textbf{ToggleGroup} permettant que dès qu'un bouton est "cliquer" que celui-ci soit en "on" et les autres en "off".
 
-			\begin{lstlisting}[gobble=12, language=java, caption=Modification Mode]
-			class NodeFxListener implements RectangleFxObserver {
-				@Override
-				public void onRectangleFXClicked(RectangleFx rectangleFx, MouseEvent event) {
-					NodeFx nodeFx = (NodeFx) rectangleFx;
+			\begin{lstlisting}[gobble=12, language=java, caption=Création du ToggleButton]
+				private ToggleButton createToggleButton(String path, Mode mode) {
+					InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
+					ImageView imageView = new ImageView(new Image(stream));
+					imageView.setFitHeight(40);
+					imageView.setFitWidth(40);
+					ToggleButton toggleButton = new ToggleButton("", imageView);
+
+					imageView.setPreserveRatio(true);
+					toggleButton.setMinSize(UiConsts.CONTROL_BUTTON_SIZE, UiConsts.CONTROL_BUTTON_SIZE);
+					toggleButton.setMaxSize(UiConsts.CONTROL_BUTTON_SIZE, UiConsts.CONTROL_BUTTON_SIZE);
+
+					toggleButton.setOnAction((ActionEvent e) -> {
+						if(toggleGroup.getSelectedToggle() == null) {
+							toggleGroup.selectToggle(toggleButton);
+							return;
+						}
+
+						graphPane.setMode(mode);
+						graphPane.setSelectedNodeFx(null);
+					});
+
+					if (this.toggleGroup == null) {
+						this.toggleGroup = new ToggleGroup();
+					}
+
+					this.toggleGroup.getToggles().add(toggleButton);
+
+					return toggleButton;
+				}
+			\end{lstlisting}
+
+			Une VBox est ensuite créé afin de mettre les trois TreeView contenant un les personnages, items et compétences. Pour cela, la méthode \textit{bookTreeView()} est appelé afin d'appeler chaque classe nécessaire à l'affichage de ces TreeView: \textbf{BookTreeViewCharacter} pour la liste des personnages, \textbf{BookTreeViewItem} pour la liste des items et \textbf{BookTreeViewSkill} pour la liste des compétences.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.50\textwidth]{img/fenetreTreeView.png}
+				\caption{Constitution de la vue des personnages/item/compétences}
+				\label{fig:fenetreTreeView}
+			\end{figure}
+
+			Comme vous pouver le voir dans la figure ci-dessous, une classe AbstractBookTreeView implique ces trois classe. Elles ont donc toutes les même méthode mais défini en fonctions de ce qu'ils affichent.
+
+			\begin{itemize}
+				\item \underline{bookChanged()} permet de mettre à jour la liste si un changement de livre est effectué. Elle est donc appelé par la méthode \textit{setBook()}.
+				\item \underline{createRootElement()} permet de créer l'item qui sera afficher dans la vue et non modifiable. Par exemple, pour la liste des items, "Items" sera donc afficher tout en haut.
+				\item \underline{addBookElementContextMenu()} permet d'ajouter un personnage / item / compétence. Cela appel alors la boite de dialogue en fonction du TreeView appelé. Les classes \textbf{CharacterDialog}, \textbf{ItemDialog}, \textbf{SkillDialog} sont alors appelé. Si l'utilisateur valide la boite de dialogue, cela l'ajoute dans le HashMap prévu à cette effet dans le livre. Par exemple si c'est une compétences, \textit{addSkill()} est alors appelé.
+				\item \underline{updateBookElementContextMenu()} permet de modifier l'élément sélectionné. Cela réouvre la boite de dialogue. Si l'utilisateur valide la boite de dialogue, cela modifie l'élément sélectionné dans le HashMap du livre. C'est pour cela qu'un HashMap a été créer et non une liste.
+				\item \underline{removeBookElementContextMenu()} permet de sélectionné l'élément sélectionné. Cela supprime donc l'élément dans la HashMap du livre.
+				\item \underline{getAddContextMenuString()} permet d'afficher le texte permettant d'ajouter le personnage / l'item / la compétence
+				\item \underline{getUpdateContextMenuString()} permet d'afficher le texte permettant de modifier le personnage / l'item / la compétence
+				\item \underline{getDeleteContextMenuString()} permet d'afficher le texte permettant de supprimer le personnage / l'item / la compétence
+			\end{itemize}
+
+			Dans ces différentes classes, un Observeur est ajouter sur chaque classes. Ce qui permet que le moindre clique sur "ajouter", "modifier" ou "supprimer" permet d'effectuer les actions expliqué dans la liste ci-dessus. Un Observeur est créer par classe, il y a donc trois observeur et trois observable. Si un item est ajouté par exemple, c'est la classe \textbf{BookTreeViewItem} qui est appelé. Puis la méthode \textit{addBookElementContextMenu()} est appelé et si l'utilisateur valide la boite de dialogue, la méthode \textit{addItem()} dans la classe \textbf{Book} est appelé. Cela permet d'ajouter l'item dans le HashMap d'items. Puis cette méthode appelle \textit{notifyItemAdded()} de la classe \textbf{BookItemObservable} qui elle, notifie \textit{itemAdded()} de l'ajout d'un item. Cette méthode est dans la classe \textbf{BookTreeViewItem}. Elle permet donc d'ajouter l'item en question sur le Pane, permetant de le voir. La "modfication" et la "supression" est sur le même principe.
+
+			Grâce au constructeur de \textbf{AbstractBookTreeView} (voir ci-dessous), le titre du TreeItem est ajouter. Puis un ContextMenu() est créer et Chaque MenuItem est ajouter ("ajouter", "modifier" ou "supprimer") à ce ContextMenu.
+
+			\begin{lstlisting}[gobble=12, language=java, caption=Constructeur de AbstractBookTreeView()]
+				public AbstractBookTreeView(Book book){
+					rootItem = new TreeItem<>(createRootElement());
+					rootItem.setExpanded(true);
+
+					this.setRoot(rootItem);
+
+					ContextMenu contextMenu = new ContextMenu();
+					MenuItem menuAddElement = new MenuItem(getAddContextMenuString());
+					MenuItem menuUpdateElement = new MenuItem(getUpdateContextMenuString());
+					MenuItem menuDeleteElement = new MenuItem(getDeleteContextMenuString());
+
+					menuAddElement.setOnAction((ActionEvent event) -> {
+						addBookElementContextMenu();
+					});
+
+					menuUpdateElement.setOnAction((ActionEvent event) -> {
+						TreeItem<T> selectedItem = this.getSelectionModel().getSelectedItem();
+
+						if(selectedItem != null && selectedItem != rootItem) {
+							updateBookElementContextMenu(selectedItem.getValue());
+						}
+
+						this.refresh();
+					});
+
+					menuDeleteElement.setOnAction((ActionEvent event) -> {
+						TreeItem<T> selectedItem = this.getSelectionModel().getSelectedItem();
+
+						if(selectedItem != rootItem)
+							removeBookElementContextMenu(selectedItem.getValue());
+					});
+
+					contextMenu.getItems().addAll(menuAddElement, menuUpdateElement, menuDeleteElement);
+					this.setContextMenu(contextMenu);
+
+					this.setBook(book);
+
+					this.setMaxHeight(MAX_HEIGHT);
+				}
+			\end{lstlisting}
+
+		\subsection{GraphPane}\label{sub:GraphPane}
+
+			Le GraphPane lui affiche la zone d'édition. Cette zone contient des méthodes permettant l'ajout de lien ainsi que l'ajout de noeud. Elle contient également deux classes appelé \textbf{NodeFxListener} ainsi que \textbf{NodeLinkFxListener}. Elle permettent de réalisé des actions en fonction des modes sélectioné dans le LeftPane.
+
+			Son constructeur permet de créer le prélude ainsi que d'ajouter des noeud si le mode "ADD\_NODE" est sélectionné. Si ce bouton est sélectionné, et qu'un clique est observer sur le GraphPane, la méthode \textit{createNodeFxDialog()} permet d'ouvrir un \textbf{NodeDialog}. C'est la boite de dialogue permettant de créer le noeud. Si l'utilisateur valide le noeud, la méthode \textit{addNode()} de la classe \textbf{Book} est appelé permattant de rajouter les coordonnée du noeud pour le ZOOM. Puis une notification est envoyé dans le \textbf{BookNodeObservable} permettant d'appeler la méthode \textit{nodeAdded()} dans le GraphPane. Cette méthode permet de créer le noeud visuellement. Pour cela, un NodeFx est nécessaire. En effet, ce NodeFx fera le lien entre le RectangleFx qui sera le visuel sur noeud (soit un carré) et le noeud.
+
+			\subsubsection{NodeFxListener}
+				Si le mode "SELECT" est sélectionné et si la souris maintient le clique appuyé (soit \textit{setOnMouseDragged()}), la classe \textbf{RectangleFx} rattaché au noeud est appelé afin de modfier le rectangle de place. Ce qui veux dire que le rectangle à les même coordonnées que la souris. Mais la méthode empêche le Rectangle de sortir de la zone d'édition.
+				Si un double clique est effectué, le deuxième constructeur de la classe \textbf{NodeDialog} est appelé avec le noeud sélectionné en argument. Cela permet donc de modifier la saisie sur ce noeud. Si l'utilisateur valide la boite de dialogue, le livre met a jour le noeud contenue dans un HashMap, ce qui permet de le retrouver.
+
+				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode SELECT]
 					if(mode == Mode.SELECT){
-						//sauvegarde du premier noeud cliqué
+						selectedNodeFx = nodeFx;
 						if(event.getClickCount() == 2) {
-							//Ouverture d'un NodeDialog
-						}
-					} else if(mode == Mode.ADD_NODE_LINK) {
-						if(selectedNodeFx == null && !(nodeFx.getNode() instanceof AbstractBookNodeWithChoices)) {
-							return;
-						} else if(selectedNodeFx == null && nodeFx.getNode() instanceof AbstractBookNodeWithChoices) {
-							//sauvegarde du premier noeud cliqué
-						} else {
-							//Création d'un lien entre les différents type du premier noeud
-						}
-
-					} else if(mode == Mode.DELETE) {
-						//Supprime le noeud
-					} else if(mode == Mode.FIRST_NODE) {
-						//Modifie la destination du prélude
-					}
-					event.consume();
-				}
-			}
-			\end{lstlisting}
-
-
-			Une VBox est ensuite créé afin de mettre deux TreeView contenant un TreeItem pour la liste des items et un autre TreeItem pour celle des personnages. Il est possible d'ajouter des items et des personnages à partir de MenuItem (Ajout, Modification, Suppression) qui sont contenu dans un ContextMenu. Des évenèments sont liés à ces MenuItem afin de modifier le livre permettant d'appeler des méthodes afin de modifier la liste des items ou la liste des personnages.
-
-			Prenons l'exemple d'un ajout d'un item. Un clique droit est alors enregistrer en tant qu'évènement. Ce clique permet de faire appel à la méthode handle() afin de créer un \textbf{ItemDialog} (boite de dialogue). La boite de dialogue est donc affiché, les valeurs peuvent être rentré. Si la boite n'est pas validé, aucun changement n'est effectué. Mais si l'utilisateur valide la boite, un \textbf{BookItem} est créé en fonction du type d'item (arme, un item de soin, de défense ou un simple item). L'item est alors ajouter dans le livre à l'aide d'une méthode addItem(). Cette méthode est présente dans la classe \textbf{Book}, permettant d'ajouter l'item et, dès ce faisant, notifier la classe \textbf{BookItemObservable} qu'un item a été ajouté. La méthode itemAdded() du \textbf{LeftPane} est alors appelé afin d'ajouter au treeView une vue sur l'item créer. Vous trouverez ci-dessous, la méthode si la captation d'un évènement "Ajouter un item" est enregistré. L'ajout d'un personnage se fait exactement dans la même idée.
-
-			\begin{lstlisting}[gobble=12, language=java, caption=Ajout d'item]
-			menuItemAdd.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					ItemDialog itemDialog = new ItemDialog(LeftPane.this.book);
-					BookItem item = itemDialog.getItem();
-					if(item != null) {
-						book.addItem(item);
-					}
-				}
-			});
-			\end{lstlisting}
-
-			Prenons maintenant l'exemple d'une modification d'un item. Le même principe est effectué, sauf que l'item où il a été enregistré le clique, est envoyé dans la classe \textbf{ItemDialog}. L'item est alors modifié en fonction de son instanceof. Puis est modifié si le bouton "Valider" a été appuyé. La méthode updateItem est alors appelé de la classe \textbf{Book}. L'observeur fait maintenant appel à itemEdited(). Cette méthode permet de changer la valeur de l'item à l'aide d'un setValue. Vous trouverez ci-dessous, un exemple d'une modification d'un item.
-
-			\begin{lstlisting}[gobble=12, language=java, caption=Modification d'item]
-			menuItemUpdate.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					TreeItem<BookItem> selectedItem = treeViewItem.getSelectionModel().getSelectedItem();
-					if(selectedItem != null) {
-						BookItem oldItem = selectedItem.getValue();
-
-						ItemDialog newItemDialog = new ItemDialog(oldItem, LeftPane.this.book);
-						BookItem newItem = newItemDialog.getItem();
-
-						if(newItem == null){
-							return;
-						}
-
-						book.updateItem(oldItem, newItem);
-					}
-				}
-			});
-			\end{lstlisting}
-
-			Maintenant, prenons l'exemple d'une suppression d'item. Un enregistrement d'évènement est alors effectué sur "Supprimer un item". Une notification est envoyé directement dans le book, supprimant ainsi l'item et appelant la méthode du \textbf{LeftPane}, \textit{itemDeleted}. Cette méthode enlève alors du TreeView l'item supprimé à l'aide d'un remove(). Vous trouverez ci-dessous, le code de suppresion lors de l'enregistrement de l'évènement.
-
-			\begin{lstlisting}[gobble=12, language=java, caption=Supression d'un item]
-			menuPersoDel.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					TreeItem<BookCharacter> selectedItem = treeViewPerso.getSelectionModel().getSelectedItem();
-					book.removeCharacter(selectedItem.getValue());
-				}
-			});
-			\end{lstlisting}
-
-
-		\subsection{GraphPane}
-
-			Le prélude est déjà situé en haut à gauche du GraphPane. Ce prélude, comme les noeuds, est représenté par un carré. Il contient un PréludeFx faisant le lien entre le noeud du prélude et le Rectangle le contenant. Ce prélude contient trois Tab. La première Tab contient le texte du prélude. La deuxième contient la création du personnage. Et la troisième la création du personnage principal.\\
-			La deuxième partie du TabPane contient un Accordion. Cette accordion est affiché grâce au bouton \textbf{Ajouter}. Il est composé d'un CharacterCreationComponent comprenant un Texte, une CheckBox (Texte, Item), et d'un bouton \textbf{Supprimer cette partie}.\\
-			La checkBox n'affiche que \textbf{Texte} si aucun item n'est disponible. Mais si un item est créé, l'utilisateur peu alors ajouter un ItemListComponent en sélectionnant \textbf{Item} dans la CheckBox. Cette classe est affiché sur tout les noeuds, permettant d'ajouter des items ainsi que la quantité disponible de chaque item, qui ici, sera disponible en début de partie. L'item ajouté peut être supprimé grâce à un clic droit de la souris.\\
-			La troisième partie du TabPane permet quant a elle, de créer le personnage principal grâce au CharacterComponent. Cette classe permet de créer un personnage. Mais si la valeur boolean de mainCharacter est true, les TextField pour le nombre d'item maximum ainsi que la quantité d'argent est ajouté.
-			Après validation, le textPrelude (texte du prélude), mainCharacter (personnage principal) et le characterCreations (item et texte à afficher après le prélude) est créer.
-
-			Maintenant que vous avez une vision du prélude, une présentation de son code s'impose. Tout d'abord, le prélude contient donc la classe \textbf{RectangleFx}. Cette classe envoie donc une notification si un évènement \textit{Mousse} est enregistré. Cette évènement est recu par le \textbf{PréludeFx}, qui lui, regarde si le mode \textbf{SELECT} est activé. Si ce mode est activé et deux cliques sont enregistré sur le prélude, ce dernier ouvre sa boite de dialog avec, ou non, des informations à l'intérieur (si c'est une modification).\\
-			Dès que le prélude est valider, le book modifie son prélude, le personnage principal ainsi que le characterCreations (ajout des items, texte). Ci dessous, vous découvrirez le code de modification du prélude.
-
-			\begin{lstlisting}[gobble=12, language=java, caption=Ajout / modification du prélude]
-			private void createNodePrelude() {
-				PreludeFx preludeFx = new PreludeFx(zoom);
-				preludeFx.setRealX(10);
-				preludeFx.setRealY(10);
-
-				preludeFx.addNodeFxObserver((RectangleFx rectangleFx, MouseEvent event) -> {
-					if(mode == Mode.SELECT) {
-						if(event.getClickCount() == 2) {
-							PreludeDialog dialog = new PreludeDialog(book);
-
-							if(dialog.getTextePrelude() != null) {
-								book.setTextPrelude(dialog.getTextePrelude());
-								book.setMainCharacter(dialog.getMainCharacter());
-								book.setCharacterCreations(dialog.getCharacterCreations());
+							NodeDialog dialog = new NodeDialog(book, selectedNodeFx.getNode());
+							if(dialog.isValid()) {
+								book.updateNode(nodeFx.getNode(), dialog.getNode());
 							}
 						}
 					}
-				});
+				\end{lstlisting}
 
-				preludeFxFirstNodeLine.startXProperty().bind(preludeFx.xProperty().add(preludeFx.widthProperty().divide(2)));
-				preludeFxFirstNodeLine.startYProperty().bind(preludeFx.yProperty().add(preludeFx.heightProperty().divide(2)));
-
-				rootPane.getChildren().add(preludeFx);
-				this.setPreludeFx(preludeFx);
-			}
-		\end{lstlisting}
+				La méthode \textit{updateNode()} est alors appelé mettant à jour le noeud. Si un moindre changement du type de noeud est effectué, le lien est alors supprimé grâce au \textbf{BookNodeLinkObservable} et de la méthode \textit{notifyNodeLinkDeleted()}.
+				Puis celle-ci fait appel l'observeur \textbf{BookNodeObservable} permettant de notifier \textit{nodeEdited()} de la classe \textbf{GraphPane}. Cette méthode permet de modifier le noeud dans le NodeFx qui a été cliqué.
 
 
-			Concernant l'ajout d'un noeud, on clique sur le mode \textbf{ADD\_NODE},puis on clique sur le GraphPane. Une méthode \textit{createNodeFxDialog} est alors appelé.
+				Si le mode ADD\_NODE\_LINK est sélectionné, et que le premier clique ce fait sur un noeud qui n'a pas de choix, donc le prélude ou un noeud terminal, cela ne fait rien. Si au contraire, le noeud est autorisé à avoir des choix, le prmier clique enregistre donc le noeud sélectionné afin d'avoir le départ du lien. Si un autre clique est effectué et que la variable contenant le premier noeud sélectionné n'est pas vide, alors le noeud est créer en fonction du type du premier noeud. En effet, si le premier noeud est un noeud de type combat, et si tout ces choix sont déjà défini (combat gagner, combat perdu, evasion), le lien ne peux pas être effectué. Un message d'erreur s'affiche alors, puis la variable contenant le premier noeud est supprimé. Dans le cas contraire, la boite de dialogue s'affiche. Nous n'avons pas voulu faire d'autre condition car si l'utilisateur veux créer un lien qui effectue une boucle ou plusieurs choix qui mène aux même noeud, il est libre de le faire.
+				Une fois la boite de dialogue valider, et si c'est un noeud de combat, on met à jour le lien parmis ses destinations. Sinon, on ajoute le lien dans le HashMap contenant les liens. Puis on met à zéro la variable contenant le premier noeud.
 
-			\begin{lstlisting}[gobble=12, language=java, caption=ADD NODE()]
-				public NodeFx createNodeFxDialog(MouseEvent event){
-					NodeDialog nodeDialog = new NodeDialog(book);
-					AbstractBookNode node = nodeDialog.getNode();
+				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode ADD NODE LINK]
+					if(mode == Mode.ADD_NODE_LINK) {
+						if(selectedNodeFx == null && !(nodeFx.getNode() instanceof AbstractBookNodeWithChoices)) {
+							return;
+						} else if(selectedNodeFx == null && nodeFx.getNode() instanceof AbstractBookNodeWithChoices) {
+							selectedNodeFx = nodeFx;
+						} else {
+							if (selectedNodeFx.getNode() instanceof BookNodeCombat){
+								BookNodeCombat firstNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
+								if(firstNodeCombat.getEvasionBookNodeLink() != null
+										&& firstNodeCombat.getLooseBookNodeLink() != null
+										&& firstNodeCombat.getWinBookNodeLink() != null) {
+									Alert alertDialog = new Alert(Alert.AlertType.ERROR);
 
-					if(node != null) {
-						lastXClick = event.getX();
-						lastYClick = event.getY();
+									alertDialog.setTitle("Erreur");
+									alertDialog.setHeaderText("Veuillez supprimer un lien de victoire / defaite / evasion pour pouvoir rajouter un autre lien.");
+									alertDialog.show();
 
-						book.addNode(node);
+									return;
+								}
+							}
+
+							NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode(), book);
+
+							if(nodeLinkDialog.isValid()) {
+								BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
+								bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
+
+								if(selectedNodeFx.getNode() instanceof BookNodeCombat) {
+									BookNodeCombat bookNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
+
+									if(nodeLinkDialog.getLinkType() == NodeLinkDialog.EVASION) {
+										bookNodeCombat.setEvasionBookNodeLink(bookNodeLink);
+									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.PERDRE) {
+										bookNodeCombat.setLooseBookNodeLink(bookNodeLink);
+									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
+										bookNodeCombat.setWinBookNodeLink(bookNodeLink);
+									}
+
+									createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
+								} else {
+									book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
+								}
+							}
+
+
+							selectedNodeFx = null;
+						}
 					}
+				\end{lstlisting}
 
-					return null;
+				La méthode \textit{addNodeLink()} ajoute donc le lien puis appel l'observeur \textbf{BookNodeLinkObservable} permettant de notifier \textit{nodeLinkAdded()} de la classe \textbf{GraphPane}. Cette méthode permet de trouver le premier et le deuxième noeud parmi la liste des noeuds existant. Dès qu'ils ont été trouvé, elle fait appel à la méthode \textit{createNodeLink()} permettant de créer un lien entre les deux noeuds.
+				Pour cela, un NodeLinkFx est d'abord créer permettant de pouvoir changer de valer si un des noeuds changeait d'emplement ainsi que de changer de position en fonction du zoom. Ce lien est ensuite ajouter dans une liste de lien permettant de le retrouver.
+
+				\begin{lstlisting}[gobble=12, language=java, caption=nodeLinkAdded()]
+				public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
+					NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
+					nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
+
+					// Lie la line avec les deux autres noeuds
+					nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
+					nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
+
+					nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
+					nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
+
+					listeNoeudLien.add(nodeLinkFx);
+
+					nodeLinkFx.registerComponent(rootPane);
+
+					return nodeLinkFx;
 				}
-			\end{lstlisting}
-
-			Une fenêtre de dialog est alors ouverte afin de renseigner le paragraphe à afficher, ainsi qu'une CheckBox permettant de sélectionner le type de noeud. L'affichage change en fonction du type de noeud sélectionner dans cette CheckBox, qui elle, est prédéfini sur \textbf{Basic}.
-
-			Si c'est un noeud basic ou aléatoire, les renseignements suivant sont demandé: le texte à afficher, le nombre de points de vie à gagner/perdre, les items disponible, le nombre d'item disponible. Rien ne change sur la structure de la boite de dialog entre ces deux types. Mais au moment de la validation, le type de BookNode créer se fera en fonction de la valeur de la choiceBox : BoockNodeWithChoices, BookNodeWithRandomChoices. Des try/catch sont utilisé afin de changer certaine valeurs de saisie en Integer. Cela permet d'être sûr que ce sont des chiffres. Si la conversion ne peut pas se faire, une boite de dialog affichant l'erreur apparait, notifiant ainsi où l'erreur se situe.
-
-			Si c'est un noeud terminal, une ChoiceBox est juste rajouté afin de savoir si c'est un noeud gagnant ou perdant. Lors de la validation, un BookNodeTerminal est créer avec comme valeur un BookNodeStatus défini en fonction de la ChoiceBox.
-
-			Dès qu'un noeud est validé, la méthode \textit{createNodeFxDialog} envoie une notification au \textbf{Book} permettant que le noeud créer soit ajouté dans la liste. Une fois cela effectué, un observeur est notifié afin d'effectuer un appel à la méthode \textit{nodeAdded} dans le \textbf{GraphPane}. Cette méthode permet de créer le \textbf{NodeFx} qui extend de \textbf{Rectangle Fx}.
-
-			\begin{lstlisting}[gobble=12, language=java, caption=Création du NodeFxDialog]
-			public NodeFx createNode(AbstractBookNode node, double x, double y) {
-				NodeFx nodeFx = new NodeFx(node, zoom);
-				nodeFx.setRealX(x/zoom.get());
-				nodeFx.setRealY(y/zoom.get());
-
-				nodeFx.addNodeFxObserver(new NodeFxListener());
-
-				listeNoeud.add(nodeFx);
-				rootPane.getChildren().add(nodeFx);
-
-				lastXClick = 0;
-				lastYClick = 0;
-
-				return nodeFx;
-			}
-			\end{lstlisting}
-
-			Il contient alors le noeud créer et affiche un Rectangle là où la souris a été cliqué dans le graphPane, à la création du noeud. La couleur du carré change en fonction du type de noeud. Un RectangleFX est donc mis en place permettant d'envoyé une notification si jamais la souris passe dessus (opacité du Rectangle qui change), réalise un clique maintenu (déplacement du rectangle en fonction de la souris), réalise un clique simple. Pour ce dernier, cela envoie une notification à l'observable permettant de prévenir l'observeur qu'on a cliquer dessus. Cela sert si un double clique est produit (permet de procédé à une modification si le mode activé est \textbf{SELECT}, a une suppression si c'est le mode \textbf{DELETE} qui est activé ou encore a une création de lien entre le prélude et le noeud sélectionné si le mode \textbf{FIRST\_NODE} est activé) ou si un deux cliques espacé sont réalisé (permet de procédé à la création d'un lien si le mode \textbf{ADD\_NODE\_LINK} est sélectionné).
+				\end{lstlisting}
 
 
-			Une fois un ou plusieurs noeud créer, un lien peut être donc être effectué. Le lien peut être fait sur le même noeud, si une boucle est voulu. Mais il peut aussi être réalisé entre deux noeuds. Pour ce faire, le mode \textbf{ADD\_NODE\_LINK} doit être activé. Le premier clique permet de sauvegarder le noeud de départ. Le deuxième permet d'avoir le noeud de destination. Une fois les deux cliques détecté, une fenêtre de dialog apparait alors.
+				Si le mode "DELETE" est sélectionné la méthode \textit{removeNode()} de la classe Book est appelé. Une boite de dialogue d'affiche demandant confirmation. Si l'utilisateur annule, rien ne se passe. S'il valide, une boucle "for" est parcouru afin d'envoyer une notification dans le \textbf{BookNodeLinkObservable} et la méthode \textit{notifyNodeLinkDeleted()} qui appel \textit{nodeLinkDeleted()} permettant de supprimer les liens lié à ce noeud. Puis une autre notification est envoyé à la classe \textbf{BookNodeLinkObservable}, qui lui, supprime le noeud en question grace à \textit{notifyNodeLinkDeleted()} qui appel \textit{nodeLinkDeleted()}.
 
-			Il y a trois affichage différent. L'affiche ce fait en fonction du premier noeud. Tout d'abord, l'affichage commun entre ces noeuds est un simple texte, deux TextField ainsi qu'un CheckBox. Les TextField permettent d'ajouter un gain ou une perte de vie/d'argent. La CheckBox, quant a elle, permet d'aller vers ce choix obligatoirement ou non.\\
-			Si le premier noeud est un noeud de combat, une ChoiceBox apparait alors permettant de choisir si c'est un lien gagnant, perdant ou un lien d'évasion. Cette liste de choix est créer si le permier noeud à encore des choix de libre. S'il n'a plus de choix libre, une boite d'alerte s'affiche en prévenant qu'il n'y a plus aucun lien disponible.
+				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode DELETE]
+					if(mode == Mode.DELETE) {
+						if(confirmDeleteDialog()){
+							book.removeNode(nodeFx.getNode());
+						}
+					}
+				\end{lstlisting}
 
-			Si le permier noeud est de type aléatoire, le joueur doit alors renseigner la chance sur chaque lien.
+				Si le mode "FIRST\_NODE" est sélectionné, le lien entre le prélude et le noeud sélectionné est ajouté. Pour cela, un controle est fait si c'est bien un noeud. Si oui, le tracer est fait entre le prélude et le noeud sélectionné. Le "premier noeud" est donc changé dans le livre.
+				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode FIRST NODE]
+					public void setFirstNode(NodeFx newFirstNode) {
+						preludeFx.setFirstNode(newFirstNode);
 
-			Une fois la boite de dialogue validé, une méthode est appelée dans la Classe \textbf{Book}, afin d'ajouter le lien ainsi que de notifier le \textbf{BookNodeLinkObservable}. Cet observeur va alors appeler la méthode \textit{nodeLinkAdded} permettant de créer une ligne entre le NodeFx de départ et le NodeFx de destination. Pour différencier les deux, un cercle est créé et est affiché au noeud de destination. Tout cela est géré par NodeLinkFx qui a aussi un observeur permettant d'envoyer une notification si jamais la ligne ou le cercle enregistre un événement du style "pressed". Cela permet de savoir si le lien a été double cliqué pour réaliser une modification.\\
-			Ce NodeLinkFx est créer dans la méthode \textit{createNodeLink}, défini ci-dessous.
+						if(newFirstNode == null) {
+							preludeFxFirstNodeLine.setVisible(false);
+						} else {
+							preludeFxFirstNodeLine.endXProperty().bind(newFirstNode.xProperty().add(newFirstNode.widthProperty().divide(2)));
+							preludeFxFirstNodeLine.endYProperty().bind(newFirstNode.yProperty().add(newFirstNode.heightProperty().divide(2)));
 
-			\begin{lstlisting}[gobble=12, language=java, caption=Création du lien NodeLink]
+							preludeFxFirstNodeLine.setVisible(true);
 
-			public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
-				NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
-				nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
+							if(!rootPane.getChildren().contains(preludeFxFirstNodeLine)) {
+								rootPane.getChildren().add(preludeFxFirstNodeLine);
+							}
 
-				nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
-				nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
+							book.changeFirstNode(newFirstNode.getNode());
+						}
+					}
+				\end{lstlisting}
 
-				nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
-				nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
+			\subsubsection{NodeLinkFxListener}
+				Cette classe permet de savoir si un évenement a été détecté sur un lien à l'aide du \textbf{NodeLinkFx} lié à chaque lien.
 
-				listeNoeudLien.add(nodeLinkFx);
+				Si le mode "SELECT" est sélectionné et un double clique est effectué sur un lien, le lien est donc modfiable. La boite de dialogue sur lien s'affiche. Si la boite de dialogue est validé, les liens sont mis à jour grâce à la méthode \textit{removeNodeLink()} présente dans la classe \textbf{Book}. Cette méthode notifie le \textbf{BookNodeLinkObservable} grâce à la méthode \textit{notifyNodeLinkEdited()} qui elle appel la méthode \textit{nodeLinkEdited()} du \textbf{GraphPane}. Cette méthode permet de remplacer le lien existant dans le \textbf{NodeLinkFx} par le nouveau lien modifié.
 
-				nodeLinkFx.registerComponent(rootPane);
+				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeLinkFxListener avec le mode SELECT]
+					if(mode == Mode.SELECT) {
+						if(event.getClickCount() == 2) {
+							NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode(), book);
 
-				return nodeLinkFx;
-			}
+							// Si on a validé les modifications sur un lien
+							if(nodeLinkDialog.isValid()) {
+								nodeLinkDialog.getNodeLink().setDestination(book.getNodeIndex(nodeLinkFx.getEnd().getNode()));
 
-			\end{lstlisting}
+								//On met à jour les liens pour un noeud de combat
+								if(nodeLinkFx.getStart().getNode() instanceof BookNodeCombat) {
+									BookNodeCombat bookNodeCombat = (BookNodeCombat) nodeLinkFx.getStart().getNode();
+
+									book.removeNodeLink(nodeLinkFx.getNodeLink());
+
+									if(nodeLinkDialog.getLinkType() == NodeLinkDialog.EVASION) {
+										bookNodeCombat.setEvasionBookNodeLink(nodeLinkDialog.getNodeLink());
+									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.PERDRE) {
+										bookNodeCombat.setLooseBookNodeLink(nodeLinkDialog.getNodeLink());
+									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
+										bookNodeCombat.setWinBookNodeLink(nodeLinkDialog.getNodeLink());
+									}
+
+									createNodeLink(nodeLinkDialog.getNodeLink(), nodeLinkFx.getStart(), nodeLinkFx.getEnd());
+								} else {
+									book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
+								}
+							}
+						}
+					}
+				\end{lstlisting}
+
+				Si le mode "DELETE" est sélectionné et un clique est observé et l'utilisateur confirme la supression par la une réponse positive sur la boite de dialogue, la méthode \textit{removeNodeLink()} de la classe \textbf{Book} est appelé. Ces liens sont alors supprimer des choix du noeuds considéré en "premier noeud". Puis le lien est alors supprimé grâce à la notification du \textbf{BookNodeLinkObservable} au \textbf{GraphPane}. Il est aussi supprimé de la liste des liens existants.
+
+				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeLinkFxListener avec le mode DELETE]
+					public void removeNodeLink(BookNodeLink nodeLink) {
+						List<AbstractBookNodeWithChoices> postRemove = new ArrayList<>();
+
+						for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
+							if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
+								continue;
+
+							AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
+							for(BookNodeLink nl : entry.getValue().getChoices()) {
+								if(nl == nodeLink) {
+									postRemove.add(currentChoice);
+									break;
+								}
+							}
+						}
+
+						for(AbstractBookNodeWithChoices node : postRemove) {
+							node.removeChoice(nodeLink);
+						}
+
+						bookNodeLinkObservable.notifyNodeLinkDeleted(nodeLink);
+					}
+				\end{lstlisting}
+
+
 
 		\subsection{RightPane}
 
-		Ce panel contient tout ce qui représente les statistiques. Dès qu'un noeud est ajouté ou supprimé, une méthode de la class \textit{RightPane} est utilisé afin de mettre à jour le nombre de noeuds existant. Pour la difficulté du livre, elle est mise à jours dès que \textbf{Estimé la difficulté du livre} est sélectionné.\\
-		Si un nouveau livre est chargé, tout ces statistiques ce remmettent à zéro.
+		Ce panel contient tout ce qui représente les statistiques. Dès qu'un noeud est ajouté ou supprimé, une méthode de la classe \textbf{RightPane} est utilisé afin de mettre à jour le nombre de noeuds existant. Cette mise à jour est possible grâce au Observeur et Obervable entre le \textbf{GraphPane} et le \textbf{Book}. En effet, nous venons de voir que le \textbf{GraphPane} appelait une méthode dans le \textbf{Book}. Puis celui-ci notifiait grâce au \textbf{BookNodeObservable} le \textbf{GraphPane} de l'ajout/modfication/suppression de ce noeud. Mais en réalité elle notifie le \textbf{GraphPane} et le \textbf{RightPane}. Grâce à ce \textbf{BookNodeObserver}, les statistiques sont donc mis à jours en ajoutant ou en enlevant 1 aux types de noeuds.
+
+		Pour la difficulté du livre, elle est mise à jours dès que \textbf{Estimé la difficulté du livre} est sélectionné grâce à la méthode \textit{difficultyChanged()} qui se situe dans la classe \textbf{RightPane}. Le pourcentage de difficulté est donc en paramètre de la méthode permettant à celle-ci de la mêttre à jour.\\
+
+		Si un nouveau livre est changé, tout ces statistiques ce remmettent à zéro grâce au \textit{setBook()}.
 
 
 
