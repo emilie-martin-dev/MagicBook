@@ -57,7 +57,7 @@ Transition : Nous avons alors décidé de rendre notre livre jouable sur le term
 
 Diapo 6 - Paragraphe à choix
 
-- Paragraphe
+- Texte du paragraphe
 - Différents choix que le joueur peut choisir
 
 Transition : L'intérêt de ce type de livre est que l'utilisateur peut vraiment intéragir avec celui-ci, par exemple lors de combat
@@ -66,7 +66,7 @@ Transition : L'intérêt de ce type de livre est que l'utilisateur peut vraiment
 
 Diapo 7 - Paragraphe de combat
 
-- Texte du paragraphe encore
+- Texte du paragraphe (héritage avec AbstractBookNode)
 - Description des ennemis
 - Déroulement du combat (choix d'attaquer, utiliser un item, fuir)
 
@@ -110,6 +110,7 @@ Diapo 10 - Les points noirs actuels
 - Pas de gestion des shops -> uniquement dans le jeu, si un item clé pour finir l'histoire est à acheter, alors on ne gagnera jamais
 - Durabilité -> Épée surpuissante qui ne casse pas, donc pas besoin d'acheter des items moins chers mais plus durable dans le tps et donc plus économiques
 - Choix des items de manière aléatoire -> Une "épée légendaire" a autant de valeur pour l'IA qu'un "bâton"
+- Pas de vérfication -> Problème de boucle infini, item requis qui n'est jamais donné, etc
 - Inefficace dans les combats -> Tentative assez récurente d'évasion (= on termine pas un combat long), choix des items aléatoire, utilisation de potions sans en avoir besoin, etc
 
 Transition : Ces problèmes possèdes tout de même des solutions parmis lesquels on peut citer
@@ -121,6 +122,8 @@ Diapo 11 - Pistes de réflexions
 # Les points suivants méritent des précisions
 - Champs viabilité -> Un score, plus il est grand plus l'item est important
 - Déterminer rareté -> Nombre de fois où l'item est requis, nombre de fois où on peut l'acheter, estimer quel arme est plus viable, s'il faut mieux prendre une armure ou une arme, etc
+- Vérifier le livre -> classe qui se charge de vérifier chaque élément 1 à 1 (noeud aléatoire, noeud combat, choix, item, etc)
+- Détection de boucle infini -> Tracer un historique des noeud visités, si plusieurs fois le même cycle, terminer le jeu
 
 - Comment gérer l'évasion -> Pas toujours s'enfuir, mais s'enfuir de temps en temps, quel ratio? Utilisation de State et simulation d'actions ?
 
