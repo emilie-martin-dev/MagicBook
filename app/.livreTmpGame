@@ -1,0 +1,15 @@
+{
+  "prelude": "",
+  "setup": {
+    "character_creation": [],
+    "skills": [],
+    "items": [],
+    "characters": []
+  },
+  "sections": {
+    "1": {
+      "text": "",
+      "choices": []
+    }
+  }
+}
