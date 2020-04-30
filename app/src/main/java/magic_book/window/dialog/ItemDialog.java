@@ -27,19 +27,19 @@ public class ItemDialog extends AbstractDialog {
 	/**
 	 * Item de type Healing
 	 */
-	private static final String HEALING = "Healing";
+	private static final String HEALING = "Potion";
 	/**
 	 * Item de type key
 	 */
-	private static final String KEY_ITEM = "Key";
+	private static final String KEY_ITEM = "Autre";
 	/**
 	 * Item de type money
 	 */
-	private static final String MONEY = "Money";
+	private static final String MONEY = "Monnaie";
 	/**
 	 * Item de type weapon
 	 */
-	private static final String WEAPON = "Weapon";
+	private static final String WEAPON = "Arme";
 	/**
 	 * Item de type defense
 	 */
@@ -164,7 +164,7 @@ public class ItemDialog extends AbstractDialog {
 		root.setVgap(UiConsts.DEFAULT_MARGIN);
 		
 		Label idLabel = new Label("Id : ");
-		Label nameLabel = new Label("Name: ");
+		Label nameLabel = new Label("Nom: ");
 		Label itemLabel = new Label("Choix du type d'item");
 
 		idTextField = new TextField("");
@@ -187,7 +187,7 @@ public class ItemDialog extends AbstractDialog {
 		vieLabel = new Label("Point de vie : ");
 		vieTextField = new TextField("");
 		
-		defenseLabel = new Label("Defense : ");
+		defenseLabel = new Label("Défense : ");
 		defenseTextField = new TextField("");
 		
 		usureLabel = new Label("Usure du matériel : ");

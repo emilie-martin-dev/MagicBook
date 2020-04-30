@@ -24,16 +24,17 @@ import magic_book.window.UiConsts;
  * Permet de concevoir une étape de la "Création du personnage"
  */
 public class CharacterCreationComponent extends GridPane {
-		
+
 	/**
 	 * Type texte
 	 */
 	private static final String TYPE_TEXT = "Texte";
-	
+
 	/**
 	 * Type skill
 	 */
-	private static final String TYPE_SKILL = "Skills";
+	private static final String TYPE_SKILL = "Compétence";
+
 	/**
 	 * Type item
 	 */
@@ -47,17 +48,17 @@ public class CharacterCreationComponent extends GridPane {
 	 * Le type d'étape que l'on souhaite
 	 */
 	private ComboBox<String> characterCreationType;
-	
+
 	/**
 	 * Pane de l'ajout d'item à prendre
 	 */
 	private ItemListComponent itemLinksList;
-	
+
 	/**
 	 * Pane de l'ajout d'item à acheter
 	 */
 	private ItemListComponent shopLinksList;
-	
+
 	/**
 	 * Pane de l'ajout de skill à apprendre
 	 */
@@ -72,12 +73,12 @@ public class CharacterCreationComponent extends GridPane {
 	 * Liste des ComboBox contenant les skills
 	 */
 	private List<ComboBox> skillComboBox;
-	
+
 	/**
 	 * Texte juste après le prélude
 	 */
 	private TextArea texte;
-	
+
 	/**
 	 * Livre contenant toutes les informations
 	 */
@@ -92,25 +93,25 @@ public class CharacterCreationComponent extends GridPane {
 		this.book = book;
 		skillComboBox = new ArrayList();
 	}
-	
+
 	/**
 	 * Initialisation des valeurs du GridPane
 	 * @param book Livre contenant toutes les informations
-	 * @param abstractCharacterCreation 
+	 * @param abstractCharacterCreation
 	 */
 	public CharacterCreationComponent(Book book, AbstractCharacterCreation abstractCharacterCreation) {
 		this.setHgap(UiConsts.DEFAULT_MARGIN);
 		this.setVgap(UiConsts.DEFAULT_MARGIN);
 
 		this.book = book;
-		
+
 		texte = new TextArea();
 		texte.setWrapText(true);
 
 		characterCreationType = new ComboBox<>();
 		characterCreationType.getItems().add(TYPE_TEXT);
 		characterCreationType.setValue(TYPE_TEXT);
-		
+
 		if(!book.getItems().isEmpty()){
 			characterCreationType.getItems().add(TYPE_ITEM);
 			characterCreationType.getItems().add(TYPE_SHOP);
@@ -123,7 +124,7 @@ public class CharacterCreationComponent extends GridPane {
 		this.add(texte, 0, 1, 2, 1);
 		this.add(new Label("Type"), 0, 2);
 		this.add(characterCreationType, 1, 2);
-		
+
 		itemLinksList = new ItemListComponent(book, false);
 		shopLinksList = new ItemListComponent(book, true);
 		skillComboBox = new ArrayList();
@@ -132,13 +133,13 @@ public class CharacterCreationComponent extends GridPane {
 			this.getChildren().remove(itemLinksList);
 			this.getChildren().remove(shopLinksList);
 			this.getChildren().remove(skillPane);
-			
+
 			if(characterCreationType.getValue().equals(TYPE_ITEM))
 				addItemLinksComponent();
 
 			if(characterCreationType.getValue().equals(TYPE_SHOP))
 				addShopLinksComponent();
-			
+
 			if(characterCreationType.getValue().equals(TYPE_SKILL))
 				addSkillLinksComponent();
 		});
@@ -153,14 +154,14 @@ public class CharacterCreationComponent extends GridPane {
 	private void addItemLinksComponent() {
 		this.add(itemLinksList, 0, 3, 2, 1);
 	}
-	
+
 	/**
 	 * Affiche la liste des items que l'on peut acheter
 	 */
 	private void addShopLinksComponent() {
 		this.add(shopLinksList, 0, 3, 2, 1);
 	}
-	
+
 	/**
 	 * Affiche la liste des skills que l'on peut apprendre
 	 */
@@ -168,7 +169,7 @@ public class CharacterCreationComponent extends GridPane {
 		skillPane = new GridPane();
 		skillPane.setVgap(UiConsts.DEFAULT_MARGIN);
 		skillPane.setHgap(UiConsts.DEFAULT_MARGIN);
-		
+
 		addSkillPane = new GridPane();
 		addSkillPane.setVgap(UiConsts.DEFAULT_MARGIN);
 		addSkillPane.setHgap(UiConsts.DEFAULT_MARGIN);
@@ -177,13 +178,13 @@ public class CharacterCreationComponent extends GridPane {
 		addSkill.setOnAction((ActionEvent e) -> {
 			addSkillComboBox();
 		});
-		
+
 		skillPane.add(addSkill, 0, 1);
 		skillPane.add(addSkillPane, 0, 2);
-		
+
 		this.add(skillPane, 0, 3);
 	}
-	
+
 	/**
 	 * Ajoute une comboBox contenant les skills
 	 * @return ComboBox contenant les skills
@@ -195,9 +196,9 @@ public class CharacterCreationComponent extends GridPane {
 			comboSkills.getItems().add(listSkillBook.getValue().getId());
 		}
 		comboSkills.setValue(" ");
-		
+
 		addSkillPane.add(comboSkills, skillComboBox.size() % 4, skillComboBox.size() / 4);
-		
+
 		skillComboBox.add(comboSkills);
 		return comboSkills;
 	}
@@ -261,7 +262,7 @@ public class CharacterCreationComponent extends GridPane {
 				skillBox.setValue(idSkill);
 			}
 		}
-		
+
 		texte.setText(characterCreation.getText());
 	}
 

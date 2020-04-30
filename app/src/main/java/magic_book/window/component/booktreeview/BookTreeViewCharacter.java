@@ -29,7 +29,7 @@ public class BookTreeViewCharacter extends AbstractBookTreeView<BookCharacter> i
 
 	@Override
 	protected BookCharacter createRootElement() {
-		return new BookCharacter("", "Personnage");
+		return new BookCharacter("", "Personnages");
 	}
 
 	@Override
