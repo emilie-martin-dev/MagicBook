@@ -100,10 +100,10 @@
 
 		\begin{itemize}
 			\item{Code en commun concernant la sélection des items}
-			\item{Pas de gestion des shop}
+			\item{Pas de gestion des shops}
 			\item{Pas de durabilité pour les items}
 			\item{L'IA achète et prends les items de manière aléatoire}
-			\item{Aucune verification n'est faite sur le livre avant de le tester}
+			\item{Aucune verification n'est faite sur le livre avant d'y jouer}
 			\item{L'IA n'est pas efficace lors d'un combat}
 		\end{itemize}
 	\end{frame}
@@ -118,7 +118,7 @@
 				\item{Gérer l'item retourné}
 			\end{itemize}
 
-			\item{Pas de gestion des shop / Pas de durabilité pour les items}
+			\item{Pas de gestion des shops / Pas de durabilité pour les items}
 			\begin{itemize}
 				\item{Implémenter la fonctionnalité}
 			\end{itemize}
@@ -129,7 +129,7 @@
 				\item{Déterminer la rareté et l'importance d'un item}
 			\end{itemize}
 
-			\item{Aucune verification n'est faite sur le livre avant de le tester}
+			\item{Aucune verification n'est faite sur le livre avant d'y jouer}
 			\begin{itemize}
 				\item{Vérifier le livre}
 				\item{Détection de boucle infini}
@@ -169,16 +169,18 @@
 			\For{entry<int, AbstractBookNode> e : nodes.entrySet()}{
 				\uIf{e.getKey() == 1}{
 					shuffle[1] = e.getValue()\;
+					continue\;
 				} \uElseIf{e.getValue() instanceof BookNodeTerminal}{
 					bookNodeTerminal : BookNodeTerminal
 					bookNodeTerminal = (BookNodeTerminal) e.getValue()\;
 					\uIf{bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY}{
 						shuffle[leftNumber[leftNumber.length - 1] + 1] = bookNodeTerminal\;
 						leftNumber.remove(leftNumber.length - 1)\;
+						continue\;
 					}
-				} \Else{
-					postNodes.add(e.getValue())\;
 				}
+
+				postNodes.add(e.getValue())\;
 			}
 		\end{algorithm}
 	\end{frame}
@@ -221,12 +223,14 @@
 
 			for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
 				fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
+				writeSeparator(fileWritter);
 			}
 
 			writeSeparator(fileWritter);
 
 			for(int i = 0 ; i < nodes.size() ; i++) {
 				writeNode(nodes.get(i+1), nodesInv, book, fileWritter);
+				writeSeparator(fileWritter);
 			}
 		\end{lstlisting}
 	\end{frame}

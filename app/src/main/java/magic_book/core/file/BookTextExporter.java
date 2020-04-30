@@ -27,34 +27,34 @@ public class BookTextExporter {
 	public static void generateBook(Book book, String path) throws IOException {
 		HashMap<Integer, AbstractBookNode> nodes = book.getNodes();
 		nodes = shuffle(nodes);
-		
+
 		// On construit une HashMap inverse afin de pouvoir facilement retrouver le numéro d'un noeud
 		HashMap<AbstractBookNode, Integer> nodesInv = new HashMap<>();
 		for(Map.Entry<Integer, AbstractBookNode> entry : nodes.entrySet()){
 			nodesInv.put(entry.getValue(), entry.getKey());
 		}
-		
+
 		FileWriter fileWritter = new FileWriter(path);
 		fileWritter.write(book.getTextPrelude());
 		fileWritter.write("\n");
-		
+
 		writeSeparator(fileWritter);
-		
+
 		writeCharacterCreation(book, fileWritter);
-		
+
 		writeSeparator(fileWritter);
-			
+
 		for(int i = 0 ; i < nodes.size() ; i++) {
 			writeNode(nodes.get(i+1), nodesInv, book, fileWritter);
-			
+
 			if(i < nodes.size() - 1){
 				writeSeparator(fileWritter);
 			}
 		}
-		
+
 		fileWritter.close();
 	}
-	
+
 	/**
 	 * Permet de mélanger l'ordre des noeuds du livre dans une nouvelle map
 	 * @param nodes La liste des noeuds originaux
@@ -63,14 +63,14 @@ public class BookTextExporter {
 	private static HashMap<Integer, AbstractBookNode> shuffle(HashMap<Integer, AbstractBookNode> nodes) {
 		HashMap<Integer, AbstractBookNode> shuffle = new HashMap<>();
 		List<Integer> leftNumber = new ArrayList<>();
-		
+
 		// Créé la liste des numéro libre
 		for(int i = 1 ; i < nodes.size() ; i++) {
 			leftNumber.add(i);
 		}
-		
+
 		List<AbstractBookNode> postNodes = new ArrayList();
-		
+
 		Random rand = new Random();
 		for(Map.Entry<Integer, AbstractBookNode> entry : nodes.entrySet()) {
 			// S'il s'agit du premier noeud, on le place en premier
@@ -86,24 +86,24 @@ public class BookTextExporter {
 					continue;
 				}
 			}
-			
+
 			postNodes.add(entry.getValue());
 		}
-		
+
 		// On peut placer le reste des noeuds de manière aléatoire
 		for(AbstractBookNode bookNode : postNodes) {
 			int index = rand.nextInt(leftNumber.size());
 			shuffle.put(leftNumber.get(index)+1, bookNode);
 			leftNumber.remove(index);
 		}
-		
+
 		return shuffle;
 	}
 
 	/**
 	 * Permet d'écrire une séparation entre les parties du livre ainsi que les paragraphes
 	 * @param fileWritter Le flux dans lequel écrire
-	 * @throws IOException Exception en cas d'erreur IO 
+	 * @throws IOException Exception en cas d'erreur IO
 	 */
 	private static void writeSeparator(FileWriter fileWritter) throws IOException {
 		fileWritter.write("\n");
@@ -115,30 +115,31 @@ public class BookTextExporter {
 	 * Permet d'écrire les différentes étapes de la création du personnage
 	 * @param book Le livre à exporter au format texte
 	 * @param fileWritter Le flux dans lequel écrire
-	 * @throws IOException Exception en cas d'erreur IO 
+	 * @throws IOException Exception en cas d'erreur IO
 	 */
 	private static void writeCharacterCreation(Book book, FileWriter fileWritter) throws IOException {
 		for(int i = 0 ; i < book.getCharacterCreations().size() ; i++) {
 			fileWritter.write(book.getCharacterCreations().get(i).getDescription(book));
+
 			if(i < book.getCharacterCreations().size() - 1)
-				fileWritter.write("\n");
+				writeSeparator(fileWritter);
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * @param node Le noeud à écrire
 	 * @param nodesIndex Une liste qui associe à un noeud son numéro de paragraphe. Permet de retrouver facilement la destination d'un choix
 	 * @param book Le livre à exporter au format texte
 	 * @param fileWritter Le flux dans lequel écrire
-	 * @throws IOException Exception en cas d'erreur IO 
+	 * @throws IOException Exception en cas d'erreur IO
 	 */
 	private static void writeNode(AbstractBookNode node, HashMap<AbstractBookNode, Integer> nodesIndex, Book book, FileWriter fileWritter) throws IOException {
 		fileWritter.write("Paragraphe " + nodesIndex.get(node) + " :\n");
 		fileWritter.write("\n");
-		
+
 		fileWritter.write(node.getDescription(book));
-		
+
 		if(!node.getChoices().isEmpty()) {
 			fileWritter.write("\nCorrespondance entre les choix et les paragraphes : \n\n");
 
@@ -149,7 +150,7 @@ public class BookTextExporter {
 					fileWritter.write(nodeLink.getText());
 					fileWritter.write(" ");
 				}
-				
+
 				fileWritter.write("- Paragraphe suivant : ");
 				fileWritter.write(""+nodesIndex.get(book.getNodes().get(nodeLink.getDestination())));
 				fileWritter.write("\n");

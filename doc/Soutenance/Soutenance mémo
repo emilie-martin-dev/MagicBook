@@ -2,26 +2,26 @@
 
 Diapo 1
 
-- Bonjour
-- Présentation des différents membres
+- "Bonjour"
+- "Présentation des différents membres"
 
 -----
 
 Diapo 2
 
-- Sommaire
+- Présenter le sommaire
 
 ========== Présentation d’un LDVH - 1 minute ==========
 
 Diapo 3 - Présentation d’un LDVH
 
 - LDVH -> Livre dont vous êtes le héros
-- Livre ou chaque paragraphe donne lieu à une liste de choix menant à un autre paragraphe du livre
-- Règles différentes selon les livres (au niveau des combats par exemple)
-- Le lecteur devient actif et permet de créer sa propre histoire
-- Fin différentes
+- Livre où chaque paragraphe sont numérotés et donnent lieu à une liste de choix menant à un autre paragraphe du livre
+- Règles différentes selon les livres (au niveau des combats, du nombre d'items maximum que l'on peut transporter simultanément, par exemple)
+- Le lecteur devient actif et peut de créer sa propre histoire en fonction des choix qu'il fait
+- Il existe des fin différentes
 
-Transition : Le but de notre application était donc de créer une interface graphique permettant l'édition d'un tel livre et de fournir des outils tels que l'export du livre en texte ou encore la possibilitité d'y jouer.
+Transition : Le but de notre application était donc de créer une interface graphique permettant l'édition d'un tel livre et de fournir des outils tels que l'export du livre en texte ou encore la possibilité d'y jouer.
 
 ========== Présentation de l'application - 5 minutes ==========
 
@@ -35,23 +35,23 @@ Diapo 4 - Fenêtre principale
 		- Livre
 	- Centre :
 		- Paragraphe = carrés (expliquer couleurs rapidement)
-		- Liaison = Lien possible entre les différents paragraphes
+		- Liaison = Lien possible entre les différents paragraphes (choix)
 	- Droite :
 		- Stats (expliquer pourquoi "Difficulté livre" à un "?")
 	- Finir par la gauche :
 		- Mode d'édition
-		- Éléments constitutifs du livre
+		- Éléments constitutifs du livre (personnages, items, compétences)
 
-Transition : Il est possible de gérer les diférents éléments du livre, par exemple un clique droit sur l'item "Shield" (montrer) permettrait de choisir entre la suppression et la modification de l'item. En choisissant Modifier une boite de dialogue apparait alors.
+Transition : Il est possible de gérer les différents éléments du livre, par exemple un clique droit sur l'item "Shield" (montrer sur l'écran) permettrait de choisir entre la suppression et la modification de l'item. En choisissant "Modifier" une boite de dialogue apparaît alors.
 
 -----
 
 Diapo 5 - Exemple de boite de dialogue
 
-- Possibilité de changer les valeurs et le type
-- Tous les éléments possède une boite de dialogue propre. (noeud, item, skill, etc)
+- Possibilité de changer les valeurs et le type d'item
+- Tous les éléments possèdent une boite de dialogue propre. (noeud, item, skill, etc)
 
-Transition : Nous avons alors décidé de rendre notre livre jouable sur le terminal
+Transition : Nous avons alors décidé de rendre notre livre jouable dans un terminal
 
 -----
 
@@ -70,35 +70,36 @@ Diapo 7 - Paragraphe de combat
 - Description des ennemis
 - Déroulement du combat (choix d'attaquer, utiliser un item, fuir)
 
-Transition : L'intérêt de l'application était donc de fournir des outils pratiques pour l'édition de ce type de livre. On peut par exemple citer l' "estimation de la difficulté d'un livre".
+Transition : L'intérêt de l'application était aussi de fournir des outils pratiques pour l'édition de ce type de livre. On peut par exemple citer l' "estimation de la difficulté d'un livre".
 
 ========== Estimation de la difficulté d’un livre - 9 minutes ==========
 
 Diapo 8 - L’idée d’origine
 
-- Expliquer le principe de status d'un noeud
+- Ancienne structure de nos noeuds
+- Expliquer le principe de statut d'un noeud
 - Expliquer le principe de fourmis
-- Préciser que seul le status nous interesse car le texte n'a pas de sens pour elles
+- Préciser que seul le statut nous intéresse car le texte n'a pas de sens pour elles [les fourmis]
 - Détailler l'algorithme
 
 Transition : Cette méthode est pratique mais elle omet plusieurs points :
 	- Les combats ne sont pas gérés
 	- Les achats d'items non plus
 	- Pas de prérequis (ex : avoir une clé)
-	- Pas de gestion de noeuds où le choix est choisit selon certaines proba
+	- Pas de gestion des noeuds où le choix est choisit aléatoirement selon certaines proba
 	- Autres (argent gagné / perdu, gains perte d'hp, etc)
 
 -----
 
 Diapo 9 - Les améliorations apportées
 
-- Expliquer pourquoi une interface, pourquoi pas 2 codes différents
-- Expliquer Fourmi et Player implémente interface pour fournir un comportement différent à adopter
-- Expliquer méthode "fourmis" pour estimer la difficulté
-- Exiquer méthode "play" pour le joueur humain
-- Expliquer une méthode execXXX => un type de noeud
+- Expliquer pourquoi une interface, pourquoi pas 2 classes différentes
+- Fourmi et Player implémentent l'interface pour fournir un comportement différent à adopter selon chaque situation
+- Méthode "fourmis" dans "Jeu" pour estimer la difficulté
+- Méthode "play" dans "Jeu" pour démarer le jeu pour un joueur humain
+- Méthodes execXXX => un type de noeud
 - Parler de la copie du livre pour pas modifier vrai livre
-- Expliquer que code en commun des noeuds dans execAbstractNodeWithChoices
+- Expliquer que code en commun des noeuds AbstractNodeWithChoices dans execAbstractNodeWithChoices
 
 Transition : Bien que cette structure nous permette d'avoir un résultat beaucoup plus proche de la réalité qu'avant, d'autres problèmes sont présents et provoquent une mauvaise estimation d'un livre complexe.
 
@@ -106,26 +107,27 @@ Transition : Bien que cette structure nous permette d'avoir un résultat beaucou
 
 Diapo 10 - Les points noirs actuels
 
-- Code commun -> Lire et rappeller que le "moteur" pour faire tourner le jeu est le meme pour le joueur et fourmis. Dire que le changement et l'utilisation d'un item est fait dans la fourmis et joueur = code dupliqué. A mettre dans le moteur.
-- Pas de gestion des shops -> uniquement dans le jeu, si un item clé pour finir l'histoire est à acheter, alors on ne gagnera jamais
-- Durabilité -> Épée surpuissante qui ne casse pas, donc pas besoin d'acheter des items moins chers mais plus durable dans le tps et donc plus économiques
-- Choix des items de manière aléatoire -> Une "épée légendaire" a autant de valeur pour l'IA qu'un "bâton"
-- Pas de vérfication -> Problème de boucle infini, item requis qui n'est jamais donné, etc
-- Inefficace dans les combats -> Tentative assez récurente d'évasion (= on termine pas un combat long), choix des items aléatoire, utilisation de potions sans en avoir besoin, etc
+- Code commun -> Rappeler que le "moteur" (= classe Jeu) est le même code pour le joueur et fourmis. Dire que le changement et l'utilisation d'un item est fait dans la fourmis et joueur = code dupliqué. A mettre dans le moteur.
+- Pas de gestion des shops -> si un item clé pour finir l'histoire est à acheter, alors on ne gagnera jamais
+- Durabilité -> Épée surpuissante qui ne casse pas, donc pas besoin d'acheter des items moins chers mais plus durable dans le temps et donc plus économiques
+- Choix des items de manière aléatoire -> Une "épée légendaire" a autant de valeur pour l'IA qu'un "morceau de bois"
+- Pas de vérification -> Problème de boucle infini, item requis qui n'est jamais donné, etc
+- Inefficace dans les combats -> Tentative assez récurrente d'évasion (= on termine pas un combat long), choix des items aléatoire pour se défendre ou attaquer, utilisation de potions sans en avoir besoin, etc
 
-Transition : Ces problèmes possèdes tout de même des solutions parmis lesquels on peut citer
+Transition : Ces problèmes possèdent tout de même des solutions parmi lesquelles on peut citer
 
 -----
 
 Diapo 11 - Pistes de réflexions
 
 # Les points suivants méritent des précisions
-- Champs viabilité -> Un score, plus il est grand plus l'item est important
-- Déterminer rareté -> Nombre de fois où l'item est requis, nombre de fois où on peut l'acheter, estimer quel arme est plus viable, s'il faut mieux prendre une armure ou une arme, etc
-- Vérifier le livre -> classe qui se charge de vérifier chaque élément 1 à 1 (noeud aléatoire, noeud combat, choix, item, etc)
-- Détection de boucle infini -> Tracer un historique des noeud visités, si plusieurs fois le même cycle, terminer le jeu
+- Champs viabilité -> Une valeur saisie par le créateur du livre, plus elle est grande plus l'item est important
+- Déterminer rareté -> En fonction du nombre de fois où l'item est requis, nombre de fois où on peut l'acheter, estimer quelle arme est plus viable, s'il faut mieux prendre une armure ou une arme, etc
+- Vérifier le livre -> Classe qui se charge de vérifier chaque élément 1 à 1 (noeud aléatoire, noeud combat, choix, item, etc)
+- Détection de boucle infini -> Tracer un historique des noeuds visités, si plusieurs fois le même cycle, terminer le jeu avec un noeud d'échec
 
-- Comment gérer l'évasion -> Pas toujours s'enfuir, mais s'enfuir de temps en temps, quel ratio? Utilisation de State et simulation d'actions ?
+- Déterminer l'ennemie à privilégier -> Utilisation de State et simulation d'actions (problème : aléatoire sur les critiques)
+- Comment gérer l'évasion -> Pas toujours s'enfuir, mais s'enfuir de temps en temps, quel ratio?
 
 Autres questions => A force de rendre les fourmis trop intelligente, risque-t-on de rendre l'estimation inefficace ? Comment ajouter la part d'aléatoire (qui est l'idée de base) ?
 
@@ -137,8 +139,8 @@ Diapo 12 - Exemple d’export d’un livre
 
 - Affichage semblable au jeu
 - Décrire brièvement
-- Parler des "séparation" avec les "====="
-- Toujours mélangé
+- Parler des "séparation" avec les "=====" (juste faire remarquer, c'est pour la suite)
+- Le livre est toujours mélangé
 
 Transition : Voyons comment ce mélange s'effectue
 
@@ -146,13 +148,13 @@ Transition : Voyons comment ce mélange s'effectue
 
 Diapo 13 - Algorithme de mélange
 
-- Décrire les variables au debut
+- Décrire les variables au début
 - Boucle pour placer les noeuds avec placement important :
 	- Noeud de départ (pour qu'il soit bien le premier et pas en plein milieu du livre)
-	- Si noeud terminal de victoire, on place le noeud à la fin. Tous les noeuds de victoire sont donc placés à la fin du livre. Noeuds défaite sont placés comme nimporte quel autre noeud
+	- Si noeud terminal de victoire, on place le noeud à la fin. Tous les noeuds de victoire sont donc placés à la fin du livre. Noeuds défaite sont placés comme n'importe quel autre noeud
 	- Sinon, on ajoutera le noeud plus tard
 
-Transition : Enfin, (diapo suivante première idée = suite phrase)
+Transition : Enfin, (sur la diapo suivante, première idée est la suite de la phrase)
 
 -----
 
@@ -160,13 +162,15 @@ Diapo 14 - Algorithme de mélange (suite)
 
 - On ajoute les noeuds restants de manière totalement aléatoire
 
+Transition : Maintenant il faut écrire le livre suivant cette ordre. Pour faciliter cette écriture, nous avons mis en place l'architecture suivante.
+
 -----
 
 Diapo 15 - L’interface Descriptible
 
 - Décrire en partant du haut
 
-Transition : Cette interface nous permet donc d'écrire très facilement et proprement le livre en cloisonnant le code dans la classe correspondante. En témoigne l'algorihtme qui se charge de l'écriture (diapo suivante)
+Transition : Cette interface nous permet donc d'écrire très facilement et proprement le livre en cloisonnant le code dans la classe correspondante. En témoigne l'algorithme qui se charge de l'écriture
 
 -----
 
@@ -174,15 +178,15 @@ Diapo 16 - Algorithme d’écriture
 
 - Au préalable on a :
 	- HashMap<Integer, AbstractBookNode> nodes -> Noeuds du livre mélangés
-	- HashMap<AbstractBookNode, Integer> nodesInv -> Inverse de nodes
+	- HashMap<AbstractBookNode, Integer> nodesInv -> "Inverse" de nodes
 - FileWriter pour écrire
 - Écriture du prélude
 - writeSeparator liste de "======"
 - Boucle au travers de tous les éléments du livre et on les décrit avec getDescription
-- Pas exactement le même code (normalement des fonctions et une if pour ne pas afficher de separator apres le dernier element)
+- Pas exactement le même code (normalement des fonctions et une if pour ne pas afficher de separator après le dernier élément)
 - writeNode permet d'écrire un noeud
 
-Transition : Pour faire cela nous procédons comme suit
+Transition : Pour écrire les noeuds nous procédons comme suit
 
 -----
 
@@ -191,12 +195,12 @@ Diapo 17 - Algorithme d’écriture
 - Expliquer le fonctionnement
 - Expliquer pourquoi on fait une partie "correspondance entre les choix et les paragraphes"
 
-Transition : Ceci conclu notre présentation, voici les références utilisées (passer à la diapo suivante)
+Transition : Ceci conclu notre présentation, (diapo suivante et dire la première idée)
 
 -----
 
 Diapo 18 - Références
 
-- Références utilisés dans cette soutenance
+- Références utilisées dans cette soutenance
 - Ne pas changer de diapo après
 - Merci pour votre attention, des questions?
