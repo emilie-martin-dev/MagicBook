@@ -118,7 +118,7 @@
 % \end{document}
 
 \NeedsTeXFormat{LaTeX2e}%
-\ProvidesClass{BetterDocument}[2019/08/20 BetterDocument, V1.0.0]%
+\ProvidesClass{BetterDocument}[2020/04/30 BetterDocument, V1.1.0]%
 
 \DeclareOption*{\let\classname\CurrentOption}%
 \ProcessOptions\relax%
@@ -152,6 +152,7 @@
 \RequirePackage{setspace} % Permet de changer l'interligne
 \RequirePackage{tabularx} % Permet d'utiliser les tableaux
 \RequirePackage{wrapfig} % Permet d'utiliser les wrapfigure
+\RequirePackage{csquotes} % À utiliser avec biblatex
 
 % Package non compatibles avec Beamer
 \ifthenelse{\equal{\classname}{beamer}}{}{%
@@ -270,8 +271,8 @@
 
 % Définit la coloration pour le langage JSON
 \lstdefinelanguage{json}{
-    morestring=[b]",
-    morestring=[d]'
+	morestring=[b]",
+	morestring=[d]'
 }
 
 % Espacement entre les paragraphes
@@ -374,8 +375,6 @@
 			\titleformat*{\section}{\bf\fontsize{14}{16}\selectfont}
 			\titleformat*{\subsection}{\bf\fontsize{12}{14}\selectfont}
 			\titleformat{\subsubsection} {\fontsize{11}{14}\selectfont\bfseries}{}{0em}{}%
-			\titlespacing{\section}{0pt}{0pt}{0pt}
-			\titlespacing{\subsection}{0pt}{0pt}{0pt}
 		}{}
 
 		\pagestyledefault{}
@@ -405,6 +404,10 @@
 				\ifthenelse{\equal{\date}{}}{}{\\\date{}}%
 			\end{flushright}%
 		\end{minipage}%
+
+		\begin{center}
+			\fontsize{15}{17}\selectfont\textbf\title
+		\end{center}
 	}%
 
 	\newcommand{\pageDeGarde}{%

@@ -1,5 +1,5 @@
 % =================================================================================================================
-% Copyright 2019 Justine MARTIN
+% Copyright 2020 Justine MARTIN
 %
 % Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 %
@@ -23,10 +23,12 @@
 %	\docLogo : Change le logo du document
 %	\pageDeGarde : Construit la page de garde en fonction des informations ci dessus
 %
+%	\pageDeGardeEntete : Construit la page de garde sous forme d'entête Utilise seulement \author, \institute et \date
+%
 %	\tableDesMatieres : Construit la page de table des matières
 %	\tocCounter : Change la profondeur de la table des matières (va jusqu'aux subsection par défaut)
 %
-%	\japanese : Permet d'écrire des Kana et des Kanjis
+%	\beamerBackground : Change le background des diapositives pour y afficher une image
 %
 %	\lstinputlisting[language=C++, firstline=2, lastline=12, caption=Python example]{main.cpp} : Inclut une portion du code
 %
@@ -40,7 +42,7 @@
 %	links : Couleur utilisée dans les liens
 %	titlecolor : Couleur utilisée dans beamer pour la police des titres
 %	titlebg : Couleur utilisée dans beamer pour le fond de la bordure frametitle
-%	headbg : Couleur utilisée dans beamer pour le fond de la bordure de section et subsection
+%	sectionBg : Couleur utilisée dans beamer pour le fond de la bordure de section et subsection
 %
 %	NB : Commande pour changer de couleur -> \definecolor{nomCouleur}{HTML}{FF00FF}
 %
@@ -90,6 +92,8 @@
 % [Beamer]
 % \documentclass[beamer]{BetterDocument}
 %
+% \beamerBackground{img/background.png}
+%
 % \title{Titre}
 % \author{L'auteur}
 % \institute{L'endroit}
@@ -104,8 +108,8 @@
 % 		\tableofcontents
 % 	\end{frame}
 %
-% 	\section{Avant le BTS}
-% 	\subsection{Le collège}
+% 	\section{Ma première partie}
+% 	\subsection{Ma sous partie}
 % 	\begin{frame}
 % 		\frametitle{Titre de la diapo}
 % 		La diapo passionnante
@@ -114,7 +118,7 @@
 % \end{document}
 
 \NeedsTeXFormat{LaTeX2e}%
-\ProvidesClass{BetterDocument}[2019/08/20 BetterDocument, V0.28.1]%
+\ProvidesClass{BetterDocument}[2020/04/30 BetterDocument, V1.1.0]%
 
 \DeclareOption*{\let\classname\CurrentOption}%
 \ProcessOptions\relax%
@@ -132,49 +136,48 @@
 \RequirePackage[utf8]{inputenc}%
 \RequirePackage[T1]{fontenc}%
 \RequirePackage[french]{babel}%
+\RequirePackage[linesnumbered,ruled,onelanguage]{algorithm2e} % Permet d'écrire des algorithmes
+\RequirePackage[style=authortitle]{biblatex} % Permet un meilleur controle de la biblio
 \RequirePackage[labelfont=bf]{caption} % Met en gras les captions
 \RequirePackage{fancyhdr} % Permet d'utiliser les headers et footers
 \RequirePackage{float} % Permet d'utiliser le modificateur H sur les floattants
 \RequirePackage{graphicx} % Permet d'inclure des images
 \RequirePackage{ifthen} % Permet de faire des conditions
 \RequirePackage{listings} % Permet d'afficher des codes sources
+\RequirePackage{longtable} % Permet d'écrire des tableaux de plusieurs pages
 \RequirePackage{mathptmx} % Permet d'utiliser la police Times New Roman
 \RequirePackage{mfirstuc} % Permet de mettre en majuscule la première lettre d'un mot
 \RequirePackage{multirow} % Permet de fusionner des cellules du tableau
 \RequirePackage[section]{placeins} % Permet de bloquer les floats pour ne pas les faire dépasser d'une section par ex
 \RequirePackage{setspace} % Permet de changer l'interligne
-\RequirePackage{subcaption}
 \RequirePackage{tabularx} % Permet d'utiliser les tableaux
 \RequirePackage{wrapfig} % Permet d'utiliser les wrapfigure
-\RequirePackage[table]{xcolor} % Permet d'utiliser les couleurs
-\RequirePackage{longtable}
-\usepackage[linesnumbered,ruled,onelanguage]{algorithm2e}
+\RequirePackage{csquotes} % À utiliser avec biblatex
 
 % Package non compatibles avec Beamer
 \ifthenelse{\equal{\classname}{beamer}}{}{%
 	\RequirePackage[top=2.5cm, left=2.5cm, right=2.5cm, bottom=2.5cm]{geometry} % Change les bordures des pages
 	\RequirePackage[colorlinks]{hyperref} % Supprime les rectangles autour des liens, ajout du \url et \href
 	\RequirePackage{titlesec} % Permet de personnaliser les chapters, sections, subsections
+	\RequirePackage[table]{xcolor} % Permet d'utiliser les couleurs (sur les tableaux aussi)
 }%
 
+% Option clash pour le xcolor si renseigné avant
+\RequirePackage{tikz} % Permet de faire des figures tikz
+
+% Définit le style par défaut, permet de passer d'un style empty pour la page de titre vers le style de base (fancy, plain, ...)
 \newcommand{\pagestyledefault}[1]{\renewcommand{\pagestyledefault}{\pagestyle{#1}}}%
 \ifthenelse{\equal{\classname}{report}}{%
+	% Si c'est un rapport on utilise le style de page fancy pour pouvoir changer le footer et le header
 	\pagestyledefault{fancy}%
 }{%
 	\ifthenelse{\equal{\classname}{article}}{%
+		% Style vide pour les documents de type article (pas de header, pas de footer, pas de numéro de page)
 		\pagestyledefault{empty}%
 	}{%
+		% Si autre type de document, style de page par defaut
 		\pagestyledefault{plain}%
 	}%
-}%
-
-% Japonais
-\RequirePackage{CJKutf8}%
-
-\newcommand{\japanese}[1]{%
-	\begin{CJK}{UTF8}{min}%
-		#1%
-	\end{CJK}%
 }%
 
 % Couleurs
@@ -196,7 +199,7 @@
 \newcommand{\os}{système d'exploitation}
 \newcommand{\oss}{systèmes d'exploitation}
 
-% Listings
+% Couleurs pour le thème sombre des codes sources
 \definecolor{codeDarkBackground}{HTML}{1B1D1E}
 \definecolor{codeDarkNumber}{HTML}{888888}
 \definecolor{codeDarkKeyword}{HTML}{F92672}
@@ -205,6 +208,7 @@
 \definecolor{codeDarkComment}{HTML}{888888}
 \definecolor{codeDarkText}{HTML}{FFFFFF}
 
+% Thème sombre pour les codes sources
 \lstdefinestyle{dark}{
 	backgroundcolor=\color{codeDarkBackground},
 	commentstyle=\color{codeDarkComment},
@@ -215,6 +219,7 @@
 	basicstyle=\color{codeDarkText}\ttfamily\footnotesize
 }
 
+% Couleurs pour le thème clair des codes sources
 \definecolor{codeLightBackground}{HTML}{FAFAFA}
 \definecolor{codeLightNumber}{HTML}{2C91AF}
 \definecolor{codeLightKeyword}{HTML}{A626A4}
@@ -223,6 +228,7 @@
 \definecolor{codeLightComment}{HTML}{A1A2A8}
 \definecolor{codeLightText}{HTML}{383A42}
 
+% Thème clair pour les codes sources
 \lstdefinestyle{light}{
 	backgroundcolor=\color{codeLightBackground},
 	commentstyle=\color{codeLightComment},
@@ -233,6 +239,7 @@
 	basicstyle=\color{codeLightText}\ttfamily\footnotesize
 }
 
+% Configuration pour les codes sources
 \lstset{style=light,
 	literate=
 	{á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
@@ -262,21 +269,26 @@
 	tabsize=4
 }
 
+% Définit la coloration pour le langage JSON
 \lstdefinelanguage{json}{
-    morestring=[b]",
-    morestring=[d]'
+	morestring=[b]",
+	morestring=[d]'
 }
 
-% Bullets listes
+% Espacement entre les paragraphes
+\setlength{\parskip}{0.5em}
+
+% Style des points sur les liste
 \frenchsetup{ItemLabeli=\textbullet}
 \frenchsetup{ItemLabelii=$\circ$}
 
-% Tabular
+% Paramètre sur les tableaux
 \setlength{\arrayrulewidth}{0.2mm}
 \setlength{\tabcolsep}{8pt}
 
-% URL et liens
+% Utiliser la même police pour les liens que pour le texte
 \urlstyle{same}
+% Couleur des URL et liens
 \hypersetup{
 	urlcolor = {links},
 	linkcolor = {links},
@@ -285,9 +297,11 @@
 
 % Code spécifique à Beamer
 \ifthenelse{\equal{\classname}{beamer}}{%
+	% Change le header des documents Beamer
 	\setbeamertemplate{headline}{%
 		\leavevmode%
 		\hbox{%
+			% Affiche une ligne coloré avec à gauche, la section actuelle et à droite la subsection actuelle
 			\begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{section header}%
 				\hspace{0.25cm}\insertsection\hfill\insertsubsection\hspace{0.25cm}
 			\end{beamercolorbox}%
@@ -295,19 +309,39 @@
 	}
 
 	\definecolor{titlecolor}{RGB}{249,196,95}
+	\definecolor{sectionBg}{RGB}{31,31,31}
 	\definecolor{titlebg}{RGB}{51,51,51}
-	\definecolor{headbg}{RGB}{31,31,31}
 
+	% Change les couleurs du texte et du fond pour le titre et section / subsection
+	\setbeamercolor{section header}{fg=titlecolor,bg=sectionBg}
+	\setbeamercolor{subsection header}{fg=titlecolor,bg=sectionBg}
 	\setbeamercolor{frametitle}{fg=titlecolor,bg=titlebg}
-	\setbeamercolor{section header}{fg=titlecolor,bg=headbg}
-	\setbeamercolor{subsection header}{fg=titlecolor,bg=headbg}
 
-	\setbeamertemplate{background canvas}{
-		\includegraphics[height=\paperheight, keepaspectratio]{img/background.jpg}
+	% Change le fond d'écran de la présentation
+	\newcommand{\beamerBackground}[1]{
+		\setbeamertemplate{background canvas}{
+			\includegraphics[height=\paperheight, keepaspectratio]{#1}
+		}
 	}
 
+	% Permet de créer une ligne pour aligner les images verticalement
+	\newenvironment{graphicsRow}
+	{
+		\begin{minipage}{\textwidth}
+	}
+	{
+		\end{minipage}
+	}
+
+	% Permet de créer une colonne pour aligner les images verticalement
+	\newcommand{\graphicsCol}[1] {
+		\raisebox{-0.5\height}{#1}
+	}
+
+	% Retire le footer
 	\setbeamertemplate{footline}{}
 
+	% Retire la barre de navigation en bas
 	\setbeamertemplate{navigation symbols}{}
 }{
 	% Code non compatible avec Beamer
@@ -330,17 +364,21 @@
 			}%
 		}%
 
-		\titleformat{\chapter}%
-		  {\color{primarycolor}\centering\fontsize{20}{24}\selectfont\bfseries}{\thechapter}{0.5em}{}%
+		\titleformat{\chapter}{\color{primarycolor}\centering\fontsize{20}{24}\selectfont\bfseries}{\thechapter}{0.5em}{}%
 		\titlespacing*{\chapter}{0pt}{0pt}{2.3ex plus .2ex}%
 
 		\titleformat*{\section}{\bfseries\color{secondarycolor}\fontsize{16}{20}\selectfont}%
 		\titleformat*{\subsection}{\bfseries\color{thirdcolor}\fontsize{14}{17}\selectfont}%
 	}{
+		% Style des titres pour les articles
+		\ifthenelse{\equal{\classname}{article}}{%
+			\titleformat*{\section}{\bf\fontsize{14}{16}\selectfont}
+			\titleformat*{\subsection}{\bf\fontsize{12}{14}\selectfont}
+			\titleformat{\subsubsection} {\fontsize{11}{14}\selectfont\bfseries}{}{0em}{}%
+		}{}
+
 		\pagestyledefault{}
 	}%
-
-	\setlength{\parskip}{0.5em}
 
 	% Numerotation des sections et subsection
 	\renewcommand\thesection{\Alph{section}}
@@ -355,6 +393,22 @@
 
 	\newcommand{\instituteLogo}[1]{\renewcommand{\instituteLogo}{#1}}
 	\newcommand{\docLogo}[1]{\renewcommand{\docLogo}{#1}}
+
+	\newcommand{\pageDeGardeEntete}{%
+		\noindent\begin{minipage}[t]{0.5\textwidth}%
+			\noindent\author{}%
+		\end{minipage}%
+		\begin{minipage}[t]{0.5\textwidth}%
+			\begin{flushright}%
+				\institute{}%
+				\ifthenelse{\equal{\date}{}}{}{\\\date{}}%
+			\end{flushright}%
+		\end{minipage}%
+
+		\begin{center}
+			\fontsize{15}{17}\selectfont\textbf\title
+		\end{center}
+	}%
 
 	\newcommand{\pageDeGarde}{%
 		\pagestyle{empty}%
@@ -377,10 +431,10 @@
 		\pagestyledefault{}%
 	}
 
-	% Commandes table des matières
-	\addtocontents{toc}{\setcounter{tocdepth}{2}}
+	% Commandes pour la table des matières
 	\AtBeginDocument{\addtocontents{toc}{\protect\thispagestyle{empty}}}
 	\newcommand{\tocCounter}[1]{\addtocontents{toc}{\setcounter{tocdepth}{#1}}}
+	\tocCounter{2}
 
 	\newcommand{\tableDesMatieres}{%
 		\pagestyle{empty}%
