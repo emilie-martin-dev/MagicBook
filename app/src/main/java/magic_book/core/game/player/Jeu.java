@@ -166,7 +166,7 @@ public class Jeu {
 				//Fin de partie
 				gameFinish = true;
 
-				if(bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY)
+				if(bookNodeTerminal.getBookNodeStatus() == BookNodeStatus.VICTORY && (state.getMainCharacter().isAlive()))
 					win = true;
 			} else {
 				// Noeud inconnu ou possiblement null, on stop le jeu
@@ -311,7 +311,7 @@ public class Jeu {
 	private void execNodeTerminal(BookNodeTerminal node){
 		showMessage(node.getText());
 
-		if(node.getBookNodeStatus() == BookNodeStatus.VICTORY)
+		if(node.getBookNodeStatus() == BookNodeStatus.VICTORY && (state.getMainCharacter().isAlive()))
 			showMessage("Vous avez gagné");
 		else
 			showMessage("Vous avez perdu");
@@ -327,12 +327,19 @@ public class Jeu {
 		if(returnedNode != null)
 			return returnedNode;
 
-		//S'il n'y a pas d'ennemis, le player est automatiquement envoyé vers le noeud de victoire.
-		if(node.getEnnemiesId().isEmpty())
-			return book.getNodes().get(node.getWinBookNodeLink().getDestination());
-
-		int evasionRound = node.getEvasionRound();
 		boolean finCombat = false;
+			
+		//S'il n'y a pas d'ennemis, le player est automatiquement envoyé vers le noeud de victoire si ce noeud existe.
+		if(node.getEnnemiesId().isEmpty()){
+			if(node.getWinBookNodeLink() != null)  {
+				return book.getNodes().get(node.getWinBookNodeLink().getDestination());
+			} else {
+				finCombat = true;
+			}
+		}
+		
+		int evasionRound = node.getEvasionRound();
+		
 
 		List<BookCharacter> listEnnemis = new ArrayList();
 		showMessage("Il y a "+node.getEnnemiesId().size() + " ennemis !");
@@ -402,9 +409,12 @@ public class Jeu {
 			}
 		}
 
-		//Lien vers le noeud de victoire
-		execBookNodeLink(node.getWinBookNodeLink());
-		return book.getNodes().get(node.getWinBookNodeLink().getDestination());
+		//Si lien vers le noeud de victoire
+		if(node.getWinBookNodeLink() != null)  {
+			execBookNodeLink(node.getWinBookNodeLink());
+			return book.getNodes().get(node.getWinBookNodeLink().getDestination());
+		}
+		return null;
 	}
 
 	/**

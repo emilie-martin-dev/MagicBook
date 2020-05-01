@@ -22,6 +22,8 @@ import magic_book.core.item.BookItemWeapon;
  */
 public class Player implements InterfacePlayerFourmis {
 
+	private int nbItemMax;
+	
 	public Player(){
 	}
 
@@ -50,10 +52,9 @@ public class Player implements InterfacePlayerFourmis {
 			//Choisi un objet dans l'inventaire puis retourne au choix
 			if (choixCombat == ChoixCombat.INVENTAIRE){
 				if(!state.getMainCharacter().getItems().isEmpty())
-					if(!state.getMainCharacter().getItems().isEmpty())
-						useInventaire(state);
-					else
-						System.out.println("Votre inventaire est vide");
+					useInventaire(state);
+				else
+					System.out.println("Votre inventaire est vide");
 			} else {
 				choixValide = true;
 			}
@@ -101,8 +102,14 @@ public class Player implements InterfacePlayerFourmis {
 	*/
 	private void itemSupp(BookState state){
 		System.out.println("Quel item voulez-vous supprimer ?");
+		int i = 0;
+		for(String itemState : state.getMainCharacter().getItems()){
+			System.out.println(i + " - "+state.getBook().getItems().get(itemState));
+			i++;
+		}
+		System.out.println("-1 - Annuler");
 		boolean choixValide = false;
-
+		
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			int choix = scanner.nextInt();
@@ -126,33 +133,42 @@ public class Player implements InterfacePlayerFourmis {
 	*/
 	private void itemAdd(BookState state, List<BookItemLink> bookItemLinks){
 		System.out.println("Quel item voulez-vous ?");
+		int i=0;
+		for(BookItemLink itemLink : bookItemLinks){
+			System.out.println(i+" - "+state.getBook().getItems().get(itemLink.getId()).getName());
+			i++;
+		}
+		System.out.println("-1 - Annuler");
 		boolean choixValide = false;
 		int choix = -1;
-
+		
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			choix = scanner.nextInt();
 
 			if(choix >= 0 && choix <= (bookItemLinks.size()-1)){
+				BookItemLink itemLink = bookItemLinks.get(choix);
+				System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
+				state.getMainCharacter().getItems().add(itemLink.getId());
+
+				itemLink.setAmount(itemLink.getAmount()-1);
+				
+				if(itemLink.getAmount() == 0)
+					bookItemLinks.remove(itemLink);
+				this.nbItemMax --;
+				choixValide = true;
+			} else if(choix == -1) {
 				choixValide = true;
 			} else {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
-
-		BookItemLink itemLink = bookItemLinks.get(choix);
-		System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
-		state.getMainCharacter().getItems().add(itemLink.getId());
-
-		itemLink.setAmount(itemLink.getAmount()-1);
-
-		if(itemLink.getAmount() == 0)
-			bookItemLinks.remove(itemLink);
 	}
 
 	@Override
 	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
-		while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
+		this.nbItemMax = nbItemMax;
+		while(this.nbItemMax != 0 && !bookItemLinks.isEmpty()){
 			System.out.println("Les items suivant sont disponible:");
 			int i=0;
 			for(BookItemLink itemLink : bookItemLinks){
@@ -169,7 +185,7 @@ public class Player implements InterfacePlayerFourmis {
 
 					System.out.println("Voici vos choix:");
 
-					if(choixYesNo())
+					if(!choixYesNo())
 						nbItemMax = 0;
 					else
 						itemSupp(state);
@@ -178,11 +194,11 @@ public class Player implements InterfacePlayerFourmis {
 				}
 
 			} else {
-				nbItemMax = 0;
+				this.nbItemMax = 0;
 			}
 
 			if(bookItemLinks.isEmpty())
-				nbItemMax = 0;
+				this.nbItemMax = 0;
 		}
 	}
 
@@ -197,7 +213,7 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("Vos Item: ");
 		int i = 0;
 		for(String itemState : itemsPerso){
-			System.out.println(i + " - "+itemState);
+			System.out.println(i + " - "+state.getBook().getItems().get(itemState).getName());
 			i++;
 		}
 
@@ -211,7 +227,7 @@ public class Player implements InterfacePlayerFourmis {
 			if(choix >= 0 && choix <= 2){
 				choixValide = true;
 			} else {
-				System.out.println("vous ne pouvez pas effectuer ce choix");
+				System.out.println("Vous ne pouvez pas effectuer ce choix");
 			}
 		}
 
@@ -247,7 +263,7 @@ public class Player implements InterfacePlayerFourmis {
 			int nbItemMax = characterCreationSkill.getAmountToPick();
 
 			while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
-				System.out.println("Les skills suivant sont disponible:");
+				System.out.println("Les compétences suivantes sont disponibles:");
 				int i = 0;
 				for(String skillId : characterCreationSkill.getSkillLinks()){
 					System.out.println(i + " - " + state.getBook().getSkills().get(skillId).getDescription(state.getBook()));
@@ -279,7 +295,7 @@ public class Player implements InterfacePlayerFourmis {
 			if(choix >= 0 && choix <= (listEnnemis.size()-1)){
 				choixValide = true;
 			} else {
-				System.out.println("vous ne pouvez pas effectuer ce choix");
+				System.out.println("Vous ne pouvez pas effectuer ce choix");
 			}
 		}
 
@@ -292,9 +308,9 @@ public class Player implements InterfacePlayerFourmis {
 	* @param characterCreationState skill disponible
 	*/
 	private void skillAdd(BookState state, CharacterCreationSkill characterCreationSkill){
-		System.out.println("Voulez vous un skill ?");
+		System.out.println("Voulez vous une compétence ?");
 		if(choixYesNo()){
-			System.out.println("Quel skill voulez-vous ?");
+			System.out.println("Quel compétence voulez-vous ?");
 			boolean choixValide = false;
 			int choix = -1;
 
@@ -305,13 +321,13 @@ public class Player implements InterfacePlayerFourmis {
 				if(choix >= 0 && choix <= (characterCreationSkill.getSkillLinks().size()-1)){
 					choixValide = true;
 				} else {
-					System.out.println("vous ne pouvez pas effectuer ce choix");
+					System.out.println("Vous ne pouvez pas effectuer ce choix");
 				}
 			}
 
 			String skill = characterCreationSkill.getSkillLinks().get(choix);
 			state.getMainCharacter().addSkill(skill);
-			System.out.println("Le skill "+skill+" a été rajouté");
+			System.out.println("La compétence "+skill+" a été aprise");
 			characterCreationSkill.getSkillLinks().remove(skill);
 
 			characterCreationSkill.setAmountToPick(characterCreationSkill.getAmountToPick()-1);
