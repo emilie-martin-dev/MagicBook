@@ -30,7 +30,7 @@ import magic_book.window.component.CharacterCreationComponent;
  * Boite de dialog pour la création / édition du prélude, du personnage principal et de la "Création du personnage"
  */
 public class PreludeDialog extends AbstractDialog {
-	
+
 	/**
 	 * Liste de toute les étapes de la création du personnage
 	 */
@@ -43,7 +43,7 @@ public class PreludeDialog extends AbstractDialog {
 	 * Texte du prélude
 	 */
 	private String textePrelude;
-	
+
 	/**
 	 * TextArea contenant le texte du prélude
 	 */
@@ -60,7 +60,7 @@ public class PreludeDialog extends AbstractDialog {
 	 * Comporte tous les Pane des étapes de la création d'un personnage
 	 */
 	private List<CharacterCreationComponent> characterCreationComponent;
-	
+
 	/**
 	 * Livre en cours d'édition
 	 */
@@ -75,38 +75,38 @@ public class PreludeDialog extends AbstractDialog {
 
 		this.book = book;
 		this.characterCreationComponent = new ArrayList<>();
-		
+
 		texte.setText(book.getTextPrelude());
 		characterComponent.setCharacter(book.getMainCharacter());
-		
+
 		for(AbstractCharacterCreation characterCreation : book.getCharacterCreations()) {
 			createTitledPane(characterCreation);
 		}
-		
+
 		this.showAndWait();
 	}
-	
+
 	@Override
 	protected Node getMainUI() {
 		TabPane tabPane = new TabPane();
-		
+
 		Tab preludeTab = new Tab("Prélude");
 		Tab characterCreationTab = new Tab("Création du personnage");
 		Tab mainCharacterTab = new Tab("Personnage de base");
-		
+
 		preludeTab.setClosable(false);
 		characterCreationTab.setClosable(false);
 		mainCharacterTab.setClosable(false);
 
 		tabPane.getTabs().addAll(preludeTab, characterCreationTab, mainCharacterTab);
-		
+
 		preludeTab.setContent(getPreludeTextPane());
 		characterCreationTab.setContent(getCharacterCreationTab());
 		mainCharacterTab.setContent(getMainCharacterPane());
-		
+
 		return tabPane;
 	}
-	
+
 	/**
 	 * Affichage pour le texte du prélude
 	 * @return Le pane du texte du prélude
@@ -116,15 +116,15 @@ public class PreludeDialog extends AbstractDialog {
 		preludeRoot.setHgap(UiConsts.DEFAULT_MARGIN);
 		preludeRoot.setVgap(UiConsts.DEFAULT_MARGIN);
 		preludeRoot.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
-		
+
 		texte = new TextArea();
 		texte.setWrapText(true);
 		preludeRoot.add(new Label("Texte :"), 0, 0);
 		preludeRoot.add(texte, 0, 1);
-		
+
 		return preludeRoot;
 	}
-	
+
 	/**
 	 * Affichage pour l'ajout des étapes de la creation du personnage
 	 * @return Le pane de la création étapes de la creation du personnage
@@ -132,66 +132,66 @@ public class PreludeDialog extends AbstractDialog {
 	private Node getCharacterCreationTab() {
 		VBox characterCreationPane = new VBox();
 		characterCreationPane.setSpacing(UiConsts.DEFAULT_MARGIN);
-		
+
 		accordion = new Accordion();
 		accordion.setPadding(UiConsts.DEFAULT_INSET_DIALOG_MAIN_UI);
-		
+
 		Button addButton = new Button("Ajouter");
 		addButton.setOnAction((ActionEvent e) -> {
 			createTitledPane();
 		});
-		
+
 		VBox buttonBox = new VBox();
 		buttonBox.setAlignment(Pos.CENTER_RIGHT);
 		buttonBox.getChildren().add(addButton);
 		buttonBox.setPadding(new Insets(0, UiConsts.DEFAULT_MARGIN_DIALOG, 0, 0));
-		
+
 		characterCreationPane.getChildren().addAll(accordion, buttonBox);
-		
+
 		ScrollPane scrollPane = new ScrollPane(characterCreationPane);
 		scrollPane.setFitToWidth(true);
-		
+
 		return scrollPane;
 	}
-	
+
 	/**
 	 * Méthode pour créer un nouvel élément de la conception du personnage
 	 */
 	private void createTitledPane() {
 		createTitledPane(null);
 	}
-	
+
 	/**
 	 * Méthode pour créer un nouvel élément de la conception du personnage
 	 * @param characterCreation L'élément de la conception du personnage
 	 */
 	private void createTitledPane(AbstractCharacterCreation characterCreation) {
 		TitledPane titledPane = new TitledPane();
-		
+
 		CharacterCreationComponent characterCreationPane = new CharacterCreationComponent(book, characterCreation);
 		Button remove = new Button("Supprimer cette partie");
-		
+
 		remove.setOnAction((ActionEvent e) -> {
 			// Sans la ligne suivante, l'accordion ne se redimensionne pas après la suppression de la tiledPane
 			titledPane.setContent(new HBox());
 			accordion.getPanes().remove(titledPane);
 			this.characterCreationComponent.remove(characterCreationPane);
 		});
-		
+
 		HBox removeBox = new HBox();
 		removeBox.getChildren().add(remove);
 		removeBox.setAlignment(Pos.CENTER_RIGHT);
-		
+
 		VBox titledPaneBox = new VBox();
 		titledPaneBox.getChildren().addAll(characterCreationPane, removeBox);
 		titledPaneBox.setPadding(UiConsts.DEFAULT_INSET_DIALOG);
-		
+
 		titledPane.setContent(titledPaneBox);
-		
+
 		accordion.getPanes().add(titledPane);
 		this.characterCreationComponent.add(characterCreationPane);
 	}
-	
+
 	/**
 	 * Affichage pour la création du personnage principal
 	 * @return personnage principal
@@ -199,7 +199,7 @@ public class PreludeDialog extends AbstractDialog {
 	private Node getMainCharacterPane() {
 		characterComponent = new CharacterComponent(null, true);
 		characterComponent.setAlignment(Pos.CENTER);
-		
+
 		return characterComponent;
 	}
 
@@ -212,10 +212,10 @@ public class PreludeDialog extends AbstractDialog {
 				alert.setTitle("Erreur sur le personnage principal");
 				alert.setHeaderText("Le personnage principal n'est pas valide");
 				alert.show();
-				
+
 				return;
 			}
-			
+
 			this.textePrelude = (String) texte.getText();
 			this.mainCharacter = character;
 			this.characterCreations = new ArrayList<>();
@@ -223,6 +223,7 @@ public class PreludeDialog extends AbstractDialog {
 				this.characterCreations.add(characterCreationComponent.getCharacterCreation());
 			}
 			
+			validateData();
 			close();
 		};
 	}

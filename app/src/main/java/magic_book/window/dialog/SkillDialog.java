@@ -15,12 +15,12 @@ import magic_book.window.UiConsts;
  * Boite de dialog pour la gestion des skills
  */
 public class SkillDialog extends AbstractDialog {
-	
+
 	/**
 	 * Skill créer
 	 */
 	private BookSkill skill;
-	
+
 	/**
 	 * Id du skill
 	 */
@@ -29,17 +29,17 @@ public class SkillDialog extends AbstractDialog {
 	 * Nom du skill
 	 */
 	private TextField nameTextField;
-	
+
 	/**
 	 * Livre contenant toutes les informations
 	 */
 	private Book book;
-	
+
 	/**
 	 * L'id du skill en cours d'édition
 	 */
 	private String baseId;
-	
+
 	/**
 	 * Initialisation des valeurs et de la fenêtre de dialog
 	 * @param book Le livre contenant toutes les informations
@@ -58,34 +58,34 @@ public class SkillDialog extends AbstractDialog {
 	 */
 	public SkillDialog(BookSkill skill, Book book) {
 		super("Edition de " + skill.getName());
-			
+
 		idTextField.setText(skill.getId());
 		nameTextField.setText(skill.getName());
-		
+
 		this.book = book;
 		this.baseId = skill.getId();
-		
+
 		this.showAndWait();
 	}
 
 	@Override
 	protected Node getMainUI() {
 		GridPane root = new GridPane();
-		
+
 		root.setHgap(UiConsts.DEFAULT_MARGIN);
 		root.setVgap(UiConsts.DEFAULT_MARGIN);
-		
+
 		Label idLabel = new Label("Id : ");
 		Label nameLabel = new Label("Name: ");
 
 		idTextField = new TextField("");
 		nameTextField = new TextField("");
-		
+
 		root.add(idLabel, 0, 0);
 		root.add(idTextField, 1, 0);
 		root.add(nameLabel, 0, 1);
 		root.add(nameTextField, 1, 1);
-		
+
 		return root;
 	}
 
@@ -105,22 +105,23 @@ public class SkillDialog extends AbstractDialog {
 					return;
 				}
 			}
-		
+
 			this.skill = new BookSkill();
 			this.skill.setId(idTextField.getText().trim());
 			this.skill.setName(nameTextField.getText().trim());
 			
+			validateData();
 			close();
 		};
 	}
-	
+
 	/**
 	 * Afficher une boite d'alerte si l'ID est déjà utilisé
 	 * @param message Message à afficher
 	 */
 	private void showErrorDialog(String message){
 		Alert alertDialog = new Alert(Alert.AlertType.ERROR);
-		
+
 		alertDialog.setTitle("Erreur");
 		alertDialog.setHeaderText(message);
 		alertDialog.show();

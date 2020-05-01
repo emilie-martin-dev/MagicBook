@@ -11,7 +11,7 @@ import magic_book.window.component.CharacterComponent;
  * Boite de dialogue pour la manipulation des personnages
  */
 public class CharacterDialog extends AbstractDialog {
-	
+
 	/**
 	 * Personnage créé
 	 */
@@ -24,7 +24,7 @@ public class CharacterDialog extends AbstractDialog {
 	 * Livre contenant toutes les informations
 	 */
 	private Book book;
-	
+
 	/**
 	 * Initialisation de la boite de dialogue du personnage
 	 * @param book Le livre contenant toutes les informations
@@ -32,10 +32,10 @@ public class CharacterDialog extends AbstractDialog {
 	public CharacterDialog(Book book) {
 		super("Ajout d'un personnage");
 		this.book = book;
-		
+
 		this.showAndWait();
 	}
-	
+
 	/**
 	 * Edition de la boite de dialogue du personnage
 	 * @param character Personnage existant
@@ -43,11 +43,11 @@ public class CharacterDialog extends AbstractDialog {
 	 */
 	public CharacterDialog(BookCharacter character, Book book) {
 		super("Edition de " + character.getName());
-		
+
 		this.characterComponent.setCharacter(character);
-		
+
 		this.book = book;
-	
+
 		this.showAndWait();
 	}
 
@@ -63,12 +63,13 @@ public class CharacterDialog extends AbstractDialog {
 			BookCharacter character = characterComponent.getCharacter(book);
 			if(character == null)
 				return;
-			
+
 			this.character = character;
+			validateData();
 			close();
 		};
 	}
-	
+
 	/**
 	 * Donne le personnage
 	 * @return Le personnage
@@ -76,5 +77,5 @@ public class CharacterDialog extends AbstractDialog {
 	public BookCharacter getCharacter() {
 		return character;
 	}
-	
+
 }
