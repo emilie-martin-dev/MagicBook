@@ -92,7 +92,7 @@ public class PreludeDialog extends AbstractDialog {
 
 		Tab preludeTab = new Tab("Prélude");
 		Tab characterCreationTab = new Tab("Création du personnage");
-		Tab mainCharacterTab = new Tab("Personnage de base");
+		Tab mainCharacterTab = new Tab("Personnage principal");
 
 		preludeTab.setClosable(false);
 		characterCreationTab.setClosable(false);
@@ -222,7 +222,7 @@ public class PreludeDialog extends AbstractDialog {
 			for(CharacterCreationComponent characterCreationComponent : characterCreationComponent) {
 				this.characterCreations.add(characterCreationComponent.getCharacterCreation());
 			}
-			
+
 			validateData();
 			close();
 		};
