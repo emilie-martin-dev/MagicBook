@@ -8,7 +8,7 @@ Les livres dont vous êtes le héros (ou LDVEH) sont des jeux de rôles en solit
 
 # Compilation du projet
 
-Ouvrir un terminal dans le dossier app puis entrez les commandes suivantes : 
+Ouvrir un terminal dans le dossier app puis entrez les commandes suivantes :
 
 ```sh
 chmod +x ./gradlew
@@ -20,6 +20,7 @@ chmod +x ./gradlew
 Le projet comporte les dossiers suivants :
 - app → Contient le code source de l'application
 - doc → Regroupe les différents documents importants du projet
+- scripts → Contient différents scripts pour gérer le projet
 
 # Bibliothèques / Framework utilisées
 
