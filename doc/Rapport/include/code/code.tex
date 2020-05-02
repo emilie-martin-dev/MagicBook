@@ -3,94 +3,47 @@
 	\section{Représentation d'un livre}
 
 		\subsection{Représentation des noeuds}
-			Nous étions d'abord partie sur une forme basique de noeud. C'était un noeud tout simple qui comportait un paragraphe, un type et une liste de choix. Sauf que cela ne suffisait pas, car même si on définissait plusieurs \textbf{BookNodeType}, on ne pouvait pas implenter tout ce qu'on voulait. En effet, on devait penser autrement, c'est a dire, une classe par type. On pourait donc plus facilement gérer les différents lien, méthode propre au types de noeud ainsi que leurs différents valeurs notament, par exemple , au noeud de combat.
+
+			Nous étions d'abord parti sur une structure relativement simple pour gérer les noeuds. Ils comportaient un paragraphe, un type et une liste de choix (Voir figure \ref{fig:OldBookNode})
 
 			\begin{figure}[H]
-				\centering\includegraphics[width=0.70\textwidth]{img/BookNodeBefore.png}
-				\caption{Représentation des Node avant}
+				\centering\includegraphics[width=0.70\textwidth, keepaspectratio]{img/BookNodeBefore.png}
+				\caption{Ancienne représentation des noeuds}
+				\label{fig:OldBookNode}
 			\end{figure}
 
-			Il y a donc, quatre types de noeuds représentées par des classes (Voir figure \ref{fig:BookNode}): \textbf{BookNodeWithChoices}, \textbf{BookNodeWithRandomChoices}, \textbf{BookNodeCombat} et \textbf{BookNodeTerminal}. Toutes ces classes représentes les différents type de noeuds existants. Cela permet donc d'avoir différentes méthodes qui les représentes. Mais tous extends direct ou indirectement de \textbf{AbstractBookNode}. Cette dernière contient juste un texte correspondant aux paragraphes de chaque noeuds.
+			 Par la suite, nous avons voulu utiliser des classes afin de spécialiser certaines méthodes et de bien séparer les différents attributs dans différentes classes. Ainsi, seul la classe \textbf{BookNodeCombat}, représentant un noeud de combat, contient les informations sur le combat (liste d'ennemi, etc).
+
+			Maintenant, il y a donc quatre types de noeuds représentées par différentes classes (Voir figure \ref{fig:BookNode}):
 
 			\begin{figure}[H]
-				\centering\includegraphics[width=0.70\textwidth]{img/BookNode.png}
-				\caption{BookNode}
+				\centering\includegraphics[width=0.90\textwidth, keepaspectratio]{img/BookNode1.png}
+				\caption{Une partie de la nouvelle représentation des noeuds}
 				\label{fig:BookNode}
 			\end{figure}
 
+			Tout d'abord on retrouve \textbf{AbstractBookNode} qui contient un texte correspondant aux paragraphes du noeud. En découle ensuite une deuxième classe mère \textbf{AbstractBookNodeWithChoices<T>} qui constitue la base de chaque noeud non terminal. Elle apporte diverses attributs comme la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste des choix disponible. Ce dernier est défini par une List<T> car nous aurons différents type de liens et nous souhaitons qu'on noeud ne puisse posséder qu'un et un seul type de lien au sein d'une même liste.
 
-			Pour le \textbf{BookNodeTerminal}, il prend en compte, en plus du texte de \textbf{AbstractBookNode}, une énumération de la classe \textbf{BookNodeStatus}: \textbf{FAILURE} ou \textbf{VICTORY}. C'est donc cette classe qui va déterminer la finalité du livre: si le joueur à gagné ou perdu.
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.90\textwidth, keepaspectratio]{img/BookNode2.png}
+				\caption{L'héritage de AbstractBookNodeWithChoices<T>}
+				\label{fig:BookNode}
+			\end{figure}
 
-			Pour l'ensemble des autres noeuds, on retrouve une liste de choix et une perte/gain de vie. Pour cette raison, elles extendent toutes d'une même classe, \textbf{AbstractBookNodeWithChoice}, permettant ainsi de définir des variables tel que: la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste des choix disponible. Ce dernier est défini par une List<T> car cela peut être un choix de type \textbf{BookNodeLink} ou un choix de type \textbf{BookNodeLinkRandom}. Tout depend du type de noeud. Car les lien "aléatoire", donc de type \textbf{BookNodeLinkRandom}, a besoin d'une valeur de plus: la chance. Pour plus d'explication sur ces liens, vous pouvez aller voir la subsection \ref{sub:liens} à la page \pageref{sub:liens}. Nous avons donc fait le choix d'utiliser un généric dans la classe \textbf{AbstractBookNodeWithChoice} afin de définir la classe utilisé pour la liste de choix. De cette manière, on empêche un noeud random (\textbf{BookNodeWithRandomChoices}) de contenir des choix "normaux" (\textbf{BookNodeLink}). Il ne peut contenir que des \textbf{BookNodeLinkRandom}, c'est à dire des choix avec une probabilité d'être choisi.
+			Parmis les classes filles instanciable, on retrouve \textbf{BookNodeWithChoices} pour les noeuds à choix simple, \textbf{BookNodeWithRandomChoices} pour les noeuds où l'on prend un choix de manière aléatoire, \textbf{BookNodeCombat} pour les noeuds de combat et \textbf{BookNodeTerminal} pour ceux de victoire et de défaite.
 
-			Pour le \textbf{BookNodeCombat}, le choix a été fait d'ajouter trois \textbf{BookNodeLink} afin de représenter les différentes issues du combat : victoire, evasion, defaite. Cela permet donc d'avoir, au maximum, un lien en fonction de la finalité du combat. Bien sûr tout les liens ne sont pas obligatoire. Mais cela génère alors un noeud terminal de défaite si le lien est inexistant, peu importe la finalité du combat (voir la section sur le Jeu \ref{sec:Jeu} à la page \pageref{sec:Jeu}). Une liste contenant les ID des ennemis que l'on doit combattre y est également renseignée. Les ID seuls sont nécessaire car ils sont uniques, donc peut être facilement retrouvé dans la liste des personnages présente dans la sauvegarde du livre. Ce noeud posséde les même attributs que AbstractBookNodeWithChoices, raison pour lesquels il en hérite. Nous avons donc redéfini les méthodes spécifiques aux choix, c'est à dire celle pour récupérer les choix, celle pour les supprimer et celle pour les mettre à jour. La liste de la classe mère n'est plus utilisable. Il s'agit d'une grosse erreur de notre part. En effet, cette classe demande un traitement spécial à presque tous les endroits où l'on peut gérer des noeuds. Il aurait plutot fallu ajouter les choix dans la liste parente et avoir un moyen de faire une distinction afin de savoir lequel est celui de victoire, de défaite ou d'évasion. On aurait pas eu à redéfinir autant de fois des comportements particuliers pour ce noeud avec des instanceof. Par manque de temps et au vu des changements importants que cela nécessitait, pour faire cela proprement nous n'avons pas pus changer cela.
+			\textbf{BookNodeTerminal} possède une énumération, \textbf{BookNodeStatus}, qui permet de connaitre la finalité du livre, c'est à dire si le joueur à gagné ou perdu.
 
-			Pour le \textbf{BookNodeWithRandomChoices}, une méthode a été ajoutée, afin de sélectionner un choix de manière aléatoire en fonction de la probabilité de chaque lien. Pour cela, on ajoute d'abord tous les liens disponibles. C'est à dire, les liens où le joueur peut avoir accès en fonction des prérequis demandés. Si aucun lien n'est disponible, cela retourne null. La suite ce passe dans la partie jeu, soit à la section \ref{sec:Jeu} à la page \pageref{sec:Jeu}. Dans le cas contraire, cela choisit un nombre aléatoire en fonction de la somme totale des probabilités des liens valides (Voir listing \ref{lst:getRandomChoices}). Puis, en fonction de ce nombre, la probabilité de chaque lien valide est enlevée du nombre tiré jusqu'à ce qu'il soit égal ou inférieur à zéro. Le choix sélectionné est alors retourné (c'est la destination). Nous avons décider de procéder comme cela car, c'était pour nous, la meilleur solution pour effectuer un choix le plus aléatoirement possible, tout en ayant des valeurs défini par l'utilisateur. Nous aurions pu simplement faire simple choix aléatoire, mais étant un éditeur d'un livre de l'utilisateur, nous avons pensé qu'un ajout de "chance" serait plus apprécié par celui-ci.
+			Pour le \textbf{BookNodeCombat}, le choix a été fait d'ajouter trois \textbf{BookNodeLink} afin de représenter les différentes issues du combat : victoire, evasion, defaite. Cela permet donc d'avoir, au maximum, un lien possible pour chaque finalité du combat. Nous avons donc redéfini les méthodes spécifiques aux choix, c'est à dire celle pour récupérer les choix, celle pour les supprimer et celle pour les mettre à jour. La liste de la classe mère n'est plus utilisable. Il s'agit d'une grosse erreur de notre part. En effet, cette classe demande un traitement spécial à presque tous les endroits où l'on peut gérer des noeuds. Il aurait plutot fallu ajouter les choix dans la liste parente et avoir un moyen de faire une distinction afin de savoir lequel est celui de victoire, de défaite ou d'évasion. Nous n'aurions pas eu à redéfinir autant de fois des comportements particuliers pour ce noeud avec des instanceof. Par manque de temps et au vu des changements importants que cela nécessitait, pour faire cela proprement nous n'avons pas pus changer cela. Une liste contenant les ID des ennemis que l'on doit combattre y est également renseignée. Les ennemis peuvent ensuite être retrouvé dans le livre à l'aide de cet ID.
 
-			\begin{lstlisting}[gobble=12, language=java, label=lst:getRandomChoices, caption=getRandomChoice()]
-				int nbrChoice = 0;
-				Random random = new Random();
-				int nbrRandomChoice = random.nextInt(somme);
-				for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){
-					if(!this.getChoices().get(i).isAvailable(state)){
-						continue;
-					}
-					nbrRandomChoice -= this.getChoices().get(i).getChance();
-					if(nbrRandomChoice < 0){
-						nbrChoice = i;
-						break;
-					}
-				}
-				return this.getChoices().get(nbrChoice) ;
-			\end{lstlisting}
+			Pour le \textbf{BookNodeWithRandomChoices}, la méthode \textit{getRandomChoices} a été ajoutée, afin de sélectionner un choix de manière aléatoire en fonction de la probabilité de chaque lien.
 
+		\subsection{Représentation des liens}
+			\label{sub:liens}
 
-		\subsection{Représentation des liens}\label{sub:liens}
-			Les noeuds sont liés par des liens. Ces liens sont soit définis par la classe \textbf{BookNodeLink} ou \textbf{BookNodeLinkRandom}. Pour éviter les redondances, cette dernière extends de \textbf{BookNodeLink}. Elles prennent donc toutes les deux un texte, une destination (défini par le numéro du noeud) et enfin, une liste de prérequis. Pour la destination, nous avons d'abord mis un \textbf{AbstractBookNode}, mais beaucoup de manipulations étaient nécesssaires lorsqu'un changement était apporté au noeud. Nous avons alors choisi de changer et de mettre le numéro du noeud suivant. Pour plus d'information sur la gestion actuelle des noeuds, voir la subsection \nameref{book} à la page \pageref{book}.
+			Les noeuds sont liés par des liens. Ces liens sont soit définis par la classe \textbf{BookNodeLink} ou \textbf{BookNodeLinkRandom}. Pour éviter les redondances, cette dernière extends de \textbf{BookNodeLink}. Elles prennent donc toutes les deux un texte, une destination (défini par le numéro du noeud) et enfin, une liste de prérequis.
 
-			Pour le \textbf{BookNodeLinkRandom}, la classe à besoin d'une variable pour gérer la probabilité, afin de définir la chance d'aller vers ce noeud. Cette probabilité est ensuite totalisé sur tous les noeuds disponibles, comme vu précédement \nameref{lst:getRandomChoices}.\\
-
-			La classe \textbf{BookNodeLink} est composé d'une méthode, nommé \textit{isAvailable()} permettant de savoir si le personnage principal rempli les conditions, défini par List<List<AbstractRequirement>>, pour aller vers ce lien. Nous avons décidé de réalisé une liste de liste qui contiendrait les types de Requirement possible afin d'avoir la possibilité d'inclure un "ou" entre les listes. Par exemple: les conditions emprunter un lien peut est soit ["Arme","Potion"] ou ["Flèche","Lancer un sort"].\\
-			La classe \textbf{Jeu}, décrite un peu plus bas (voir \ref{sec:Jeu}), veut alors aller a une destination mais doit emprunter un lien. La méthode \textit{isAvailable()} est donc appelé pour savoir si le joueur peu aller vers ce lien. Cette méthode appelle une fonction nommé \textit{isSatisfied()} (voir \ref{lst:isSatisfied}), situé dans le AbstractRequirement. Elle permet de comparer l'inventaire et les compétences du joueur en parcourant tout les prérequis demandés. Si c'est le cas, cela retourne true. False dans le cas contraire. Le joueur peu alors accéder ou pas à ce lien, et donc au noeud choisis.
-
-			\begin{lstlisting}[gobble=12, language=java, caption=exemple de isAvailable()]
-				public boolean isAvailable(BookState state) {
-					if(requirements.isEmpty())
-						return true;
-
-					for(List<AbstractRequirement> groupRequirement : requirements) {
-						boolean satisfied = true;
-						for(AbstractRequirement r : groupRequirement) {
-								if(!r.isSatisfied(state)) {
-									satisfied = false;
-									break;
-								}
-							}
-
-						if(satisfied)
-							return true;
-					}
-
-					return false;
-				}
-			\end{lstlisting}
-
-		\subsection{Prérequis pour un choix}
-			Les prérequis des liens sont défini par une classe mère AbstractRequirement puis une classe par type de prérequis (requirements). Il y a la classe \textbf{RequirementItem}, \textbf{RequirementMoney} ainsi que \textbf{RequirementSkill}. Tous extends de AbstractRequirement afin de pouvoir redéfinir la méthode \textit{isSatisfied()}, prenant en paramètre l'état du jeu (BookState). Ce paramètre permet donc de comparer le personnage principal, donc le joueur, avec le prérequi demandé par le lien. Cela renvoie donc un boolean sur la finalité de cette comparaison. Tous prennent un ID en compte, permettant de retrouver l'item / compétence / monnaie demandé. Seul le RequirementMoney possède une méthode qui diffère, c'est la quantité de money requis.\\
-			Pour savoir si un item / compétence est présent dans l'inventaire du personnage principal, une for est utilisée afin de regarder les items / compétences possédés. Si l'ID de l'item / compétence n'est pas possédé, le personnage principal ne peut satisfaire les prérequis. Pour l'argent grâce à l'ID de la monnaie, cela permet de savoir si le joueur en possède suffisament. Actuellement, une seule monnaie est disponible, se nommant "gold". En effet, nous n'avons pas eu le temps de le gérer dans les fichiers et dans le jeu.
-
-			\begin{lstlisting}[gobble=12, language=java, caption=exemple de isSatisfied(), label=lst:isSatisfied]
-			public boolean isSatisfied(BookState state) {
-				for (String i : state.getMainCharacter().getItems()){
-					if(i.equals(itemId)) {
-						return true;
-					}
-				}
-
-				return false;
-			}
-			\end{lstlisting}
-
+			Pour le \textbf{BookNodeLinkRandom}, la classe à besoin d'une variable pour gérer la probabilité, afin de définir la chance d'aller vers ce noeud. On comprend maintenant mieux l'utilisation de la généricité, car, si on ne le fait pas, il serait possible de mélanger des choix avec probabilité et d'autres qui n'en possède pas.
 
 		\subsection{Représentation des personnages, items}
 
@@ -116,32 +69,124 @@
 
 			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attributs spécfiques à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type monnaie inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère par le mot clé \textit{super.nomMethode(arguments)}.
 
-			\begin{lstlisting}[gobble=12, language=Java, caption=Exemple de spécialisation des items]
-			@Override
-			public String getDescription(Book book) {
-				StringBuffer buffer = new StringBuffer();
+			\begin{lstlisting}[gobble=16, language=Java, caption=Exemple de spécialisation des items]
+				@Override
+				public String getDescription(Book book) {
+					StringBuffer buffer = new StringBuffer();
 
-				buffer.append(super.getDescription(book));
+					buffer.append(super.getDescription(book));
 
-				buffer.append("Dégats : ");
-				buffer.append(damage);
-				buffer.append("\n");
+					buffer.append("Dégats : ");
+					buffer.append(damage);
+					buffer.append("\n");
 
-				return buffer.toString();
-			}
+					return buffer.toString();
+				}
 
-			@Override
-			public ItemJson toJson() {
-				ItemJson itemJson = super.toJson();
+				@Override
+				public ItemJson toJson() {
+					ItemJson itemJson = super.toJson();
 
-				itemJson.setDamage(damage);
-				itemJson.setItemType(ItemType.WEAPON);
+					itemJson.setDamage(damage);
+					itemJson.setItemType(ItemType.WEAPON);
 
-				return itemJson;
-			}
+					return itemJson;
+				}
 			\end{lstlisting}
 
-		\subsection{La classe Book}\label{book}
+		\subsection{Conditions pour accéder à un choix}
+
+			Nous avons décidé de fournir à l'utilisateur la possibilité de définir des listes de prérequis qu'il est nécessaire de remplir afin de pouvoir accéder à un choix. Ainsi, le joueur se verra refusé l'utilisation d'un choix s'il ne possède pas un item en particulier, une certaines somme d'argent, etc.
+
+			Les prérequis sont définis par une classe mère AbstractRequirement, donne lieu à une classe par type de prérequis. Chaque classe fille doit définir le comportement de la méthode \textit{boolean isSatisfied()}. Ainsi, on retrouve \textbf{RequirementItem} pour les prérequis sur la possession d'un item, \textbf{RequirementMoney} pour la posssession d'une somme d'argent ainsi que \textbf{RequirementSkill} pour la possession d'une compétence. Chacun d'zntre eux possèdera donc l'id de l'élément qu'il doit vérifier, mais aussi le montant minimum nécessaire dans le cas de l'argent.
+
+			Cependant, comment savoir si le prérequis est satisfait ? Comment connaitre l'état actuel du jeu ? C'est possible grace à la classe \textbf{BookState} qui contient toutes les informations sur l'état actuel du jeu. Nos prérequis ne portant que sur le joueur principal il est donc uniquement necessaire d'utiliser la méthode \textit{getMainCharacter}.
+
+			Ainsi, pour savoir si un item / une compétence est possédé par personnage principal, il suffit de parcourir la liste de ceux que le personnage possède. Concernant l'argent, on récupère la somme de la monnaie possédée et on vérifie si elle correspond bien au minimum requis.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=RequirementMoney.isSatisfied(), label=lst:isSatisfied]
+				public boolean isSatisfied(BookState state) {
+					return state.getMainCharacter().getMoney(moneyId) >= amount;
+				}
+			\end{lstlisting}
+
+			Nous avons souhaiter fournir encore plus de flexibilité à cette manière de faire, ainsi, il est possible d'avoir d'avoir une liste de prérequis à satisfaire afin de pouvoir accéder au choix voulu. Il est donc maintenant possible de créer un choix qui nécessite à la fois de "posséder un pass" et "50 euros" sur sois par exemple. Là encore, nous avons décidé de fournir une possibilité supplémentaire en permettant de proposer des conditions alternatives. C'es à dire de fournir une liste de prérequis alternative capable de permettre l'accès au choix. Nous avons donc différentes liste contenant elles même des conditions qu'il est nécessaire de satisfaire en même temps. Il est donc maintenant possible de faire des conditions comme suit : ("posséder un pass" ET "50 euros") OU ("pouvoir se téléporter") OU ("posséder 50 euros" ET "posséder 50 yen").
+
+			Ainsi, on comprend mieux le rôle de la méthode nommée \textit{isAvailable()} dans \textbf{BookNodeLink} (cf : \nameref{fig:BookNode} page \ref{fig:BookNode}). Cette méthode se charge d'indiquer si une liste satisfait tous les prérequis. Bien entendu, une seule liste suffit à rendre le choix disponible et un seul prérequis non satisfait suffit à rendre la liste non satisfaite car il s'agit du principe même des OU et des ET.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=exemple de isAvailable()]
+				public boolean isAvailable(BookState state) {
+					if(requirements.isEmpty())
+						return true;
+
+					for(List<AbstractRequirement> groupRequirement : requirements) {
+						boolean satisfied = true;
+						for(AbstractRequirement r : groupRequirement) {
+								if(!r.isSatisfied(state)) {
+									satisfied = false;
+									break;
+								}
+							}
+
+						if(satisfied)
+							return true;
+					}
+
+					return false;
+				}
+			\end{lstlisting}
+
+		\subsection{Prendre un choix de manière aléatoire}
+
+			Supposons que nous souhaitons faire un paragraphe durant lequel le joueur doit passer sur un pont en bois qui semble plutôt vieux. Il serait totalement ridicule de laisser au joueur la possibilité de choisir si le pont doit céder ou non. Ce choix relève plutot de l'ordre de l'aléatoire. Nous savons donc maintenant que pour faire cela, une instance de \textbf{BookNodeWithRandomChoices} est necessaire. Mais comment tirer un choix de manière aléatoire ?
+
+			Pour cela, on ajoute d'abord tous les liens disponibles, c'est à dire, tous les liens où le joueur peut avoir accès en fonction des prérequis demandés. Si aucun lien n'est disponible, on retourne null symbolisant une erreur. Dans le cas contraire, on commence par calculer la somme des probabilités sur les noeuds disponible. En tire ensuite un nombre aléatoire en fonction de cette somme. Enfin, il ne nous reste plus qu'a retrouver le choix correspondant en enlevant successivement la probabilité de chaque lien jusqu'à atteindre un nombre inférieur à zéro.
+
+			\begin{lstlisting}[gobble=16, language=java, label=lst:getRandomChoices, caption=getRandomChoice()]
+				List<BookNodeLinkRandom> listNodeLinkDisponible = new ArrayList();
+				int somme = 0;
+				int nbrChoice = 0;
+
+				// On cherche les noeuds disponibles et on fait la somme des probabilités
+				for (int i = 0 ; i < this.getChoices().size() ; i++){
+					if(this.getChoices().get(i).isAvailable(state)){
+						listNodeLinkDisponible.add(this.getChoices().get(i));
+						somme += this.getChoices().get(i).getChance();
+					}
+				}
+
+				if(listNodeLinkDisponible.isEmpty()){
+					return null;
+				} else {
+					Random random = new Random();
+					int nbrRandomChoice;
+					// Si la somme des proba est à 0, on tire un noeud au hasard
+					if(somme == 0) {
+						nbrRandomChoice = random.nextInt(listNodeLinkDisponible.size());
+						return this.getChoices().get(nbrRandomChoice);
+					} else {
+						nbrRandomChoice = random.nextInt(somme);
+					}
+
+					// On cherche le choix tiré
+					for (int i = 0 ; i < listNodeLinkDisponible.size() ; i++){
+						if(!this.getChoices().get(i).isAvailable(state)){
+							continue;
+						}
+
+						nbrRandomChoice -= this.getChoices().get(i).getChance();
+						if(nbrRandomChoice < 0){
+							nbrChoice = i;
+							break;
+						}
+					}
+				}
+
+				return this.getChoices().get(nbrChoice);
+			\end{lstlisting}
+
+		\subsection{La classe Book}
+			\label{book}
 
 			Cette classe est la plus importante de tout le projet. En effet, c'est elle qui met en lien tout les différents éléments qu'on a pu évoquer avant. C'est en effet ce que l'on peut observer sur la figure suivante.
 
@@ -268,7 +313,7 @@
 			\begin{itemize}
 				\item{Le principe d'indice manquant est le même pour la suppression d'un noeud}
 				\item{Afin de gagner en performance pour déterminer le numéro d'un noeud déjà présent (pour savoir quel numéro sera manquant par exemple), une autre HashMap est mis à jour en même temps que celle des noeuds. Il s'agit de nodeInv. Cette map n'est rien de plus qu'une sorte de mirroir pour celle des noeuds, on lui passe un noeud en clé et on obtient son numéro. Il est donc extrêmement important que les deux maps soient parfaitement identique pour éviter tout bug.}
-				\item{\label{subsec:noeud_delete_missing_index}Pour déterminer l'indice d'un noeud que l'on ajoute, nous nous basons sur la taille de la Map. Cela pose problème dans un cas particulié. En effet, si nous supprimons un paragraphe au milieu de la map, le noeud à l'indice 3 par exemple, alors cet indice sera libre. Si nous sauvegardons et décidons d'ouvrir de nouveau le fichier, alors nous n'aurons plus cette liste. Il faudrait que nous parcourions la Map pour trouver les indices manquant à la lecture du livre, cependant, comme évoqué un peu partout dans ce rapport, nous avons manqué de temps, d'autant plus que nous avons pensé à ce détails quelques jours avant de rendre le rapport.}
+				\item{\label{subsec:noeud_delete_missing_index}Pour déterminer l'indice d'un noeud que l'on ajoute, nous nous basons sur la taille de la Map.}
 			\end{itemize}
 
 			De ce fait, voici l'algorithme que nous avons mis en place pour l'ajout d'un noeud.
@@ -362,7 +407,7 @@
 
 			Comme on peut le voir, une classe mère \textbf{Observable<T>} détient une List<T> d'observers. Une méthode d'ajout, et de suppression permettent de modifier cette liste. Dès lors que l'on souhaite ajouter un nouveau type d'observer, on doit commencer par créer une nouvelle Interface avec les méthodes que l'on souhaite fournir, dans notre exemple il s'agit de nodeAdded, nodeEdited, nodeDeleted. Une fois cette interface faite, on doit alors faire une nouvelle classe Observable, BookNodeObservable dans notre cas, qui hérite de Observable<T>, T étant l'observer que l'on souhaite utiliser, donc BookNodeObserver. Ainsi, chaque Observable que l'on fera ne sera qu'une définition des méthodes pour notifier qu'un évènement s'est produit.
 
-			Le choix à été fait de séparer les différentes parties (noeuds, liens, items, ...) du livre en différents observers afin de ne pas surcharger le nombre de méthodes à redéfinir dans les classes Observer, et donc de n'observer que ce dont on a besoin. De ce fait, tous les observers concernant le livre sont sont disponibles sauf celui pour notifier d'un changement concernant le premier noeud.
+			Le choix à été fait de séparer les différentes parties (noeuds, liens, items, ...) du livre en différents observers afin de ne pas surcharger le nombre de méthodes à redéfinir dans les classes Observer, et donc de n'observer que ce dont on a besoin. Cependant, deux observers sont actuellement manquant, celui pour notifier d'un changement concernant le premier noeud et celui pour notifier un changement sur le personnage principal.
 
 	\section{Lecture et écriture d'un livre}\label{sec:Json}
 
@@ -599,7 +644,7 @@
 				Les options \underline{Enregistrer} ainsi que \underline{Enregistrer-Sous} sont également présente. Elles appellent toutes les deux les même méthodes : \textit{changeSelectedFile()} ainsi que \textit{saveFile()}. La première méthode permet d'enregistrer le fichier. Si l'utilisateur annule la boite de dialog permettant d'enregistrer le fichier, la méthode \textit{saveFile()} n'est donc pas appelé. Dans le cas contraire, la méthode \textit{saveFile()} permet de sauvegarder le document en fonction du chemin du fichier, défini par la variable "path". Pour "écrire" le fichier qui sera enregistrer, permettant par la suite de l'ouvrir, la classe \textbf{BookWritter} est donc utilisé (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). Si la moindre erreur survient lors de l'enregistrement du fichier écrit, cela annule l'enregistrement.
 				La seule diférence entre \underline{Enregistrer} et \underline{Enregistrer-Sous}, ce passe si la variable "path", soit le chemin du fichier, soit déjà défini. Si c'est le cas, \underline{Enregistrer} appel directement la méthode \textit{saveFile()} car l'utilisateur n'a pas besoin de redéfinire le chemin d'enregistrement du fichier.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=Enregistrement du livre]
+				\begin{lstlisting}[gobble=20, language=java, caption=Enregistrement du livre]
 					private void saveFile() {
 						File saveFile = new File(path);
 
@@ -628,9 +673,9 @@
 				Un autre MenuItem est aussi présent, permettant de \underline{Générer le livre en txt}. Cela permet à l'utilisateur de pouvoir avoir un livre propre au format texte.
 				Pour ce faire, un lien entre le prélude et le premier noeud doit être généré. Sinon une erreur apparait en indiquant le problème de l'erreur. En effet, le prélude apparait d'abord, puis le premier noeud. Cela ne peux pas se faire tant que ce lien n'est pas défini. Si le lien est générer, l'utilisateur doit alors indiquer où enregistrer le fichier génerer à l'aide de la classe \textbf{FileChooser}. Si l'utilisateur annule, la génération est annulé. Sinon, cela génère le fichier à l'aide de la classe \textbf{BookTextExporter} à l'adresse spécifié dans \textbf{FileChooser}. Bien sûr, cela s'annule à la moindre erreur.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=Génération du livre en txt]
+				\begin{lstlisting}[gobble=20, language=java, caption=Génération du livre en txt]
 					MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
-						menuBookGenerate.setOnAction((ActionEvent e) -> {
+					menuBookGenerate.setOnAction((ActionEvent e) -> {
 						NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
 						if(firstNodeFx == null) {
 							Alert a = new Alert(Alert.AlertType.WARNING);
@@ -668,7 +713,7 @@
 		\subsection{LeftPane}
 			Ce panel contient tout d'abord des ToggleButton permettant de sélectionner un mode parmis cinq modes : \underline{SELECT, ADD NODE, ADD NODE LINK, DELETE, FIRST NODE}. Ces modes sont sélectionnables à l'aide de bouton créé a partir de la méthode \textit{createToggleButton()}. Cette méthode prend en paramètre une image et un des modes de la classe \textbf{Mode}, qui est une classe ennumérant tout les modes. Un évènement est associé à chaque boutons permettant de changer le mode (voir \ref{sub:GraphPane}). Le mode ensuite déjà selectionné est toujours le mode \underline{SELECT}. On a créer des ToggleButton afin d'avoir deux états: un état on et un état off. Cela permet de "désactiver" les boutons non sélectionné et de n'avoir qu'un seul bouton non sélectionné. Pour sela, un \textbf{ToggleGroup} permettant que dès qu'un bouton est "cliquer" que celui-ci soit en "on" et les autres en "off".
 
-			\begin{lstlisting}[gobble=12, language=java, caption=Création du ToggleButton]
+			\begin{lstlisting}[gobble=16, language=java, caption=Création du ToggleButton]
 				private ToggleButton createToggleButton(String path, Mode mode) {
 					InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
 					ImageView imageView = new ImageView(new Image(stream));
@@ -725,7 +770,7 @@
 
 			Grâce au constructeur de \textbf{AbstractBookTreeView} (voir ci-dessous), le titre du TreeItem est ajouter. Puis un ContextMenu() est créer et Chaque MenuItem est ajouter ("ajouter", "modifier" ou "supprimer") à ce ContextMenu.
 
-			\begin{lstlisting}[gobble=12, language=java, caption=Constructeur de AbstractBookTreeView()]
+			\begin{lstlisting}[gobble=16, language=java, caption=Constructeur de AbstractBookTreeView()]
 				public AbstractBookTreeView(Book book){
 					rootItem = new TreeItem<>(createRootElement());
 					rootItem.setExpanded(true);
@@ -777,7 +822,7 @@
 				Si le mode "SELECT" est sélectionné et si la souris maintient le clique appuyé (soit \textit{setOnMouseDragged()}), la classe \textbf{RectangleFx} rattaché au noeud est appelé afin de modfier le rectangle de place. Ce qui veux dire que le rectangle à les même coordonnées que la souris. Mais la méthode empêche le Rectangle de sortir de la zone d'édition.
 				Si un double clique est effectué, le deuxième constructeur de la classe \textbf{NodeDialog} est appelé avec le noeud sélectionné en argument. Cela permet donc de modifier la saisie sur ce noeud. Si l'utilisateur valide la boite de dialogue, le livre met a jour le noeud contenue dans un HashMap, ce qui permet de le retrouver.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode SELECT]
+				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode SELECT]
 					if(mode == Mode.SELECT){
 						selectedNodeFx = nodeFx;
 						if(event.getClickCount() == 2) {
@@ -796,7 +841,7 @@
 				Si le mode ADD\_NODE\_LINK est sélectionné, et que le premier clique ce fait sur un noeud qui n'a pas de choix, donc le prélude ou un noeud terminal, cela ne fait rien. Si au contraire, le noeud est autorisé à avoir des choix, le prmier clique enregistre donc le noeud sélectionné afin d'avoir le départ du lien. Si un autre clique est effectué et que la variable contenant le premier noeud sélectionné n'est pas vide, alors le noeud est créer en fonction du type du premier noeud. En effet, si le premier noeud est un noeud de type combat, et si tout ces choix sont déjà défini (combat gagner, combat perdu, evasion), le lien ne peux pas être effectué. Un message d'erreur s'affiche alors, puis la variable contenant le premier noeud est supprimé. Dans le cas contraire, la boite de dialogue s'affiche. Nous n'avons pas voulu faire d'autre condition car si l'utilisateur veux créer un lien qui effectue une boucle ou plusieurs choix qui mène aux même noeud, il est libre de le faire.
 				Une fois la boite de dialogue valider, et si c'est un noeud de combat, on met à jour le lien parmis ses destinations. Sinon, on ajoute le lien dans le HashMap contenant les liens. Puis on met à zéro la variable contenant le premier noeud.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode ADD NODE LINK]
+				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode ADD NODE LINK]
 					if(mode == Mode.ADD_NODE_LINK) {
 						if(selectedNodeFx == null && !(nodeFx.getNode() instanceof AbstractBookNodeWithChoices)) {
 							return;
@@ -850,30 +895,30 @@
 				La méthode \textit{addNodeLink()} ajoute donc le lien puis appel l'observeur \textbf{BookNodeLinkObservable} permettant de notifier \textit{nodeLinkAdded()} de la classe \textbf{GraphPane}. Cette méthode permet de trouver le premier et le deuxième noeud parmi la liste des noeuds existant. Dès qu'ils ont été trouvé, elle fait appel à la méthode \textit{createNodeLink()} permettant de créer un lien entre les deux noeuds.
 				Pour cela, un NodeLinkFx est d'abord créer permettant de pouvoir changer de valer si un des noeuds changeait d'emplement ainsi que de changer de position en fonction du zoom. Ce lien est ensuite ajouter dans une liste de lien permettant de le retrouver.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=nodeLinkAdded()]
-				public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
-					NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
-					nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
+				\begin{lstlisting}[gobble=20, language=java, caption=nodeLinkAdded()]
+					public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
+						NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
+						nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
 
-					// Lie la line avec les deux autres noeuds
-					nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
-					nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
+						// Lie la line avec les deux autres noeuds
+						nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
+						nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
 
-					nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
-					nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
+						nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
+						nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
 
-					listeNoeudLien.add(nodeLinkFx);
+						listeNoeudLien.add(nodeLinkFx);
 
-					nodeLinkFx.registerComponent(rootPane);
+						nodeLinkFx.registerComponent(rootPane);
 
-					return nodeLinkFx;
-				}
+						return nodeLinkFx;
+					}
 				\end{lstlisting}
 
 
 				Si le mode "DELETE" est sélectionné la méthode \textit{removeNode()} de la classe Book est appelé. Une boite de dialogue d'affiche demandant confirmation. Si l'utilisateur annule, rien ne se passe. S'il valide, une boucle "for" est parcouru afin d'envoyer une notification dans le \textbf{BookNodeLinkObservable} et la méthode \textit{notifyNodeLinkDeleted()} qui appel \textit{nodeLinkDeleted()} permettant de supprimer les liens lié à ce noeud. Puis une autre notification est envoyé à la classe \textbf{BookNodeLinkObservable}, qui lui, supprime le noeud en question grace à \textit{notifyNodeLinkDeleted()} qui appel \textit{nodeLinkDeleted()}.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode DELETE]
+				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode DELETE]
 					if(mode == Mode.DELETE) {
 						if(confirmDeleteDialog()){
 							book.removeNode(nodeFx.getNode());
@@ -882,7 +927,7 @@
 				\end{lstlisting}
 
 				Si le mode "FIRST\_NODE" est sélectionné, le lien entre le prélude et le noeud sélectionné est ajouté. Pour cela, un controle est fait si c'est bien un noeud. Si oui, le tracer est fait entre le prélude et le noeud sélectionné. Le "premier noeud" est donc changé dans le livre.
-				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeFxListener avec le mode FIRST NODE]
+				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode FIRST NODE]
 					public void setFirstNode(NodeFx newFirstNode) {
 						preludeFx.setFirstNode(newFirstNode);
 
@@ -908,7 +953,7 @@
 
 				Si le mode "SELECT" est sélectionné et un double clique est effectué sur un lien, le lien est donc modfiable. La boite de dialogue sur lien s'affiche. Si la boite de dialogue est validé, les liens sont mis à jour grâce à la méthode \textit{removeNodeLink()} présente dans la classe \textbf{Book}. Cette méthode notifie le \textbf{BookNodeLinkObservable} grâce à la méthode \textit{notifyNodeLinkEdited()} qui elle appel la méthode \textit{nodeLinkEdited()} du \textbf{GraphPane}. Cette méthode permet de remplacer le lien existant dans le \textbf{NodeLinkFx} par le nouveau lien modifié.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeLinkFxListener avec le mode SELECT]
+				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeLinkFxListener avec le mode SELECT]
 					if(mode == Mode.SELECT) {
 						if(event.getClickCount() == 2) {
 							NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode(), book);
@@ -942,7 +987,7 @@
 
 				Si le mode "DELETE" est sélectionné et un clique est observé et l'utilisateur confirme la supression par la une réponse positive sur la boite de dialogue, la méthode \textit{removeNodeLink()} de la classe \textbf{Book} est appelé. Ces liens sont alors supprimer des choix du noeuds considéré en "premier noeud". Puis le lien est alors supprimé grâce à la notification du \textbf{BookNodeLinkObservable} au \textbf{GraphPane}. Il est aussi supprimé de la liste des liens existants.
 
-				\begin{lstlisting}[gobble=12, language=java, caption=Classe NodeLinkFxListener avec le mode DELETE]
+				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeLinkFxListener avec le mode DELETE]
 					public void removeNodeLink(BookNodeLink nodeLink) {
 						List<AbstractBookNodeWithChoices> postRemove = new ArrayList<>();
 
@@ -987,7 +1032,7 @@
 		Soit la méthode \textit{play()} est appelé si \textbf{Jouer} est sélectionné. C'est donc le player qui va jouer. Cela veut dire que les messages vont alors s'afficher dans le terminal (\textit{showMessages}) et le player est défini sur la classe \textit{Player}. Cela permetra d'appeler le bon joueur lors de l'appélation des méthodes où un choix est nécessaires.
 		Une fois le jeu lancer grâce au \textit{runGame()}, expliqué dans le code \ref{lst:runGame}, les ressources temporaires qui ont été généré sont supprimés.
 
-		\begin{lstlisting}[language=java, caption=play()]
+		\begin{lstlisting}[gobble=12, language=java, caption=play()]
 			public void play() throws IOException, BookFileException {
 				player = new Player();
 
@@ -1002,7 +1047,7 @@
 		Soit la méthode \textit{fourmis()} est appelé si \textbf{Générer la difficulté} est sélectionné. Ce sont donc plusieurs fourmis qui vont jouer une par une afin de générer la difficulté du livre. Les messages sur le terminal sont donc non affiché. Puis vient le lancement des fourmis. Pour cela une boucle "for" est simplement necessaire. Le player est donc défini sur la classe \textbf{Fourmis} permettant ainsi d'utiliser les méthodes de cette classe afin de réaliser des choix random. Puis la méthode \textit{runGame()}, expliqué dans le code \ref{lst:runGame}, renvoi donc la finalité du livre: soit un boolean true en cas de victoire ou false en cas de défaite.\\
 		On a donc une classe qui permet réaliser des choix random ainsi qu'une méthode qui renvoie la finalité du livre. Cela permet donc de lancer un certain nombre de "fourmis" qui vont parcourir tout le livre, réalisé des choix, gagner ou perdre. Toutes les victoires vont être comptés, ce qui va permettre de savoir combien de fourmis ont gagnés. Soit calculé la difficulté du livre.
 
-		\begin{lstlisting}[language=java, caption=fourmis()]
+		\begin{lstlisting}[gobble=12, language=java, caption=fourmis()]
 			public float fourmis(int nbrFourmis) throws IOException, BookFileException {
 			   showMessages = false;
 
@@ -1025,7 +1070,7 @@
 		Une fois dans la méthode choisis, la méthode \textit{runGame()} est alors appelé. C'est la méthode principal de la classe \textbf{Jeu} car c'est elle qui lance le jeu.
 		Tout d'abord, la méthode copie le livre afin de ne pas le modifier par erreur pendant le jeu. Car même si on a fait attention, il suffit d'une erreur pour modifier tout le livre principal qui gère le jeu. Puis un BookState, qui correspond à l'état de la partie, est créé. Ce BookState permettera donc de suivre l'état du livre ainsi que du joueur (son inventaire, sa santé...). D'ailleur, le joueur enregistré dans le BookState est soit le personnage principal créer dans le prélude, soit, si inexistant, un personnage prééxistant permettant ainsi de jouer au jeu sans pour autant créer un personnage principal (voir méthode si dessous).
 
-		\begin{lstlisting}[language=java, caption=createNewState()]
+		\begin{lstlisting}[gobble=12, language=java, caption=createNewState()]
 			BookCharacter bookCharacter;
 			BookState newState = new BookState();
 
@@ -1047,9 +1092,8 @@
 
 		Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur (\textit{execPlayerCreation}, voir \ref{lst:execPlayerCreation}) est appelé en fonction du player actuel. Comme cela, le player choisit parmi une liste de compétences et d'items disponible en début de partie afin de les avoir pour commencer le jeu. Ci-dessous, vous pouvez voir le code permettant, ici, au player de choisir, d'après une liste, avec quels item ou compétences le joueur veut-il commencer le jeu. Cela permet ainsi d'avoir différentes finalité en fonction de ce que choisis le joueur.\\
 
-		\begin{lstlisting}[language=java, caption=Méthode execPlayerCreation() du player, label=lst:execPlayerCreation]
-		public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
-
+		\begin{lstlisting}[gobble=12, language=java, caption=Méthode execPlayerCreation() du player, label=lst:execPlayerCreation]
+			public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
 				if(characterCreation instanceof CharacterCreationItem){
 					CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
 					prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
@@ -1072,7 +1116,7 @@
 
 		Une fois le \textbf{BookState} créé, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. La boucle while du \textit{runGame()} est donc lancé et ne s'arrètera qu'une fois la partie terminée. Comme vous pouvez le remarquer, sur le code ci-dessous, chaque méthode correspond à un type de noeud en particulier. Les méthodes s'exécutent alors, puis renvoie le noeud de destination, en fonction du choix du joueur et / ou de la mort du joueur. Durant l'exécution des différentes méthodes et en fonction du joueur, d'autres méthodes externe sont appelées nottament dans la classe \textbf{Fourmis} ou \textbf{Player}.
 
-		\begin{lstlisting}[language=java, label=lst:runGame, caption=Méthode runGame()]
+		\begin{lstlisting}[gobble=12, language=java, label=lst:runGame, caption=Méthode runGame()]
 			while(!gameFinish){
 				if(currentNode instanceof BookNodeCombat){
 					//execNodeCombat(bookNodeCombat);
@@ -1095,22 +1139,22 @@
 
 		Pour chaque type de noeud, sauf pour un noeud terminal car il ne contient pas ces options, une méthode commune, nommé \textit{execAbstractNodeWithChoices()} est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie (méthode \textit{execNodeHp()}), puis regarde si le joueur est toujours en vie. Si ce dernier n'est plus en vie, un noeud terminal de défaite est alors renvoyé en noeud de destination. S'il est encore en vie et que le noeud propose des items, ils sont proposés au joueur en appelant la méthode correspondante entre \textbf{Fourmis} ou \textbf{Player}. Ces classes sont appelé car le player doit faire un choix grâce au Scanner et la fourmis doit effectuer un choix random.\\
 
-		\begin{lstlisting}[language=java, caption=Méthode execAbstractNodeWithChoices(), label=lst:execAbstractNodeWithChoices]
-		public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
-			//Affichage pour le joueur
+		\begin{lstlisting}[gobble=12, language=java, caption=Méthode execAbstractNodeWithChoices(), label=lst:execAbstractNodeWithChoices]
+			public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
+				//Affichage pour le joueur
 
-			execNodeHp(node);
+				execNodeHp(node);
 
-			if(!state.getMainCharacter().isAlive()){
-				//Création du noeud terminal de défaite
-				return nodeTerminal;
+				if(!state.getMainCharacter().isAlive()){
+					//Création du noeud terminal de défaite
+					return nodeTerminal;
+				}
+
+				if(!node.getItemLinks().isEmpty())
+					chooseItems(node);
+
+				return null;
 			}
-
-			if(!node.getItemLinks().isEmpty())
-				chooseItems(node);
-
-			return null;
-		}
 		\end{lstlisting}
 
 		Puis, à chaque destination du joueur, sauf si celui ci a été entrainer vers un noeud terminal de défaite créer par la classe jeu et donc, non existante, une autre méthode est appelé (nommé \textit{execBookNodeLink()}) afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent. Si c'est le cas, le joueur est alors "mis à jour". Si le joueur n'a plus de vie, même si le lien le portait vers un noeud de victoire, un noeud de défaite est créé. Le joueur à alors perdu. \\
@@ -1154,40 +1198,40 @@
 			\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 (voir cf 13) et si un noeud de d'évasion existe, le joueur peut alors s'enfuir. Sinon cela lui passe son tour.Nous avons décidé de ne pas relancer les choix à ce moment, car cela peut être une stratégie du joueur qui, dans une prochaine mise à jour d'implentation de pouvoir lié à des compétences, en cas d'une compétence de "renvoi" (qui se désactive en cas d'attaque de la part du joueur), l'attaque de l'ennemi est alors "retourné" vers lui même.}
 		\end{description}
 
-		\begin{lstlisting}[caption=JeuCombat]
-		while(!finCombat){
-			ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
+		\begin{lstlisting}[gobble=12, language=java, caption=JeuCombat]
+			while(!finCombat){
+				ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
 
-			if (choixCombat == ChoixCombat.ATTAQUER) {
+				if (choixCombat == ChoixCombat.ATTAQUER) {
 
-				BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
-				attaque(ennemi);
-				if(!ennemi.isAlive()){
-					listEnnemis.remove(ennemi);
+					BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
+					attaque(ennemi);
+					if(!ennemi.isAlive()){
+						listEnnemis.remove(ennemi);
+					}
 				}
-			}
-			else if(choixCombat == ChoixCombat.EVASION) {
-				if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null){
-					execBookNodeLink(node.getEvasionBookNodeLink());
-					return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
+				else if(choixCombat == ChoixCombat.EVASION) {
+					if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null){
+						execBookNodeLink(node.getEvasionBookNodeLink());
+						return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
+					}
 				}
-			}
 
-			ennemiTour(listEnnemis);
+				ennemiTour(listEnnemis);
 
-			if(!state.getMainCharacter().isAlive()) {
-				//Vérification d'un noeud Failure
-				if(node.getLooseBookNodeLink() != null)  {
-					execBookNodeLink(node.getLooseBookNodeLink());
-					return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
-				} else
-					return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
-			}
+				if(!state.getMainCharacter().isAlive()) {
+					//Vérification d'un noeud Failure
+					if(node.getLooseBookNodeLink() != null)  {
+						execBookNodeLink(node.getLooseBookNodeLink());
+						return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
+					} else
+						return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
+				}
 
-			if(listEnnemis.isEmpty())
-				finCombat = true;
+				if(listEnnemis.isEmpty())
+					finCombat = true;
 
-			evasionRound -= 1;
+				evasionRound -= 1;
 			}
 		\end{lstlisting}
 
