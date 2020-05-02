@@ -16,6 +16,7 @@ import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemHealing;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
+import magic_book.core.parser.TextParser;
 
 /**
  * Permet au joueur de jouer en utilisant la console
@@ -233,7 +234,7 @@ public class Player implements InterfacePlayerFourmis {
 
 	@Override
 	public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
-		System.out.println(characterCreation.getText());
+		System.out.println(TextParser.parseText(characterCreation.getText(), book.getItems(), book.getCharacters()));
 
 		//Choix des items du début
 		if(characterCreation instanceof CharacterCreationItem){

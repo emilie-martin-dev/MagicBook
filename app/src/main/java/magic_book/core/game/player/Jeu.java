@@ -25,6 +25,7 @@ import magic_book.core.graph.node_link.BookNodeLinkRandom;
 import magic_book.core.item.BookItemDefense;
 import magic_book.core.item.BookItemLink;
 import magic_book.core.item.BookItemWeapon;
+import magic_book.core.parser.TextParser;
 import magic_book.core.requirement.AbstractRequirement;
 
 /**
@@ -601,7 +602,7 @@ public class Jeu {
 	 */
 	private void showMessage(String str) {
 		if(showMessages)
-			System.out.println(str);
+			System.out.println(TextParser.parseText(str, book.getItems(), book.getCharacters()));
 	}
 
 }

@@ -4,6 +4,7 @@ import magic_book.core.Book;
 import magic_book.core.file.JsonExportable;
 import magic_book.core.file.json.CharacterCreationJson;
 import magic_book.core.parser.Descriptible;
+import magic_book.core.parser.TextParser;
 
 /**
  * Classe de base pour la conception d'une étape à la "Conception d'un personnage"
@@ -22,13 +23,13 @@ public abstract class AbstractCharacterCreation implements Descriptible, JsonExp
 	public AbstractCharacterCreation(String text) {
 		this.text = text;
 	}
-	
+
 	@Override
 	public CharacterCreationJson toJson() {
 		CharacterCreationJson characterCreationJson = new CharacterCreationJson();
-		
+
 		characterCreationJson.setText(getText());
-		
+
 		return characterCreationJson;
 	}
 
@@ -36,12 +37,12 @@ public abstract class AbstractCharacterCreation implements Descriptible, JsonExp
 	public void fromJson(CharacterCreationJson json) {
 		this.setText(json.getText());
 	}
-	
+
 	@Override
 	public String getDescription(Book book) {
-		return this.text + "\n";
+		return TextParser.parseText(this.text, book.getItems(), book.getCharacters())+"\n";
 	}
-	
+
 	/**
 	 * Donne le texte
 	 * @return Texte
@@ -57,5 +58,5 @@ public abstract class AbstractCharacterCreation implements Descriptible, JsonExp
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 }

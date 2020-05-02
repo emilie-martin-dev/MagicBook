@@ -12,6 +12,7 @@ import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.core.graph.node.BookNodeStatus;
 import magic_book.core.graph.node.BookNodeTerminal;
 import magic_book.core.graph.node_link.BookNodeLink;
+import magic_book.core.parser.TextParser;
 
 /**
  * Exporte le livre au format texte
@@ -35,7 +36,7 @@ public class BookTextExporter {
 		}
 
 		FileWriter fileWritter = new FileWriter(path);
-		fileWritter.write(book.getTextPrelude());
+		fileWritter.write(TextParser.parseText(book.getTextPrelude(), book.getItems(), book.getCharacters()));
 		fileWritter.write("\n");
 
 		writeSeparator(fileWritter);
@@ -147,7 +148,7 @@ public class BookTextExporter {
 			for(BookNodeLink nodeLink : node.getChoices()) {
 				if(!nodeLink.getText().isEmpty()) {
 					fileWritter.write("- ");
-					fileWritter.write(nodeLink.getText());
+					fileWritter.write(TextParser.parseText(nodeLink.getText(), book.getItems(), book.getCharacters()));
 					fileWritter.write(" ");
 				}
 
