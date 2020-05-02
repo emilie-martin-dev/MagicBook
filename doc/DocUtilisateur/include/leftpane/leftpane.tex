@@ -40,3 +40,17 @@
 		\end{figure}
 
 		Lors d'une prochaine mise à jour, il sera possible de créer des compétences avec différents effets (soins, dégats, ...). Les compétences peuvent uniquement être apprise dès le début du livre lors de la phase de "conception du personnage" (cf :  \nameref{subsubsec:persoCreationSkill} page \pageref{subsubsec:persoCreationSkill}).
+
+	\section{Faire référence à un élément du livre dans du texte}
+
+		L'application possède de nombreuses zones de texte. Il est possible de faire références aux éléments créés en utilisant un petit code permettant à l'application de savoir qu'elle doit afficher le nom de cet élément.
+
+		\begin{description}
+			\item[Pour un item : ]{Il suffit d'écrire l'ID de l'item entre "\{\{" et "\}\}".}
+			\item[Pour un personnage : ]{Il suffit d'écrire l'ID du personnage entouré de "\#\#".}
+			\item[Pour une compétence : ]{Malheureusement, il n'est pas encore possible de faire cela.}
+		\end{description}
+
+		Par exemple, si le livre possède un item qui a pour ID "cle" et pour nom "Clé du Donjon", alors on pourra y faire référence dans un texte en mettant par exemple "Félicitation! Vous venez d'obtenir la \{\{ cle \}\}". Le texte deviendra alors "Félicitation! Vous venez d'obtenir la Clé du Donjon" lors de l'export en texte ou au moment de jouer au jeu. Le fait de changer le nom de l'item en "Clé rouillée", par exemple, affichera, encore une fois, lors de l'export en texte ou au moment de jouer au jeu, ce nouveau nom.
+
+		Utiliser cette fonctionnalité permet donc de changer le nom d'un élément sans devoir pour autant modifier chaque texte un à un afin de mettre ce nouveau nom. Par contre, il est important de ne pas changer l'ID d'un élément car les références ne seront pas mise à jour.
