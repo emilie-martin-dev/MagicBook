@@ -1,6 +1,7 @@
 \chapter{Aspects techniques}
 
 	\section{Représentation d'un livre}
+		Un livre peut contenir différentes informations. On y retrouve des items, des personnages, des paragraphes (que nous appellerons des noeuds), des choix (que nous appellerons des liens), ... Cette partie présentera la manière dont nous avons pensé ces différents éléments.
 
 		\subsection{Représentation des noeuds}
 
@@ -12,7 +13,7 @@
 				\label{fig:OldBookNode}
 			\end{figure}
 
-			 Par la suite, nous avons voulu utiliser des classes afin de spécialiser certaines méthodes et de bien séparer les différents attributs dans différentes classes. Ainsi, seul la classe \textbf{BookNodeCombat}, représentant un noeud de combat, contient les informations sur le combat (liste d'ennemi, etc).
+			Par la suite, nous avons voulu utiliser des classes afin de spécialiser certaines méthodes et de bien séparer les différents attributs dans différentes classes. Ainsi, seul la classe \textbf{BookNodeCombat}, représentant un noeud de combat, contient les informations sur le combat (liste d'ennemi, etc).
 
 			Maintenant, il y a donc quatre types de noeuds représentées par différentes classes (Voir figure \ref{fig:BookNode}):
 
@@ -67,7 +68,7 @@
 
 			Avant de détailler notre choix, nous allons expliquer brièvement les deux interfaces que l'on observe. L'une se nomme \textbf{Descriptible} et permet à l'item de se décrire sous forme de String. Bien que la méthode \textit{String toString()} soit déjà prévu à cet effet, celle ci ne permet pas de prendre en argument un livre (classe \textbf{Book}). Bien entendu, c'est logique mais certains objets ont besoin du livre pour se décrire, par exemple, pour retrouver un item / personnage à partir de son id. La seconde interface, \textbf{JsonExportable} sera expliqué plus en détails dans \nameref{subsec:lecture_ecriture_fichier} à la page \pageref{subsec:lecture_ecriture_fichier}. Pour rester bref, disons qu'elle permet, la lecture et l'écriture du fichier en JSON.
 
-			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attributs spécfiques à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type monnaie inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère par le mot clé \textit{super.nomMethode(arguments)}.
+			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attributs spécfiques à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type monnaie inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère par \textit{super.getDescription(book)} dans la méthode \textit{getDescription} , ainsi que \textit{super.toJson()} pour la méthode \textit{toJson()}.
 
 			\begin{lstlisting}[gobble=16, language=Java, caption=Exemple de spécialisation des items]
 				@Override
