@@ -1,7 +1,7 @@
 \chapter{Architecture du projet}
 
 	\section{Arborescence du projet}
-
+		\label{sec:arborescenceProjet}
 		\begin{description}
 			\item[.github :]{Fichiers spécifiques à GitHub.}
 			\begin{description}
@@ -30,7 +30,13 @@
 				\item[settings.gradle :]{Configuration sur les modules à inclure, les noms de ceux-ci, etc.}
 				\item[.gitattributes :]{Permet de fixer la fin de ligne pour les scripts Unix et DOS.}
 			\end{description}
-			\item[doc :]{Contient toute la documentations du projet, notamment le rapport.}
+			\item[doc :]{Contient toute la documentations du projet.}
+			\begin{description}
+				\item[DocUtilisateur :]{Contient la documentation à destination de l'utilisateur.}
+				\item[Rapport :]{Contient le rapport du projet.}
+				\item[Soutenance :]{Contient le support et le mémo de la soutenance.}
+			\end{description}
+			\item[scripts :]{Contient différents scripts pour gérer le projet.}
 			\item[.gitignore :]{Fichier ignorant les changements sur certains fichiers ou dossier sur Git.}
 			\item[CONVENTIONS.md :]{Conventions de nommage concernant le projet et les commits.}
 			\item[LICENSE :]{Licence du projet.}
@@ -44,40 +50,43 @@
 		Notre application contenant beaucoup de classes, celles-ci sont réparties en packages que nous allons détailler :
 
 		\begin{description}
-			\item[core :]{Classes principales de l'application}
+			\item[core :]{Classes principales de l'application.}
 			\begin{description}
-				\item[exception :]{Classes d'exceptions}
-				\item[file :]{Classes utiles à la lecture, l'écriture de fichier (json et texte)}
+				\item[exception :]{Classes d'exceptions.}
+				\item[file :]{Classes utiles à la lecture, l'écriture de fichier (json et texte).}
 				\begin{description}
-					\item[deserializer :]{Classes qui héritent de JsonDeserializer (provient de GSON)}
-					\item[json :]{Classes JSON intermédiaires pour la lecture et l'écriture avec GSON}
+					\item[deserializer :]{Classes qui héritent de JsonDeserializer (provient de GSON).}
+					\item[json :]{Classes JSON intermédiaires pour la lecture et l'écriture avec GSON.}
 				\end{description}
-				\item[game :]{Classes spécifiques au jeu (Personnage, Skill, BookState, ...)}
+				\item[game :]{Classes spécifiques au jeu (Personnage, Skill, BookState, ...).}
 				\begin{description}
-					\item[character\_creation :]{Classes qui représentent une étape de la "Création du personnage"}
-					\item[player :]{Classes qui permettent de jouer au jeu (Joueur ou fourmis)}
+					\item[character\_creation :]{Classes qui représentent une étape de la "Création du personnage".}
+					\item[player :]{Classes qui permettent de jouer au jeu (Joueur ou fourmis).}
 				\end{description}
-				\item[graph :]{Classes qui représentent les noeuds et les liens}
+				\item[graph :]{Classes qui représentent les noeuds et les liens.}
 				\begin{description}
-					\item[node :]{Classes pour les noeuds}
-					\item[node\_link :]{Classes pour les liens}
+					\item[node :]{Classes pour les noeuds.}
+					\item[node\_link :]{Classes pour les liens.}
 				\end{description}
-				\item[item :]{Classes qui représentent les items}
-				\item[parser :]{Classes qui permettent de parser un texte pour afficher le nom de l'item ou du personnage}
-				\item[requirement :]{Classes pour gérer les prérequis sur un noeud}
+				\item[item :]{Classes qui représentent les items.}
+				\item[parser :]{Classes qui permettent de parser un texte pour afficher le nom de l'item ou du personnage.}
+				\item[requirement :]{Classes pour gérer les prérequis sur un noeud.}
 			\end{description}
 
-			\item[observer :]{Classes pour le pattern observer}
+			\item[observer :]{Classes pour le pattern observer.}
 			\begin{description}
-				\item[book :]{Classes pour le pattern observer du livre}
-				\item[fx :]{Classes pour le pattern observer des éléments JavaFx}
+				\item[book :]{Classes pour le pattern observer du livre.}
+				\item[fx :]{Classes pour le pattern observer des éléments JavaFx.}
 			\end{description}
 
-			\item[window :]{Classes pour l'affichage avec JavaFx}
+			\item[window :]{Classes pour l'affichage avec JavaFx.}
 			\begin{description}
-				\item[component :]{Composants réutilisables à différents endroits (dans plusieurs boites de dialogues par exemple)}
-				\item[dialog :]{Les différentes boites de dialogue}
-				\item[gui :]{Les différents éléments graphiques pour JavaFx (NodeFx, NodeLinkFx, PreludeFx)}
-				\item[pane :]{Les différentes parties qui composent notre affichage sur la fenêtre (Partie de gauche, centrale, droite)}
+				\item[component :]{Composants réutilisables à différents endroits (dans plusieurs boites de dialogues par exemple).}
+				\begin{description}
+					\item[booktreeview :]{Les TreeView de l'application..}
+				\end{description}
+				\item[dialog :]{Les différentes boites de dialogue.}
+				\item[gui :]{Les différents éléments graphiques pour JavaFx (NodeFx, NodeLinkFx, PreludeFx).}
+				\item[pane :]{Les différentes parties qui composent notre affichage sur la fenêtre (Partie de gauche, centrale, droite).}
 			\end{description}
 		\end{description}
