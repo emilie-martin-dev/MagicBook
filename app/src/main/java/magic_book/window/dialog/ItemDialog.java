@@ -27,7 +27,7 @@ public class ItemDialog extends AbstractDialog {
 	/**
 	 * Item de type Healing
 	 */
-	private static final String HEALING = "Soins";
+	private static final String HEALING = "Santé";
 	/**
 	 * Item de type key
 	 */
@@ -324,7 +324,7 @@ public class ItemDialog extends AbstractDialog {
 
 			ItemDialog.this.item.setId(idTextField.getText().trim());
 			ItemDialog.this.item.setName(nameTextField.getText().trim());
-			
+
 			validateData();
 			close();
 		};
