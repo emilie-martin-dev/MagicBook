@@ -929,11 +929,13 @@
 
 		\subsection{Jeu}
 
-			Une classe a été créée, se nommant \textbf{Jeu}, permettant de gérer les méthodes de jeu communes entre les classes \textit{Player} et \textit{Fourmis}. Cela permet donc d'avoir une classe qui gère tout le jeu en faisant appel aux différentes méthodes et classes en fonctions du types de noeud et du type de joueur. \\
-			Un construteur est d'abord appelé, à partir de la MainWindow, afin d'envoyer le livre contenant toutes les informations. Puis, en fonction du mode sélectionner (\textbf{Générer la difficulté} ou \textbf{Jouer}), la méthode correspondante au joueur est appelé.\\
+			Cette classe est la plus importante des quatre. En effet, c'est elle qui va se charger de faire fonctionner le jeu et la partie commune au code, tout en utilisant les différentes méthodes fournies par l'interface \textbf{InterfacePlayerFourmis}.
 
-			Soit la méthode \textit{play()} est appelé si \textbf{Jouer} est sélectionné. C'est donc le player qui va jouer. Cela veut dire que les messages vont alors s'afficher dans le terminal (\textit{showMessages}) et le player est défini sur la classe \textit{Player}. Cela permetra d'appeler le bon joueur lors de l'appélation des méthodes où un choix est nécessaires.
-			Une fois le jeu lancer grâce au \textit{runGame()}, expliqué dans le code \ref{lst:runGame} et les ressources temporaires qui ont été généré sont supprimés.
+			Avant de faire quoi que ce soit, dans le constructeur, nous effectuons une sauvegarde du livre sur lequel nous devons jouer sur le disque. Cela permet d'éviter de modifier par inadvertance certains éléments du livre original. Avant de lancer la partie, nours rechargerons cette copie livre. Ce processus permet de cloisonner le livre à une partie de jeu.
+
+			Deux choix de méthodes s'offrent à nous afin de démarrer le jeu. Soit la méthode \textit{void play()} qui permet de faire jouer le joueur, soit la méthode \textit{float fourmis(int)} qui permet d'obtenir l'estimation de la difficulté du livre.
+
+			Commençons par la première des deux. Si c'est un joueur humain qui va jouer cela signifie qu'on doit créer une instance de \textbf{Player}. Cette instance est stockée dans la variable \textit{player} de type \textbf{InterfacePlayerFoumis} grâce au polymorphisme. De plus il faut également afficher les messages, la variable \textit{showMessages} est donc mise à true. Cette variable va indiquer à la méthode nommée \textit{void showMessage(String)} d'afficher les messages à chaque fois qu'elle est appellée. Nous pouvons alors démarrer le jeu à l'aide de \textit{boolean runGame()}. Une fois le jeu terminé, il faut supprimer les ressources temporaires, notamment le livre temporaire sauvegardé, à l'aide de \textit{void cleanUp()}.
 
 			\begin{lstlisting}[gobble=16, language=java, caption=play()]
 				public void play() throws IOException, BookFileException {
@@ -947,8 +949,7 @@
 				}
 			\end{lstlisting}
 
-			Soit la méthode \textit{fourmis()} est appelé si \textbf{Générer la difficulté} est sélectionné. Ce sont donc plusieurs fourmis qui vont jouer une par une afin de générer la difficulté du livre. Les messages sur le terminal sont donc non affiché. Puis vient le lancement des fourmis. Pour cela une boucle "for" est simplement necessaire. Le player est donc défini sur la classe \textbf{Fourmis} permettant ainsi d'utiliser les méthodes de cette classe afin de réaliser des choix random. Puis la méthode \textit{runGame()}, expliqué dans le code \ref{lst:runGame}, renvoi donc la finalité du livre: soit un boolean true en cas de victoire ou false en cas de défaite.\\
-			On a donc une classe qui permet réaliser des choix random ainsi qu'une méthode qui renvoie la finalité du livre. Cela permet donc de lancer un certain nombre de "fourmis" qui vont parcourir tout le livre, réalisé des choix, gagner ou perdre. Toutes les victoires vont être comptés, ce qui va permettre de savoir combien de fourmis ont gagnés. Soit calculé la difficulté du livre.
+			L'autre méthode, \textit{float fourmis(int)} permet de lancer "n" fourmis pour estimer la difficulté du livre, "n" étant le int fourni en paramètre. On doit donc créer une instance de \textbf{Fourmis}. Cette instance sera également stockée dans la variable \textit{player}, une fois de plus, grâce au polymorphisme. De plus, il faut également masquer les messages, la variable \textit{showMessages} est donc mise à false. On lance le jeu à l'aide de la méthode \textit{boolean runGame()}. Si celle-ci nous return true, alors la fourmi a gagné, nous incrémentons le compteur de victoire. L'action de créer la fourmi et de lancer le jeu est donc fait "n" fois. Ci-dessous le code correspondant à cette opération :
 
 			\begin{lstlisting}[gobble=16, language=java, caption=fourmis()]
 				public float fourmis(int nbrFourmis) throws IOException, BookFileException {
@@ -969,92 +970,43 @@
 				}
 			\end{lstlisting}
 
-			Une fois dans la méthode choisis, la méthode \textit{runGame()} est alors appelé. C'est la méthode principal de la classe \textbf{Jeu} car c'est elle qui lance le jeu.
-			Tout d'abord, la méthode copie le livre afin de ne pas le modifier par erreur pendant le jeu. Car même si on a fait attention, il suffit d'une erreur pour modifier tout le livre principal qui gère le jeu. Puis un BookState, qui correspond à l'état de la partie, est créé. Ce BookState permettera donc de suivre l'état du livre ainsi que du joueur (son inventaire, sa santé...). D'ailleur, le joueur enregistré dans le BookState est soit le personnage principal créer dans le prélude, soit, si inexistant, un personnage prééxistant permettant ainsi de jouer au jeu sans pour autant créer un personnage principal (voir méthode si dessous). Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur (\textit{execPlayerCreation}, voir \ref{lst:execPlayerCreation}) est appelé en fonction du joueur actuel.
+			Passons maintenant à la méthode \textit{runGame()}. Celle-ci va commencer par créer un nouveau \textbf{BookState}. Ensuite, la méthode se charge de lancer la phase de conception du personnage en appellant la méhode correspondante dans l'instance de l'interface \textbf{InterfacePlayerFoumis}. Une fois cette étape franchie, il est possible de démarrer le jeu. Nous devons donc exécuter les noeuds successivement, récupérer le noeud suivant en fonction des choix du joueur et ce, jusqu'à arriver sur un noeud terminal (victoire ou défaite peu importe). Dans le cas où le type de noeud n'est pas connu, nous avons fait en sorte que le jeu s'arrête en comptant cela comme un échec.
 
-			\begin{lstlisting}[gobble=16, language=java, caption=createNewState()]
-				BookCharacter bookCharacter;
-				BookState newState = new BookState();
-
-				if(this.book.getMainCharacter() == null){
-					//Création d'un personnage
-				}
-				else {
-					//Récupération du personnage principal
-				}
-
-				//Affichage pour le joueur du personnages principal
-
-				newState.setBook(this.book);
-
-				//Conception du personnage (ajout de compétences, items)
-
-				return newState;
-			\end{lstlisting}
-
-			Une fois le \textbf{BookState} créé, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. La boucle while du \textit{runGame()} est donc lancé et ne s'arrètera qu'une fois la partie terminée. Comme vous pouvez le remarquer, sur le code ci-dessous, chaque méthode correspond à un type de noeud en particulier. Les méthodes s'exécutent alors, puis renvoie le noeud de destination, en fonction du choix du joueur et / ou de la mort du joueur. Durant l'exécution des différentes méthodes et en fonction du joueur, d'autres méthodes externe sont appelées nottament dans la classe \textbf{Fourmis} ou \textbf{Player}. Tout ceci permet de minimiser le code en commun.
-
-			\begin{lstlisting}[gobble=16, language=java, label=lst:runGame, caption=Méthode runGame()]
-				while(!gameFinish){
-					if(currentNode instanceof BookNodeCombat){
-						//execNodeCombat(bookNodeCombat);
-					}
-					else if(currentNode instanceof BookNodeWithChoices){
-						//execNodeWithChoices(bookNodeWithChoices);
-					}
-					else if(currentNode instanceof BookNodeWithRandomChoices){
-						//execNodeWithRandomChoices(bookNodeWithRandomChoices);
-					}
-					else if(currentNode instanceof BookNodeTerminal){
-						//execNodeTerminal(bookNodeTerminal);
-						//Si partie gagné, win = true
-					} else {
-						//BookNodeTerminal FAILURE
-					}
-				}
-				return win;
-			\end{lstlisting}
-
-			Pour chaque type de noeud, sauf pour un noeud terminal car il ne contient pas ces options, une méthode commune, nommé \textit{execAbstractNodeWithChoices()} est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie (méthode \textit{execNodeHp()}), puis regarde si le joueur est toujours en vie. Cela permet donc que chaque exécution de noeud vérifie ceci, permettant ainsi de minimisé la redondance. Si le joueur n'est plus en vie, un noeud terminal de défaite est alors renvoyé en noeud de destination, permettant ainsi de notifier la défaite du joueur. S'il est encore en vie et que le noeud propose des items, ils sont proposés au joueur en appelant la méthode correspondante entre \textbf{Fourmis} ou \textbf{Player}. Ces classes sont appelé car le player doit faire un choix grâce au Scanner et la fourmis doit effectuer un choix random.\\
+			Pour chaque type de noeud, une méthode est présente dans la classe et permet son exécution.	Pour rappel, chaque type de noeud non terminal hérite de \textbf{AbstractBookNodeWithChoices}, une méthode commune est donc également présente et se nomme \textit{execAbstractNodeWithChoices()}. Celle-ci va commencer par afficher le texte du noeud. Elle va ensuite enlever / ajouter les pv du joueur au besoin. S'en suit une vérification de la vie du joueur afin de retourner un noeud de défaite dans le cas où il serait mort. Si ce n'est pas le cas nous pouvons continuer en choisissant les items que l'on souhaite prendre parmi ceux qui sont disponibles. Enfin, nous retournons null, symbolisant que l'aventure peut continuer car le joueur n'est pas mort.
 
 			\begin{lstlisting}[gobble=12, language=java, caption=Méthode execAbstractNodeWithChoices(), label=lst:execAbstractNodeWithChoices]
-				public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
-					//Affichage pour le joueur
+			private AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
+				showMessage(node.getText());
 
-					execNodeHp(node);
+				//Regarde si il y a une perte/gain de point de vie dans le noeud
+				execNodeHp(node);
 
-					if(!state.getMainCharacter().isAlive()){
-						//Création du noeud terminal de défaite
-						return nodeTerminal;
-					}
+				//Si le personnage n'est plus en vie
+				if(!state.getMainCharacter().isAlive()){
+					BookNodeTerminal nodeTerminal = new BookNodeTerminal();
+					nodeTerminal.setText("Vous êtes morts...");
+					nodeTerminal.setBookNodeStatus(BookNodeStatus.FAILURE);
 
-					if(!node.getItemLinks().isEmpty())
-						chooseItems(node);
-
-					return null;
+					return nodeTerminal;
 				}
+
+				//Regarde si il y a des item à prendre dans le noeud
+				if(!node.getItemLinks().isEmpty())
+					chooseItems(node);
+
+				return null;
+			}
 			\end{lstlisting}
 
-			Puis, à chaque destination du joueur, sauf si celui ci a été entrainé vers un noeud terminal de défaite créer par la classe jeu et donc, non existante, une autre méthode est appelé (nommé \textit{execBookNodeLink()}) afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent. Si c'est le cas, le joueur est alors "mis à jour". Si le joueur n'a plus de vie, même si le lien le portait vers un noeud de victoire, un noeud de défaite est créé. Le joueur est considéré alors comme perdant. Cela permet donc d'avoir une méthode complète pour la gestion des options dans les liens.
-
-			\textbf{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices()}, comme vous pouvez le constater dans la figure \ref{fig:JeuBookNodeWithChoices}. La méthode vérifie si au moins un choix est possible, pemettant ainsi de créer, ou non, un noeud terminal de défaite. S'il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du joueur (\textit{player.makeAchoice()}). Car ici, un choix est demandé, soit le Scanner du player ou le random de la fourmis. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, vu juste en dessous de la figure du haut, est appelé. Si le joueur est toujours en vie, le noeud choisi est renvoyé en noeud de destination. Sinon, le joueur doit faire un autre choix car il y a minimum un choix possible.\\
+			\textbf{S'il s'agit d'un noeud basique}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices()}. La méthode vérifie si au moins un choix est possible, pemettant ainsi de créer, ou non, un noeud terminal de défaite. S'il peut au moins choisir une destination, un choix est demandé parmi toutes les destinations faisant un appel à la méthode \textit{player.makeAchoice()}. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, est appelée. Enfin, nouss retournons le prochain noeud à exécuter.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.70\textwidth]{img/codeJeuPrerequis.png}
-				\caption{Jeu prérequis}
+				\caption{Exemple de prérequis non satisfait}
 				\label{fig:codeJeuPrerequis}
 			\end{figure}
 
-			Le problème de la méthode \textit{isAvailable()}, c'est que cela peut créer un livre sans fin. En effet, prenons l'exemple d'un joueur avec un espace inventaire maximal de 1. Le joueur a un item, dans le premier noeud, "Potion" et décide de prendre l'item. Il n'a donc plus de place dans son inventaire. Le deuxième noeud, il décide de prendre l'item "Arme" car il veut pouvoir se défendre, l'item "Potion" est donc supprimé. Sauf qu'il se retouve en face de deux choix: Choix 1 avec de prérequi "Potion" qu'il vient de suprimmer, ainsi que le choix 2 qui le renvoi sur ce noeud. Le problème c'est que la méthode \textit{isAvailable()} renvoie true, car le joueur peut accéder au choix 2. Le joueur est donc coincé. Cela pose un problème que cela soit dans la génération de la difficulté et la jouabilité du livre.\\
-			Cela ouvre donc une piste de réflexion. Il faudrait peut être envoyer des fourmis à chaque "destination" de noeud trouvé. Si une fourmis trouve une boucle infini (retombe sur un même noeud "n" fois, avec un nombre assez grand permettant d'être sûr que c'est bien une boucle infini), elle renvoie un "false" et le numéro du noeud. Si le joueur tombe sur ce paragraphe, un noeud terminal défaite est généré en indiquant sur celui ci "le livre n'est plus possible, il vous manque [prerequi]". Ces fourmis et ce boolean sera généré a chaque destination chargé. La fourmis sera la copie exacte du personnage au moment même du chargement du noeud de destination. Mais cette méthode ralentirais l'application et une autre, plus simple, serait peut être possible.
-
-			\begin{figure}[H]
-				\centering\includegraphics[width=0.70\textwidth]{img/JeuBoucleInfiniExemple.png}
-				\caption{Exemple de boucle infini}
-			\end{figure}
-
-
-			Une fois qu'au moins une destination est possible, nous avons décidé de ne pas afficher que les choix possibles afin de ne pas aveugler le joueur de ses possibilités. S'il veut rejouer au livre, il saura les prérequis de certain chemins.
+			L'appel aux différentes méthodes ressemble donc à ce qui suit :
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.70\textwidth]{img/JeuBookNodeWithChoices.png}
@@ -1062,59 +1014,10 @@
 				\label{fig:JeuBookNodeWithChoices}
 			\end{figure}
 
+			\textbf{S'il s'agit d'un noeud de combat}, une vérification est réalisée afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, nous considèrons que le joueur est victorieux du combat. S'il n'y a pas de noeud de victoire, un noeud de défaite est automatiquement transmis afin de ne pas avoir d'erreur sur ce noeud. Si une liste d'ennemis est présente, nous en instancions une nouvelle contenant les \textit{BookCharacter}. C'est nécessaire car la première liste contient les ID des ennemis, les informations sur les ennemis étant contenues dans la HashMap du livre, or, il ne faut pas les modifier directement. Ensuite, le joueur entre en combat et fait son choix sur l'action à mener : "Attaquer", "Utiliser son inventaire", "Partir". Une fois que le tour du joueur est terminé, et s'il est toujours au combat, chaque ennemi va l'attaquer de manière successive.
 
-			\textbf{Si c'est un noeud de type combat}, une vérification est réalisé afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, le noeud en cas de victoire est envoyé en noeud de destination. S'il ny a pas de noeud de victoire, un noeud de défaite est automatiquement transmit afin de ne pas avoir d'erreur sur ce noeud. Si une liste d'ennemis est présente, cette dernière est copié est créé afin de ne pas modifier la vie des ennemis. Car ces derniers ne sont pas lié au noeud, mais c'est l'ID de l'ennemi qui est lié au noeud. Cela permet donc de les appelés plusieurs fois dans plusieurs ou dans le même noeud.\\
-			Le combat commence alors. Le choix est défini par la méthode du joueur correspondant car un Scanner ou un random est requis pour ce type de choix. Ici, trois choix sont possibles:
+			La fin de combat s'effectue si la liste d'ennemis est vide ou si le joueur n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat (lien de victoire ou de défaite). Bien sur, si le lien n'est pas existant, un noeud terminal de défaite est créé pour éviter de déclencher une exception.
 
-			\begin{description}
-				\item[Choix Attaque :]{que ce soit dans la classe \textbf{Player} ou \textbf{Fourmis}, un autre choix (cf ligne 2) est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Cela permet donc de créer un dynamisme et une certaine intélligence dans le combat. Je vous invite à voir les subsection fourmis \ref{subsec:fourmis} et player \ref{subsec:player} pour plus de détail dans le choix.
-				 Une fois l'ennemi sélectionné, une méthode attaque (cf ligne 7) est appelé apellant elle même une autre méthode commune entre l'attaque du joueur et l'attaque d'ennemi. Nommé \textit{getDamageAmount()}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player. Cette méthode commune permet donc d'éviter une répétition dans le code.}
-				Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimé de la liste des ennemis (cv logne 9) avant sont tour pour éviter que l'ennemi mort attaque ou que l'on rattaque cette ennemi.
-				\item[Inventaire :]{si ce choix est fait par le joueur, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense. Pour plus de détail sur ce choix, je vous invite à regarder les subsection fourmis \ref{subsec:fourmis} et player \ref{subsec:player}.}
-				\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 (voir cf 13) et si un noeud de d'évasion existe, le joueur peut alors s'enfuir. Sinon cela lui passe son tour.Nous avons décidé de ne pas relancer les choix à ce moment, car cela peut être une stratégie du joueur qui, dans une prochaine mise à jour d'implentation de pouvoir lié à des compétences, en cas d'une compétence de "renvoi" (qui se désactive en cas d'attaque de la part du joueur), l'attaque de l'ennemi est alors "retourné" vers lui même.}
-			\end{description}
+			\textbf{S'il s'agit d'un noeud aléatoire}, après appel à la méthode \textit{AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices)}, nous récupèrons un des choix à l'aide de \textit{getRandomChoices()} (cf \nameref{lst:getRandomChoices} à la page \pageref{lst:getRandomChoices}) ce qui, pour rappel, permet d'obtenir l'un des noeud de manière aléatoire suivant certaines probabilités. Si aucun noeud choix n'est valide, nous retournons un noeud terminal de défaite. Dans le cas contraire, nous retournons le noeud correspondant au choix tiré.
 
-			\begin{lstlisting}[gobble=16, language=java, caption=JeuCombat]
-				while(!finCombat){
-					ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
-
-					if (choixCombat == ChoixCombat.ATTAQUER) {
-
-						BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
-						attaque(ennemi);
-						if(!ennemi.isAlive()){
-							listEnnemis.remove(ennemi);
-						}
-					}
-					else if(choixCombat == ChoixCombat.EVASION) {
-						if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null){
-							execBookNodeLink(node.getEvasionBookNodeLink());
-							return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
-						}
-					}
-
-					ennemiTour(listEnnemis);
-
-					if(!state.getMainCharacter().isAlive()) {
-						//Vérification d'un noeud Failure
-						if(node.getLooseBookNodeLink() != null)  {
-							execBookNodeLink(node.getLooseBookNodeLink());
-							return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
-						} else
-							return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
-					}
-
-					if(listEnnemis.isEmpty())
-						finCombat = true;
-
-					evasionRound -= 1;
-				}
-			\end{lstlisting}
-
-			Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textit{getDamageAmount()} permettant aux ennemis d'attaquer un par un. Cette liste d'ennemis et la méthode commune, \textit{getDamageAmount()}, est alors très pratique pour l'attaque de l'ennemis et est, on pense, le meilleur moyen utiliser afin de gérer les attaques.\\
-
-			La fin de combat est déterminé si la liste d'ennemis est vide ou si le joueur n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat. Bien sur, si le noeud de destination n'est pas existant, la noeud terminal de défaite est créer pour éviter de bloquer le jeu.
-
-			\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le joueur est encore en vie. Puis une autre méthode, nommé \textit{getRandomChoices()} (cf \nameref{lst:getRandomChoices} à la page \pageref{lst:getRandomChoices}) est appelé de la classe BookNodeLinkRandom afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
-
-			\textbf{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un boolean sur l'état de la fin de partie. Ce boolean permet de quitter la boucle while de la méthode \textit{runGame()} et permet ainsi donc d'arreter le jeu. L'utilisateur peut alors continuer l'édition du livre pour le player et permet de savoir si la partie est gagné ou perdu pour la fourmis (voir la subsection fourmis \ref{subsec:fourmis}). Bien sûr, une vérification si le joueur est en vie est également éxécuté si c'est une noeud de type VICTORY, permettant ainsi que le joueur perde même si le son lieu de destination est un noeud de victoire.
+			\textbf{S'il s'agit d'un noeud terminal}, la partie est alors terminée. Nous vérifions, dans \textit{runGame()}, s'il s'agit ou non d'une victoire et nous renvoyons le boolean adéquat.
