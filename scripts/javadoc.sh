@@ -7,5 +7,5 @@ echo "Compilation et lancement de la javadoc, merci de patienter"
 
 ./gradlew javadoc
 
-echo "Javadoc générer"
-echo "Lien vers la Javadoc : file://$(pwd |sed -E 's/ /%20/g')/build/docs/javadoc/index.html"
+echo "Javadoc générée"
+echo "Lien vers la Javadoc : file://$(pwd)/build/docs/javadoc/index.html"
