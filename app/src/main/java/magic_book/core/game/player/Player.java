@@ -22,8 +22,6 @@ import magic_book.core.item.BookItemWeapon;
  */
 public class Player implements InterfacePlayerFourmis {
 
-	private int nbItemMax;
-	
 	public Player(){
 	}
 
@@ -131,7 +129,7 @@ public class Player implements InterfacePlayerFourmis {
 	* @param state Sauvegarde actuelle de la partie
 	* @param bookItemLinks Item(s) disponible(s) sur le lien actuel
 	*/
-	private void itemAdd(BookState state, List<BookItemLink> bookItemLinks){
+	private int itemAdd(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 		System.out.println("Quel item voulez-vous ?");
 		int i=0;
 		for(BookItemLink itemLink : bookItemLinks){
@@ -155,7 +153,8 @@ public class Player implements InterfacePlayerFourmis {
 				
 				if(itemLink.getAmount() == 0)
 					bookItemLinks.remove(itemLink);
-				this.nbItemMax --;
+				nbItemMax--;
+				
 				choixValide = true;
 			} else if(choix == -1) {
 				choixValide = true;
@@ -163,12 +162,13 @@ public class Player implements InterfacePlayerFourmis {
 				System.out.println("vous ne pouvez pas effectuer ce choix");
 			}
 		}
+		return nbItemMax;
 	}
 
 	@Override
 	public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
-		this.nbItemMax = nbItemMax;
-		while(this.nbItemMax != 0 && !bookItemLinks.isEmpty()){
+
+		while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
 			System.out.println("Les items suivant sont disponible:");
 			int i=0;
 			for(BookItemLink itemLink : bookItemLinks){
@@ -190,15 +190,15 @@ public class Player implements InterfacePlayerFourmis {
 					else
 						itemSupp(state);
 				} else {
-					itemAdd(state, bookItemLinks);
+					nbItemMax = itemAdd(state, bookItemLinks, nbItemMax);
 				}
 
 			} else {
-				this.nbItemMax = 0;
+				nbItemMax = 0;
 			}
 
 			if(bookItemLinks.isEmpty())
-				this.nbItemMax = 0;
+				nbItemMax = 0;
 		}
 	}
 
