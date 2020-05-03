@@ -46,6 +46,8 @@ public class Player implements InterfacePlayerFourmis {
 				continue;
 			}
 
+			// Ordre dans l'énumération important. Il doit être identique au menu ci-dessus.
+			// TODO : Utiliser une série de if plutot
 			choixCombat = ChoixCombat.values()[choix-1];
 
 			//Choisi un objet dans l'inventaire puis retourne au choix
@@ -108,7 +110,7 @@ public class Player implements InterfacePlayerFourmis {
 		}
 		System.out.println("-1 - Annuler");
 		boolean choixValide = false;
-		
+
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			int choix = scanner.nextInt();
@@ -142,7 +144,7 @@ public class Player implements InterfacePlayerFourmis {
 		System.out.println("-1 - Annuler");
 		boolean choixValide = false;
 		int choix = -1;
-		
+
 		while(!choixValide){
 			Scanner scanner = new Scanner(System.in);
 			choix = scanner.nextInt();
@@ -153,11 +155,11 @@ public class Player implements InterfacePlayerFourmis {
 				state.getMainCharacter().getItems().add(itemLink.getId());
 
 				itemLink.setAmount(itemLink.getAmount()-1);
-				
+
 				if(itemLink.getAmount() == 0)
 					bookItemLinks.remove(itemLink);
 				nbItemMax--;
-				
+
 				choixValide = true;
 			} else if(choix == -1) {
 				choixValide = true;
