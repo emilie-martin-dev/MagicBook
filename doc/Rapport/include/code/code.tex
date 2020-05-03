@@ -1,7 +1,7 @@
 \chapter{Aspects techniques}
 
 	\section{Représentation d'un livre}
-		Un livre peut contenir différentes informations. On y retrouve des items, des personnages, des paragraphes (que nous appellerons des noeuds), des choix (que nous appellerons des liens), ... Cette partie présentera la manière dont nous avons pensé ces différents éléments.
+		\label{sec:representation_livre}
 
 		Un livre peut contenir différentes informations. On y retrouve des items, des personnages, des paragraphes (que nous appellerons des noeuds), des choix (que nous appellerons des liens), ... Cette partie présentera la manière dont nous avons pensé ces différents éléments.
 
@@ -15,27 +15,29 @@
 				\label{fig:OldBookNode}
 			\end{figure}
 
-			Par la suite, nous avons voulu utiliser des classes afin de spécialiser certaines méthodes et de bien séparer les différents attributs dans différentes classes. Ainsi, seul la classe \textbf{BookNodeCombat}, représentant un noeud de combat, contient les informations sur le combat (liste d'ennemi, etc).
-
-			Maintenant, il y a donc quatre types de noeuds représentées par différentes classes (Voir figure \ref{fig:BookNode}):
+			Par la suite, nous avons voulu utiliser des classes afin de spécialiser certaines méthodes et de bien séparer les différents attributs dans différentes classes. Ainsi, par exemple, seul la classe représentant un noeud de combat contient les informations sur celui-ci (liste d'ennemi, etc). Ainsi, voici la première partie de cette nouvelle architecture :
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.90\textwidth, keepaspectratio]{img/BookNode1.png}
 				\caption{Une partie de la nouvelle représentation des noeuds}
-				\label{fig:BookNode}
+				\label{fig:BookNode1}
 			\end{figure}
 
-			Tout d'abord on retrouve \textbf{AbstractBookNode} qui contient un texte correspondant aux paragraphes du noeud. En découle ensuite une deuxième classe mère \textbf{AbstractBookNodeWithChoices<T>} qui constitue la base de chaque noeud non terminal. Elle apporte diverses attributs comme la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de points de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste des choix disponible. Ce dernier est défini par une List<T> car nous aurons différents type de liens et nous souhaitons qu'on noeud ne puisse posséder qu'un et un seul type de lien au sein d'une même liste.
+			Tout d'abord on retrouve \textbf{AbstractBookNode} qui contient un texte correspondant aux paragraphes du noeud.
+
+			\textbf{BookNodeTerminal} hérite de cette classe et possède comme attribut une instance de l'énumération \textbf{BookNodeStatus} qui permet de connaître la finalité du livre, c'est à dire si le joueur à gagné ou perdu.
+
+			Découle ensuite, de \textbf{AbstractBookNode}, une deuxième classe mère \textbf{AbstractBookNodeWithChoices<T>} qui constitue la base de chaque noeud non terminal. Elle apporte diverses attributs comme la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de points de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste des choix disponible. Ce dernier est défini par une List<T> car nous aurons différents type de liens et nous souhaitons qu'on noeud ne puisse posséder qu'un et un seul type de lien au sein d'une même liste.
+
+			Ainsi, c'est de cette classe que tous les autres noeuds vont hériter, comme le montre le reste de notre structure :
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.90\textwidth, keepaspectratio]{img/BookNode2.png}
 				\caption{L'héritage de AbstractBookNodeWithChoices<T>}
-				\label{fig:BookNode}
+				\label{fig:BookNode2}
 			\end{figure}
 
-			Parmi les classes filles instanciable, on retrouve \textbf{BookNodeWithChoices} pour les noeuds à choix simple, \textbf{BookNodeWithRandomChoices} pour les noeuds où l'on prend un choix de manière aléatoire, \textbf{BookNodeCombat} pour les noeuds de combat et \textbf{BookNodeTerminal} pour ceux de victoire et de défaite.
-
-			\textbf{BookNodeTerminal} possède une énumération, \textbf{BookNodeStatus}, qui permet de connaître la finalité du livre, c'est à dire si le joueur à gagné ou perdu.
+			Parmi les classes filles instanciable, on retrouve \textbf{BookNodeWithChoices} pour les noeuds à choix simple, \textbf{BookNodeWithRandomChoices} pour les noeuds où l'on prend un choix de manière aléatoire et \textbf{BookNodeCombat} pour les noeuds de combat.
 
 			Pour le \textbf{BookNodeCombat}, le choix a été fait d'ajouter trois \textbf{BookNodeLink} afin de représenter les différentes issues du combat : victoire, évasion, defaite. Cela permet donc d'avoir, au maximum, un lien possible pour chaque finalité du combat. Nous avons donc redéfini les méthodes spécifiques aux choix, c'est à dire celle pour récupérer les choix, celle pour les supprimer et celle pour les mettre à jour. La liste de la classe mère n'est plus utilisable. Il s'agit d'une grosse erreur de notre part. En effet, cette classe demande un traitement spécial à presque tous les endroits où l'on peut gérer des noeuds. Il aurait plutôt fallu ajouter les choix dans la liste parente et avoir un moyen de faire une distinction afin de savoir lequel est celui de victoire, de défaite ou d'évasion. Nous n'aurions pas eu à redéfinir autant de fois des comportements particuliers pour ce noeud avec des "instanceof". Par manque de temps et au vu des changements importants que cela nécessitait, pour faire cela proprement nous n'avons pas pu changer cela. Une liste contenant les ID des ennemis que l'on doit combattre y est également renseignée. Les ennemis peuvent ensuite être retrouvés dans le livre à l'aide de cet ID.
 
@@ -59,7 +61,7 @@
 				\caption{UML sur la gestion des personnages}
 			\end{figure}
 
-			Concernant les listes de String (skills, immunes, items), il s'agit d'une liste contenant les ID. Pour "immunes", il s'agit des ID des skills contre lesquels le personnage est immunisé. Cela permet aux items et aux skills de n'être référencés qu'à un seul et même endroit, c'est à dire, dans la classe \textbf{Book}. Pour la monnaie, on a choisi d'utiliser une HashMap<String, Integer> afin de pouvoir gérer différents types de monnaie et leur montant dans une même histoire. Malheureusement, notre format de livre, et donc notre application, ne permet pour le moment pas de gérer pleinement cette fonctionnalité.
+			Concernant les listes de String (skills, immunes, items), il s'agit d'une liste contenant les ID. Pour "immunes", il s'agit des ID des skills contre lesquels le personnage est immunisé. Cela permet aux items et aux skills de n'être référencés qu'à un seul et même endroit, c'est à dire, dans la classe \textbf{Book}. Pour la monnaie, nous avons choisi d'utiliser une HashMap<String, Integer> afin de pouvoir gérer différents types de monnaie et leur montant dans une même histoire. Malheureusement, notre format de livre, et donc notre application, ne permet pour le moment pas de gérer pleinement cette fonctionnalité.
 
 			Passons maintenant aux items. Ceux-ci possèdent une classe mère BookItem dans le package magic\_book.core.item.
 
@@ -101,7 +103,7 @@
 
 			Nous avons décidé de fournir à l'utilisateur la possibilité de définir des listes de prérequis qu'il est nécessaire de remplir afin de pouvoir accéder à un choix. Ainsi, le joueur se verra refusé l'utilisation d'un choix s'il ne possède pas un item en particulier, une certaines somme d'argent, etc.
 
-			Les prérequis sont définis par une classe mère \textbf{AbstractRequirement}, donne lieu à une classe par type de prérequis. Chaque classe fille doit définir le comportement de la méthode \textit{boolean isSatisfied()}. Ainsi, on retrouve \textbf{RequirementItem} pour les prérequis sur la possession d'un item, \textbf{RequirementMoney} pour la posssession d'une somme d'argent ainsi que \textbf{RequirementSkill} pour la possession d'une compétence. Chacun d'entre eux possèdera donc l'id de l'élément qu'il doit vérifier, mais aussi le montant minimum nécessaire dans le cas de l'argent.
+			Les prérequis sont définis par une classe mère \textbf{AbstractRequirement}, qui donne lieu à une classe par type de prérequis. Chaque classe fille doit définir le comportement de la méthode \textit{boolean isSatisfied()}. Ainsi, on retrouve \textbf{RequirementItem} pour les prérequis sur la possession d'un item, \textbf{RequirementMoney} pour la posssession d'une somme d'argent ainsi que \textbf{RequirementSkill} pour la possession d'une compétence. Chacun d'entre eux possèdera donc l'id de l'élément qu'il doit vérifier, mais aussi le montant minimum nécessaire dans le cas de l'argent.
 
 			Cependant, comment savoir si le prérequis est satisfait ? Comment connaître l'état actuel du jeu ? C'est possible grâce à la classe \textbf{BookState} qui contient toutes les informations sur l'état actuel du jeu. Nos prérequis ne portant que sur le joueur principal il est donc uniquement necessaire d'utiliser la méthode \textit{getMainCharacter}.
 
@@ -113,9 +115,9 @@
 				}
 			\end{lstlisting}
 
-			Nous avons souhaiter fournir encore plus de flexibilité à cette manière de faire, ainsi, il est possible d'avoir une liste de prérequis à satisfaire afin de pouvoir accéder au choix voulu. Il est donc maintenant possible de créer un choix qui nécessite à la fois de "posséder un pass" et "50 euros" sur soit par exemple. Là encore, nous avons décidé de fournir une possibilité supplémentaire en permettant de proposer des conditions alternatives. C'est à dire de fournir une liste de prérequis alternative capable de permettre l'accès au choix. Nous avons donc différentes liste contenant elles même des conditions qu'il est nécessaire de satisfaire en même temps. Il est donc maintenant possible de faire des conditions comme suit : ("posséder un pass" ET "50 euros") OU ("pouvoir se téléporter") OU ("posséder 50 euros" ET "posséder 50 yen").
+			Nous avons souhaité fournir encore plus de flexibilité à cette manière de faire, ainsi, il est possible d'avoir une liste de prérequis à satisfaire afin de pouvoir accéder au choix voulu. Il est donc maintenant possible de créer un choix qui nécessite à la fois de "posséder un pass" et "50 euros" sur soit par exemple. Là encore, nous avons décidé de fournir une possibilité supplémentaire en permettant de proposer des conditions alternatives. C'est à dire de fournir une liste de prérequis alternative capable de permettre l'accès au choix. Nous avons donc différentes liste contenant elles même des conditions qu'il est nécessaire de satisfaire en même temps. Il est donc maintenant possible de faire des conditions comme suit : ("posséder un pass" ET "50 euros") OU ("pouvoir se téléporter") OU ("posséder 50 euros" ET "posséder 50 yen").
 
-			Ainsi, on comprend mieux le rôle de la méthode nommée \textit{isAvailable()} dans \textbf{BookNodeLink} (cf : \nameref{fig:BookNode} page \ref{fig:BookNode}). Cette méthode se charge d'indiquer si une liste satisfait tous les prérequis. Bien entendu, une seule liste suffit à rendre le choix disponible et un seul prérequis non satisfait suffit à rendre la liste non satisfaite car il s'agit du principe même des OU et des ET.
+			Ainsi, on comprend mieux le rôle de la méthode nommée \textit{isAvailable()} dans \textbf{BookNodeLink} (cf : \nameref{fig:BookNode2} page \ref{fig:BookNode2}). Cette méthode se charge d'indiquer si une liste satisfait tous les prérequis. Bien entendu, une seule liste suffit à rendre le choix disponible et un seul prérequis non satisfait suffit à rendre la liste non satisfaite car il s'agit du principe même des OU et des ET.
 
 
 			\begin{algorithm}[H]
@@ -414,13 +416,13 @@
 			Le pattern observer est essentiel pour la mise en place du pattern MVC. Nous avons décidé de procéder de la manière suivante :
 
 			\begin{figure}[H]
-				\centering\includegraphics[width=0.8\textwidth, keepaspectratio]{img/observer.png}
+				\centering\includegraphics[width=0.85\textwidth, keepaspectratio]{img/observer.png}
 				\caption{UML d'exmple sur le pattern observer}
 			\end{figure}
 
-			Comme on peut le voir, une classe mère \textbf{Observable<T>} détient une List<T> d'observers. Une méthode d'ajout, et de suppression permettent de modifier cette liste. Dès lors que l'on souhaite ajouter un nouveau type d'observer, on doit commencer par créer une nouvelle Interface avec les méthodes que l'on souhaite fournir, dans notre exemple il s'agit de nodeAdded, nodeEdited, nodeDeleted. Une fois cette interface faite, on doit alors faire une nouvelle classe \textbf{Observable}, \textbf{BookNodeObservable} dans notre cas, qui hérite de \textbf{Observable<T>}, T étant l'observer que l'on souhaite utiliser, donc \textbf{BookNodeObserver}. Ainsi, chaque Observable que l'on fera ne sera qu'une définition des méthodes pour notifier qu'un évènement s'est produit.
+			Comme on peut le voir, une classe mère \textbf{Observable<T>} détient une List<T> d'observers. Une méthode d'ajout, et de suppression permettent de modifier cette liste. Dès lors que l'on souhaite ajouter un nouveau type d'observer, on doit commencer par créer une nouvelle Interface avec les méthodes que l'on souhaite fournir, dans notre exemple il s'agit de nodeAdded, nodeEdited, nodeDeleted. Une fois cette interface faite, on doit alors faire une nouvelle classe observable, \textbf{BookNodeObservable} dans notre cas, qui hérite de \textbf{Observable<T>}, T étant l'observer que l'on souhaite utiliser, donc \textbf{BookNodeObserver}. Ainsi, chaque Observable que l'on fera ne sera qu'une définition des méthodes pour notifier qu'un évènement s'est produit.
 
-			Le choix à été fait de séparer les différentes parties (noeuds, liens, items, ...) du livre en différents observers afin de ne pas surcharger le nombre de méthodes à redéfinir dans les classes Observer, et donc de n'observer que ce dont on a besoin. Cependant, deux observers sont actuellement manquant, celui pour notifier d'un changement concernant le premier noeud et celui pour notifier un changement sur le personnage principal.
+			Le choix à été fait de séparer les différentes parties (noeuds, liens, items, ...) du livre en différents observers afin de ne pas surcharger le nombre de méthodes à redéfinir dans les classes Observer, et donc de n'observer que ce dont on a besoin. Cependant, deux observers sont actuellement manquant, celui pour notifier d'un changement concernant le premier noeud et celui pour notifier un changement sur les éléments du prélude (Texte du prélude, phase de "crréation du personnage", personnage principal).
 
 	\section{Lecture et écriture d'un livre}\label{sec:Json}
 
@@ -617,14 +619,14 @@
 		\subsection{La lecture et l'écriture}
 			\label{subsec:lecture_ecriture_fichier}
 
-			Du fait que la structure en Json n'est pas identique à celle détaillée dans \nameref{sec:representation_livre} (page \pageref{sec:representation_livre}), nous avons fait des classes intermédiaires pour permettre cette lecture. Celles-ci sont disponibles dans le package \textit{magic\_book/core/file/json} et ne contiennent rien de plus que des "getters" et "setters". Aussi, afin de permettre une convertion entre les classes faites pour représenter un fichier json et celles faites pour être utilisées par l'application, une interface \textit{JsonExportable} existe. Celle ci permet de redéfinir 2 méthodes. L'une renvoyant la classe JSON associée à notre classe actuelle, l'autre permettant à partir d'une classe JSON d'obtenir la classe Java correspondante.
+			Du fait que la structure en Json n'est pas identique à celle détaillée dans \nameref{sec:representation_livre} (page \pageref{sec:representation_livre}), nous avons fait des classes intermédiaires pour permettre cette lecture. Celles-ci sont disponibles dans le package \textit{magic\_book.core.file.json} et ne contiennent rien de plus que des "getters" et "setters". Aussi, afin de permettre une convertion entre les classes faites pour représenter un fichier json et celles faites pour être utilisées par l'application, une interface \textit{JsonExportable} existe. Celle ci permet de redéfinir 2 méthodes. L'une renvoyant la classe JSON associée à notre classe actuelle, l'autre permettant à partir d'une classe JSON d'obtenir la classe Java correspondante.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.66\textwidth, keepaspectratio]{img/json_exportable.png}
 				\caption{L'interface JsonExportable et quelques classes qui l'implémentent}
 			\end{figure}
 
-			Enfin, les classes \textbf{BookReader} et \textbf{BookWritter} permettent de récupérer toutes les classes JSON intermédiaires pour les regrouper dans le BookJson qui correspond à la structure complète de notre livre. Ces classes sont également une couche d'abstraction à GSON car elles se chargent d'écrire le JSON correspondant dans un flux.
+			Enfin, les classes \textbf{BookReader} et \textbf{BookWritter} permettent respectivement la lecture / l'écriture dans un flux d'un livre au format JSON. Pour cela, elle utilisent en réalité GSON et agissent donc comme une couche d'abstraction de cette librairie. Ainsi, \textbf{BookReader} va lire le flux avec GSON pour récupérer une instance de \textbf{BookJson}, classe JSON intermédiaire qui représente le livre, puis transformer cette instance en une instance de \textbf{Book} grace aux appels de \textit{fromJson}. \textbf{BookWritter}, lui, va transformer une instance de \textbf{Book} en \textbf{BookJson}, grace aux appels à \textit{toJson}, puis écrire dans le flux le JSON correspondant grace à GSON.
 
 			Pour résumer, on peut schématiser ces échanges de telle sorte :
 
@@ -652,7 +654,7 @@
 			Notre fenêtre principale est définit par la classe la MainWindow est notre fenêtre principale. Elle contient un Menu permettant de réaliser plusieurs actions (ouvrir et sauvegarder un fichier, exporter le livre, jouer, estimer la difficulté, ...) ainsi que trois zones différentes, divisées en trois autres classes.
 
 			\begin{figure}[H]
-				\centering\includegraphics[width=0.50\textwidth]{img/mainwindow.png}
+				\centering\includegraphics[width=0.66\textwidth]{img/mainwindow.png}
 				\caption{MainWindow}
 				\label{fig:MainWindow}
 			\end{figure}
@@ -705,7 +707,7 @@
 				Commençons par analyser le diagramme montrant l'architecture pour les noeuds :
 
 				\begin{figure}[H]
-					\centering\includegraphics[width=0.6\textwidth, keepaspectratio]{img/NodeFx.png}
+					\centering\includegraphics[width=0.5\textwidth, keepaspectratio]{img/NodeFx.png}
 					\caption{UML sur la représentation des noeuds}
 				\end{figure}
 
@@ -714,7 +716,7 @@
 				Passons maintenant à la représentation des liens :
 
 				\begin{figure}[H]
-					\centering\includegraphics[width=0.6\textwidth, keepaspectratio]{img/NodeLinkFx.png}
+					\centering\includegraphics[width=0.5\textwidth, keepaspectratio]{img/NodeLinkFx.png}
 					\caption{UML sur la représentation des liens}
 				\end{figure}
 
