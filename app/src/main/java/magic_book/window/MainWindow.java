@@ -21,6 +21,7 @@ import magic_book.core.file.BookReader;
 import magic_book.core.file.BookTextExporter;
 import magic_book.core.file.BookWritter;
 import magic_book.core.game.player.Jeu;
+import magic_book.core.graph.node.AbstractBookNode;
 import magic_book.window.gui.NodeFx;
 import magic_book.window.pane.GraphPane;
 import magic_book.window.pane.LeftPane;
@@ -43,39 +44,39 @@ public class MainWindow extends Stage {
 	 * Contient la partie droite de la fenêtre
 	 */
 	private RightPane rightPane;
-	
+
 	/**
 	 * Constitue l'affichage centrale de la fenêtre
 	 */
 	private BorderPane root;
-	
+
 	/**
 	 * Chemin du fichier actuellement ouvert
 	 */
 	private String path = null;
-	
+
 	/**
 	 * Le livre contenant toutes les informations
 	 */
 	private Book book;
-	
+
 
 	/**
 	 * Initialisation de la fenêtre principale
 	 */
 	public MainWindow() {
 		book = new Book();
-		
+
 		root = new BorderPane();
 		graphPane = new GraphPane(book);
 		leftPane = new LeftPane(graphPane, book);
 		rightPane = new RightPane(book);
-		
+
 		root.setTop(createMenuBar());
 		root.setLeft(leftPane);
 		root.setRight(rightPane);
 		root.setCenter(graphPane);
-		
+
 		Scene scene = new Scene(root, 1000, 800);
 
 		this.setTitle("Magic Book");
@@ -97,7 +98,7 @@ public class MainWindow extends Stage {
 			setBook(new Book());
 			path = null;
 		});
-		
+
 		//Permet d'ouvrir un livre
 		MenuItem menuFileOpen = new MenuItem("Ouvrir");
 		menuFileOpen.setOnAction((ActionEvent e) -> {
@@ -118,22 +119,22 @@ public class MainWindow extends Stage {
 				BookReader reader = new BookReader();
 				Book book = reader.read(selectedFile.getAbsolutePath());
 				setBook(book);
-				
+
 				path = selectedFile.getAbsolutePath();
 			} catch (FileNotFoundException ex) {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'ouverture du fichier");
 				a.setHeaderText("Le fichier n'existe pas");
-				a.show(); 
+				a.show();
 			} catch (BookFileException ex) {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Erreur lors de l'ouverture du fichier");
 				a.setHeaderText("Le fichier n'est pas bien formé");
 				a.setContentText(ex.getMessage());
 				a.show();
-			}			
+			}
 		});
-		
+
 		//Permet d'enregistrer un livre
 		MenuItem menuFileSave = new MenuItem("Enregistrer");
 		menuFileSave.setOnAction((ActionEvent e) -> {
@@ -141,24 +142,24 @@ public class MainWindow extends Stage {
 				if(!changeSelectedFile())
 					return;
 			}
-			
+
 			saveFile();
 		});
-		
+
 		//Permet d'enregistrer sous un livre
 		MenuItem menuFileSaveAs = new MenuItem("Enregistrer sous");
 		menuFileSaveAs.setOnAction((ActionEvent e) -> {
 			if(!changeSelectedFile())
 				return;
-			
-			saveFile();			
+
+			saveFile();
 		});
 
 		menuFile.getItems().addAll(menuFileNew, menuFileOpen, menuFileSave, menuFileSaveAs);
 
 		// --- Menu livre
 		Menu menuBook = new Menu("Livre");
-		
+
 		//Permet de jouer au livre
 		MenuItem menuBookJouer = new MenuItem("Jouer");
 		//Si erreur dans le chargement du livre
@@ -173,7 +174,7 @@ public class MainWindow extends Stage {
 				a.show();
 			}
 		});
-		
+
 		//Permet de générer des fourmis afin d'estimé la difficulté
 		MenuItem menuBookDifficulty = new MenuItem("Estimer la difficulté");
 		//Si erreur dans le chargement du livre
@@ -189,17 +190,17 @@ public class MainWindow extends Stage {
 				a.show();
 			}
 		});
-		
+
 		//Permet de générer tout le livre en texte dans un format .txt
 		MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
 		menuBookGenerate.setOnAction((ActionEvent e) -> {
-			NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
-			if(firstNodeFx == null) {
+			AbstractBookNode rootNode = book.getRootNode();
+			if(rootNode == null) {
 				Alert a = new Alert(Alert.AlertType.WARNING);
 				a.setTitle("Erreur lors de l'export");
 				a.setHeaderText("Merci de sélectionner au préalable le noeud de départ");
-				a.show(); 
-				
+				a.show();
+
 				return;
 			}
 
@@ -210,14 +211,14 @@ public class MainWindow extends Stage {
 			if (selectedFile == null) {
 				return;
 			}
-			
+
 			try {
 				BookTextExporter.generateBook(book, selectedFile.getAbsolutePath());
 			} catch (IOException ex) {
 				Alert a = new Alert(Alert.AlertType.ERROR);
 				a.setTitle("Erreur lors de l'export du fichier");
 				a.setHeaderText("Impossible de sauvegarder le fichier sur le disque");
-				a.show(); 
+				a.show();
 			}
 		});
 
@@ -254,19 +255,19 @@ public class MainWindow extends Stage {
 
 		return menuBar;
 	}
-	
+
 	/**
 	 * Met à jour le livre
 	 * @param book Nouveau livre
 	 */
-	private void setBook(Book book) {		
+	private void setBook(Book book) {
 		this.book = book;
-		
+
 		leftPane.setBook(book);
 		rightPane.setBook(book);
 		graphPane.setBook(book);
 	}
-	
+
 	/**
 	 * Boite de dialogue pour enregistrer le fichier
 	 * @return Si la fenêtre a été validé ou non
@@ -278,21 +279,21 @@ public class MainWindow extends Stage {
 		File selectedFile = fileChooser.showSaveDialog(this);
 		if(selectedFile == null)
 			return false;
-		
+
 		path = selectedFile.getAbsolutePath();
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Permet de sauvegarder le document en fonction du path (chemin du fichier)
 	 */
 	private void saveFile() {
 		File saveFile = new File(path);
-		
+
 		if(!saveFile.getParentFile().exists())
 			saveFile.mkdirs();
-		
+
 		BookWritter bookWritter = new BookWritter();
 		try {
 			bookWritter.write(path, book);
@@ -300,8 +301,8 @@ public class MainWindow extends Stage {
 			Alert a = new Alert(AlertType.ERROR);
 			a.setTitle("Erreur lors de l'écriture du fichier");
 			a.setHeaderText("Impossible d'écrire le fichier sur le disque");
-			a.show(); 
+			a.show();
 		}
 	}
-	
+
 }
