@@ -750,13 +750,13 @@
 	\section{Rendre le livre jouable et estimer sa difficulté}
 		\label{sec:Jeu}
 
-		Deux autres objectifs de notre application étaient de pouvoir jouer sur le terminal au livre en cours d'édition ainsi que de pouvoir fournir à l'utilisateur différentes statistiques, dont une estimation de la difficulté, afin qu'il puisse mesurer à quel point son livre est facile ou non.
+		Deux autres objectifs de notre application étaient de pouvoir jouer sur le terminal du livre en cours d'édition ainsi que de pouvoir fournir à l'utilisateur différentes statistiques, dont une estimation de la difficulté, afin qu'il puisse mesurer à quel point son livre est facile ou non.
 
-		Dès lors, sur quoi se baser pour estimer la difficulté ? L'idée que nous avons eu est de prendre des choix de manière totalement aléatoire jusqu'a finir le livre (peut importe que l'on gagne ou non). À partir de cela il est possible de répéter l'opération plusieurs fois afin d'obtenir une estimation d'un résultat grace au nombre de fois où l'on à gagné. Nous avons donc besoin de rendre le livre jouable à la fois pour le joueur et l'entité chargé de jouer de manière aléatoire, entité que nous appellerons une fourmi.
+		Dès lors, sur quoi se baser pour estimer la difficulté ? L'idée que nous avons eu est de prendre des choix de manière totalement aléatoire jusqu'à finir le livre (peu importe que l'on gagne ou non). À partir de cela il est possible de répéter l'opération plusieurs fois afin d'obtenir une estimation d'un résultat grâce au nombre de fois où l'on a gagné. Nous avons donc besoin de rendre le livre jouable à la fois pour le joueur et l'entité chargée de jouer de manière aléatoire, entité que nous appellerons une fourmi.
 
 		Il est donc évident que le code de jeu pour le joueur et la fourmi sera extrêmement similaire. En effet, les seules parties qui seront différentes concerneront les interractions avec le livre (prise de décision, getion des combats, choix des items à prendre, ...) et l'affichage ou non du texte.
 
-		Ainsi, quatre classes permettent de jouer et d'estimer la difficulté. La première, sera l'interface \textbf{InterfacePlayerFoumis}, qui fournis les méthodes dans lesquels un choix doit être fait. Deux classes en découle, \textbf{Player} et \textbf{Fourmis} permettant respectivement au joueur et à la fourmi de prendre des décisions. Enfin, la classe \textbf{Jeu}, permet de faire jouer le "joueur" (incluant la fourmis) au jeu, jusqu'a ce qu'il arrive le termine. C'est également cette classe qui se chargera de nous donner l'estimation de la difficulté du jeu.
+		Ainsi, quatre classes permettent de jouer et d'estimer la difficulté. La première, sera l'interface \textbf{InterfacePlayerFoumis}, qui fournit les méthodes dans lesquelles un choix doit être fait. Deux classes en découlent, \textbf{Player} et \textbf{Fourmis} permettant respectivement au joueur et à la fourmi de prendre des décisions. Enfin, la classe \textbf{Jeu}, permet de faire jouer le "joueur" (incluant la fourmi) au jeu, jusqu'à ce qu'il arrive et le termine. C'est également cette classe qui se chargera de nous donner l'estimation de la difficulté du jeu.
 
 		C'est en effet ce que montre le diagramme suivant :
 
@@ -765,36 +765,36 @@
 			\caption{UML de la partie Jeu}
 		\end{figure}
 
-		Les parties suivantes détaillerons plus en détaille chacune de ces classes.
+		Les parties suivantes expliqueront plus en détail chacune de ces classes.
 
-		\subsection{Interface Player / Foumis}
+		\subsection{Interface Player / Fourmis}
 
 			Comme dit précédemment, cette interface permet de fournir la liste des méthodes à redéfinir par le joueur et la fourmi concernant leur prise de décision.
 
 			Voici quelques détails concernant ces méthodes :
 
 			\begin{description}
-				\item[execPlayerCreation]{Permet de faire un choix sur les éléments voulus (items, compétence, etc) lors d'une étape de la "conception du personnage"}
+				\item[execPlayerCreation]{Permet de faire un choix sur les éléments voulus (items, compétences, etc) lors d'une étape de la "conception du personnage"}
 
-				\item[combatChoice]{Retourne l'action à exécuter durant un combat selon les différents éléments fournis en paramètre tel que le noeud de Combat, le nombre de tour avant l'évasion ainsi que l'état actuel du jeu représenté par le BookState. Le choix peut alors être d'attaquer, d'aller dans l'inventaire ou alors de s'évader.}
+				\item[combatChoice]{Retourne l'action à exécuter durant un combat selon les différents éléments fournis en paramètre tel que le noeud de Combat, le nombre de tour avant l'évasion ainsi que l'état actuel du jeu représenté par le BookState. Le choix peut alors être soit d'attaquer, d'aller dans l'inventaire ou alors de s'évader.}
 
 				\item[chooseEnnemi]{Permet de choisir l'ennemi à attaquer parmi la liste de tout les ennemis encore en vie.}
 
-				\item[prendreItems]{Permet de prendre une quantité limité d'items parmi ceux qui sont disponible.}
+				\item[prendreItems]{Permet de prendre une quantité limitée d'items parmi ceux qui sont disponibles.}
 
-				\item[makeAChoice]{Permet de faire un choix parmis ceux proposés par le noeud.}
+				\item[makeAChoice]{Permet de faire un choix parmi ceux proposés par le noeud.}
 
 				\item[useIventaire]{Permet d'utiliser son inventaire lors d'un noeud de combat.}
 			\end{description}
 
-			Malgré la volonté de mettre tout le code en commun dans la classe \textbf{Jeu}, certaines parties sont tout de même dupliqués dans les classes \textbf{Player} et \textbf{Fourmis}. C'est notamment le cas avec l'utilisation d'un item de l'inventaire ou la sélection d'un item à prendre. Le mieux serait de retourner l'item à utiliser ou acheter et de traiter les différentes actions lié au choix dans la classe \textbf{Jeu}. Des méthodes supplémentaires seraient alors nécessaires lorsque l'inventaire est plein par exemple. Ce problème n'a pas été réglé par manque de temps.
+			Malgré la volonté de mettre tout le code en commun dans la classe \textbf{Jeu}, certaines parties sont tout de même dupliquées dans les classes \textbf{Player} et \textbf{Fourmis}. C'est notamment le cas avec l'utilisation d'un item de l'inventaire ou la sélection d'un item à prendre. Le mieux serait de retourner l'item à utiliser ou acheter et de traiter les différentes actions liées au choix dans la classe \textbf{Jeu}. Des méthodes supplémentaires seraient alors nécessaires lorsque l'inventaire est plein par exemple. Ce problème n'a pas été réglé par manque de temps.
 
 		\subsection{Player}
 			\label{subsec:player}
 
-			La classe \textbf{Player} permet à un joueur humain de jouer. Tous les choix se font grâce aux Scanner permettant ainsi l'avancement dans la partie. De plus, tous les messages seront affichés (contrairement à la fourmi où rien ne s'affiche) car ou souhaite pouvoir suivre l'histoire.
+			La classe \textbf{Player} permet à un joueur humain de jouer. Tous les choix se font grâce aux Scanner permettant ainsi l'avancement dans la partie. De plus, tous les messages seront affichés (contrairement à la fourmi où rien ne s'affiche) car on souhaite pouvoir suivre l'histoire.
 
-			Prenons deux exemples de méthodes redéfini, \textit{int makeAChoice(AbstractBookNode)} et \textit{ChoixCombat combatChoice(BookNodeCombat, int, BookState)}
+			Prenons deux exemples de méthodes redéfinies, \textit{int makeAChoice(AbstractBookNode)} et \textit{ChoixCombat combatChoice(BookNodeCombat, int, BookState)}
 
 			Commençons par la première. Pour rappel, elle permet de sélectionner le choix que l'on souhaite faire. De ce fait, le joueur devra entrer au clavier le numéro correspondant au choix fait. C'est donc ce numéro que l'on retournera.
 
@@ -831,7 +831,7 @@
 						}
 
 						// Ordre dans l'énumération important. Il doit être identique au menu ci-dessus.
-						// TODO : Utiliser une série de if plutot
+						// TODO : Utiliser une série de if plutôt
 						choixCombat = ChoixCombat.values()[choix-1];
 
 						//Choisi un objet dans l'inventaire puis retourne au choix
@@ -849,7 +849,7 @@
 				}
 			\end{lstlisting}
 
-			On nottera également la présence de méthode utilitaires tel que \textit{choixYesNo()} qui demandera au joueur de valider ou non son choix. Si on a validé, alors cette méthode retourne true, sinon elle retourne false.
+			On notera également la présence de méthodes utilitaires telle que \textit{choixYesNo()} qui demandera au joueur de valider ou non son choix. Si on a validé, alors cette méthode retourne "true", sinon elle retourne "false".
 
 			\begin{lstlisting}[gobble=16, language=java, caption=méthode utilitaire choixYesNo]
 				private boolean choixYesNo(){
@@ -869,9 +869,9 @@
 		\subsection{Fourmis}
 			\label{subsec:fourmis}
 
-			La classe \textbf{Fourmis} permet, pour rappel, de parcourir le livre en tant que joueur fictifen effectuant des choix aléatoire. Cependant, à la différence avec le joueur humain, aucun des messages ne sera affiché car cela n'a aucune importance si ce n'est ralentir l'application (l'écriture dans un terminal est une opération coûteuse en terme de temps).
+			La classe \textbf{Fourmis} permet, pour rappel, de parcourir le livre en tant que joueur fictif en effectuant des choix aléatoires. Cependant, à la différence avec le joueur humain, aucun des messages ne seraient affichés car cela n'a aucune importance si ce n'est que ralentir l'application (l'écriture dans un terminal est une opération coûteuse en terme de temps).
 
-			Reprenons les deux exemples de méthodes redéfini à titre de comparaison, à savoir : \textit{int makeAChoice(AbstractBookNode)} et \textit{ChoixCombat combatChoice(BookNodeCombat, int, BookState)}
+			Reprenons les deux exemples de méthodes redéfinis à titre de comparaison, à savoir : \textit{int makeAChoice(AbstractBookNode)} et \textit{ChoixCombat combatChoice(BookNodeCombat, int, BookState)}
 
 			Commençons par la première. Il s'agit d'un choix totalement aléatoire fait par la fourmi. Il faut donc qu'elle fasse le choix d'un nombre entre 1 et n+1, "n" étant le nombre de choix. On commence à 1 car les choix sont numérotés à partir de 1 et non 0 dans le jeu. On obtient donc la méthode suivante :
 
@@ -883,7 +883,7 @@
 				}
 			\end{lstlisting}
 
-			Passon maintenant à la seconde méthode. De la même manière que pour \textit{makeAChoice} le choix des actions est fait de manière totalement aléatoire. En témoigne l'algorithme suivant.
+			Passons maintenant à la seconde méthode. De la même manière que pour \textit{makeAChoice} le choix des actions est fait de manière totalement aléatoire. En témoigne l'algorithme suivant.
 
 			\begin{lstlisting}[gobble=16, language=java, caption=combatChoice() de Fourmis]
 				public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
@@ -910,22 +910,22 @@
 
 			Tous les choix sont équiprobables. Cependant, peut être qu'il faudrait changer cette manière de faire. On risque de fuir beaucoup trop souvent et de ne jamais terminer un combat qui pourrait être long. De plus, il est possible que la fourmi utilise mal son inventaire par exemple en utilisant une potion en ayant la santé pleine ou en utilisant une arme moins puissante qu'une autre.
 
-			Ainsi le plus gros problème qui ressort de la fourmi est qu'elle n'est pas "intelligente". Ses choix sont dans certaines situations beaucoups trop aléatoire. Il faudrait lui donner un minimum d'intelligence afin de pouvoir réussir le livre. Cependant, quel degrée d'intelligence doit-on lui fournir ? Si on lui en donne trop, ne risque-t-on pas d'avoir une estimation faussée ?
+			Ainsi le plus gros problème qui ressort de la fourmi est qu'elle n'est pas "intelligente". Ses choix sont dans certaines situations beaucoup trop aléatoires. Il faudrait lui donner un minimum d'intelligence afin de pouvoir réussir le livre. Cependant, quel degré d'intelligence doit-on lui fournir ? Si on lui en donne trop, ne risque-t-on pas d'avoir une estimation faussée ?
 
-			Par exemple, si à un moment de l'histoire, une personne nous provoque en duel, un combat se lance. Peut être que perdre le duel (parce qu'un personnage nous as demandé de le faire avant) mènerait à une partie de l'histoire qui pourrait se révéler très importante pour la suite. Or, des fourmis qui chercheraient toujours à gagner les duels risquerait de passer à coté de cet élément.
+			Par exemple, si à un moment de l'histoire, une personne nous provoque en duel, un combat se lance. Peut être que perdre le duel (parce qu'un personnage nous a demandé de le faire avant) mènerait à une partie de l'histoire qui pourrait se révéler très importante pour la suite. Or, des fourmis qui chercheraient toujours à gagner les duels risqueraient de passer à côté de cet élément.
 
 			Une solution serait peut être de générer des fourmis qui serait intelligente mais qui ont de temps en temps, selon un certain ratio, une action totalement aléatoire.
 
-			Il en va de même pour de nombreux autres éléments. Par exemple, lorsqu'elle peut choisir des items, elle en prenne autant qu'elle le peuvent jusqu'a avoir leur inventaire plein. Cela peut se révéler absurde, si elles prennent des items inutiles. D'autant plus qu'elle ne peuvent pas décider de se libérer de quelques uns d'entre eux lorsqu'elles devront choisir de nouveau des items(du moins, ce n'est pas encore présent). Ceci pose une nouvelle question : Comment gérer l'évaluation d'un item ? Comment savoir si un item est plus important qu'un autre ? Cela pourrait certainement se faire en déterminant un calcul à partir du nombre de fois que l'item apparait dans des prérequis et le nombre de fois qu'on peut l'obtenir par exemple.
+			Il en va de même pour de nombreux autres éléments. Par exemple, lorsqu'elles peuvent choisir des items, elles en prennent autant qu'elles le peuvent jusqu'à avoir leurs inventaires pleins. Cela peut se révéler absurde, si elles prennent des items inutiles. D'autant plus qu'elles ne peuvent pas décider de se libérer de quelques uns d'entre eux lorsqu'elles devront choisir de nouveau des items (du moins, ce n'est pas encore présent). Ceci pose une nouvelle question : Comment gérer l'évaluation d'un item ? Comment savoir si un item est plus important qu'un autre ? Cela pourrait certainement se faire en déterminant un calcul à partir du nombre de fois que l'item apparaît dans des prérequis et le nombre de fois qu'on peut l'obtenir par exemple.
 
-			Autre problème avec la fourmi : la détection de boucle infinie. Cela peut arriver par inadvertense ou alors de manière totalement intentionelle dela part de l'utilisateur. Prenons en exemple le livre suivant :
+			Autre problème avec la fourmi : la détection de boucle infinie. Cela peut arriver par inadvertance ou alors de manière totalement intentionelle de la part de l'utilisateur. Prenons en exemple le livre suivant :
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.6\textwidth, keepaspectratio]{img/fourmisPrendreItemInfiniExemple.png}
-				\caption{prendreItem exemple de boucle infini}
+				\caption{prendreItem exemple de boucle infinie}
 			\end{figure}
 
-			 Supposons que la fourmi ne possède pas l'item requis, pour choisir le choix 2A, celle-ci va alors devoir choisir le choix 1A. Cependant, celui-ci la fait arriver sur un noeud où la seule option possible est de revenir sur le noeud précédent par le choix 1B. Elle n'a toujours pas l'item et tourne donc indéfiniemment. Cet exemple est extrêmement simple mais permet de bien voir le problème, la boucle peut être plus longue et plus difficile à voir. Il faudrait donc tenir un historique des noeuds visités pour tenter de détecter des cycle et stopper le jeu dans ce cas.
+			 Supposons que la fourmi ne possède pas l'item requis, pour choisir le choix 2A, celle-ci va alors devoir choisir le choix 1A. Cependant, celui-ci l'a fait arriver sur un noeud où la seule option possible est de revenir sur le noeud précédent par le choix 1B. Elle n'a toujours pas l'item et tourne donc indéfiniment. Cet exemple est extrêmement simple mais permet de bien voir le problème, la boucle peut être plus longue et plus difficile à voir. Il faudrait donc tenir un historique des noeuds visités pour tenter de détecter des cycles et stopper le jeu dans ce cas.
 
 		\subsection{Jeu}
 
