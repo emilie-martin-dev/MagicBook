@@ -1,0 +1,206 @@
+# Le numéro des diapos correspond aux pages du PDF
+
+Diapo 1
+
+- "Bonjour"
+- "Présentation des différents membres"
+
+-----
+
+Diapo 2
+
+- Présenter le sommaire
+
+========== Présentation d’un LDVH - 1 minute ==========
+
+Diapo 3 - Présentation d’un LDVH
+
+- LDVH -> Livre dont vous êtes le héros
+- Livre où chaque paragraphe sont numérotés et donnent lieu à une liste de choix menant à un autre paragraphe du livre
+- Règles différentes selon les livres (au niveau des combats, du nombre d'items maximum que l'on peut transporter simultanément, par exemple)
+- Le lecteur devient actif et peut ce créer sa propre histoire en fonction des choix qu'il fait
+- Il existe des fin différentes
+
+Transition : Le but de notre application était donc de créer une interface graphique permettant l'édition d'un tel livre et de fournir des outils tels que l'export du livre en texte ou encore la possibilité d'y jouer.
+
+========== Présentation de l'application - 5 minutes ==========
+
+Diapo 4 - Fenêtre principale
+
+- C'est une capture d'écran de notre application
+- Livre actuellement ouvert
+- Décrire brièvement les différentes parties :
+	- Menu :
+		- Fichier
+		- Livre
+	- Centre :
+		- Paragraphe = carré (expliquer couleurs rapidement)
+		- Liaison = Lien possible entre les différents paragraphes (choix)
+	- Droite :
+		- Stats (expliquer pourquoi "Difficulté livre" à un "?")
+	- Finir par la gauche :
+		- Mode d'édition
+		- Éléments constitutifs du livre (personnages, items, compétences)
+
+Transition : Il est possible de gérer les différents éléments du livre, par exemple un clique droit sur l'item "Shield" (montrer sur l'écran) permettrait de choisir entre la suppression et la modification de l'item. En choisissant "Modifier" une boîte de dialogue apparaît alors.
+
+-----
+
+Diapo 5 - Exemple de boîte de dialogue
+
+- Possibilité de changer les valeurs et le type d'item
+- Tous les éléments possèdent une boîte de dialogue propre (noeud, item, skill, etc)
+
+Transition : Nous avons alors décidé de rendre notre livre jouable dans un terminal
+
+-----
+
+Diapo 6 - Paragraphe à choix
+
+- Texte du paragraphe
+- Différents choix que le joueur peut choisir
+
+Transition : L'intérêt de ce type de livre est que l'utilisateur peut vraiment intéragir avec celui-ci, par exemple lors de combat
+
+-----
+
+Diapo 7 - Paragraphe de combat
+
+- Texte du paragraphe (héritage avec AbstractBookNode)
+- Description des ennemis
+- Déroulement du combat (choix d'attaquer, utiliser un item, fuir)
+
+Transition : L'intérêt de l'application était aussi de fournir des outils pratiques pour l'édition de ce type de livre. On peut par exemple citer l' "estimation de la difficulté d'un livre".
+
+========== Estimation de la difficulté d’un livre - 8 minutes ==========
+
+Diapo 8 - L’idée d’origine
+
+- Ancienne structure de nos noeuds
+- Expliquer le principe de statut d'un noeud
+- Expliquer le principe de fourmis
+- Préciser que seul le statut nous intéresse car le texte n'a pas de sens pour elles [les fourmis]
+- Détailler l'algorithme
+
+Transition : Cette méthode est pratique mais elle omet plusieurs points :
+	- Les combats ne sont pas gérés
+	- Les achats d'items non plus
+	- Pas de prérequis (ex : avoir une clé)
+	- Pas de gestion des noeuds où le choix est choisi aléatoirement selon certaines proba
+	- Autres (argent gagné / perdu, gains perte d'hp, etc)
+
+-----
+
+Diapo 9 - Les améliorations apportées
+
+- Expliquer pourquoi une interface, pourquoi pas 2 classes différentes
+- Fourmi et Player implémentent l'interface pour fournir un comportement différent à adopter selon chaque situation
+- Méthode "fourmis" dans "Jeu" pour estimer la difficulté
+- Méthode "play" dans "Jeu" pour démarer le jeu pour un joueur humain
+- Méthodes execXXX => un type de noeud
+- Parler de la copie du livre pour pas modifier vrai livre
+- Expliquer que code en commun des noeuds AbstractNodeWithChoices dans execAbstractNodeWithChoices
+
+Transition : Bien que cette structure nous permette d'avoir un résultat beaucoup plus proche de la réalité qu'auparavant, d'autres problèmes sont présents et provoquent une mauvaise estimation d'un livre complexe.
+
+-----
+
+Diapo 10 - Les points noirs actuels
+
+- Code commun -> Rappeler que le "moteur" (= classe Jeu) est le même code pour le joueur et fourmis. Dire que le changement et l'utilisation d'un item est fait dans la fourmi et joueur = code dupliqué. A mettre dans le moteur.
+- Pas de gestion des shops -> si un item clé pour finir l'histoire est à acheter, alors on ne gagnera jamais
+- Durabilité -> Épée surpuissante qui ne casse pas, donc pas besoin d'acheter des items moins chers mais plus durable dans le temps et donc plus économiques
+- Choix des items de manière aléatoire -> Une "épée légendaire" a autant de valeur pour l'IA qu'un "morceau de bois"
+- Pas de vérification -> Problème de boucle infini, item requis qui n'est jamais donné, etc
+- Inefficace dans les combats -> Tentative assez récurrente d'évasion (= on ne termine pas un combat long), choix des items aléatoires pour se défendre ou attaquer, utilisation de potions sans en avoir besoin, etc
+
+Transition : Ces problèmes possèdent tout de même des solutions parmi lesquelles on peut citer
+
+-----
+
+Diapo 11 - Pistes de réflexions
+
+# Les points suivants méritent des précisions
+- Champs viabilité -> Une valeur saisie par le créateur du livre, plus elle est grande plus l'item est important
+- Déterminer rareté -> En fonction du nombre de fois où l'item est requis, nombre de fois où on peut l'acheter, estimer quelle arme est plus viable, s'il faut mieux prendre une armure ou une arme, etc
+- Vérifier le livre -> Classe qui se charge de vérifier chaque élément 1 à 1 (noeud aléatoire, noeud combat, choix, item, etc)
+- Détection de boucle infini -> Tracer un historique des noeuds visités, si plusieurs fois le même cycle, terminer le jeu avec un noeud d'échec
+
+- Déterminer l'ennemie à privilégier -> Utilisation de State et simulation d'actions (problème : aléatoire sur les critiques)
+- Comment gérer l'évasion -> Pas toujours s'enfuir, mais s'enfuir de temps en temps, quel ratio?
+
+Autres questions => A force de rendre les fourmis trop intelligente, risque-t-on de rendre l'estimation inefficace ? Comment ajouter la part d'aléatoire (qui est l'idée à la base) ?
+
+Transition : Un autre outil que nous avons souhaité mettre en place est l'export au format texte du livre
+
+========== Export du livre au format texte - 6 minutes ==========
+
+Diapo 12 - Exemple d’export d’un livre
+
+- Affichage semblable au jeu
+- Décrire brièvement
+- Parler des "séparations" avec les "=====" (juste faire remarquer, c'est pour la suite)
+- Le livre est toujours mélangé
+
+Transition : Voyons comment ce mélange s'effectue
+
+-----
+
+Diapo 13 - Algorithme de mélange
+
+- Décrire les variables au début
+- Boucle pour placer les noeuds avec placement important :
+	- Noeud de départ (pour qu'il soit bien le premier et non pas en plein milieu du livre)
+	- Si noeud terminal de victoire, on place le noeud à la fin. Tous les noeuds de victoire sont donc placés à la fin du livre. Les noeuds de défaite sont placés comme n'importe quel autre noeud.
+	- Sinon, on ajoutera le noeud plus tard
+
+Transition : Enfin, (sur la diapo suivante, première idée est la suite de la phrase)
+
+-----
+
+Diapo 14 - Algorithme de mélange (suite)
+
+- On ajoute les noeuds restants de manière totalement aléatoire
+
+Transition : Maintenant il faut écrire le livre suivant cette ordre. Pour faciliter cette écriture, nous avons mis en place l'architecture suivante.
+
+-----
+
+Diapo 15 - L’interface Descriptible
+
+- Décrire en partant du haut
+
+Transition : Cette interface nous permet donc d'écrire très facilement et proprement le livre en cloisonnant le code dans la classe correspondante. En témoigne l'algorithme qui se charge de l'écriture
+
+-----
+
+Diapo 16 - Algorithme d’écriture
+
+- Au préalable on a :
+	- HashMap<Integer, AbstractBookNode> nodes -> Noeuds du livre mélangés
+	- HashMap<AbstractBookNode, Integer> nodesInv -> "Inverse" de nodes
+- FileWriter pour écrire
+- Écriture du prélude
+- writeSeparator liste de "======"
+- Boucle au travers de tous les éléments du livre et on les décrit avec getDescription
+- Pas exactement le même code (normalement des fonctions et une if pour ne pas afficher de séparateur après le dernier élément)
+- writeNode permet d'écrire un noeud
+
+Transition : Pour écrire les noeuds nous procédons comme suit
+
+-----
+
+Diapo 17 - Algorithme d’écriture
+
+- Expliquer le fonctionnement
+- Expliquer pourquoi on fait une partie "correspondance entre les choix et les paragraphes"
+
+Transition : Ceci conclut notre présentation, (aller à la diapo suivante et dire la première idée)
+
+-----
+
+Diapo 18 - Références
+
+- Références utilisées dans cette soutenance
+- Ne pas changer de diapo après
+- Merci pour votre attention, des questions?
