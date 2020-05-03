@@ -192,10 +192,11 @@ public class CharacterCreationComponent extends GridPane {
 	private ComboBox<String> addSkillComboBox(){
 		ComboBox<String> comboSkills = new ComboBox<>();
 		comboSkills.getItems().add(" ");
+		comboSkills.setValue(" ");
+		
 		for(Map.Entry<String, BookSkill> listSkillBook : this.book.getSkills().entrySet()){
 			comboSkills.getItems().add(listSkillBook.getValue().getId());
 		}
-		comboSkills.setValue(" ");
 
 		addSkillPane.add(comboSkills, skillComboBox.size() % 4, skillComboBox.size() / 4);
 
