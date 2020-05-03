@@ -129,6 +129,8 @@ public class Player implements InterfacePlayerFourmis {
 	* Ajoute l'item choisi dans l'inventaire du joueur
 	* @param state Sauvegarde actuelle de la partie
 	* @param bookItemLinks Item(s) disponible(s) sur le lien actuel
+	* @param nbItemMax Nombre d'items maximum pouvant être pris sur le noeud
+	* @return Nombre d'items maximum restant pouvant être pris sur le noeud
 	*/
 	private int itemAdd(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 		System.out.println("Quel item voulez-vous ?");
