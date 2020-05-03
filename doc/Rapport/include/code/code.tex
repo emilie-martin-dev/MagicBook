@@ -428,42 +428,42 @@
 
 		Afin de lire un fichier JSON, avec cette librairie, il suffit de concevoir des objets Java avec les même attributs que ceux du fichier à lire ou à écrire. Voici un exemple très court de ce à quoi nos fichiers ressembles :
 
-		\subsection{La structure du JSON}
-
-			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de livre très simple, label=lst:exemple_livre]
-			{
-				"prelude": "Vous êtes l'enseignant qui note notre projet",
-				"setup": {
-					"skills": [],
-					"items": [],
-					"characters": [],
-					"character_creation": []
+		\begin{lstlisting}[gobble=8, language=json, caption=Exemple de livre très simple, label=lst:exemple_livre]
+		{
+			"prelude": "Vous êtes l'enseignant qui note notre projet",
+			"setup": {
+				"skills": [],
+				"items": [],
+				"characters": [],
+				"character_creation": []
+			},
+			"sections": {
+				"1" : {
+					"text": "Vous être en train d'étudier notre projet",
+					"choices": [
+						{
+							"text": "Mettre une bonne note",
+							"section": 3
+						},
+						{
+							"text": "Mettre une mauvaise note",
+							"section": 2
+						}
+					]
 				},
-				"sections": {
-					"1" : {
-						"text": "Vous être en train d'étudier notre projet",
-						"choices": [
-							{
-								"text": "Mettre une bonne note",
-								"section": 3
-							},
-							{
-								"text": "Mettre une mauvaise note",
-								"section": 2
-							}
-						]
-					},
-					"2": {
-						"text": "Les étudiants du projet sont tristes",
-						"end_type": "FAILURE"
-					},
-					"3": {
-						"text": "Les étudiants sont satisfait de leur travail",
-						"end_type": "VICTORY"
-					}
+				"2": {
+					"text": "Les étudiants du projet sont tristes",
+					"end_type": "FAILURE"
+				},
+				"3": {
+					"text": "Les étudiants sont satisfait de leur travail",
+					"end_type": "VICTORY"
 				}
 			}
-			\end{lstlisting}
+		}
+		\end{lstlisting}
+
+		\subsection{La structure du JSON}
 
 			On retrouve plusieurs éléments différents. On remarque par exemple un attribut "prelude", ainsi que deux grosses parties, "setup" et "sections". Dans la suite, nous détaillerons uniquement les attributs les plus frequemment présents.
 
@@ -676,7 +676,7 @@
 
 				Comme pour tous les autres éléments graphique, les listes sont conçue en utilisant le Pattern MVC et donc également, le Pattern Observer. De ce fait, ils réagissent automatiquement à un changement sur l'éléments qu'ils permettent de gérer (items, personnages, compétences).
 
-				La méthode \textit{void setBook(Book)}, permet comme pour tous les autres éléments, de changer le livre actuel. Cependant des actions supplémentaires étaient requisent par les listes afin nottament de ne plus écouter les évènements sur l'ancien livre ainsi que d'afficher les éléments concernant le nouveau. Nous avons donc conçu la méthode \textit{void bookChanged(Book, Book)} qui est automatiquement appelée par \textit{void setBook(Book)} et permet à la liste d'éffectuer ces changements. Nous avons préféré fonctionner de cette manière plutôt que d'utiliser \textit{super} car cela oblige à fournir un comportement pour cette méthode et évite également l'oubli de la redéfinition de \textit{void setBook(Book)} pour traiter correctement le livre et réaliser les actions précédemment évoquées. La méthode \textit{T createRootElement()} quant a elle, permet de créer l'élément servira de label dans le TreeItem. La seul vrai valeur que l'on doit y renseigner est le nom de l'élément, les autres valeurs peuvent valoir null car elles ne seront pas utilisées. Les méthodes \texit{void addBookElementContextMenu()}, \texit{void updateBookElementContextMenu(T)}, \texit{void removeBookElementContextMenu(T)} correspondent aux actions à exécuter lorsque l'on clique sur l'action ajouter, modifier ou supprimer du menu lors d'un clique droit sur la liste. Enfin, les méthodes \textit{String getXXXContextMenuString()} permettent de récupérer le texte qui sera affiché dans le menu qui vient d'être évoqué.
+				La méthode \textit{void setBook(Book)}, permet comme pour tous les autres éléments, de changer le livre actuel. Cependant des actions supplémentaires étaient requisent par les listes afin nottament de ne plus écouter les évènements sur l'ancien livre ainsi que d'afficher les éléments concernant le nouveau. Nous avons donc conçu la méthode \textit{void bookChanged(Book, Book)} qui est automatiquement appelée par \textit{void setBook(Book)} et permet à la liste d'éffectuer ces changements. Nous avons préféré fonctionner de cette manière plutôt que d'utiliser \textit{super} car cela oblige à fournir un comportement pour cette méthode et évite également l'oubli de la redéfinition de \textit{void setBook(Book)} pour traiter correctement le livre et réaliser les actions précédemment évoquées. La méthode \textit{T createRootElement()} quant a elle, permet de créer l'élément servira de label dans le TreeItem. La seul vrai valeur que l'on doit y renseigner est le nom de l'élément, les autres valeurs peuvent valoir null car elles ne seront pas utilisées. Les méthodes \textit{void addBookElementContextMenu()}, \textit{void updateBookElementContextMenu(T)}, \textit{void removeBookElementContextMenu(T)} correspondent aux actions à exécuter lorsque l'on clique sur l'action ajouter, modifier ou supprimer du menu lors d'un clique droit sur la liste. Enfin, les méthodes \textit{String getXXXContextMenuString()} permettent de récupérer le texte qui sera affiché dans le menu qui vient d'être évoqué.
 
 		\subsection{GraphPane}
 			\label{sub:GraphPane}
@@ -685,7 +685,32 @@
 
 			\subsubsection{Représentation graphique des éléments}
 
-				
+				Notre application ayant besoin de rerprésenter dans la fenêtre les différents élements tel que le prélude, les noeuds et les liens entre eux, voici la manière dont nous avons procédé.
+
+				Commençons par analyser le diagramme montrant l'architecture pour les noeuds :
+
+				\begin{figure}[H]
+					\centering\includegraphics[width=0.6\textwidth, keepaspectratio]{img/NodeFx.png}
+					\caption{UML sur la représentation des noeuds}
+				\end{figure}
+
+				Nous avons décidé de fournir un wrapper à la classe \textbf{AbstractBookNode} afin de les représenter. Nous avons appellé cette classe \textbf{NodeFx}. Celle-ci hérite de \textbf{Rectangle} qui est fournis par JavaFx. Afin d'éditer les différents éléments du livre il est également nécessaire de fournir un élément visuel représentant le départ du livre et permettant d'éditer les éléments tels que le prélude, le personnage principal, etc. Ceci est possible grace à \textbf{PreludeFx}. Les deux classes ayant des éléments en commun (une couleur et des observers, lesquels seront détaillé après), nous avons donc décidé d'ajouter une "couche" supplémentaire entre \textbf{Rectangle} et nos deux classses. C'est ce à quoi sert \textbf{RectangleFx}. Chacune des classes filles possède en attribut les éléments qu'elle à besoin, c'est à dire, le noeud représenté pour \textbf{NodeFx} tandis que \textbf{PreludeFx} a besoin, elle, du premier noeud du livre.
+
+				Passons maintenant à la représentation des liens :
+
+				\begin{figure}[H]
+					\centering\includegraphics[width=0.6\textwidth, keepaspectratio]{img/NodeLinkFx.png}
+					\caption{UML sur la représentation des liens}
+				\end{figure}
+
+				Comme on peut le voir, ceux ci héritent de la classe \textbf{Line}. De la même manière que \textbf{NodeFx}, la classea comme attribut l'objet qu'elle représente, c'est à dire une instance de \textbf{BookNodeLink}. On va également retrouver le noeud de départ et de fin ce qui permet de facilement connaitre ces noeuds lorsque l'on éditera le lien pour, par exemple, ajouter des champs supplémentaires si c'est un noeud de combat ou un noeud aléatoire.
+
+				Voici quelques informations supplémentaire :
+
+				\begin{itemize}
+					\item{Il est important de noter que l'héritage fait avec les éléments de JavaFx permet d'ajouter nos classes comme on pourrait ajouter n'importe quel autre élément de cette librairie.}
+					\item{L'utilisation du Pattern Observer est fait de tel manière que l'on puisse être notifié dès que l'on clique sur l'élément sans avoir besoin de passer par les évènements de JavaFx.}
+				\end{itemize}
 
 			\subsubsection{Gestion des évènements}
 
@@ -705,7 +730,8 @@
 
 			Pour le moment, les statistiques ne concernent que le nombre de noeuds de chaque type ainsi que la difficulté du livre. Dès qu'un noeud est ajouté, on incrémente les compteurs correspondant. De même, dès qu'un noeud se retrouve supprimé, on décrémente les compteurs qui doivent l'être. Un changement de livre reset les compteurs et, compte le nombre de noeud de chaque type. C'est le seul moment où l'on va parcourir tous les éléments du livre. En effet, le système de compteur permet de gagner un gain de temps sur des livres contenant de nombreux noeuds. Pour la difficulté du livre, il est possible de mettre à jour la valeur affiché avec la méthode \textit{void difficultyChanged(float)}. C'est notamment ce que l'on fait une fois que celle-ci à fini d'être calculée avec le menu \underline{Livre -> Estimer la difficulté}.
 
-	\section{Rendre le livre jouable et estimer sa difficulté}\label{sec:Jeu}
+	\section{Rendre le livre jouable et estimer sa difficulté}
+		\label{sec:Jeu}
 
 		\subsection{Jeu}
 
