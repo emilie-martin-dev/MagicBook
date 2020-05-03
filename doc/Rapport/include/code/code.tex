@@ -649,7 +649,7 @@
 
 		\subsection{La fenêtre principale}
 
-			Notre fenêtre principale est définit par la classe la MainWindow est notre fenêtre principale. Elle contient un Menu permettant de réaliser plusieurs actions (ouvrir et sauvegarder un fichier, exporter le livre, jouer, estimer la difficulté, ...) ainsi que trois zones différentes, divisées en trois autres classes.
+			Notre fenêtre principale est défini par la classe la \textbf{MainWindow}. Elle contient un Menu permettant de réaliser plusieurs actions (ouvrir et sauvegarder un fichier, exporter le livre, jouer, estimer la difficulté, ...) ainsi que trois zones différentes, divisées en trois autres classes.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.50\textwidth]{img/mainwindow.png}
@@ -657,29 +657,29 @@
 				\label{fig:MainWindow}
 			\end{figure}
 
-			La partie de gauche est représentée par la classe \textbf{LeftPane}. Celle-ci est composée de différent boutons permettant de changer de mode, d'une liste d'items, de personnage, de compétences constituant le livre. De l'autre côté, à droite, on retrouve une instance de \textbf{RightPane}. Cette partie permet d'afficher les statistiques du livre comme par exemple, le nombre de noeud ainsi que l'estimation de la difficulté du livre, etc. Enfin, la partie centrale défini par le \textbf{GraphPane} permet d'éditer sous forme graphique le livre. Ces trois parties utilisent le Pattern MVC ce qui leur permet également d'être réactif aux changements du livre notamment grace au Pattern Observer fournis par celui-ci (cf : \nameref{subsec:pattern_observer} page \pageref{subsec:pattern_observer}) .
+			La partie de gauche est représentée par la classe \textbf{LeftPane}. Celle-ci est composée de différents boutons permettant de changer de mode, d'une liste d'items, de personnages, de compétences constituant le livre. De l'autre côté, à droite, on retrouve une instance de \textbf{RightPane}. Cette partie permet d'afficher les statistiques du livre comme par exemple, le nombre de noeud ainsi que l'estimation de la difficulté du livre, etc. Enfin, la partie centrale défini par le \textbf{GraphPane} permet d'éditer sous forme graphique le livre. Ces trois parties utilisent le Pattern MVC ce qui leurs permets également d'être réactif aux changements du livre notamment grâce au Pattern Observer fourni par celui-ci (cf : \nameref{subsec:pattern_observer} page \pageref{subsec:pattern_observer}) .
 
 			\subsubsection{Ouverture et sauvegarde du livre}
 
-				Avant de démarrer, il faut préciser qu'une variable \textit{path} est présente dans \textbf{MainWindow} et permet de sauvegarder le fichier actuellement ouvert dans l'éditeur. Celle-ci vaut null lorsqu'aucun fichier ne l'est. C'est donc sa valeur au lancement de l'application.
+				Avant de démarrer, il faut préciser qu'une variable \textit{path} est présente dans \textbf{MainWindow} et permet de sauvegarder le fichier actuellement ouvert dans l'éditeur. Celle-ci vaut "null" lorsqu'aucun fichier ne l'est. C'est donc sa valeur au lancement de l'application.
 
-				L'utilisateur peut démarrer un nouveau livre, à l'aide du menu, en cliquant sur \underline{Fichier -> Nouveau}. La classe \textbf{MainWindow} fait alors une nouvelle instance de la classe Book puis appelle sa méthode \textit{void setBook(Book)} qui se chargera de transmettre à tous les panels (LeftPane, GraphPane, RightPane) le nouveau livre. Les panels propageront alors le livre aux différents éléments qui pourraient en avoir besoin (tel que les listes d'items, de personnages, ...). Enfin, la variable \textit{path} est mise à null.
+				L'utilisateur peut démarrer un nouveau livre, à l'aide du menu, en cliquant sur \underline{Fichier -> Nouveau}. La classe \textbf{MainWindow} fait alors une nouvelle instance de la classe \textbf{Book} puis appelle sa méthode \textit{void setBook(Book)} qui se chargera de transmettre à tous les panels (\textbf{LeftPane}, \textbf{GraphPane}, \textbf{RightPane}) le nouveau livre. Les panels propageront alors le livre aux différents éléments qui pourraient en avoir besoin (tel que les listes d'items, de personnages, ...). Enfin, la variable \textit{path} est mise à "null".
 
-				Il est possible d'ouvrir un livre à l'aide du menu \underline{Fichier -> Ouvrir}. Une boite de dialogue s'affiche alors afin de sélectionner le livre que l'on souahite éditer. Si un livre a bien été sélectioné, alors, \textbf{BookReader} sera appellé afin de le lire (cf : \nameref{subsec:lecture_ecriture_fichier} page \pageref{subsec:lecture_ecriture_fichier}). Si le fichier est invalide, au niveau de la structure du JSON, une erreur s'affiche et le processus d'ouverture s'en arrêtera là. Une fois de plus, la méthode \textit{void setBook(Book)} de \textbf{MainWindow} est appelé afin de transmettre le nouveau livre. Enfin, si l'on a put faire toutes ces actions sans aucun soucis, la variable \textit{path} retient le chemin vers le fichier ouvert.
+				Il est possible d'ouvrir un livre à l'aide du menu \underline{Fichier -> Ouvrir}. Une boite de dialogue s'affiche alors afin de sélectionner le livre que l'on souhaite éditer. Si un livre a bien été sélectionné, alors, \textbf{BookReader} sera appelée afin de le lire (cf : \nameref{subsec:lecture_ecriture_fichier} page \pageref{subsec:lecture_ecriture_fichier}). Si le fichier est invalide, au niveau de la structure du JSON, une erreur s'affiche et le processus d'ouverture s'arrêtera là. Une fois de plus, la méthode \textit{void setBook(Book)} de \textbf{MainWindow} est appelée afin de transmettre le nouveau livre. Enfin, si l'on a pu faire toutes ces actions sans aucun soucis, la variable \textit{path} retient le chemin vers le fichier ouvert.
 
-				Enfin, il est possible grâce à \underline{Fichier -> Enregistrer} ainsi que \underline{Fichier -> Enregistrer sous} d'enregistrer les changements sur le fichier. La sauvegarde d'un fichier se déroule comme suit ; On commence par vérifier si un fichier est déjà ouvert, grace à \textit{path}. Si ce n'est pas le cas, alors on affiche une fenêtre afin de sélectionner l'emplacement de sauvegarde. Si l'utilisateur valide son choix, alors on doit changer la valeur de \textit{path} pour enregistrer cet emplacement. On fera ensuite appel à la classe \textbf{BookWritter} pour sauvegarder le livre au format JSON (cf : \nameref{subsec:lecture_ecriture_fichier} page \pageref{subsec:lecture_ecriture_fichier}). Cependant, il existe une différence entre \underline{Fichier -> Enregistrer} et \underline{Fichier -> Enregistrer sous}. En effet, l'étape de la vérification "du fichier déjà ouvert" ne se fait que pour pour le premier des deux tandis que l'autre affichera donc toujours la fenêtre de sauvegarde peut importe la valeur de \textit{path}.
+				Enfin, il est possible grâce à \underline{Fichier -> Enregistrer} ainsi que \underline{Fichier -> Enregistrer sous} d'enregistrer les changements sur le fichier. La sauvegarde d'un fichier se déroule comme suit : on commence par vérifier si un fichier est déjà ouvert, grâce à \textit{path}. Si ce n'est pas le cas, alors on affiche une fenêtre afin de sélectionner l'emplacement de sauvegarde. Si l'utilisateur valide son choix, alors on doit changer la valeur de \textit{path} pour enregistrer cet emplacement. On fera ensuite appel à la classe \textbf{BookWritter} pour sauvegarder le livre au format JSON (cf : \nameref{subsec:lecture_ecriture_fichier} page \pageref{subsec:lecture_ecriture_fichier}). Cependant, il existe une différence entre \underline{Fichier -> Enregistrer} et \underline{Fichier -> Enregistrer sous}. En effet, l'étape de la vérification "du fichier déjà ouvert" ne se fait que pour le premier des deux tandis que l'autre affichera donc toujours la fenêtre de sauvegarde peu importe la valeur de \textit{path}.
 
 		\subsection{LeftPane}
 
 			\subsubsection{Sélection du mode}
 
-				Comme mentionné auparavent, ce panel contient plusieurs bouttons cliquable en haut afin de sélectionner le mode d'édition. Pour celà, nous avons utilisé des \textbf{ToggleButton}, lesquels sélectionnent l'un des 5 modes disponibles par l'énumération \textbf{Mode} à savoir : SELECT, ADD\_NODE, ADD\_NODE\_LINK, DELETE, FIRST\_NODE. Ces bouttons faisant stritement la même chose, ils sont tous créé à partir de la méthode \textit{ToggleButton createToggleButton(String, Mode)}. Cette méthode prend en paramètre le chemin vers une image ainsi que le mode que l'on souhaite sélectionner lorsque l'on clique dessus, mode qui sera appliqué au \textbf{GraphPane}. Afin de ne sélectionner qu'un seul \textbf{ToggleButton} à la fois, tous, sont contenu dans un seul et même \textbf{ToggleGroup} qui se chargera lui même de déselectionner le ToggleButton précédemment sélectionné.
+				Comme mentionné auparavant, ce panel contient plusieurs boutons cliquable en haut afin de sélectionner le mode d'édition. Pour celà, nous avons utilisé des \textbf{ToggleButton}, lesquels sélectionnant l'un des 5 modes disponibles par l'énumération \textbf{Mode} à savoir : SELECT, ADD\_NODE, ADD\_NODE\_LINK, DELETE, FIRST\_NODE. Ces boutons faisant stritement la même chose, ils sont tous créés à partir de la méthode \textit{ToggleButton createToggleButton(String, Mode)}. Cette méthode prend en paramètre le chemin vers une image ainsi que le mode que l'on souhaite sélectionner lorsque l'on clique dessus. Ce mode sera appliqué au \textbf{GraphPane}. Afin de ne sélectionner qu'un seul \textbf{ToggleButton} à la fois, tous, sont contenus dans un seul et même \textbf{ToggleGroup} qui se chargera lui même de désélectionner le ToggleButton précédemment sélectionné.
 
 			\subsubsection{Gestion des éléments du livre}
 
-				En dessous des bouttons pour sélectionner le mode, nous retrouvons trois listes permettant chacune la gestion d'un des éléments du livre, c'est à dire, des personnages, des items et des compétences.
+				En dessous des boutons pour choisir le mode, nous retrouvons trois listes permettant chacune la gestion d'un des éléments du livre, c'est à dire, des personnages, des items et des compétences.
 
-				Bien qu'il s'agisse d'un arbre, au vue du fait qu'ils héritent de \textbf{TreeView<T>}, nous avons fait un affichage qui correspond plus à celui d'une liste. Pourquoi ce choix ? Nous aurions voulu pouvoir par la suite organiser cette vue de manière à ce qu'elle puisse contenir différentes catégories tel que, pour les items par exemple, Autre, Arme, Défense, (...) corresondant aux différents types d'items possibles. Chaque catégorie contiendrait alors les items correspondant à ce type. Ainsi, l'UML de ces classes ressemble à celui ci :
+				Bien qu'il s'agisse d'un arbre, au vue du fait qu'ils héritent de \textbf{TreeView<T>}, nous avons fait un affichage qui correspond plus à celui d'une liste. Pourquoi ce choix ? Nous aurions voulu pouvoir, par la suite, organiser cette vue de manière à ce qu'elle puisse contenir différentes catégories tel que, par exemple, "Autre", "Arme", "Défense", etc. Chaque catégorie contiendrait alors les items correspondant à ce type. Ainsi, l'UML de ces classes ressemble à celui ci :
 
 				\begin{figure}[H]
 					\centering\includegraphics[width=0.7\textwidth]{img/fenetreTreeView.png}
@@ -687,11 +687,11 @@
 					\label{fig:fenetreTreeView}
 				\end{figure}
 
-				Comme on pouvait s'en douter, chacune de ces liste hérite de d'une classe mère, \textbf{AbstractBookTreeView<T>}, permettant de gérer les comportement en commun. L'utilisation de la généricité permet de définir le type d'élément que la liste se chargera de gérer. Détaillons maintenant les différentes méthodess à redéfinir.
+				Comme on pouvait s'en douter, chacune de ces listes héritent d'une classe mère, \textbf{AbstractBookTreeView<T>}, permettant de gérer les comportements en commun. L'utilisation de la généricité permet de définir le type d'élément que la liste se chargera de gérer. Détaillons maintenant les différentes méthodes à redéfinir.
 
-				Comme pour tous les autres éléments graphique, les listes sont conçue en utilisant le Pattern MVC et donc également, le Pattern Observer. De ce fait, ils réagissent automatiquement à un changement sur l'éléments qu'ils permettent de gérer (items, personnages, compétences).
+				Comme pour tous les autres éléments graphiques, les listes sont conçues en utilisant le Pattern MVC et donc également, le Pattern Observer. De ce fait, ils réagissent automatiquement à un changement sur l'élément qu'ils permettent de gérer (items, personnages, compétences).
 
-				La méthode \textit{void setBook(Book)}, permet comme pour tous les autres éléments, de changer le livre actuel. Cependant des actions supplémentaires étaient requisent par les listes afin nottament de ne plus écouter les évènements sur l'ancien livre ainsi que d'afficher les éléments concernant le nouveau. Nous avons donc conçu la méthode \textit{void bookChanged(Book, Book)} qui est automatiquement appelée par \textit{void setBook(Book)} et permet à la liste d'éffectuer ces changements. Nous avons préféré fonctionner de cette manière plutôt que d'utiliser \textit{super} car cela oblige à fournir un comportement pour cette méthode et évite également l'oubli de la redéfinition de \textit{void setBook(Book)} pour traiter correctement le livre et réaliser les actions précédemment évoquées. La méthode \textit{T createRootElement()} quant a elle, permet de créer l'élément servira de label dans le TreeItem. La seul vrai valeur que l'on doit y renseigner est le nom de l'élément, les autres valeurs peuvent valoir null car elles ne seront pas utilisées. Les méthodes \textit{void addBookElementContextMenu()}, \textit{void updateBookElementContextMenu(T)}, \textit{void removeBookElementContextMenu(T)} correspondent aux actions à exécuter lorsque l'on clique sur l'action ajouter, modifier ou supprimer du menu lors d'un clique droit sur la liste. Enfin, les méthodes \textit{String getXXXContextMenuString()} permettent de récupérer le texte qui sera affiché dans le menu qui vient d'être évoqué.
+				La méthode \textit{void setBook(Book)}, permet comme pour tous les autres éléments, de changer le livre actuel. Cependant des actions supplémentaires étaient requisent par les listes afin de ne plus écouter les évènements sur l'ancien livre et d'afficher les éléments concernant le nouveau. Nous avons donc conçu la méthode \textit{void bookChanged(Book, Book)} qui est automatiquement appelée par \textit{void setBook(Book)} et permet à la liste d'effectuer ces changements. Nous avons préféré fonctionner de cette manière plutôt que d'utiliser \textit{super} car cela oblige à fournir un comportement pour cette méthode et évite également l'oubli de la redéfinition de \textit{void setBook(Book)} pour traiter correctement le livre et réaliser les actions précédemment évoquées. La méthode \textit{T createRootElement()} quant a elle, permet de créer l'élément qui servira de label dans le TreeItem. La seule vraie valeur que l'on doit y renseigner est le nom de l'élément, les autres valeurs peuvent valoir "null" car elles ne seront pas utilisées. Les méthodes \textit{void addBookElementContextMenu()}, \textit{void updateBookElementContextMenu(T)}, \textit{void removeBookElementContextMenu(T)} correspondent aux actions à exécuter lorsque l'on clique sur l'action ajouter, modifier ou supprimer du menu (apparaît lors d'un clique droit sur la liste). Enfin, les méthodes \textit{String getXXXContextMenuString()} permettent de récupérer le texte qui sera affiché dans le menu qui vient d'être évoqué.
 
 		\subsection{GraphPane}
 			\label{sub:GraphPane}
@@ -700,7 +700,7 @@
 
 			\subsubsection{Représentation graphique des éléments}
 
-				Notre application ayant besoin de rerprésenter dans la fenêtre les différents élements tel que le prélude, les noeuds et les liens entre eux, voici la manière dont nous avons procédé.
+				Notre application ayant besoin de représenter dans la fenêtre les différents élements tel que le prélude, les noeuds et les liens entre eux, voici la manière dont nous avons procédé.
 
 				Commençons par analyser le diagramme montrant l'architecture pour les noeuds :
 
@@ -709,7 +709,7 @@
 					\caption{UML sur la représentation des noeuds}
 				\end{figure}
 
-				Nous avons décidé de fournir un wrapper à la classe \textbf{AbstractBookNode} afin de les représenter. Nous avons appellé cette classe \textbf{NodeFx}. Celle-ci hérite de \textbf{Rectangle} qui est fournis par JavaFx. Afin d'éditer les différents éléments du livre il est également nécessaire de fournir un élément visuel représentant le départ du livre et permettant d'éditer les éléments tels que le prélude, le personnage principal, etc. Ceci est possible grace à \textbf{PreludeFx}. Les deux classes ayant des éléments en commun (une couleur et des observers, lesquels seront détaillé après), nous avons donc décidé d'ajouter une "couche" supplémentaire entre \textbf{Rectangle} et nos deux classses. C'est ce à quoi sert \textbf{RectangleFx}. Chacune des classes filles possède en attribut les éléments qu'elle à besoin, c'est à dire, le noeud représenté pour \textbf{NodeFx} tandis que \textbf{PreludeFx} a besoin, elle, du premier noeud du livre.
+				Nous avons décidé de fournir un wrapper à la classe \textbf{AbstractBookNode} afin de les représenter. Nous avons appellé cette classe \textbf{NodeFx}. Celle-ci hérite de \textbf{Rectangle} qui est fourni par JavaFx. Afin d'éditer les différents éléments du livre il est également nécessaire de fournir un élément visuel représentant le départ du livre et permettant d'éditer les éléments tels que le prélude, le personnage principal, etc. Ceci est possible grâce à \textbf{PreludeFx}. Les deux classes ayant des éléments en commun (une couleur et des Observers, lesquels seront détaillés après), nous avons donc décidé d'ajouter une "couche" supplémentaire entre \textbf{Rectangle} et nos deux classes. C'est ce à quoi sert \textbf{RectangleFx}. Chacune des classes filles possèdent en attribut les éléments qu'elle à besoin, c'est à dire, le noeud représenté pour \textbf{NodeFx} tandis que \textbf{PreludeFx} a besoin, elle, du premier noeud du livre.
 
 				Passons maintenant à la représentation des liens :
 
@@ -718,9 +718,9 @@
 					\caption{UML sur la représentation des liens}
 				\end{figure}
 
-				Comme on peut le voir, ceux ci héritent de la classe \textbf{Line}. De la même manière que \textbf{NodeFx}, la classea comme attribut l'objet qu'elle représente, c'est à dire une instance de \textbf{BookNodeLink}. On va également retrouver le noeud de départ et de fin ce qui permet de facilement connaitre ces noeuds lorsque l'on éditera le lien pour, par exemple, ajouter des champs supplémentaires si c'est un noeud de combat ou un noeud aléatoire.
+				Comme on peut le voir, ceux ci héritent de la classe \textbf{Line}. De la même manière que \textbf{NodeFx}, la classe a comme attribut l'objet qu'elle représente, c'est à dire une instance de \textbf{BookNodeLink}. On va également retrouver le noeud de départ et de fin ce qui permet de facilement connaître ces noeuds lorsque l'on éditera le lien par exemple, pour ajouter des champs supplémentaires si c'est un noeud de combat ou un noeud aléatoire.
 
-				Voici quelques informations supplémentaire :
+				Voici quelques informations supplémentaires :
 
 				\begin{itemize}
 					\item{Il est important de noter que l'héritage fait avec les éléments de JavaFx permet d'ajouter nos classes comme on pourrait ajouter n'importe quel autre élément de cette librairie.}
@@ -731,19 +731,19 @@
 
 				On distingue l'écoute d'évènement à trois endroits. Sur la zone d'édition, sur un noeud et sur un lien.
 
-				Sur la zone d'édition nous surveillons notamment les cliques lorsque nous somme en mode "ADD\_NODE". Dans le cas où un clique intervient, nous affichons la boite de dialogue permettant l'ajout d'un noeud puis, si nous avons validé cette dernière, nous ajoutons alors le noeud au livre. On recevra alors une "notification" grace à la méthode prévu à cet effet par le Pattern Observer que le noeud à été ajouté et qu'il faut donc l'afficher.
+				Sur la zone d'édition nous surveillons notamment les cliques lorsque nous sommes sur le mode "ADD\_NODE". Dans le cas où un clique intervient, nous affichons la boîte de dialogue permettant l'ajout d'un noeud puis, si nous avons validé cette dernière, nous ajoutons alors le noeud au livre. On recevra alors une "notification" grâce à la méthode prévue à cet effet par le Pattern Observer que le noeud a été ajouté et qu'il faut donc l'afficher.
 
-				Lorsque nous créons un noeud, nous devons faire en sorte qu'il réagisse avec les prochains évènement, de ce fait, nous ajoutons le \textbf{GraphPane} à la liste des observers du noeud. Dès lors, un clique sur ce noeud sera automatiquement perçue et traité dans la méthode correspondante.
+				Lorsque nous créons un noeud, nous devons faire en sorte qu'il réagisse avec les prochains évènements, de ce fait, nous ajoutons le \textbf{GraphPane} à la liste des Observers du noeud. Dès lors, un clique sur ce noeud sera automatiquement perçu et traité dans la méthode correspondante.
 
-				Afin de réaliser un lien entre les deux noeuds, il faut cliquer sur un noeud puis sur un second tout en ayant sélectionné le mode "ADD\_NODE\_LINK". On retient dans une variable le premier noeud cliqué. Lors d'un clique sur un noeud, cette variable prend alors la valeur de celui-ci et rien de plus ne se passe. Lorsque l'on cliquera de nouveau sur un noeud, alors, comme la variable ne vaut plus "null", on affichera la boite de dialogue permettant de remplir les informations sur le lien entre ces deux noeuds. Comme pour le noeud, si on valide la boiite de dialogue, alors on ajoute à la classe \textbf{Book} le lien et une "notification" est perçue par la méthode correspondante.
+				Afin de réaliser un lien entre les deux noeuds, il faut cliquer sur un noeud puis sur un second tout en ayant sélectionné le mode "ADD\_NODE\_LINK". On retient dans une variable le premier noeud cliqué. Lors d'un clique sur un noeud, cette variable prend alors la valeur de celui-ci et rien de plus ne se passe. Lorsque l'on cliquera de nouveau sur un noeud, alors, comme la variable ne vaut plus "null", on affichera la boîte de dialogue permettant de remplir les informations sur le lien entre ces deux noeuds. Comme pour le noeud, si on valide la boîte de dialogue, alors on ajoute à la classe \textbf{Book} le lien et une "notification" est perçue par la méthode correspondante.
 
-				De même, afin de recevoir les évènement concernant le lien, on enregistre le \textbf{GraphPane} comme étant observer de celui-ci. Cela nous permet maintenant de réagir par exemple à la demande de suppression d'un noeud.
+				De même, afin de recevoir les évènement concernant le lien, on enregistre le \textbf{GraphPane} comme étant Observer de celui-ci. Cela nous permet maintenant de réagir par exemple à la demande de suppression d'un noeud.
 
 		\subsection{RightPane}
 
-			Ce panel contient toutes les statistiques concernant le livre. Celles-ci sont immédiatement mise à jour lorsqu'un élément du livre change grace, comme mentionné précedemment, au Pattern Observer.
+			Ce panel contient toutes les statistiques concernant le livre. Celles-ci sont immédiatement mise à jour lorsqu'un élément du livre change grâce, comme mentionné précedemment, au Pattern Observer.
 
-			Pour le moment, les statistiques ne concernent que le nombre de noeuds de chaque type ainsi que la difficulté du livre. Dès qu'un noeud est ajouté, on incrémente les compteurs correspondant. De même, dès qu'un noeud se retrouve supprimé, on décrémente les compteurs qui doivent l'être. Un changement de livre reset les compteurs et, compte le nombre de noeud de chaque type. C'est le seul moment où l'on va parcourir tous les éléments du livre. En effet, le système de compteur permet de gagner un gain de temps sur des livres contenant de nombreux noeuds. Pour la difficulté du livre, il est possible de mettre à jour la valeur affiché avec la méthode \textit{void difficultyChanged(float)}. C'est notamment ce que l'on fait une fois que celle-ci à fini d'être calculée avec le menu \underline{Livre -> Estimer la difficulté}.
+			Pour le moment, les statistiques ne concernent que le nombre de noeuds de chaque type ainsi que la difficulté du livre. Dès qu'un noeud est ajouté, on incrémente les compteurs correspondant. De même, dès qu'un noeud se retrouve supprimé, on décrémente les compteurs qui doivent l'être. Un changement de livre "reset" les compteurs et compte le nombre de noeuds de chaque type. C'est le seul moment où l'on va parcourir tous les éléments du livre. En effet, le système de compteur permet de gagner un gain de temps sur des livres contenant de nombreux noeuds. Pour la difficulté du livre, il est possible de mettre à jour la valeur affichée avec la méthode \textit{void difficultyChanged(float)}. C'est notamment ce que l'on fait une fois que celle-ci à fini d'être calculée avec le menu \underline{Livre -> Estimer la difficulté}.
 
 	\section{Rendre le livre jouable et estimer sa difficulté}
 		\label{sec:Jeu}
@@ -980,12 +980,12 @@
 
 								System.out.println("Voici vos choix:");
 
-								if(choixYesNo())
+								if(!choixYesNo())
 									nbItemMax = 0;
 								else
 									itemSupp(state);
 							} else {
-								itemAdd(state, bookItemLinks);
+								nbItemMax = itemAdd(state, bookItemLinks, nbItemMax);
 							}
 
 						} else {
@@ -1003,7 +1003,7 @@
 			Cette méthode a été créé permettant de séparer le code de la méthode \textit{prendItems()} pour une meilleure visibilité. Elle pourrait aussi servir, par exemple, dans l'ajout d'un item obligatoire. Dans ce cas, la méthode \textit{prendItems()} n'est plus utilisé mais directement \textit{itemAdd()}. Mais cette exemple n'est pas représentatif de l'état actuel de MagicBook qui ne permet pas de rendre un item obligatoire. Mais c'est une idée d'amélioration.\\
 
 			\begin{lstlisting}[gobble=16, language=java, caption=itemAdd()]
-				private void itemAdd(BookState state, List<BookItemLink> bookItemLinks){
+				private int itemAdd(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
 					System.out.println("Quel item voulez-vous ?");
 					boolean choixValide = false;
 					int choix = -1;
@@ -1014,21 +1014,27 @@
 
 						if(choix >= 0 && choix <= (bookItemLinks.size()-1)){
 							choixValide = true;
-						} else {
+
+							BookItemLink itemLink = bookItemLinks.get(choix);
+							System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
+							state.getMainCharacter().getItems().add(itemLink.getId());
+
+							itemLink.setAmount(itemLink.getAmount()-1);
+
+							if(itemLink.getAmount() == 0)
+								bookItemLinks.remove(itemLink);
+
+							nbItemMax--;
+						} else if(choix == -1)
+							choixValide = true;
+						else {
 							System.out.println("vous ne pouvez pas effectuer ce choix");
 						}
 					}
 
-					BookItemLink itemLink = bookItemLinks.get(choix);
-					System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
-					state.getMainCharacter().getItems().add(itemLink.getId());
 
-					itemLink.setAmount(itemLink.getAmount()-1);
-
-					if(itemLink.getAmount() == 0)
-						bookItemLinks.remove(itemLink);
+					return nbItemMax;
 				}
-
 			\end{lstlisting}
 
 			Puis la méthode \textit{itemPlein()} (cf ligne 11 dans le code \ref{lst:prendreItemsPlayer}), qui elle, affiche les items à supprimer. Cette méthode permet d'afficher les items de l'inventaire.
