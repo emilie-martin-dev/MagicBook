@@ -414,7 +414,7 @@ public class NodeDialog extends AbstractDialog {
 			}
 
 			NodeDialog.this.node.setText(texteHistoire);
-			
+
 			validateData();
 			close();
 		};
@@ -428,6 +428,7 @@ public class NodeDialog extends AbstractDialog {
 		ComboBox<String> ennemiBox = new ComboBox<>();
 
 		ennemiBox.getItems().add(" ");
+		ennemiBox.setValue(" ");
 		for(Map.Entry<String, BookCharacter> listEnnemiBo : book.getCharacters().entrySet()){
 			ennemiBox.getItems().add(listEnnemiBo.getValue().getId());
 		}
