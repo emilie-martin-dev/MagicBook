@@ -15,6 +15,8 @@ chmod +x ./gradlew
 ./gradlew run
 ```
 
+Il est également possible d'utiliser les scripts fournis dans le dossier scripts.
+
 # Structuration du projet
 
 Le projet comporte les dossiers suivants :

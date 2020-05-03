@@ -329,7 +329,7 @@ public class Jeu {
 			return returnedNode;
 
 		boolean finCombat = false;
-			
+
 		//S'il n'y a pas d'ennemis, le player est automatiquement envoyé vers le noeud de victoire si ce noeud existe.
 		if(node.getEnnemiesId().isEmpty()){
 			if(node.getWinBookNodeLink() != null)  {
@@ -338,9 +338,9 @@ public class Jeu {
 				finCombat = true;
 			}
 		}
-		
+
 		int evasionRound = node.getEvasionRound();
-		
+
 
 		List<BookCharacter> listEnnemis = new ArrayList();
 		showMessage("Il y a "+node.getEnnemiesId().size() + " ennemis !");
