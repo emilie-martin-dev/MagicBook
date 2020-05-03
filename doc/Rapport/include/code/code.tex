@@ -44,7 +44,7 @@
 			Pour le \textbf{BookNodeWithRandomChoices}, la méthode \textit{getRandomChoices} a été ajoutée, afin de sélectionner un choix de manière aléatoire en fonction de la probabilité de chaque lien.
 
 		\subsection{Représentation des liens}
-			\label{sub:liens}
+			\label{subsec:liens}
 
 			Les noeuds sont liés par des liens. Ces liens sont soit définis par la classe \textbf{BookNodeLink} ou \textbf{BookNodeLinkRandom}. Pour éviter les redondances, cette dernière extends de \textbf{BookNodeLink}. Elles prennent donc toutes les deux un texte, une destination (défini par le numéro du noeud) et enfin, une liste de prérequis.
 
@@ -201,7 +201,7 @@
 			\end{lstlisting}
 
 		\subsection{La classe Book}
-			\label{sub:book}
+			\label{subsec:book}
 
 			Cette classe est la plus importante de tout le projet. En effet, c'est elle qui met en lien tous les différents éléments qu'on a pu évoquer avant. C'est en effet ce que l'on peut observer sur la figure suivante.
 
@@ -696,7 +696,7 @@
 				La méthode \textit{void setBook(Book)}, permet comme pour tous les autres éléments, de changer le livre actuel. Cependant des actions supplémentaires étaient requisent par les listes afin de ne plus écouter les évènements sur l'ancien livre et d'afficher les éléments concernant le nouveau. Nous avons donc conçu la méthode \textit{void bookChanged(Book, Book)} qui est automatiquement appelée par \textit{void setBook(Book)} et permet à la liste d'effectuer ces changements. Nous avons préféré fonctionner de cette manière plutôt que d'utiliser \textit{super} car cela oblige à fournir un comportement pour cette méthode et évite également l'oubli de la redéfinition de \textit{void setBook(Book)} pour traiter correctement le livre et réaliser les actions précédemment évoquées. La méthode \textit{T createRootElement()} quant a elle, permet de créer l'élément qui servira de label dans le TreeItem. La seule vraie valeur que l'on doit y renseigner est le nom de l'élément, les autres valeurs peuvent valoir "null" car elles ne seront pas utilisées. Les méthodes \textit{void addBookElementContextMenu()}, \textit{void updateBookElementContextMenu(T)}, \textit{void removeBookElementContextMenu(T)} correspondent aux actions à exécuter lorsque l'on clique sur l'action ajouter, modifier ou supprimer du menu (apparaît lors d'un clique droit sur la liste). Enfin, les méthodes \textit{String getXXXContextMenuString()} permettent de récupérer le texte qui sera affiché dans le menu qui vient d'être évoqué.
 
 		\subsection{GraphPane}
-			\label{sub:GraphPane}
+			\label{subsec:GraphPane}
 
 			Le GraphPane correspond à la zone d'édition. Elle contient des méthodes permettant l'ajout de lien ainsi que l'ajout de noeud. C'est ici que le mode va prendre tout son sens et toute son importance. En efffet, un clique sur cette partie de l'application n'aura pas les même effets selon que l'on soit en mode "ADD\_NODE" ou "DELETE".
 
@@ -749,6 +749,183 @@
 
 	\section{Rendre le livre jouable et estimer sa difficulté}
 		\label{sec:Jeu}
+
+		Deux autres objectifs de notre application étaient de pouvoir jouer sur le terminal au livre en cours d'édition ainsi que de pouvoir fournir à l'utilisateur différentes statistiques, dont une estimation de la difficulté, afin qu'il puisse mesurer à quel point son livre est facile ou non.
+
+		Dès lors, sur quoi se baser pour estimer la difficulté ? L'idée que nous avons eu est de prendre des choix de manière totalement aléatoire jusqu'a finir le livre (peut importe que l'on gagne ou non). À partir de cela il est possible de répéter l'opération plusieurs fois afin d'obtenir une estimation d'un résultat grace au nombre de fois où l'on à gagné. Nous avons donc besoin de rendre le livre jouable à la fois pour le joueur et l'entité chargé de jouer de manière aléatoire, entité que nous appellerons une fourmi.
+
+		Il est donc évident que le code de jeu pour le joueur et la fourmi sera extrêmement similaire. En effet, les seules parties qui seront différentes concerneront les interractions avec le livre (prise de décision, getion des combats, choix des items à prendre, ...) et l'affichage ou non du texte.
+
+		Ainsi, quatre classes permettent de jouer et d'estimer la difficulté. La première, sera l'interface \textbf{InterfacePlayerFoumis}, qui fournis les méthodes dans lesquels un choix doit être fait. Deux classes en découle, \textbf{Player} et \textbf{Fourmis} permettant respectivement au joueur et à la fourmi de prendre des décisions. Enfin, la classe \textbf{Jeu}, permet de faire jouer le "joueur" (incluant la fourmis) au jeu, jusqu'a ce qu'il arrive le termine. C'est également cette classe qui se chargera de nous donner l'estimation de la difficulté du jeu.
+
+		C'est en effet ce que montre le diagramme suivant :
+
+		\begin{figure}[H]
+			\centering\includegraphics[width=0.75\textwidth, keepaspectratio]{img/FourmiPlayer.png}
+			\caption{UML de la partie Jeu}
+		\end{figure}
+
+		Les parties suivantes détaillerons plus en détaille chacune de ces classes.
+
+		\subsection{Interface Player / Foumis}
+
+			Comme dit précédemment, cette interface permet de fournir la liste des méthodes à redéfinir par le joueur et la fourmi concernant leur prise de décision.
+
+			Voici quelques détails concernant ces méthodes :
+
+			\begin{description}
+				\item[execPlayerCreation]{Permet de faire un choix sur les éléments voulus (items, compétence, etc) lors d'une étape de la "conception du personnage"}
+
+				\item[combatChoice]{Retourne l'action à exécuter durant un combat selon les différents éléments fournis en paramètre tel que le noeud de Combat, le nombre de tour avant l'évasion ainsi que l'état actuel du jeu représenté par le BookState. Le choix peut alors être d'attaquer, d'aller dans l'inventaire ou alors de s'évader.}
+
+				\item[chooseEnnemi]{Permet de choisir l'ennemi à attaquer parmi la liste de tout les ennemis encore en vie.}
+
+				\item[prendreItems]{Permet de prendre une quantité limité d'items parmi ceux qui sont disponible.}
+
+				\item[makeAChoice]{Permet de faire un choix parmis ceux proposés par le noeud.}
+
+				\item[useIventaire]{Permet d'utiliser son inventaire lors d'un noeud de combat.}
+			\end{description}
+
+			Malgré la volonté de mettre tout le code en commun dans la classe \textbf{Jeu}, certaines parties sont tout de même dupliqués dans les classes \textbf{Player} et \textbf{Fourmis}. C'est notamment le cas avec l'utilisation d'un item de l'inventaire ou la sélection d'un item à prendre. Le mieux serait de retourner l'item à utiliser ou acheter et de traiter les différentes actions lié au choix dans la classe \textbf{Jeu}. Des méthodes supplémentaires seraient alors nécessaires lorsque l'inventaire est plein par exemple. Ce problème n'a pas été réglé par manque de temps.
+
+		\subsection{Player}
+			\label{subsec:player}
+
+			La classe \textbf{Player} permet à un joueur humain de jouer. Tous les choix se font grâce aux Scanner permettant ainsi l'avancement dans la partie. De plus, tous les messages seront affichés (contrairement à la fourmi où rien ne s'affiche) car ou souhaite pouvoir suivre l'histoire.
+
+			Prenons deux exemples de méthodes redéfini, \textit{int makeAChoice(AbstractBookNode)} et \textit{ChoixCombat combatChoice(BookNodeCombat, int, BookState)}
+
+			Commençons par la première. Pour rappel, elle permet de sélectionner le choix que l'on souhaite faire. De ce fait, le joueur devra entrer au clavier le numéro correspondant au choix fait. C'est donc ce numéro que l'on retournera.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=makeAChoice() de Player]
+				@Override
+				public int makeAChoice(AbstractBookNodeWithChoices node) {
+					Scanner scanner = new Scanner(System.in);
+
+					return scanner.nextInt();
+				}
+			\end{lstlisting}
+
+			Pour la seconde, on affichera un menu laissant au joueur le choix entre différentes options : Attaquer, Accéder à l'inventaire, S'en aller. Il va donc une fois de plus, écrire au clavier le numéro correspondant à son choix, choix que l'on retourne ensuite (du moment que celui-ci est valide bien entendu).
+
+			\begin{lstlisting}[gobble=16, language=java, caption=combatChoice() de Player]
+				@Override
+				public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
+					boolean choixValide = false;
+					ChoixCombat choixCombat = null;
+					//Affichage des choix lors du tour de combat du player
+					while(!choixValide){
+						System.out.println("Vos choix : ");
+						System.out.println("1 - Attaque");
+						System.out.println("2 - Inventaire");
+						System.out.println("3 - Evasion - reste " + remainingRoundBeforeEvasion + " tours");
+						System.out.println("Choix : ");
+
+						Scanner scanner = new Scanner(System.in);
+						int choix = scanner.nextInt();
+
+						if(choix < 1 || choix > 3) {
+							System.out.println("Le choix est invalide");
+							continue;
+						}
+
+						// Ordre dans l'énumération important. Il doit être identique au menu ci-dessus.
+						// TODO : Utiliser une série de if plutot
+						choixCombat = ChoixCombat.values()[choix-1];
+
+						//Choisi un objet dans l'inventaire puis retourne au choix
+						if (choixCombat == ChoixCombat.INVENTAIRE){
+							if(!state.getMainCharacter().getItems().isEmpty())
+								useInventaire(state);
+							else
+								System.out.println("Votre inventaire est vide");
+						} else {
+							choixValide = true;
+						}
+					}
+
+					return choixCombat;
+				}
+			\end{lstlisting}
+
+			On nottera également la présence de méthode utilitaires tel que \textit{choixYesNo()} qui demandera au joueur de valider ou non son choix. Si on a validé, alors cette méthode retourne true, sinon elle retourne false.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=méthode utilitaire choixYesNo]
+				private boolean choixYesNo(){
+					System.out.println("0 - oui");
+					System.out.println("1 - non");
+					Scanner scanner = new Scanner(System.in);
+					int choixJoueur = -1;
+
+					while(choixJoueur != 0 && choixJoueur != 1) {
+						choixJoueur = scanner.nextInt();
+					}
+
+					return choixJoueur == 0;
+				}
+			\end{lstlisting}
+
+		\subsection{Fourmis}
+			\label{subsec:fourmis}
+
+			La classe \textbf{Fourmis} permet, pour rappel, de parcourir le livre en tant que joueur fictifen effectuant des choix aléatoire. Cependant, à la différence avec le joueur humain, aucun des messages ne sera affiché car cela n'a aucune importance si ce n'est ralentir l'application (l'écriture dans un terminal est une opération coûteuse en terme de temps).
+
+			Reprenons les deux exemples de méthodes redéfini à titre de comparaison, à savoir : \textit{int makeAChoice(AbstractBookNode)} et \textit{ChoixCombat combatChoice(BookNodeCombat, int, BookState)}
+
+			Commençons par la première. Il s'agit d'un choix totalement aléatoire fait par la fourmi. Il faut donc qu'elle fasse le choix d'un nombre entre 1 et n+1, "n" étant le nombre de choix. On commence à 1 car les choix sont numérotés à partir de 1 et non 0 dans le jeu. On obtient donc la méthode suivante :
+
+			\begin{lstlisting}[gobble=16, language=java, caption=makeAChoice() de Fourmi]
+				@Override
+				public int makeAChoice(AbstractBookNodeWithChoices node) {
+					Random random = new Random();
+					return random.nextInt(node.getChoices().size())+1;
+				}
+			\end{lstlisting}
+
+			Passon maintenant à la seconde méthode. De la même manière que pour \textit{makeAChoice} le choix des actions est fait de manière totalement aléatoire. En témoigne l'algorithme suivant.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=combatChoice() de Fourmis]
+				public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
+					boolean choixValide = false;
+					Random random = new Random();
+					ChoixCombat choixCombat = null;
+					int choix;
+
+					while(!choixValide){
+						choix = random.nextInt(ChoixCombat.values().length);
+						choixCombat = ChoixCombat.values()[choix];
+
+						if (choixCombat == ChoixCombat.INVENTAIRE){
+							if(!state.getMainCharacter().getItems().isEmpty())
+								useInventaire(state);
+						} else {
+							choixValide = true;
+						}
+					}
+
+					return choixCombat;
+				}
+			\end{lstlisting}
+
+			Tous les choix sont équiprobables. Cependant, peut être qu'il faudrait changer cette manière de faire. On risque de fuir beaucoup trop souvent et de ne jamais terminer un combat qui pourrait être long. De plus, il est possible que la fourmi utilise mal son inventaire par exemple en utilisant une potion en ayant la santé pleine ou en utilisant une arme moins puissante qu'une autre.
+
+			Ainsi le plus gros problème qui ressort de la fourmi est qu'elle n'est pas "intelligente". Ses choix sont dans certaines situations beaucoups trop aléatoire. Il faudrait lui donner un minimum d'intelligence afin de pouvoir réussir le livre. Cependant, quel degrée d'intelligence doit-on lui fournir ? Si on lui en donne trop, ne risque-t-on pas d'avoir une estimation faussée ?
+
+			Par exemple, si à un moment de l'histoire, une personne nous provoque en duel, un combat se lance. Peut être que perdre le duel (parce qu'un personnage nous as demandé de le faire avant) mènerait à une partie de l'histoire qui pourrait se révéler très importante pour la suite. Or, des fourmis qui chercheraient toujours à gagner les duels risquerait de passer à coté de cet élément.
+
+			Une solution serait peut être de générer des fourmis qui serait intelligente mais qui ont de temps en temps, selon un certain ratio, une action totalement aléatoire.
+
+			Il en va de même pour de nombreux autres éléments. Par exemple, lorsqu'elle peut choisir des items, elle en prenne autant qu'elle le peuvent jusqu'a avoir leur inventaire plein. Cela peut se révéler absurde, si elles prennent des items inutiles. D'autant plus qu'elle ne peuvent pas décider de se libérer de quelques uns d'entre eux lorsqu'elles devront choisir de nouveau des items(du moins, ce n'est pas encore présent). Ceci pose une nouvelle question : Comment gérer l'évaluation d'un item ? Comment savoir si un item est plus important qu'un autre ? Cela pourrait certainement se faire en déterminant un calcul à partir du nombre de fois que l'item apparait dans des prérequis et le nombre de fois qu'on peut l'obtenir par exemple.
+
+			Autre problème avec la fourmi : la détection de boucle infinie. Cela peut arriver par inadvertense ou alors de manière totalement intentionelle dela part de l'utilisateur. Prenons en exemple le livre suivant :
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.6\textwidth, keepaspectratio]{img/fourmisPrendreItemInfiniExemple.png}
+				\caption{prendreItem exemple de boucle infini}
+			\end{figure}
+
+			 Supposons que la fourmi ne possède pas l'item requis, pour choisir le choix 2A, celle-ci va alors devoir choisir le choix 1A. Cependant, celui-ci la fait arriver sur un noeud où la seule option possible est de revenir sur le noeud précédent par le choix 1B. Elle n'a toujours pas l'item et tourne donc indéfiniemment. Cet exemple est extrêmement simple mais permet de bien voir le problème, la boucle peut être plus longue et plus difficile à voir. Il faudrait donc tenir un historique des noeuds visités pour tenter de détecter des cycle et stopper le jeu dans ce cas.
 
 		\subsection{Jeu}
 
@@ -890,10 +1067,10 @@
 			Le combat commence alors. Le choix est défini par la méthode du joueur correspondant car un Scanner ou un random est requis pour ce type de choix. Ici, trois choix sont possibles:
 
 			\begin{description}
-				\item[Choix Attaque :]{que ce soit dans la classe \textbf{Player} ou \textbf{Fourmis}, un autre choix (cf ligne 2) est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Cela permet donc de créer un dynamisme et une certaine intélligence dans le combat. Je vous invite à voir les subsection fourmis \ref{sub:fourmis} et player \ref{sub:player} pour plus de détail dans le choix.
+				\item[Choix Attaque :]{que ce soit dans la classe \textbf{Player} ou \textbf{Fourmis}, un autre choix (cf ligne 2) est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Cela permet donc de créer un dynamisme et une certaine intélligence dans le combat. Je vous invite à voir les subsection fourmis \ref{subsec:fourmis} et player \ref{subsec:player} pour plus de détail dans le choix.
 				 Une fois l'ennemi sélectionné, une méthode attaque (cf ligne 7) est appelé apellant elle même une autre méthode commune entre l'attaque du joueur et l'attaque d'ennemi. Nommé \textit{getDamageAmount()}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player. Cette méthode commune permet donc d'éviter une répétition dans le code.}
 				Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimé de la liste des ennemis (cv logne 9) avant sont tour pour éviter que l'ennemi mort attaque ou que l'on rattaque cette ennemi.
-				\item[Inventaire :]{si ce choix est fait par le joueur, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense. Pour plus de détail sur ce choix, je vous invite à regarder les subsection fourmis \ref{sub:fourmis} et player \ref{sub:player}.}
+				\item[Inventaire :]{si ce choix est fait par le joueur, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense. Pour plus de détail sur ce choix, je vous invite à regarder les subsection fourmis \ref{subsec:fourmis} et player \ref{subsec:player}.}
 				\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 (voir cf 13) et si un noeud de d'évasion existe, le joueur peut alors s'enfuir. Sinon cela lui passe son tour.Nous avons décidé de ne pas relancer les choix à ce moment, car cela peut être une stratégie du joueur qui, dans une prochaine mise à jour d'implentation de pouvoir lié à des compétences, en cas d'une compétence de "renvoi" (qui se désactive en cas d'attaque de la part du joueur), l'attaque de l'ennemi est alors "retourné" vers lui même.}
 			\end{description}
 
@@ -940,310 +1117,4 @@
 
 			\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le joueur est encore en vie. Puis une autre méthode, nommé \textit{getRandomChoices()} (cf \nameref{lst:getRandomChoices} à la page \pageref{lst:getRandomChoices}) est appelé de la classe BookNodeLinkRandom afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
 
-			\textbf{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un boolean sur l'état de la fin de partie. Ce boolean permet de quitter la boucle while de la méthode \textit{runGame()} et permet ainsi donc d'arreter le jeu. L'utilisateur peut alors continuer l'édition du livre pour le player et permet de savoir si la partie est gagné ou perdu pour la fourmis (voir la subsection fourmis \ref{sub:fourmis}). Bien sûr, une vérification si le joueur est en vie est également éxécuté si c'est une noeud de type VICTORY, permettant ainsi que le joueur perde même si le son lieu de destination est un noeud de victoire.
-
-		\subsection{Interface Player / Foumis}
-			Une interface \textbf{InterfacePlayerFoumis} a été créé permettant une mise en commun des codes \textbf{Player} et \textbf{Fourmis}. Ces méthodes permettent de faire un choix, prendre les items disponibles, créer un personage lambda, aller dans l'inventaire, choisir son ennemis ou encore combatre. Elles sont appelé au même moment. La méthode sera alors exécuté différément en fonction du joueur. Ce sont des méthode communes car un choix est demandé, et la décision du choix est différentes en fonction d'un joueur ou d'une fourmis. En effet, un Scanner est utilisé afin de prendre en compte le choix du player et un nombre aléatoire est généré pour la fourmis.
-
-			Ci-dessous, toutes les méthodes communes sont présentés de façon général. Mais elles seront toutes expliquer dans les subsection fourmis \ref{sub:fourmis} et player\ref{sub:player}, vu un peu plus bas.
-
-			\textit{execPlayerCreation} permet de choisir les compétences et les items disponibles au début de la partie. Ces derniers sont défini lors de la création du prélude. Pour l'ajout des items, la méthode \textit{prendItems} est appelé. Cette méthode permet donc de jouer au livre avec peut être, différentes finalités en fonction de ces choix.
-
-			\textit{combatChoice}, prend en paramètre le noeud de Combat et le nombre de tour avant l'évasion ainsi que le BookState. Elle permet de faire un choix lors du tour du joueur dans un combat. On peut alors choisir d'attaquer, d'aller dans l'inventaire ou alors de s'évader. Si on choisi l'inventaire, on va alors dans une autre méthode appelé \textit{useInventaire} qui prend le BookState en paramètre. On peut alors utiliser un item de santé, prendre un objet de défense ou alors une arme. Si l'on choisis un autre choix, cette objet n'est pas utilisable lors d'un combat (comme par exemple de l'argent). Une fois l'objet pris, on retourne dans les choix du combat. On peut alors, soit retourner dans l'inventaire pour prendre un autre objet, soit attaquer ou s'évader. Cela donne donc libre choix au joueur sur le nombre d'objet à utiliser (comme par exemple, l'ajout d'une arme ainsi qu'un bouclier).
-
-			\textit{chooseEnnemi} permet de choisir l'ennemi à attaquer parmi la liste de tout les ennemis encore en vie. Cela rend le système de combat un peu plus "intelligent".
-
-			\textit{prendItems} permet de prendre un item parmi la liste d'items disponible. Cette liste est pris en paramètre ainsi que la sauvegarde de la partie et le nombre d'item maximum pouvant être pris. Cela permet ainsi d'avoir une méthode complète qui peut être utiliser pour prendre les items disponibles aux prélude comme sur les différents noeuds du livre.
-
-			\textit{makeAChoice} permet de faire un choix en fonction des différentes destinations proposé par le noeud. Cette méthode est ce qui défini un "livre à choix".
-
-			\textit{useIventaire} permet d'utiliser son inventaire lors d'un noeud de combat. La mise à jour d'un port d'item de défense ou d'arme est alors mis à jour. Si un item de soin est choisi, les points de vie du joueur sont alors actualisée.
-
-			Malgré une séparation entre le code en "communs" visible dans la classe \textbf{Jeu} et le code normalement "non communs" visible dans les classes \textbf{Player} et \textbf{Fourmis}, vous allez remarquer dans l'explication de ses classes, qu'une partie est encore commune. Ce problème n'a pas été réglé par manque de temps.
-
-		\subsection{Player}\label{sub:player}
-			La classe \textbf{Player} permet de jouer au jeu en tant que player. Elle permet de faire des choix grâce aux Scanner permettant ainsi l'avancement du jeu. Des messages sont aussi affiché afin de guider le player dans ses choix.\\
-			Nottament la méthode \textit{choixYesNo()} qui permet de choisir Oui ou Non et de renvoyer le boolean true ou false. Cette méthode permet, par exemple, de savoir si le player veut supprimer, prendre un item ou une compétence. Elle a donc été créé évitant ainsi la redondance de code.\\
-
-			Pour la méthode commune \textit{prendItems()}, cette dernière fait appel à d'autre méthodes présente dans la classe \textbf{Player}.
-
-			\begin{lstlisting}[gobble=16, language=java, label=lst:prendreItemsPlayer, caption=prendreItems() du Player]
-				public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
-					while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
-						System.out.println("Les items suivant sont disponible:");
-						//Affiche les items
-
-						System.out.println("Voulez vous un item ?");
-						if(choixYesNo()){
-							int itemMax = state.getMainCharacter().getItemsMax();
-
-							if(itemMax == state.getMainCharacter().getItems().size()){
-								itemPlein(state);
-
-								System.out.println("Voici vos choix:");
-
-								if(!choixYesNo())
-									nbItemMax = 0;
-								else
-									itemSupp(state);
-							} else {
-								nbItemMax = itemAdd(state, bookItemLinks, nbItemMax);
-							}
-
-						} else {
-							nbItemMax = 0;
-						}
-
-						if(bookItemLinks.isEmpty())
-							nbItemMax = 0;
-					}
-				}
-
-			\end{lstlisting}
-
-			Par exemple, \textit{itemAdd()} (cf ligne 20 dans le code \ref{lst:prendreItemsPlayer}) qui elle permet de choisir l'item à ajouter dans l'inventaire. Une variable "choixValide" permet de ne pas valider un numéro de choix non valide. Une fois l'item choisi, l'ID de l'item est alors ajouter dans la liste de l'inventaire afin de pouvoir retrouver l'item si le joueur l'utilise.\\
-			Cette méthode a été créé permettant de séparer le code de la méthode \textit{prendItems()} pour une meilleure visibilité. Elle pourrait aussi servir, par exemple, dans l'ajout d'un item obligatoire. Dans ce cas, la méthode \textit{prendItems()} n'est plus utilisé mais directement \textit{itemAdd()}. Mais cette exemple n'est pas représentatif de l'état actuel de MagicBook qui ne permet pas de rendre un item obligatoire. Mais c'est une idée d'amélioration.\\
-
-			\begin{lstlisting}[gobble=16, language=java, caption=itemAdd()]
-				private int itemAdd(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
-					System.out.println("Quel item voulez-vous ?");
-					boolean choixValide = false;
-					int choix = -1;
-
-					while(!choixValide){
-						Scanner scanner = new Scanner(System.in);
-						choix = scanner.nextInt();
-
-						if(choix >= 0 && choix <= (bookItemLinks.size()-1)){
-							choixValide = true;
-
-							BookItemLink itemLink = bookItemLinks.get(choix);
-							System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
-							state.getMainCharacter().getItems().add(itemLink.getId());
-
-							itemLink.setAmount(itemLink.getAmount()-1);
-
-							if(itemLink.getAmount() == 0)
-								bookItemLinks.remove(itemLink);
-
-							nbItemMax--;
-						} else if(choix == -1)
-							choixValide = true;
-						else {
-							System.out.println("vous ne pouvez pas effectuer ce choix");
-						}
-					}
-
-
-					return nbItemMax;
-				}
-			\end{lstlisting}
-
-			Puis la méthode \textit{itemPlein()} (cf ligne 11 dans le code \ref{lst:prendreItemsPlayer}), qui elle, affiche les items à supprimer. Cette méthode permet d'afficher les items de l'inventaire.
-
-			\begin{lstlisting}[gobble=16, language=java, caption=itemPlein()]
-				private void itemPlein(BookState state){
-					System.out.println("Votre inventaire est plein");
-					System.out.println("Voulez vous supprimer un item ?");
-					System.out.println("Vos Item: ");
-
-					int i = 0;
-					for(String itemState : state.getMainCharacter().getItems()){
-						System.out.println(i + " - "+state.getBook().getItems().get(itemState));
-						i++;
-					}
-				}
-			\end{lstlisting}
-
-			Pour la méthode \textit{itemSupp}, elle est appelé (cf ligne 18 dans le code \ref{lst:prendreItemsPlayer}) afin de choisir l'item à supprimer. Une boucle while est alors parcouru afin d'être sûr d'avoir un choix valide. Une fois l'item choisi, cela met l'inventaire du player à jour grâce au state pris en charge dans la méthode \textit{prendreItems}. Bien sûr, l'utilisateur à le choix de ne pas supprimer un item permettant ainsi de garder tout les items de son inventaire.
-			On aurait pu très bien laisser le choix au player de supprimer quand même un item si son inventaire n'était pas plein. Mais c'est un livre à choix avec des prérequis, tout les items peuvent donc être important, et il n'y a pas de pénalité de déplacement si l'inventaire est plein. Cette fonctionalité de supprimer un item dans l'inventaire n'a alors pas été jugé nécessaire à ajouter en option libre.
-
-			\begin{lstlisting}[gobble=16, language=java, caption=itemSupp()]
-				private void itemSupp(BookState state){
-					System.out.println("Quel item voulez-vous supprimer ?");
-					boolean choixValide = false;
-
-					while(!choixValide){
-						Scanner scanner = new Scanner(System.in);
-						int choix = scanner.nextInt();
-
-						if(choix >= 0 && choix <= (state.getMainCharacter().getItems().size()-1)){
-							state.getMainCharacter().getItems().remove(choix);
-							choixValide = true;
-						} else if(choix == -1) {
-							choixValide = true;
-						} else {
-							System.out.println("vous ne pouvez pas effectuer ce choix");
-						}
-					}
-
-				}
-			\end{lstlisting}
-
-			Pour la méthode \textit{itemAdd()}, elle permet d'ajouté un item choisi.
-			Tout ceci est donc gérer par la méthode \textit{prendreItemsPlayer}, permettant ainsi d'appeler certaine méthode en fonction des choix du player ainsi que de gérer la prise des items grâce à la boucle while.
-
-
-			Pour la méthode \textit{execPlayerCreation()} est presque la même que celle de la fourmis : elle utilise aussi la méthode \textit{prendItems()}, défini ici\ref{lst:prendreItemsPlayer} au moment de l'ajout des items. Mais au moment de l'ajout de compétences, la méthode \textit{skillAdd()} est appelé jusqu'à ce que le maximum de compétences autorisé a été pris ou qu'il n'en reste plus à prendre. Cette méthode ressemble fortement à la prise d'item. \textit{execPlayerCreation()} serais à implenté dans la classe \textit{Jeu}, car beaucoup de code est en commun.\\
-
-			\begin{lstlisting}[gobble=16, language=java, caption=execPlayerCreation() du Player]
-				public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
-					//Affichage du texte du début dans "création du personnage"
-
-					if(characterCreation instanceof CharacterCreationItem){
-						CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
-						prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
-					}
-					else if(characterCreation instanceof CharacterCreationSkill){
-						CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
-
-						int nbItemMax = characterCreationSkill.getAmountToPick();
-
-						while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
-							System.out.println("Les compétences suivant sont disponible:");
-							//Affichage des compétences
-							}
-
-							skillAdd(state, characterCreationSkill);
-							nbItemMax--;
-						}
-					}
-				}
-				\end{lstlisting}
-
-
-		\subsection{Fourmis}\label{sub:fourmis}
-			La classe \textbf{Fourmis} permet de parcourir le livre en tant que joueur fictif. Elle effectue des choix random en fonction des différentes méthodes de l'interface. Cela permet donc de terminer le livre grâce aux choix random.
-
-			La méthode \textit{combatChoice} permet de choisir entre ATTAQUE, EVASION, INVENTAIRE. Nous avons choisi de faire un random sur les trois choix et non pas sur deux choix même si le tour d'évasion n'est pas disponible, permettant ainsi d'avoir la possibilité que la fourmi passe aussi son tour, comme le joueur, afin d'avoir la même chance lors des combats. Elle peut aussi utiliser son inventaire lors du combat.
-
-			\begin{lstlisting}[gobble=16, language=java, caption=combatChoice() de Fourmis]
-				public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
-					boolean choixValide = false;
-					Random random = new Random();
-					ChoixCombat choixCombat = null;
-					int choix;
-
-					while(!choixValide){
-						choix = random.nextInt(ChoixCombat.values().length);
-						choixCombat = ChoixCombat.values()[choix];
-
-						if (choixCombat == ChoixCombat.INVENTAIRE){
-							if(!state.getMainCharacter().getItems().isEmpty())
-								useInventaire(state);
-						} else {
-							choixValide = true;
-						}
-					}
-
-					return choixCombat;
-				}
-			\end{lstlisting}
-
-			 Ainsi, elle peut se soigner, prendre des armes et/ou des items de défense. Malheureusement, la foumis n'est pas "intelligente" et ne prend pas donc la meilleur arme ou ne se soigne pas alors qu'elle va mourir. Mais c'est un gros point à améliorer. Elle choisi donc au hasard un des items et peut même prendre un items non utile dans le combat. Elle revient donc sur les trois choix ATTAQUE, EVASION, INVENTAIRE sans avoir pris une arme ou autre lors du choix de l'item dans son inventaire.
-
-			\begin{lstlisting}[gobble=16, language=java, caption=useInventaire() de Fourmis]
-				public void useInventaire(BookState state){
-					List<String> listItemState = state.getMainCharacter().getItems();
-
-					Random random = new Random();
-					int choix = random.nextInt(listItemState.size());
-					BookItem bookItem = state.getBook().getItems().get(listItemState.get(choix));
-
-					if(bookItem instanceof BookItemDefense){
-						state.setBookItemDefense((BookItemDefense) bookItem);
-					}
-					else if(bookItem instanceof BookItemHealing){
-						BookItemHealing bookItemHealing = (BookItemHealing) bookItem;
-						state.getMainCharacter().heal(bookItemHealing.getHp());
-						state.getMainCharacter().getItems().remove(listItemState.get(choix));
-					}
-					else if(bookItem instanceof BookItemWeapon){
-						state.setBookItemArme((BookItemWeapon) bookItem);
-					}
-				}
-			\end{lstlisting}
-
-			Autre point, lors de l'utilisation de la méthode \textit{prendreItems()}, la fourmis prend tout les items disponible, tant qu'elle a encore de la place, que le maximum d'objet à prendre n'est pas à 0 et si des objets sont encore disponible.
-
-			\begin{lstlisting}[gobble=16, language=java, caption=prendreItems() de Fourmis]
-				public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
-					int choix = 0;
-
-					while(nbItemMax != 0){
-						int itemMax = state.getMainCharacter().getItemsMax();
-						//Vérifie item maximum et si il y a encore des items à prendre
-						if(state.getMainCharacter().getItems().size() < itemMax && !bookItemLinks.isEmpty()){
-							//Choix
-							Random random = new Random();
-							choix = random.nextInt(bookItemLinks.size());
-
-							BookItemLink itemLink = bookItemLinks.get(choix);
-
-							state.getMainCharacter().addItem(itemLink.getId());
-							itemLink.setAmount(itemLink.getAmount()-1);
-
-							if(itemLink.getAmount() == 0)
-								bookItemLinks.remove(itemLink);
-
-							if(nbItemMax != -1)
-								nbItemMax--;
-						} else {
-							nbItemMax = 0;
-						}
-					}
-				}
-			\end{lstlisting}
-
-			Des boucles infini sont donc à prévoir si par exemple, un objet est requis pour accéder au choix 2 et qu'il faut aller dans le choix 1 pour prendre l'item. Vu qu'au moins un choix est disponible, aucun noeud terminal n'est généré. Sauf que si l'item de la fourmis est plein, l'item ne peut pas être pris et aucun item est supprimé. Si la supression est active, quel est l'item à suprimmer ? Comment définir un item important ? A la santé du personnage, au nombre d'objet non possédé d'un certain type (exemple: defense) ? A un nombre "d'importance" prédéfini à l'édition du livre ? Cette piste de réflexion serait donc à exploiter dans les améliorations à apporter.
-
-			\begin{figure}[H]
-				\centering\includegraphics[height=2.5cm, keepaspectratio]{img/fourmisPrendreItemInfiniExemple.png}
-				\caption{prendreItem exemple de boucle infini}
-			\end{figure}[H]
-
-			A la méthode \textit{execPlayerCreation()}, soit, à la création du personnage, le même problème se pose. En effet, la méthode \textit{prendreItems()} est utilisé. Pour l'ajout de compétence, le problème est moins important. En effet, les compétences ne peuvent pas être aprise autre part qu'à la création du personnage. En effet, c'est une autre amélioration prévu. Nous avons donc décidé d'ajouter le nombre maximal de compétence. Mais si les compétences avait des effets, comment définir qu'une compétence est plus importante qu'une autre ? Peur être avoir aussi un nombre prédéfini, comme les items, qui désigne son importance. Puis copier la méthode pour choisir un noeud aléatoire. Il faudrait aditionner tout les nombres désignant l'importance, choisir un nombre aléatoire, puis soustraire chaque nombres désignant l'importance jusqu'à être égal ou inférieur à zero. Ces une piste de réflexion possible, mais pas la seule solution.
-
-			\begin{lstlisting}[gobble=16, language=java, caption=execPlayerCreation() de Fourmis]
-				public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state) {
-
-					if(characterCreation instanceof CharacterCreationItem){
-						CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
-
-						prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
-					}
-					else if(characterCreation instanceof CharacterCreationSkill){
-						CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
-
-						Random random = new Random();
-						int amountToPick = characterCreationSkill.getAmountToPick();
-						while(amountToPick != 0 && !characterCreationSkill.getSkillLinks().isEmpty()) {
-							int choix = random.nextInt(characterCreationSkill.getSkillLinks().size());
-							state.getMainCharacter().addSkill(characterCreationSkill.getSkillLinks().get(choix));
-							characterCreationSkill.getSkillLinks().remove(choix);
-							amountToPick--;
-						}
-					}
-				}
-			\end{lstlisting}
-
-			Pour la méthode \textit{chooseEnnemi}, la fourmi envoyé prend obligatoirement le premier ennemi permettant de tuer le maximum d'ennemis en attaquant toujours le même ennemi. Nous avons choisi cette solution pour éviter que la fourmi attaque tout les ennemis sans en tuer un seul. Sauf qu'à chaque tour, chaque ennemi attaque. Donc moins il y a d'ennemis, plus sont les chances de remporter le combat.\\
-			Mais un autre problème se pose. Imaginons une fourmi avec 15 points de vie 10 points d'attaque. Imaginons une liste ennemis: [20pts,5pts,5pts,5pts]. Si le premier ennemi à 20 point de vie et les troix suivant ont 5 points de vie, serait-il plus judicieux alors de tuer les troix ennemis avec 5 points de vie avant d'attaquer le premier ennemis avec 20 points de vie. Probablement oui. Voyons le problème de plus près.
-			\begin{itemize}
-				\item Attaque de la fourmis: deuxième de la liste
-				\item Reste liste ennemis: [20pts,5pts,5pts]
-				\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 10pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 10pts vie restant)
-			\end{itemize}
-
-			En tant que player, il changerait d'ennemis. La fourmi devra alors avoir l'intelligence de changer d'adversaire. Elle gagnera alors de combat.
-
-			\begin{itemize}
-				\item Attaque de la fourmis: premier de la liste
-				\item Perte de 10pts de vie sur le premier ennemi
-				\item Reste liste ennemis: [10pts,5pts,5pts]
-				\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 5pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 5pts vie restant)
-				\item Attaque de la fourmis: premier de la liste
-				\item Reste liste ennemis: [5pts,5pts]
-				\item Attaque des ennemis: les autres attaque aussi (-0pts de vie à la fourmi, soit 5pts vie restant)
-				\item ...
-			\end{itemize}
+			\textbf{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un boolean sur l'état de la fin de partie. Ce boolean permet de quitter la boucle while de la méthode \textit{runGame()} et permet ainsi donc d'arreter le jeu. L'utilisateur peut alors continuer l'édition du livre pour le player et permet de savoir si la partie est gagné ou perdu pour la fourmis (voir la subsection fourmis \ref{subsec:fourmis}). Bien sûr, une vérification si le joueur est en vie est également éxécuté si c'est une noeud de type VICTORY, permettant ainsi que le joueur perde même si le son lieu de destination est un noeud de victoire.
