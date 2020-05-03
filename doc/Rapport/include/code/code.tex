@@ -23,7 +23,7 @@
 				\label{fig:BookNode}
 			\end{figure}
 
-			Tout d'abord on retrouve \textbf{AbstractBookNode} qui contient un texte correspondant aux paragraphes du noeud. En découle ensuite une deuxième classe mère \textbf{AbstractBookNodeWithChoices<T>} qui constitue la base de chaque noeud non terminal. Elle apporte diverses attributs comme la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste des choix disponible. Ce dernier est défini par une List<T> car nous aurons différents type de liens et nous souhaitons qu'on noeud ne puisse posséder qu'un et un seul type de lien au sein d'une même liste.
+			Tout d'abord on retrouve \textbf{AbstractBookNode} qui contient un texte correspondant aux paragraphes du noeud. En découle ensuite une deuxième classe mère \textbf{AbstractBookNodeWithChoices<T>} qui constitue la base de chaque noeud non terminal. Elle apporte diverses attributs comme la liste des items disponible sur ce noeud, le nombre d'item maximum qu'on peut en prendre, la liste des items qu'il est possible d'acheter, le nombre de points de vie perdue / gagnée sur ce noeud, mais aussi, et surtout, la liste des choix disponible. Ce dernier est défini par une List<T> car nous aurons différents type de liens et nous souhaitons qu'on noeud ne puisse posséder qu'un et un seul type de lien au sein d'une même liste.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.90\textwidth, keepaspectratio]{img/BookNode2.png}
@@ -31,11 +31,11 @@
 				\label{fig:BookNode}
 			\end{figure}
 
-			Parmis les classes filles instanciable, on retrouve \textbf{BookNodeWithChoices} pour les noeuds à choix simple, \textbf{BookNodeWithRandomChoices} pour les noeuds où l'on prend un choix de manière aléatoire, \textbf{BookNodeCombat} pour les noeuds de combat et \textbf{BookNodeTerminal} pour ceux de victoire et de défaite.
+			Parmi les classes filles instanciable, on retrouve \textbf{BookNodeWithChoices} pour les noeuds à choix simple, \textbf{BookNodeWithRandomChoices} pour les noeuds où l'on prend un choix de manière aléatoire, \textbf{BookNodeCombat} pour les noeuds de combat et \textbf{BookNodeTerminal} pour ceux de victoire et de défaite.
 
-			\textbf{BookNodeTerminal} possède une énumération, \textbf{BookNodeStatus}, qui permet de connaitre la finalité du livre, c'est à dire si le joueur à gagné ou perdu.
+			\textbf{BookNodeTerminal} possède une énumération, \textbf{BookNodeStatus}, qui permet de connaître la finalité du livre, c'est à dire si le joueur à gagné ou perdu.
 
-			Pour le \textbf{BookNodeCombat}, le choix a été fait d'ajouter trois \textbf{BookNodeLink} afin de représenter les différentes issues du combat : victoire, evasion, defaite. Cela permet donc d'avoir, au maximum, un lien possible pour chaque finalité du combat. Nous avons donc redéfini les méthodes spécifiques aux choix, c'est à dire celle pour récupérer les choix, celle pour les supprimer et celle pour les mettre à jour. La liste de la classe mère n'est plus utilisable. Il s'agit d'une grosse erreur de notre part. En effet, cette classe demande un traitement spécial à presque tous les endroits où l'on peut gérer des noeuds. Il aurait plutot fallu ajouter les choix dans la liste parente et avoir un moyen de faire une distinction afin de savoir lequel est celui de victoire, de défaite ou d'évasion. Nous n'aurions pas eu à redéfinir autant de fois des comportements particuliers pour ce noeud avec des instanceof. Par manque de temps et au vu des changements importants que cela nécessitait, pour faire cela proprement nous n'avons pas pus changer cela. Une liste contenant les ID des ennemis que l'on doit combattre y est également renseignée. Les ennemis peuvent ensuite être retrouvé dans le livre à l'aide de cet ID.
+			Pour le \textbf{BookNodeCombat}, le choix a été fait d'ajouter trois \textbf{BookNodeLink} afin de représenter les différentes issues du combat : victoire, évasion, defaite. Cela permet donc d'avoir, au maximum, un lien possible pour chaque finalité du combat. Nous avons donc redéfini les méthodes spécifiques aux choix, c'est à dire celle pour récupérer les choix, celle pour les supprimer et celle pour les mettre à jour. La liste de la classe mère n'est plus utilisable. Il s'agit d'une grosse erreur de notre part. En effet, cette classe demande un traitement spécial à presque tous les endroits où l'on peut gérer des noeuds. Il aurait plutôt fallu ajouter les choix dans la liste parente et avoir un moyen de faire une distinction afin de savoir lequel est celui de victoire, de défaite ou d'évasion. Nous n'aurions pas eu à redéfinir autant de fois des comportements particuliers pour ce noeud avec des "instanceof". Par manque de temps et au vu des changements importants que cela nécessitait, pour faire cela proprement nous n'avons pas pu changer cela. Une liste contenant les ID des ennemis que l'on doit combattre y est également renseignée. Les ennemis peuvent ensuite être retrouvés dans le livre à l'aide de cet ID.
 
 			Pour le \textbf{BookNodeWithRandomChoices}, la méthode \textit{getRandomChoices} a été ajoutée, afin de sélectionner un choix de manière aléatoire en fonction de la probabilité de chaque lien.
 
@@ -48,16 +48,16 @@
 
 		\subsection{Représentation des personnages, items}
 
-			Nous allons maintenant parler des personnages et des items du livre. Bien qu'il n'y ai pas grand chose à expliquer sur eux, car il s'agit de classes possédant beaucoup de getter et setter, nous souhaitons détailler certains choix faits.
+			Nous allons maintenant parler des personnages et des items du livre. Bien qu'il n'y ai pas grand chose à expliquer sur eux, car il s'agit de classes possédant beaucoup de "getters" et "setters", nous souhaitons détailler certains choix faits.
 
-			Commençons par les personnages. Ceux ci sont définits par la classe \textbf{BookCharacter} dans le package magic\_book.core.game. Cette classe possède presque uniquement des getter et setter bien qu'elle possède également quelques méthodes utilitaires.
+			Commençons par les personnages. Ceux ci sont définis par la classe \textbf{BookCharacter} dans le package magic\_book.core.game. Cette classe possède presque uniquement des "getters" et "setters" bien qu'elle possède également quelques méthodes utilitaires.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.45\textwidth, keepaspectratio]{img/book_character.png}
 				\caption{UML sur la gestion des personnages}
 			\end{figure}
 
-			Concernant les listes de String (skills, immunes, items), il s'agit d'une liste contenant les id. Pour "immunes", il s'agit des ID des skills contre lesquels le personnage est immunisé. Cela permet aux items et aux compétences de n'être référencés qu'à un seul et même endroit, c'est à dire, dans la classe \textbf{Book}. Pour la monnaie, on a choisi d'utiliser une HashMap<String, Integer> afin de pouvoir gérer différents types de monnaie et leur montant dans une même histoire. Malheureusement, notre format de livre, et donc notre application, ne permet pour le moment pas de gérer pleinement cette fonctionnalité.
+			Concernant les listes de String (skills, immunes, items), il s'agit d'une liste contenant les ID. Pour "immunes", il s'agit des ID des skills contre lesquels le personnage est immunisé. Cela permet aux items et aux skills de n'être référencés qu'à un seul et même endroit, c'est à dire, dans la classe \textbf{Book}. Pour la monnaie, on a choisi d'utiliser une HashMap<String, Integer> afin de pouvoir gérer différents types de monnaie et leur montant dans une même histoire. Malheureusement, notre format de livre, et donc notre application, ne permet pour le moment pas de gérer pleinement cette fonctionnalité.
 
 			Passons maintenant aux items. Ceux-ci possèdent une classe mère BookItem dans le package magic\_book.core.item.
 
@@ -66,9 +66,9 @@
 				\caption{UML sur la gestion des items}
 			\end{figure}
 
-			Avant de détailler notre choix, nous allons expliquer brièvement les deux interfaces que l'on observe. L'une se nomme \textbf{Descriptible} et permet à l'item de se décrire sous forme de String. Bien que la méthode \textit{String toString()} soit déjà prévu à cet effet, celle ci ne permet pas de prendre en argument un livre (classe \textbf{Book}). Bien entendu, c'est logique mais certains objets ont besoin du livre pour se décrire, par exemple, pour retrouver un item / personnage à partir de son id. La seconde interface, \textbf{JsonExportable} sera expliqué plus en détails dans \nameref{subsec:lecture_ecriture_fichier} à la page \pageref{subsec:lecture_ecriture_fichier}. Pour rester bref, disons qu'elle permet, la lecture et l'écriture du fichier en JSON.
+			Avant de détailler notre choix, nous allons expliquer brièvement les deux interfaces que l'on observe. L'une se nomme \textbf{Descriptible} et permet à l'item de se décrire sous forme de String. Bien que la méthode \textit{String toString()} soit déjà prévu à cet effet, celle ci ne permet pas de prendre en argument un livre (classe \textbf{Book}). Bien entendu, c'est logique mais certains objets ont besoin du livre pour se décrire, par exemple, pour retrouver un item / personnage à partir de son id. La seconde interface, \textbf{JsonExportable} sera expliquée plus en détails dans \nameref{subsec:lecture_ecriture_fichier} à la page \pageref{subsec:lecture_ecriture_fichier}. Pour rester bref, disons qu'elle permet, la lecture et l'écriture du fichier en JSON.
 
-			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attributs spécfiques à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type monnaie inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère par \textit{super.getDescription(book)} dans la méthode \textit{getDescription} , ainsi que \textit{super.toJson()} pour la méthode \textit{toJson()}.
+			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attributs spécfiques à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégât un item de type monnaie inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On notera l'appel à la méthode définit dans la classe mère par \textit{super.getDescription(book)} dans la méthode \textit{getDescription} , ainsi que \textit{super.toJson()} pour la méthode \textit{toJson()}.
 
 			\begin{lstlisting}[gobble=16, language=Java, caption=Exemple de spécialisation des items]
 				@Override
@@ -99,9 +99,9 @@
 
 			Nous avons décidé de fournir à l'utilisateur la possibilité de définir des listes de prérequis qu'il est nécessaire de remplir afin de pouvoir accéder à un choix. Ainsi, le joueur se verra refusé l'utilisation d'un choix s'il ne possède pas un item en particulier, une certaines somme d'argent, etc.
 
-			Les prérequis sont définis par une classe mère AbstractRequirement, donne lieu à une classe par type de prérequis. Chaque classe fille doit définir le comportement de la méthode \textit{boolean isSatisfied()}. Ainsi, on retrouve \textbf{RequirementItem} pour les prérequis sur la possession d'un item, \textbf{RequirementMoney} pour la posssession d'une somme d'argent ainsi que \textbf{RequirementSkill} pour la possession d'une compétence. Chacun d'zntre eux possèdera donc l'id de l'élément qu'il doit vérifier, mais aussi le montant minimum nécessaire dans le cas de l'argent.
+			Les prérequis sont définis par une classe mère \textbf{AbstractRequirement}, donne lieu à une classe par type de prérequis. Chaque classe fille doit définir le comportement de la méthode \textit{boolean isSatisfied()}. Ainsi, on retrouve \textbf{RequirementItem} pour les prérequis sur la possession d'un item, \textbf{RequirementMoney} pour la posssession d'une somme d'argent ainsi que \textbf{RequirementSkill} pour la possession d'une compétence. Chacun d'entre eux possèdera donc l'id de l'élément qu'il doit vérifier, mais aussi le montant minimum nécessaire dans le cas de l'argent.
 
-			Cependant, comment savoir si le prérequis est satisfait ? Comment connaitre l'état actuel du jeu ? C'est possible grace à la classe \textbf{BookState} qui contient toutes les informations sur l'état actuel du jeu. Nos prérequis ne portant que sur le joueur principal il est donc uniquement necessaire d'utiliser la méthode \textit{getMainCharacter}.
+			Cependant, comment savoir si le prérequis est satisfait ? Comment connaître l'état actuel du jeu ? C'est possible grâce à la classe \textbf{BookState} qui contient toutes les informations sur l'état actuel du jeu. Nos prérequis ne portant que sur le joueur principal il est donc uniquement necessaire d'utiliser la méthode \textit{getMainCharacter}.
 
 			Ainsi, pour savoir si un item / une compétence est possédé par personnage principal, il suffit de parcourir la liste de ceux que le personnage possède. Concernant l'argent, on récupère la somme de la monnaie possédée et on vérifie si elle correspond bien au minimum requis.
 
@@ -111,7 +111,7 @@
 				}
 			\end{lstlisting}
 
-			Nous avons souhaiter fournir encore plus de flexibilité à cette manière de faire, ainsi, il est possible d'avoir d'avoir une liste de prérequis à satisfaire afin de pouvoir accéder au choix voulu. Il est donc maintenant possible de créer un choix qui nécessite à la fois de "posséder un pass" et "50 euros" sur sois par exemple. Là encore, nous avons décidé de fournir une possibilité supplémentaire en permettant de proposer des conditions alternatives. C'es à dire de fournir une liste de prérequis alternative capable de permettre l'accès au choix. Nous avons donc différentes liste contenant elles même des conditions qu'il est nécessaire de satisfaire en même temps. Il est donc maintenant possible de faire des conditions comme suit : ("posséder un pass" ET "50 euros") OU ("pouvoir se téléporter") OU ("posséder 50 euros" ET "posséder 50 yen").
+			Nous avons souhaiter fournir encore plus de flexibilité à cette manière de faire, ainsi, il est possible d'avoir une liste de prérequis à satisfaire afin de pouvoir accéder au choix voulu. Il est donc maintenant possible de créer un choix qui nécessite à la fois de "posséder un pass" et "50 euros" sur soit par exemple. Là encore, nous avons décidé de fournir une possibilité supplémentaire en permettant de proposer des conditions alternatives. C'est à dire de fournir une liste de prérequis alternative capable de permettre l'accès au choix. Nous avons donc différentes liste contenant elles même des conditions qu'il est nécessaire de satisfaire en même temps. Il est donc maintenant possible de faire des conditions comme suit : ("posséder un pass" ET "50 euros") OU ("pouvoir se téléporter") OU ("posséder 50 euros" ET "posséder 50 yen").
 
 			Ainsi, on comprend mieux le rôle de la méthode nommée \textit{isAvailable()} dans \textbf{BookNodeLink} (cf : \nameref{fig:BookNode} page \ref{fig:BookNode}). Cette méthode se charge d'indiquer si une liste satisfait tous les prérequis. Bien entendu, une seule liste suffit à rendre le choix disponible et un seul prérequis non satisfait suffit à rendre la liste non satisfaite car il s'agit du principe même des OU et des ET.
 
@@ -139,9 +139,9 @@
 
 		\subsection{Prendre un choix de manière aléatoire}
 
-			Supposons que nous souhaitons faire un paragraphe durant lequel le joueur doit passer sur un pont en bois qui semble plutôt vieux. Il serait totalement ridicule de laisser au joueur la possibilité de choisir si le pont doit céder ou non. Ce choix relève plutot de l'ordre de l'aléatoire. Nous savons donc maintenant que pour faire cela, une instance de \textbf{BookNodeWithRandomChoices} est necessaire. Mais comment tirer un choix de manière aléatoire ?
+			Supposons que nous souhaitons faire un paragraphe durant lequel le joueur doit passer sur un pont en bois qui semble plutôt vieux. Il serait totalement ridicule de laisser au joueur la possibilité de choisir si le pont doit céder ou non. Ce choix relève plutôt de l'ordre de l'aléatoire. Nous savons donc maintenant que pour faire cela, une instance de \textbf{BookNodeWithRandomChoices} est necessaire. Mais comment tirer un choix de manière aléatoire ?
 
-			Pour cela, on ajoute d'abord tous les liens disponibles, c'est à dire, tous les liens où le joueur peut avoir accès en fonction des prérequis demandés. Si aucun lien n'est disponible, on retourne null symbolisant une erreur. Dans le cas contraire, on commence par calculer la somme des probabilités sur les noeuds disponible. En tire ensuite un nombre aléatoire en fonction de cette somme. Enfin, il ne nous reste plus qu'a retrouver le choix correspondant en enlevant successivement la probabilité de chaque lien jusqu'à atteindre un nombre inférieur à zéro.
+			Pour cela, on ajoute d'abord tous les liens disponibles, c'est à dire, tous les liens où le joueur peut avoir accès en fonction des prérequis demandés. Si aucun lien n'est disponible, on retourne "null" symbolisant une erreur. Dans le cas contraire, on commence par calculer la somme des probabilités sur les noeuds disponibles. On tire ensuite un nombre aléatoire en fonction de cette somme. Enfin, il ne nous reste plus qu'à retrouver le choix correspondant en enlevant successivement la probabilité de chaque lien jusqu'à atteindre un nombre inférieur à zéro.
 
 			\begin{lstlisting}[gobble=16, language=java, label=lst:getRandomChoices, caption=getRandomChoice()]
 				List<BookNodeLinkRandom> listNodeLinkDisponible = new ArrayList();
@@ -187,20 +187,20 @@
 			\end{lstlisting}
 
 		\subsection{La classe Book}
-			\label{book}
+			\label{sub:book}
 
-			Cette classe est la plus importante de tout le projet. En effet, c'est elle qui met en lien tout les différents éléments qu'on a pu évoquer avant. C'est en effet ce que l'on peut observer sur la figure suivante.
+			Cette classe est la plus importante de tout le projet. En effet, c'est elle qui met en lien tous les différents éléments qu'on a pu évoquer avant. C'est en effet ce que l'on peut observer sur la figure suivante.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.8\textwidth, keepaspectratio]{img/book.png}
 				\caption{UML sur la classe Book}
 			\end{figure}
 
-			Par soucis de place, les getters et setter n'ont pas été renseignés. Il en va de même pour le détails des différentes classes (\textbf{AbstractBookNode}, \textbf{BookItem}, ...). Enfin, les observateur sont volontairement omis car ils seront détaillés un peu plus tard (dans \nameref{subsec:pattern_observer} à la page \pageref{subsec:pattern_observer}).
+			Par soucis de place, les "getters" et "setters" n'ont pas été renseignés. Il en va de même pour le détail des différentes classes (\textbf{AbstractBookNode}, \textbf{BookItem}, ...). Enfin, les observateurs sont volontairement omis car ils seront détaillés un peu plus tard (dans \nameref{subsec:pattern_observer} à la page \pageref{subsec:pattern_observer}).
 
 			Tout d'abord, commençons par expliquer comment sont sauvegardés les noeuds et les liens dans la HashMap "nodes".
 
-			Cette HashMap possède un int comme clé, qui correspond au numéro du paragraphe. Lorsque l'on ajoute un noeud au livre, on doit d'abord lui trouver un numéro. Nous avons décidé de plusieurs règles. Les paragraphes commencent à partir du numéro 1. Le numéro 1 représente \textbf{toujours} le premier paragraphe du livre. De ce fait, si l'on ajoute un noeud, il devra avoir pour numéro le 2.
+			Cette HashMap possède un int comme clé, qui correspond au numéro du paragraphe. Lorsque l'on ajoute un noeud au livre, on doit d'abord lui trouver un numéro. Nous avons décidé d'établir plusieurs règles. Les paragraphes commencent à partir du numéro 1. Le numéro 1 représente \textbf{toujours} le premier paragraphe du livre. De ce fait, si l'on ajoute un noeud, il devra avoir pour numéro le 2.
 
 			\begin{figure}[H]
 				\begin{center}
@@ -313,7 +313,7 @@
 
 			\begin{itemize}
 				\item{Le principe d'indice manquant est le même pour la suppression d'un noeud}
-				\item{Afin de gagner en performance pour déterminer le numéro d'un noeud déjà présent (pour savoir quel numéro sera manquant par exemple), une autre HashMap est mis à jour en même temps que celle des noeuds. Il s'agit de nodeInv. Cette map n'est rien de plus qu'une sorte de mirroir pour celle des noeuds, on lui passe un noeud en clé et on obtient son numéro. Il est donc extrêmement important que les deux maps soient parfaitement identique pour éviter tout bug.}
+				\item{Afin de gagner en performance pour déterminer le numéro d'un noeud déjà présent (pour savoir quel numéro sera manquant par exemple), une autre HashMap est mis à jour en même temps que celle des noeuds. Il s'agit de nodeInv. Cette map n'est rien de plus qu'une sorte de miroir pour celle des noeuds, on lui passe un noeud en clé et on obtient son numéro. Il est donc extrêmement important que les deux maps soient parfaitement identique pour éviter tout bug.}
 				\item{\label{subsec:noeud_delete_missing_index}Pour déterminer l'indice d'un noeud que l'on ajoute, nous nous basons sur la taille de la Map.}
 			\end{itemize}
 
@@ -348,7 +348,7 @@
 				\caption{Ajout d'un noeud}
 			\end{algorithm}
 
-			La variable offset correspond au décalage à ajouter pour placer le noeud. Comme on commence à 2 un décalage de 2 est nécessaire. Supposons que le premier noeud est renseigné et qu'il est le seul du tableau, ajouter un nouveau noeud le placerait donc celui-ci à la position 2 + tailleDuTableau soit 2 + 1 c'est à dire 3. On a alors un décalage d'une "case". De ce fait, on doit faire un décalage de 1 uniquement si le premier noeud est renseigné.
+			La variable "offset" correspond au décalage à ajouter pour placer le noeud. Comme on commence à 2 un décalage de 2 est nécessaire. Supposons que le premier noeud est renseigné et qu'il est le seul du tableau, ajouter un nouveau noeud le placerait donc celui-ci à la position 2 + tailleDuTableau soit 2 + 1 c'est à dire 3. On a alors un décalage d'une "case". De ce fait, on doit faire un décalage de 1 uniquement si le premier noeud est renseigné.
 
 			Voyons maintenant celui mis en place pour le changement du premier noeud.
 
@@ -392,9 +392,9 @@
 				\caption{Changement du premier noeud}
 			\end{algorithm}
 
-			\textit{NB: updateDestinations permet de changer les numéro de destination des BookNodeLink d'un ancien numéro, vers un nouveau}
+			\textit{NB: updateDestinations permet de changer les numéros de destination des \textbf{BookNodeLink} d'un ancien numéro, vers un nouveau}
 
-			Si le noeud n'est pas présent dans le livre, nous commençons par l'ajouter. Les numéros des paragraphes vont êtres amenés à changer, de ce fait, il est important de mettre à jour les numéros de destination des différents liens. Nous commençons par déplacer les références du noeud 1 vers -1. En effet, cet indice n'est jamais renseigné. Ensuite, nous changeons les destination des liens qui allaient vers le "noeud à placer en premier" pour qu'elles pointent vers le premier noeud. Nous ajoutons le noeud à cette premiere "case". Deux options sont maintenant possibles. Il y avait déjà un premier noeud auparavant auquel cas il faut maintenant le placer là où se trouvait l'ancien et donc, mettre à jour les liens qui vont de -1 vers ce nouvel emplacement. Si jamais il n'y avait pas de premier noeud, alors une place est maintenant manquante. On l'ajoute donc à la liste des emplacements à combler avant de pouvoir de nouveau ajouter des noeuds normalement.
+			Si le noeud n'est pas présent dans le livre, nous commençons par l'ajouter. Les numéros des paragraphes vont êtres amenés à changer, de ce fait, il est important de mettre à jour les numéros de destination des différents liens. Nous commençons par déplacer les références du noeud 1 vers -1. En effet, cet indice n'est jamais renseigné. Ensuite, nous changeons les destinations des liens qui allaient vers le "noeud à placer en premier" pour qu'elles pointent vers le premier noeud. Nous ajoutons le noeud à cette premiere "case". Deux options sont maintenant possibles. S'il y avait déjà un premier noeud auparavant alors il faut maintenant le placer là où se trouvait l'ancien et donc, mettre à jour les liens qui vont de -1 vers ce nouvel emplacement. Si jamais il n'y avait pas de premier noeud, alors une place est maintenant manquante. On l'ajoute donc à la liste des emplacements à combler avant de pouvoir de nouveau ajouter des noeuds normalement.
 
 		\subsection{Le pattern observer et la classe Book}
 			\label{subsec:pattern_observer}
@@ -406,13 +406,13 @@
 				\caption{UML d'exmple sur le pattern observer}
 			\end{figure}
 
-			Comme on peut le voir, une classe mère \textbf{Observable<T>} détient une List<T> d'observers. Une méthode d'ajout, et de suppression permettent de modifier cette liste. Dès lors que l'on souhaite ajouter un nouveau type d'observer, on doit commencer par créer une nouvelle Interface avec les méthodes que l'on souhaite fournir, dans notre exemple il s'agit de nodeAdded, nodeEdited, nodeDeleted. Une fois cette interface faite, on doit alors faire une nouvelle classe Observable, BookNodeObservable dans notre cas, qui hérite de Observable<T>, T étant l'observer que l'on souhaite utiliser, donc BookNodeObserver. Ainsi, chaque Observable que l'on fera ne sera qu'une définition des méthodes pour notifier qu'un évènement s'est produit.
+			Comme on peut le voir, une classe mère \textbf{Observable<T>} détient une List<T> d'observers. Une méthode d'ajout, et de suppression permettent de modifier cette liste. Dès lors que l'on souhaite ajouter un nouveau type d'observer, on doit commencer par créer une nouvelle Interface avec les méthodes que l'on souhaite fournir, dans notre exemple il s'agit de nodeAdded, nodeEdited, nodeDeleted. Une fois cette interface faite, on doit alors faire une nouvelle classe \textbf{Observable}, \textbf{BookNodeObservable} dans notre cas, qui hérite de \textbf{Observable<T>}, T étant l'observer que l'on souhaite utiliser, donc \textbf{BookNodeObserver}. Ainsi, chaque Observable que l'on fera ne sera qu'une définition des méthodes pour notifier qu'un évènement s'est produit.
 
 			Le choix à été fait de séparer les différentes parties (noeuds, liens, items, ...) du livre en différents observers afin de ne pas surcharger le nombre de méthodes à redéfinir dans les classes Observer, et donc de n'observer que ce dont on a besoin. Cependant, deux observers sont actuellement manquant, celui pour notifier d'un changement concernant le premier noeud et celui pour notifier un changement sur le personnage principal.
 
 	\section{Lecture et écriture d'un livre}\label{sec:Json}
 
-		L'objectif de l'application étant de concevoir un éditeur, il était important de permettre la sauvegarde et la lecture du livre que l'on édite. Le choix du format JSON est rapidement survenue. Premièrement car un fichier d'exemple qui nous a été fournis était sous ce format mais aussi car il s'agit d'une structure simple et très facile à lire. Nous avons alors utilisé GSON, une librairie, conçue par Google, extrêmement simple. Elle permet de retranscrire sous forme d'objet Java un fichier JSON structuré, c'est à dire où l'on distingue très clairement des objets qui se répète.
+		L'objectif de l'application étant de concevoir un éditeur, il était important de permettre la sauvegarde et la lecture du livre que l'on édite. Le choix du format JSON est rapidement survenue. Premièrement car un fichier d'exemple qui nous a été fourni était sous ce format mais aussi car il s'agit d'une structure simple et très facile à lire. Nous avons alors utilisé GSON, une librairie, conçue par Google, extrêmement simple. Elle permet de retranscrire sous forme d'objet Java un fichier JSON structuré, c'est à dire où l'on distingue très clairement des objets qui se répète.
 
 		Afin de lire un fichier JSON, avec cette librairie, il suffit de concevoir des objets Java avec les même attributs que ceux du fichier à lire ou à écrire. Voici un exemple très court de ce à quoi nos fichiers ressembles :
 
@@ -446,20 +446,20 @@
 						"end_type": "FAILURE"
 					},
 					"3": {
-						"text": "Les étudiants sont satisfait de leur travail",
+						"text": "Les étudiants sont satisfaits de leur travail",
 						"end_type": "VICTORY"
 					}
 				}
 			}
 			\end{lstlisting}
 
-		On retrouve plusieurs éléments différents. On remarque par exemple un attribut "prelude", ainsi que deux grosses parties, "setup" et "sections". Dans la suite, nous détaillerons uniquement les attributs les plus frequemment présents.
+		On retrouve plusieurs éléments différents. On remarque par exemple un attribut "prelude", ainsi que deux grosses parties, "setup" et "sections". Dans la suite, nous détaillerons uniquement les attributs les plus fréquemment présents.
 
 		\subsubsection{Setup}
 
 			Commençons par détailler "setup". Ce passage contient toutes les informations générales à notre livre. On y retrouve la liste des compétences ("skills"), la liste des items ("items") et la liste des personnages ("characters"). "character\_creation", lui, détaille toutes les étapes lors de la conception du personnage qui intervient au tout début. Celle-ci permet de sélectionner des compétences et items de départ.
 
-			Pour le moment les compétences sont uniquement composé d'un ID et d'un nom. Dans une future \maj{} il serait intéressant d'ajouter des propriétés pour connaitre la force ajouté dans un combat, la quantité de soins à rendre par noeuds, par exemple.
+			Pour le moment les compétences sont uniquement composé d'un ID et d'un nom. Dans une future \maj{} il serait intéressant d'ajouter des propriétés pour connaître la force ajoutée dans un combat, la quantité de soins à rendre par noeuds, par exemple.
 
 			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de compétence]
 			{
@@ -468,7 +468,7 @@
 			}
 			\end{lstlisting}
 
-			Les items peuvent être de différents types : KEY\_ITEM, WEAPON, DEFENSE, MONEY, HEALING. On retrouve pour tous les items un id et un nom ("name"). Pour certains types, des attributs supplémentaires sont présent. Par exemple, un attribut "durability" peut être présent. Il permet de déterminer le nombre d'utilisation maximum d'un item. Un item de type HEALING possède un nombre de pv à rendre ("hp") tandis que ceux type WEAPON possède un montant de dégats ("damage") par exemple.
+			Les items peuvent être de différents types : KEY\_ITEM, WEAPON, DEFENSE, MONEY, HEALING. On retrouve pour tous les items un ID et un nom ("name"). Pour certains types, des attributs supplémentaires sont présents. Par exemple, un attribut "durability" peut être présent. Il permet de déterminer le nombre d'utilisation maximum d'un item. Un item de type HEALING possède un nombre de pv à rendre ("hp") tandis que ceux type WEAPON possède un montant de dégâts ("damage") par exemple.
 
 			\begin{lstlisting}[gobble=12, language=json, caption=Exemple d'items]
 			{
@@ -485,7 +485,7 @@
 			}
 			\end{lstlisting}
 
-			Concernant les personnages on y retrouve un id, un nom ("name"), un nombre de pv maximum ("hp"), un boolean pour indiquer s'il a beaucoup de chance que ses coups fassent le double des dégats ("double\_damage"), ainsi que "combat\_skill" qui représente le montant de ses dégats.
+			Concernant les personnages on y retrouve un ID, un nom ("name"), un nombre de pv maximum ("hp"), un boolean pour indiquer s'il a beaucoup de chance que ses coups fassent le double des dégâts ("double\_damage"), ainsi que "combat\_skill" qui représente le montant de ses dégâts.
 
 			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de personnage]
 			{
@@ -521,7 +521,7 @@
 
 		\subsubsection{Sections}
 
-			La partie "sections" est une map qui représente le numéro d'un paragraphe ainsi que le paragraphe associé. Il existe différents types de paragraphes : à choix, à choix aléatoire, avec des combats et terminaux. Tous possède un texte. Les noeuds terminaux possèdent un type de fin ("end\_type") afin savoir si l'on a gagné ou pas (cf : Listing \ref{lst:exemple_livre}). Les noeuds aléatoires eux, possèdent un attribut "is\_random\_pick" qui vaut true. Pour tous les autres types de noeuds, on retrouve parmis les attributs les plus importants une liste d'items qu'il est possible de prendre, un montant d'item maximum qui peut être pris ("amount\_to\_pick") et enfin des items disponibles à l'achat ("shop").
+			La partie "sections" est une map qui représente le numéro d'un paragraphe ainsi que le paragraphe associé. Il existe différents types de paragraphes : à choix, à choix aléatoire, avec des combats et terminaux. Tous possède un texte. Les noeuds terminaux possèdent un type de fin ("end\_type") afin savoir si l'on a gagné ou pas (cf : Listing \ref{lst:exemple_livre}). Les noeuds aléatoires eux, possèdent un attribut "is\_random\_pick" qui vaut "true". Pour tous les autres types de noeuds, on retrouve parmi les attributs les plus importants une liste d'items qu'il est possible de prendre, un montant d'item maximum qui peut être pris ("amount\_to\_pick") et enfin des items disponibles à l'achat ("shop").
 
 			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de paragraphe]
 			{
@@ -552,7 +552,7 @@
 			}
 			\end{lstlisting}
 
-			Certains paragraphes peuvent contenir un attribut "combat". Dès lors on peut connaitre le choix en cas de victoire ("win"), de défaite ("loose") ou d'évasion ("evasion). Si l'évasion est possible seulement à partir d'un certains nombre de tour on retrouve alors un attribut nommé "evasion\_round". Pour finir, un attribut "enemies" permet de connaitre les personnages que l'on combat.
+			Certains paragraphes peuvent contenir un attribut "combat". Dès lors on peut connaître le choix en cas de victoire ("win"), de défaite ("loose") ou d'évasion ("evasion"). Si l'évasion est possible seulement à partir d'un certain nombre de tour on retrouve alors un attribut nommé "evasion\_round". Pour finir, un attribut "enemies" permet de connaître les personnages que l'on combat.
 
 			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de paragraphe avec des combats]
 			{
@@ -569,7 +569,7 @@
 			}
 			\end{lstlisting}
 
-			Pour représenter un lien vers un autre paragraphe on retrouve une liste de choix ("choices"). Ils possèdent également un texte qui correspond à l'intitulé du choix, le numéro du paragraphe suivant ("section"), un nombre d'hp à retirer, un nombre d'argent à ajouter ainsi qu'un liste de prérequis ("requirements"). Comme pour les BookNodeLink, il s'agit d'un tableau à deux dimensions. Le premier représente une liste de condition en OU et le second une liste de condition en ET. Enfin, pour les noeuds aléatoires, un probabilité est également présent ("weight").
+			Pour représenter un lien vers un autre paragraphe on retrouve une liste de choix ("choices"). Ils possèdent également un texte qui correspond à l'intitulé du choix, le numéro du paragraphe suivant ("section"), un nombre d'hp à retirer, un nombre d'argent à ajouter ainsi qu'une liste de prérequis ("requirements"). Comme pour les \textbf{BookNodeLink}, il s'agit d'un tableau à deux dimensions. Le premier représente une liste de condition en OU et le second une liste de condition en ET. Enfin, pour les noeuds aléatoires, une probabilité est également présent ("weight").
 
 			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de choix]
 			{
@@ -590,14 +590,14 @@
 		\subsection{La lecture et l'écriture}
 			\label{subsec:lecture_ecriture_fichier}
 
-			Du fait que la structure en Json n'est pas identique à celle détaillé dans \nameref{sec:representation_livre} (page \pageref{sec:representation_livre}), nous avons fait des classes intermédiaires pour permettre cette lecture. Celles-ci sont disponibles dans le package \textit{magic\_book/core/file/json} et ne contiennent rien de plus que des getter et setter. Aussi, afin de permettre une convertion entre les classes faites pour représenter un fichier json et celles faites pour être utilisées par l'application, une interface \textit{JsonExportable} existe. Celle ci permet de redéfinir 2 méthodes. L'une renvoyant la classe JSON associé à notre classe actuelle, l'autre permettant à partir d'une classe JSON d'obtenir la classe Java correspondante.
+			Du fait que la structure en Json n'est pas identique à celle détaillée dans \nameref{sec:representation_livre} (page \pageref{sec:representation_livre}), nous avons fait des classes intermédiaires pour permettre cette lecture. Celles-ci sont disponibles dans le package \textit{magic\_book/core/file/json} et ne contiennent rien de plus que des "getters" et "setters". Aussi, afin de permettre une convertion entre les classes faites pour représenter un fichier json et celles faites pour être utilisées par l'application, une interface \textit{JsonExportable} existe. Celle ci permet de redéfinir 2 méthodes. L'une renvoyant la classe JSON associée à notre classe actuelle, l'autre permettant à partir d'une classe JSON d'obtenir la classe Java correspondante.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.66\textwidth, keepaspectratio]{img/json_exportable.png}
 				\caption{L'interface JsonExportable et quelques classes qui l'implémentent}
 			\end{figure}
 
-			Enfin, les classes BookReader et BookWritter permettent de récupérer toutes les classes JSON intermédiaires pour les regrouper dans le BookJson qui correspond à la structure complète de notre livre. Ces classes sont également une couche d'abstraction à GSON car c'est elles qui se chargent d'écrire le JSON correspondant dans un flux.
+			Enfin, les classes \textbf{BookReader} et \textbf{BookWritter} permettent de récupérer toutes les classes JSON intermédiaires pour les regrouper dans le BookJson qui correspond à la structure complète de notre livre. Ces classes sont également une couche d'abstraction à GSON car elles se chargent d'écrire le JSON correspondant dans un flux.
 
 			Pour résumer, on peut schématiser ces échanges de telle sorte :
 
@@ -642,7 +642,7 @@
 
 				Ce menu comporte aussi un MenuItem nommé \underline{Ouvrir}, permettant ainsi d'ouvrir un fichier Json ou txt. Si dans ce fichier, il manque une virgule ou une accolade ou autre ne permettant pas la lecture du fichier en Json (Voir \nameref{sec:Json} à la page \pageref{sec:Json}), un message d'erreur apparait. Si le fichier n'est pas bien fait, ne permettant pas l'ouverture de ce fichier, une classe nommée \textbf{BookValidator} devait "valider" le livre. Par manque de temps, cette classe n'est pas fonctionnelle. Si le fichier est valide, cela appel alors la classe \textbf{BookReader} permettant ainsi de lire le fichier en json (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). La méthode \textit{setBook()} est ensuite appelé afin de modifier le livre dans tout les panels (LeftPane, GraphPane, RightPane).
 
-				Les options \underline{Enregistrer} ainsi que \underline{Enregistrer-Sous} sont également présente. Elles appellent toutes les deux les même méthodes : \textit{changeSelectedFile()} ainsi que \textit{saveFile()}. La première méthode permet d'enregistrer le fichier. Si l'utilisateur annule la boite de dialog permettant d'enregistrer le fichier, la méthode \textit{saveFile()} n'est donc pas appelé. Dans le cas contraire, la méthode \textit{saveFile()} permet de sauvegarder le document en fonction du chemin du fichier, défini par la variable "path". Pour "écrire" le fichier qui sera enregistrer, permettant par la suite de l'ouvrir, la classe \textbf{BookWritter} est donc utilisé (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). Si la moindre erreur survient lors de l'enregistrement du fichier écrit, cela annule l'enregistrement.
+				Les options \underline{Enregistrer} ainsi que \underline{Enregistrer-Sous} sont également présente. Elles appellent toutes les deux les même méthodes : \textit{changeSelectedFile()} ainsi que \textit{saveFile()}. La première méthode permet d'enregistrer le fichier. Si l'utilisateur annule la boîte de dialog permettant d'enregistrer le fichier, la méthode \textit{saveFile()} n'est donc pas appelé. Dans le cas contraire, la méthode \textit{saveFile()} permet de sauvegarder le document en fonction du chemin du fichier, défini par la variable "path". Pour "écrire" le fichier qui sera enregistrer, permettant par la suite de l'ouvrir, la classe \textbf{BookWritter} est donc utilisé (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). Si la moindre erreur survient lors de l'enregistrement du fichier écrit, cela annule l'enregistrement.
 				La seule diférence entre \underline{Enregistrer} et \underline{Enregistrer-Sous}, ce passe si la variable "path", soit le chemin du fichier, soit déjà défini. Si c'est le cas, \underline{Enregistrer} appel directement la méthode \textit{saveFile()} car l'utilisateur n'a pas besoin de redéfinire le chemin d'enregistrement du fichier.
 
 				\begin{lstlisting}[gobble=20, language=java, caption=Enregistrement du livre]
@@ -712,7 +712,7 @@
 
 
 		\subsection{LeftPane}
-			Ce panel contient tout d'abord des ToggleButton permettant de sélectionner un mode parmis cinq modes : \underline{SELECT, ADD NODE, ADD NODE LINK, DELETE, FIRST NODE}. Ces modes sont sélectionnables à l'aide de bouton créé a partir de la méthode \textit{createToggleButton()}. Cette méthode prend en paramètre une image et un des modes de la classe \textbf{Mode}, qui est une classe ennumérant tout les modes. Un évènement est associé à chaque boutons permettant de changer le mode (voir \ref{sub:GraphPane}). Le mode ensuite déjà selectionné est toujours le mode \underline{SELECT}. On a créer des ToggleButton afin d'avoir deux états: un état on et un état off. Cela permet de "désactiver" les boutons non sélectionné et de n'avoir qu'un seul bouton non sélectionné. Pour sela, un \textbf{ToggleGroup} permettant que dès qu'un bouton est "cliquer" que celui-ci soit en "on" et les autres en "off".
+			Ce panel contient tout d'abord des ToggleButton permettant de sélectionner un mode parmi cinq modes : \underline{SELECT, ADD NODE, ADD NODE LINK, DELETE, FIRST NODE}. Ces modes sont sélectionnables à l'aide de bouton créé a partir de la méthode \textit{createToggleButton()}. Cette méthode prend en paramètre une image et un des modes de la classe \textbf{Mode}, qui est une classe ennumérant tout les modes. Un évènement est associé à chaque boutons permettant de changer le mode (voir \ref{sub:GraphPane}). Le mode ensuite déjà selectionné est toujours le mode \underline{SELECT}. On a créer des ToggleButton afin d'avoir deux états: un état on et un état off. Cela permet de "désactiver" les boutons non sélectionné et de n'avoir qu'un seul bouton non sélectionné. Pour sela, un \textbf{ToggleGroup} permettant que dès qu'un bouton est "cliquer" que celui-ci soit en "on" et les autres en "off".
 
 			\begin{lstlisting}[gobble=16, language=java, caption=Création du ToggleButton]
 				private ToggleButton createToggleButton(String path, Mode mode) {
@@ -759,15 +759,15 @@
 			\begin{itemize}
 				\item \underline{bookChanged()} permet de mettre à jour la liste si un changement de livre est effectué. Elle est donc appelé par la méthode \textit{setBook()}.
 				\item \underline{createRootElement()} permet de créer l'item qui sera afficher dans la vue et non modifiable. Par exemple, pour la liste des items, "Items" sera donc afficher tout en haut.
-				\item \underline{addBookElementContextMenu()} permet d'ajouter un personnage / item / compétence. Cela appel alors la boite de dialogue en fonction du TreeView appelé. Les classes \textbf{CharacterDialog}, \textbf{ItemDialog}, \textbf{SkillDialog} sont alors appelé. Si l'utilisateur valide la boite de dialogue, cela l'ajoute dans le HashMap prévu à cette effet dans le livre. Par exemple si c'est une compétences, \textit{addSkill()} est alors appelé.
-				\item \underline{updateBookElementContextMenu()} permet de modifier l'élément sélectionné. Cela réouvre la boite de dialogue. Si l'utilisateur valide la boite de dialogue, cela modifie l'élément sélectionné dans le HashMap du livre. C'est pour cela qu'un HashMap a été créer et non une liste.
+				\item \underline{addBookElementContextMenu()} permet d'ajouter un personnage / item / compétence. Cela appel alors la boîte de dialogue en fonction du TreeView appelé. Les classes \textbf{CharacterDialog}, \textbf{ItemDialog}, \textbf{SkillDialog} sont alors appelé. Si l'utilisateur valide la boîte de dialogue, cela l'ajoute dans le HashMap prévu à cette effet dans le livre. Par exemple si c'est une compétences, \textit{addSkill()} est alors appelé.
+				\item \underline{updateBookElementContextMenu()} permet de modifier l'élément sélectionné. Cela réouvre la boîte de dialogue. Si l'utilisateur valide la boîte de dialogue, cela modifie l'élément sélectionné dans le HashMap du livre. C'est pour cela qu'un HashMap a été créer et non une liste.
 				\item \underline{removeBookElementContextMenu()} permet de sélectionné l'élément sélectionné. Cela supprime donc l'élément dans la HashMap du livre.
 				\item \underline{getAddContextMenuString()} permet d'afficher le texte permettant d'ajouter le personnage / l'item / la compétence
 				\item \underline{getUpdateContextMenuString()} permet d'afficher le texte permettant de modifier le personnage / l'item / la compétence
 				\item \underline{getDeleteContextMenuString()} permet d'afficher le texte permettant de supprimer le personnage / l'item / la compétence
 			\end{itemize}
 
-			Dans ces différentes classes, un Observeur est ajouter sur chaque classes. Ce qui permet que le moindre clique sur "ajouter", "modifier" ou "supprimer" permet d'effectuer les actions expliqué dans la liste ci-dessus. Un Observeur est créer par classe, il y a donc trois observeur et trois observable. Si un item est ajouté par exemple, c'est la classe \textbf{BookTreeViewItem} qui est appelé. Puis la méthode \textit{addBookElementContextMenu()} est appelé et si l'utilisateur valide la boite de dialogue, la méthode \textit{addItem()} dans la classe \textbf{Book} est appelé. Cela permet d'ajouter l'item dans le HashMap d'items. Puis cette méthode appelle \textit{notifyItemAdded()} de la classe \textbf{BookItemObservable} qui elle, notifie \textit{itemAdded()} de l'ajout d'un item. Cette méthode est dans la classe \textbf{BookTreeViewItem}. Elle permet donc d'ajouter l'item en question sur le Pane, permetant de le voir. La "modfication" et la "supression" est sur le même principe.
+			Dans ces différentes classes, un Observeur est ajouter sur chaque classes. Ce qui permet que le moindre clique sur "ajouter", "modifier" ou "supprimer" permet d'effectuer les actions expliqué dans la liste ci-dessus. Un Observeur est créer par classe, il y a donc trois observeur et trois observable. Si un item est ajouté par exemple, c'est la classe \textbf{BookTreeViewItem} qui est appelé. Puis la méthode \textit{addBookElementContextMenu()} est appelé et si l'utilisateur valide la boîte de dialogue, la méthode \textit{addItem()} dans la classe \textbf{Book} est appelé. Cela permet d'ajouter l'item dans le HashMap d'items. Puis cette méthode appelle \textit{notifyItemAdded()} de la classe \textbf{BookItemObservable} qui elle, notifie \textit{itemAdded()} de l'ajout d'un item. Cette méthode est dans la classe \textbf{BookTreeViewItem}. Elle permet donc d'ajouter l'item en question sur le Pane, permetant de le voir. La "modfication" et la "supression" est sur le même principe.
 
 			Grâce au constructeur de \textbf{AbstractBookTreeView} (voir ci-dessous), le titre du TreeItem est ajouter. Puis un ContextMenu() est créer et Chaque MenuItem est ajouter ("ajouter", "modifier" ou "supprimer") à ce ContextMenu.
 
@@ -840,7 +840,7 @@
 
 
 				Si le mode ADD\_NODE\_LINK est sélectionné, et que le premier clique ce fait sur un noeud qui n'a pas de choix, donc le prélude ou un noeud terminal, cela ne fait rien. Si au contraire, le noeud est autorisé à avoir des choix, le prmier clique enregistre donc le noeud sélectionné afin d'avoir le départ du lien. Si un autre clique est effectué et que la variable contenant le premier noeud sélectionné n'est pas vide, alors le noeud est créer en fonction du type du premier noeud. En effet, si le premier noeud est un noeud de type combat, et si tout ces choix sont déjà défini (combat gagner, combat perdu, evasion), le lien ne peux pas être effectué. Un message d'erreur s'affiche alors, puis la variable contenant le premier noeud est supprimé. Dans le cas contraire, la boite de dialogue s'affiche. Nous n'avons pas voulu faire d'autre condition car si l'utilisateur veux créer un lien qui effectue une boucle ou plusieurs choix qui mène aux même noeud, il est libre de le faire.
-				Une fois la boite de dialogue valider, et si c'est un noeud de combat, on met à jour le lien parmis ses destinations. Sinon, on ajoute le lien dans le HashMap contenant les liens. Puis on met à zéro la variable contenant le premier noeud.
+				Une fois la boite de dialogue valider, et si c'est un noeud de combat, on met à jour le lien parmi ses destinations. Sinon, on ajoute le lien dans le HashMap contenant les liens. Puis on met à zéro la variable contenant le premier noeud.
 
 				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode ADD NODE LINK]
 					if(mode == Mode.ADD_NODE_LINK) {
@@ -1135,7 +1135,7 @@
 
 		Puis, à chaque destination du joueur, sauf si celui ci a été entrainé vers un noeud terminal de défaite créer par la classe jeu et donc, non existante, une autre méthode est appelé (nommé \textit{execBookNodeLink()}) afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent. Si c'est le cas, le joueur est alors "mis à jour". Si le joueur n'a plus de vie, même si le lien le portait vers un noeud de victoire, un noeud de défaite est créé. Le joueur est considéré alors comme perdant. Cela permet donc d'avoir une méthode complète pour la gestion des options dans les liens.
 
-		\textbf{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices()}, comme vous pouvez le constater dans la figure \ref{fig:JeuBookNodeWithChoices}. La méthode vérifie si au moins un choix est possible, pemettant ainsi de créer, ou non, un noeud terminal de défaite. S'il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du joueur (\textit{player.makeAchoice()}). Car ici, un choix est demandé, soit le Scanner du player ou le random de la fourmis. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, vu juste en dessous de la figure du haut, est appelé. Si le joueur est toujours en vie, le noeud choisi est renvoyé en noeud de destination. Sinon, le joueur doit faire un autre choix car il y a minimum un choix possible.\\
+		\textbf{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices()}, comme vous pouvez le constater dans la figure \ref{fig:JeuBookNodeWithChoices}. La méthode vérifie si au moins un choix est possible, pemettant ainsi de créer, ou non, un noeud terminal de défaite. S'il peut au moins choisir une destination, un choix est demandé parmi toutes les destinations faisant un appel à la méthode en fonction du joueur (\textit{player.makeAchoice()}). Car ici, un choix est demandé, soit le Scanner du player ou le random de la fourmis. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, vu juste en dessous de la figure du haut, est appelé. Si le joueur est toujours en vie, le noeud choisi est renvoyé en noeud de destination. Sinon, le joueur doit faire un autre choix car il y a minimum un choix possible.\\
 
 		\begin{figure}[H]
 			\centering\includegraphics[width=0.70\textwidth]{img/codeJeuPrerequis.png}
