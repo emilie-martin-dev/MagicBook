@@ -421,7 +421,7 @@ public class NodeDialog extends AbstractDialog {
 	}
 
 	/**
-	 * Créé une liste pour sélectionner un item
+	 * Créé une liste pour sélectionner un ennemi
 	 * @return La liste créée
 	 */
 	private ComboBox<String> addEnnemiComboBox(){
@@ -430,7 +430,8 @@ public class NodeDialog extends AbstractDialog {
 		ennemiBox.getItems().add(" ");
 		ennemiBox.setValue(" ");
 		for(Map.Entry<String, BookCharacter> listEnnemiBo : book.getCharacters().entrySet()){
-			ennemiBox.getItems().add(listEnnemiBo.getValue().getId());
+			if(!listEnnemiBo.getValue().getId().equals(Book.MAIN_CHARACTER_ID))
+				ennemiBox.getItems().add(listEnnemiBo.getValue().getId());
 		}
 
 		ennemisPane.add(ennemiBox, ennemisComboBox.size() % 4, ennemisComboBox.size() / 4);
