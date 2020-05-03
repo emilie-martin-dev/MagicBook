@@ -3,6 +3,8 @@
 	\section{Représentation d'un livre}
 		Un livre peut contenir différentes informations. On y retrouve des items, des personnages, des paragraphes (que nous appellerons des noeuds), des choix (que nous appellerons des liens), ... Cette partie présentera la manière dont nous avons pensé ces différents éléments.
 
+		Un livre peut contenir différentes informations. On y retrouve des items, des personnages, des paragraphes (que nous appellerons des noeuds), des choix (que nous appellerons des liens), ... Cette partie présentera la manière dont nous avons pensé ces différents éléments.
+
 		\subsection{Représentation des noeuds}
 
 			Nous étions d'abord parti sur une structure relativement simple pour gérer les noeuds. Ils comportaient un paragraphe, un type et une liste de choix (Voir figure \ref{fig:OldBookNode})
@@ -68,7 +70,7 @@
 
 			Avant de détailler notre choix, nous allons expliquer brièvement les deux interfaces que l'on observe. L'une se nomme \textbf{Descriptible} et permet à l'item de se décrire sous forme de String. Bien que la méthode \textit{String toString()} soit déjà prévu à cet effet, celle ci ne permet pas de prendre en argument un livre (classe \textbf{Book}). Bien entendu, c'est logique mais certains objets ont besoin du livre pour se décrire, par exemple, pour retrouver un item / personnage à partir de son id. La seconde interface, \textbf{JsonExportable} sera expliqué plus en détails dans \nameref{subsec:lecture_ecriture_fichier} à la page \pageref{subsec:lecture_ecriture_fichier}. Pour rester bref, disons qu'elle permet, la lecture et l'écriture du fichier en JSON.
 
-			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attributs spécfiques à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type monnaie inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère par \textit{super.getDescription(book)} dans la méthode \textit{getDescription} , ainsi que \textit{super.toJson()} pour la méthode \textit{toJson()}.
+			Dès lors, l'héritage prend son sens et permet une spécialisation d'un item de deux façons. La première, qui est la plus logique, permet l'ajout d'attributs spécfiques à notre classe fille. Par exemple, il serait étrange d'avoir un attribut pour savoir combien de dégat un item de type monnaie inflige. Deuxièmement, cette spécialisation intervient dans la redéfinition, par les classes filles, des méthodes des deux interfaces. En effet, chaque classe fille apporte ses propres attributs à chacune des différentes méthodes comme on peut le voir sur le listing ci-dessous. On nottera l'appel à la méthode définit dans la classe mère grace au mot clé \textit{super}.
 
 			\begin{lstlisting}[gobble=16, language=Java, caption=Exemple de spécialisation des items]
 				@Override
@@ -115,27 +117,37 @@
 
 			Ainsi, on comprend mieux le rôle de la méthode nommée \textit{isAvailable()} dans \textbf{BookNodeLink} (cf : \nameref{fig:BookNode} page \ref{fig:BookNode}). Cette méthode se charge d'indiquer si une liste satisfait tous les prérequis. Bien entendu, une seule liste suffit à rendre le choix disponible et un seul prérequis non satisfait suffit à rendre la liste non satisfaite car il s'agit du principe même des OU et des ET.
 
-			\begin{lstlisting}[gobble=16, language=java, caption=exemple de isAvailable()]
-				public boolean isAvailable(BookState state) {
-					if(requirements.isEmpty())
-						return true;
 
-					for(List<AbstractRequirement> groupRequirement : requirements) {
-						boolean satisfied = true;
-						for(AbstractRequirement r : groupRequirement) {
-								if(!r.isSatisfied(state)) {
-									satisfied = false;
-									break;
-								}
-							}
+			\begin{algorithm}[H]
+				\DontPrintSemicolon
+				\KwIn{state : BookState}
+				\KwData{
+					requirements : List<List<AbstractRequirement> liste des prérequis\;
+				}
 
-						if(satisfied)
-							return true;
+				\uIf{requirements.length == 0}{
+					\Return{True}\;
+				}
+				\;
+				\For{List<AbstractRequirement> groupRequirement in requirements}{
+					satisfied: bool\;
+					satisfied = true\;
+					\For{AbstractRequirement r in groupRequirement}{
+						\uIf{not r.isSatisfied(state)}{
+							satisfied = false\;
+							break\;
+						}
 					}
 
-					return false;
+					\uIf{satisfied}{
+						\Return{true}
+					}
 				}
-			\end{lstlisting}
+				\;
+				\Return{false}
+
+				\caption{Disponibilité du choix}
+			\end{algorithm}
 
 		\subsection{Prendre un choix de manière aléatoire}
 
@@ -453,7 +465,7 @@
 			}
 			\end{lstlisting}
 
-		On retrouve plusieurs éléments différents. On remarque par exemple un attribut "prelude", ainsi que deux grosses parties, "setup" et "sections". Dans la suite, nous détaillerons uniquement les attributs les plus frequemment présents.
+			On retrouve plusieurs éléments différents. On remarque par exemple un attribut "prelude", ainsi que deux grosses parties, "setup" et "sections". Dans la suite, nous détaillerons uniquement les attributs les plus frequemment présents.
 
 		\subsubsection{Setup}
 
@@ -521,7 +533,7 @@
 
 		\subsubsection{Sections}
 
-			La partie "sections" est une map qui représente le numéro d'un paragraphe ainsi que le paragraphe associé. Il existe différents types de paragraphes : à choix, à choix aléatoire, avec des combats et terminaux. Tous possède un texte. Les noeuds terminaux possèdent un type de fin ("end\_type") afin savoir si l'on a gagné ou pas (cf : Listing \ref{lst:exemple_livre}). Les noeuds aléatoires eux, possèdent un attribut "is\_random\_pick" qui vaut true. Pour tous les autres types de noeuds, on retrouve parmis les attributs les plus importants une liste d'items qu'il est possible de prendre, un montant d'item maximum qui peut être pris ("amount\_to\_pick") et enfin des items disponibles à l'achat ("shop").
+			La partie "sections" est une map qui représente le numéro d'un paragraphe ainsi que le paragraphe associé. Pour rappel, il existe différents types de paragraphes : à choix, à choix aléatoire, avec des combats et terminaux. Tous possèdent un texte. Les noeuds terminaux possèdent un type de fin ("end\_type") afin savoir si l'on a gagné ou pas (cf : Listing \ref{lst:exemple_livre}). Les noeuds aléatoires eux, possèdent un attribut "is\_random\_pick" qui vaut true. Pour tous les autres types de noeuds, on retrouve parmis les attributs les plus importants une liste d'items qu'il est possible de prendre, un montant d'item maximum qui peut être pris ("amount\_to\_pick") et enfin des items disponibles à l'achat ("shop").
 
 			\begin{lstlisting}[gobble=12, language=json, caption=Exemple de paragraphe]
 			{
@@ -620,8 +632,9 @@
 
 	\section{Edition graphique d'un livre}
 
-		\subsection{MainWindow}
-			La MainWindow est notre fenêtre principale. Elle contient un Menu permettant de réaliser plusieurs actions (exporter le livre, jouer, générer la difficulter...) ainsi que trois zones différentes (panel). Le premier panel se nomme le \textbf{LeftPane}. Il se situe à gauche et est composé de différent boutons permettant de changer de mode, de la liste des items, de personnage, de compétences du livre. Le deuxième panel s'appel le \textbf{GraphPane}. Il est au centre et permet d'ajouter les noeuds ainsi que les liens entre les noeuds, c'est donc la zone d'édition de notre livre. Il contient également le prélude. Le troisième panel se nomme le \textbf{RightPane}. Il permet d'afficher les statistiques du livre comme par exemple, le nombre de noeud ainsi que l'estimation de la difficulté du livre.\\
+		\subsection{La fenêtre principale}
+
+			Notre fenêtre principale est définit par la classe la MainWindow est notre fenêtre principale. Elle contient un Menu permettant de réaliser plusieurs actions (ouvrir et sauvegarder un fichier, exporter le livre, jouer, estimer la difficulté, ...) ainsi que trois zones différentes, divisées en trois autres classes.
 
 			\begin{figure}[H]
 				\centering\includegraphics[width=0.50\textwidth]{img/mainwindow.png}
@@ -629,890 +642,559 @@
 				\label{fig:MainWindow}
 			\end{figure}
 
-			Pour afficher cette fenêtre, plusieurs classe sont nécessaires (voir ci-dessous). La \textbf{MainWindow} gère la création de la fenêtre en créant d'abord la barre de menu grâce à la méthode \textit{createMenuBar()}, appeler dans son constructeur, ainsi que les options de la barre. Elle appele également, grâce à son constructeur, les classes \textbf{LeftPane}, \textbf{GraphPane} ainsi que \textbf{RightPane} qui construisent les trois panels principaux. Toutes ces composantes constituant la fenêtre, sont ajouter au BorderPane permettant ainsi de les positionner.
+			La partie de gauche est représentée par la classe \textbf{LeftPane}. Celle-ci est composée de différent boutons permettant de changer de mode, d'une liste d'items, de personnage, de compétences constituant le livre. De l'autre côté, à droite, on retrouve une instance de \textbf{RightPane}. Cette partie permet d'afficher les statistiques du livre comme par exemple, le nombre de noeud ainsi que l'estimation de la difficulté du livre, etc. Enfin, la partie centrale défini par le \textbf{GraphPane} permet d'éditer sous forme graphique le livre. Ces trois parties utilisent le Pattern MVC ce qui leur permet également d'être réactif aux changements du livre notamment grace au Pattern Observer fournis par celui-ci (cf : \nameref{subsec:pattern_observer} page \pageref{subsec:pattern_observer}) .
 
-			\begin{figure}[H]
-				\centering\includegraphics[width=0.50\textwidth]{img/fenetre.png}
-				\caption{Classes lié à la fênetre}
-				\label{fig:fenetre}
-			\end{figure}
+			\subsubsection{Ouverture et sauvegarde du livre}
 
-			\subsubsection{Fichier}
-				L'utilisateur peut ouvrir un nouveau livre vide en cliquant sur \underline{Nouveau}. La classe \textbf{MainWindow} modifie alors le livre actuel en créant un livre vierge. Une méthode \textit{setBook()} est alors appelé afin de modifier le livre dans tout les panels (LeftPane, GraphPane, RightPane), permettant ainsi de partir sur un nouveau livre.
+				Avant de démarrer, il faut préciser qu'une variable \textit{path} est présente dans \textbf{MainWindow} et permet de sauvegarder le fichier actuellement ouvert dans l'éditeur. Celle-ci vaut null lorsqu'aucun fichier ne l'est. C'est donc sa valeur au lancement de l'application.
 
-				Ce menu comporte aussi un MenuItem nommé \underline{Ouvrir}, permettant ainsi d'ouvrir un fichier Json ou txt. Si dans ce fichier, il manque une virgule ou une accolade ou autre ne permettant pas la lecture du fichier en Json (Voir \nameref{sec:Json} à la page \pageref{sec:Json}), un message d'erreur apparait. Si le fichier n'est pas bien fait, ne permettant pas l'ouverture de ce fichier, une classe nommée \textbf{BookValidator} devait "valider" le livre. Par manque de temps, cette classe n'est pas fonctionnelle. Si le fichier est valide, cela appel alors la classe \textbf{BookReader} permettant ainsi de lire le fichier en json (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). La méthode \textit{setBook()} est ensuite appelé afin de modifier le livre dans tout les panels (LeftPane, GraphPane, RightPane).
+				L'utilisateur peut démarrer un nouveau livre, à l'aide du menu, en cliquant sur \underline{Fichier -> Nouveau}. La classe \textbf{MainWindow} fait alors une nouvelle instance de la classe Book puis appelle sa méthode \textit{void setBook(Book)} qui se chargera de transmettre à tous les panels (LeftPane, GraphPane, RightPane) le nouveau livre. Les panels propageront alors le livre aux différents éléments qui pourraient en avoir besoin (tel que les listes d'items, de personnages, ...). Enfin, la variable \textit{path} est mise à null.
 
-				Les options \underline{Enregistrer} ainsi que \underline{Enregistrer-Sous} sont également présente. Elles appellent toutes les deux les même méthodes : \textit{changeSelectedFile()} ainsi que \textit{saveFile()}. La première méthode permet d'enregistrer le fichier. Si l'utilisateur annule la boite de dialog permettant d'enregistrer le fichier, la méthode \textit{saveFile()} n'est donc pas appelé. Dans le cas contraire, la méthode \textit{saveFile()} permet de sauvegarder le document en fonction du chemin du fichier, défini par la variable "path". Pour "écrire" le fichier qui sera enregistrer, permettant par la suite de l'ouvrir, la classe \textbf{BookWritter} est donc utilisé (pour plus d'information, voir la subsection \ref{subsec:lecture_ecriture_fichier}). Si la moindre erreur survient lors de l'enregistrement du fichier écrit, cela annule l'enregistrement.
-				La seule diférence entre \underline{Enregistrer} et \underline{Enregistrer-Sous}, ce passe si la variable "path", soit le chemin du fichier, soit déjà défini. Si c'est le cas, \underline{Enregistrer} appel directement la méthode \textit{saveFile()} car l'utilisateur n'a pas besoin de redéfinire le chemin d'enregistrement du fichier.
+				Il est possible d'ouvrir un livre à l'aide du menu \underline{Fichier -> Ouvrir}. Une boite de dialogue s'affiche alors afin de sélectionner le livre que l'on souahite éditer. Si un livre a bien été sélectioné, alors, \textbf{BookReader} sera appellé afin de le lire (cf : \nameref{subsec:lecture_ecriture_fichier} page \pageref{subsec:lecture_ecriture_fichier}). Si le fichier est invalide, au niveau de la structure du JSON, une erreur s'affiche et le processus d'ouverture s'en arrêtera là. Une fois de plus, la méthode \textit{void setBook(Book)} de \textbf{MainWindow} est appelé afin de transmettre le nouveau livre. Enfin, si l'on a put faire toutes ces actions sans aucun soucis, la variable \textit{path} retient le chemin vers le fichier ouvert.
 
-				\begin{lstlisting}[gobble=20, language=java, caption=Enregistrement du livre]
-					private void saveFile() {
-						File saveFile = new File(path);
-
-						if(!saveFile.getParentFile().exists())
-							saveFile.mkdirs();
-
-						BookWritter bookWritter = new BookWritter();
-						try {
-							bookWritter.write(path, book);
-						} catch (IOException ex) {
-							Alert a = new Alert(AlertType.ERROR);
-							a.setTitle("Erreur lors de l'écriture du fichier");
-							a.setHeaderText("Impossible d'écrire le fichier sur le disque");
-							a.show();
-						}
-					}
-				\end{lstlisting}
-
-			\subsubsection{Livre}
-				L'utilisateur peut \underline{Jouer} ou \underline{Estimer la difficulté}. Ces deux MenuItem utilisent toutes les deux la classe \textbf{Jeu} décrit un peu plus loin \nameref{sec:Jeu} à la page \pageref{sec:Jeu}. Le livre est alors charger dans cette classe afin d'avoir accès à toutes les informations pour pouvoir jouer.
-
-				Pour l'option \underline{Jouer}, elle utilise la méthode \textit{play()} de la classe \textbf{Jeu}. Si cette méthode relate la moindre erreur, celle si remonte jusqu'à la \textbf{MainWindow}. Un message d'erreur apparait alors. Cette erreur survient normalement si un chemin ne conduit sur aucun lien terminaux ou si un noeud se retrouve sans lien.
-
-				Pour l'option \underline{Estimer la difficulté}, elle utilise la méthode \textit{fourmis()} de la classe \textbf{Jeu}. Une simple valeur indiquant le nombre de "fourmis" voulant être lancé est envoyé dans cette méthode. Puis, une fois la difficulté calculé, ce pourcentage apparait dans le panel des statistiques, soit dans la partie droite de la fenêtre grâce à la méthode \textit{difficultyChanged()} de la classe \textbf{RightPane}.
-
-				Un autre MenuItem est aussi présent, permettant de \underline{Générer le livre en txt}. Cela permet à l'utilisateur de pouvoir avoir un livre propre au format texte.
-				Pour ce faire, un lien entre le prélude et le premier noeud doit être généré. Sinon une erreur apparait en indiquant le problème de l'erreur. En effet, le prélude apparait d'abord, puis le premier noeud. Cela ne peux pas se faire tant que ce lien n'est pas défini. Si le lien est générer, l'utilisateur doit alors indiquer où enregistrer le fichier génerer à l'aide de la classe \textbf{FileChooser}. Si l'utilisateur annule, la génération est annulé. Sinon, cela génère le fichier à l'aide de la classe \textbf{BookTextExporter} à l'adresse spécifié dans \textbf{FileChooser}. Bien sûr, cela s'annule à la moindre erreur.
-
-				\begin{lstlisting}[gobble=20, language=java, caption=Génération du livre en txt]
-					MenuItem menuBookGenerate = new MenuItem("Générer le livre en txt");
-					menuBookGenerate.setOnAction((ActionEvent e) -> {
-						NodeFx firstNodeFx = graphPane.getPreludeFx().getFirstNode();
-						if(firstNodeFx == null) {
-							Alert a = new Alert(Alert.AlertType.WARNING);
-							a.setTitle("Erreur lors de l'export");
-							a.setHeaderText("Merci de sélectionner au préalable le noeud de départ");
-							a.show();
-
-							return;
-						}
-
-						FileChooser fileChooser = new FileChooser();
-						fileChooser.setTitle("Exporter en texte");
-
-						File selectedFile = fileChooser.showSaveDialog(this);
-						if (selectedFile == null) {
-							return;
-						}
-
-						try {
-							BookTextExporter.generateBook(book, selectedFile.getAbsolutePath());
-						} catch (IOException ex) {
-							Alert a = new Alert(Alert.AlertType.ERROR);
-							a.setTitle("Erreur lors de l'export du fichier");
-							a.setHeaderText("Impossible de sauvegarder le fichier sur le disque");
-							a.show();
-						}
-					});
-				\end{lstlisting}
-
-			\subsubsection{Affichage}
-			L'utilisateur peut afficher ou non, le \textbf{LeftPane} et/ou le \textbf{RightPane}. Cela permet notament à l'utilisateur de mieux voir la partie édition. Mais était surtout réalisé pour un meilleur affichage en vidéo projecteur de notre projet.
-			Une simple modification de ce qui est affiché à gauche ou à droite du BorderPane (soit de la variable "root" contenant toute la fenêtre) est nécessaire.
-
+				Enfin, il est possible grâce à \underline{Fichier -> Enregistrer} ainsi que \underline{Fichier -> Enregistrer sous} d'enregistrer les changements sur le fichier. La sauvegarde d'un fichier se déroule comme suit ; On commence par vérifier si un fichier est déjà ouvert, grace à \textit{path}. Si ce n'est pas le cas, alors on affiche une fenêtre afin de sélectionner l'emplacement de sauvegarde. Si l'utilisateur valide son choix, alors on doit changer la valeur de \textit{path} pour enregistrer cet emplacement. On fera ensuite appel à la classe \textbf{BookWritter} pour sauvegarder le livre au format JSON (cf : \nameref{subsec:lecture_ecriture_fichier} page \pageref{subsec:lecture_ecriture_fichier}). Cependant, il existe une différence entre \underline{Fichier -> Enregistrer} et \underline{Fichier -> Enregistrer sous}. En effet, l'étape de la vérification "du fichier déjà ouvert" ne se fait que pour pour le premier des deux tandis que l'autre affichera donc toujours la fenêtre de sauvegarde peut importe la valeur de \textit{path}.
 
 		\subsection{LeftPane}
-			Ce panel contient tout d'abord des ToggleButton permettant de sélectionner un mode parmis cinq modes : \underline{SELECT, ADD NODE, ADD NODE LINK, DELETE, FIRST NODE}. Ces modes sont sélectionnables à l'aide de bouton créé a partir de la méthode \textit{createToggleButton()}. Cette méthode prend en paramètre une image et un des modes de la classe \textbf{Mode}, qui est une classe ennumérant tout les modes. Un évènement est associé à chaque boutons permettant de changer le mode (voir \ref{sub:GraphPane}). Le mode ensuite déjà selectionné est toujours le mode \underline{SELECT}. On a créer des ToggleButton afin d'avoir deux états: un état on et un état off. Cela permet de "désactiver" les boutons non sélectionné et de n'avoir qu'un seul bouton non sélectionné. Pour sela, un \textbf{ToggleGroup} permettant que dès qu'un bouton est "cliquer" que celui-ci soit en "on" et les autres en "off".
 
-			\begin{lstlisting}[gobble=16, language=java, caption=Création du ToggleButton]
-				private ToggleButton createToggleButton(String path, Mode mode) {
-					InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
-					ImageView imageView = new ImageView(new Image(stream));
-					imageView.setFitHeight(40);
-					imageView.setFitWidth(40);
-					ToggleButton toggleButton = new ToggleButton("", imageView);
+			\subsubsection{Sélection du mode}
 
-					imageView.setPreserveRatio(true);
-					toggleButton.setMinSize(UiConsts.CONTROL_BUTTON_SIZE, UiConsts.CONTROL_BUTTON_SIZE);
-					toggleButton.setMaxSize(UiConsts.CONTROL_BUTTON_SIZE, UiConsts.CONTROL_BUTTON_SIZE);
+				Comme mentionné auparavent, ce panel contient plusieurs bouttons cliquable en haut afin de sélectionner le mode d'édition. Pour celà, nous avons utilisé des \textbf{ToggleButton}, lesquels sélectionnent l'un des 5 modes disponibles par l'énumération \textbf{Mode} à savoir : SELECT, ADD\_NODE, ADD\_NODE\_LINK, DELETE, FIRST\_NODE. Ces bouttons faisant stritement la même chose, ils sont tous créé à partir de la méthode \textit{ToggleButton createToggleButton(String, Mode)}. Cette méthode prend en paramètre le chemin vers une image ainsi que le mode que l'on souhaite sélectionner lorsque l'on clique dessus, mode qui sera appliqué au \textbf{GraphPane}. Afin de ne sélectionner qu'un seul \textbf{ToggleButton} à la fois, tous, sont contenu dans un seul et même \textbf{ToggleGroup} qui se chargera lui même de déselectionner le ToggleButton précédemment sélectionné.
 
-					toggleButton.setOnAction((ActionEvent e) -> {
-						if(toggleGroup.getSelectedToggle() == null) {
-							toggleGroup.selectToggle(toggleButton);
-							return;
-						}
+			\subsubsection{Gestion des éléments du livre}
 
-						graphPane.setMode(mode);
-						graphPane.setSelectedNodeFx(null);
-					});
+				En dessous des bouttons pour sélectionner le mode, nous retrouvons trois listes permettant chacune la gestion d'un des éléments du livre, c'est à dire, des personnages, des items et des compétences.
 
-					if (this.toggleGroup == null) {
-						this.toggleGroup = new ToggleGroup();
-					}
+				Bien qu'il s'agisse d'un arbre, au vue du fait qu'ils héritent de \textbf{TreeView<T>}, nous avons fait un affichage qui correspond plus à celui d'une liste. Pourquoi ce choix ? Nous aurions voulu pouvoir par la suite organiser cette vue de manière à ce qu'elle puisse contenir différentes catégories tel que, pour les items par exemple, Autre, Arme, Défense, (...) corresondant aux différents types d'items possibles. Chaque catégorie contiendrait alors les items correspondant à ce type. Ainsi, l'UML de ces classes ressemble à celui ci :
 
-					this.toggleGroup.getToggles().add(toggleButton);
+				\begin{figure}[H]
+					\centering\includegraphics[width=0.7\textwidth]{img/fenetreTreeView.png}
+					\caption{UML des TreeView}
+					\label{fig:fenetreTreeView}
+				\end{figure}
 
-					return toggleButton;
-				}
-			\end{lstlisting}
+				Comme on pouvait s'en douter, chacune de ces liste hérite de d'une classe mère, \textbf{AbstractBookTreeView<T>}, permettant de gérer les comportement en commun. L'utilisation de la généricité permet de définir le type d'élément que la liste se chargera de gérer. Détaillons maintenant les différentes méthodess à redéfinir.
 
-			Une VBox est ensuite créé afin de mettre les trois TreeView contenant un les personnages, items et compétences. Pour cela, la méthode \textit{bookTreeView()} est appelé afin d'appeler chaque classe nécessaire à l'affichage de ces TreeView: \textbf{BookTreeViewCharacter} pour la liste des personnages, \textbf{BookTreeViewItem} pour la liste des items et \textbf{BookTreeViewSkill} pour la liste des compétences.
+				Comme pour tous les autres éléments graphique, les listes sont conçue en utilisant le Pattern MVC et donc également, le Pattern Observer. De ce fait, ils réagissent automatiquement à un changement sur l'éléments qu'ils permettent de gérer (items, personnages, compétences).
 
-			\begin{figure}[H]
-				\centering\includegraphics[width=0.50\textwidth]{img/fenetreTreeView.png}
-				\caption{Constitution de la vue des personnages/item/compétences}
-				\label{fig:fenetreTreeView}
-			\end{figure}
-
-			Comme vous pouver le voir dans la figure ci-dessous, une classe AbstractBookTreeView implique ces trois classe. Elles ont donc toutes les même méthode mais défini en fonctions de ce qu'ils affichent.
-
-			\begin{itemize}
-				\item \underline{bookChanged()} permet de mettre à jour la liste si un changement de livre est effectué. Elle est donc appelé par la méthode \textit{setBook()}.
-				\item \underline{createRootElement()} permet de créer l'item qui sera afficher dans la vue et non modifiable. Par exemple, pour la liste des items, "Items" sera donc afficher tout en haut.
-				\item \underline{addBookElementContextMenu()} permet d'ajouter un personnage / item / compétence. Cela appel alors la boite de dialogue en fonction du TreeView appelé. Les classes \textbf{CharacterDialog}, \textbf{ItemDialog}, \textbf{SkillDialog} sont alors appelé. Si l'utilisateur valide la boite de dialogue, cela l'ajoute dans le HashMap prévu à cette effet dans le livre. Par exemple si c'est une compétences, \textit{addSkill()} est alors appelé.
-				\item \underline{updateBookElementContextMenu()} permet de modifier l'élément sélectionné. Cela réouvre la boite de dialogue. Si l'utilisateur valide la boite de dialogue, cela modifie l'élément sélectionné dans le HashMap du livre. C'est pour cela qu'un HashMap a été créer et non une liste.
-				\item \underline{removeBookElementContextMenu()} permet de sélectionné l'élément sélectionné. Cela supprime donc l'élément dans la HashMap du livre.
-				\item \underline{getAddContextMenuString()} permet d'afficher le texte permettant d'ajouter le personnage / l'item / la compétence
-				\item \underline{getUpdateContextMenuString()} permet d'afficher le texte permettant de modifier le personnage / l'item / la compétence
-				\item \underline{getDeleteContextMenuString()} permet d'afficher le texte permettant de supprimer le personnage / l'item / la compétence
-			\end{itemize}
-
-			Dans ces différentes classes, un Observeur est ajouter sur chaque classes. Ce qui permet que le moindre clique sur "ajouter", "modifier" ou "supprimer" permet d'effectuer les actions expliqué dans la liste ci-dessus. Un Observeur est créer par classe, il y a donc trois observeur et trois observable. Si un item est ajouté par exemple, c'est la classe \textbf{BookTreeViewItem} qui est appelé. Puis la méthode \textit{addBookElementContextMenu()} est appelé et si l'utilisateur valide la boite de dialogue, la méthode \textit{addItem()} dans la classe \textbf{Book} est appelé. Cela permet d'ajouter l'item dans le HashMap d'items. Puis cette méthode appelle \textit{notifyItemAdded()} de la classe \textbf{BookItemObservable} qui elle, notifie \textit{itemAdded()} de l'ajout d'un item. Cette méthode est dans la classe \textbf{BookTreeViewItem}. Elle permet donc d'ajouter l'item en question sur le Pane, permetant de le voir. La "modfication" et la "supression" est sur le même principe.
-
-			Grâce au constructeur de \textbf{AbstractBookTreeView} (voir ci-dessous), le titre du TreeItem est ajouter. Puis un ContextMenu() est créer et Chaque MenuItem est ajouter ("ajouter", "modifier" ou "supprimer") à ce ContextMenu.
-
-			\begin{lstlisting}[gobble=16, language=java, caption=Constructeur de AbstractBookTreeView()]
-				public AbstractBookTreeView(Book book){
-					rootItem = new TreeItem<>(createRootElement());
-					rootItem.setExpanded(true);
-
-					this.setRoot(rootItem);
-
-					ContextMenu contextMenu = new ContextMenu();
-					MenuItem menuAddElement = new MenuItem(getAddContextMenuString());
-					MenuItem menuUpdateElement = new MenuItem(getUpdateContextMenuString());
-					MenuItem menuDeleteElement = new MenuItem(getDeleteContextMenuString());
-
-					menuAddElement.setOnAction((ActionEvent event) -> {
-						addBookElementContextMenu();
-					});
-
-					menuUpdateElement.setOnAction((ActionEvent event) -> {
-						TreeItem<T> selectedItem = this.getSelectionModel().getSelectedItem();
-
-						if(selectedItem != null && selectedItem != rootItem) {
-							updateBookElementContextMenu(selectedItem.getValue());
-						}
-
-						this.refresh();
-					});
-
-					menuDeleteElement.setOnAction((ActionEvent event) -> {
-						TreeItem<T> selectedItem = this.getSelectionModel().getSelectedItem();
-
-						if(selectedItem != rootItem)
-							removeBookElementContextMenu(selectedItem.getValue());
-					});
-
-					contextMenu.getItems().addAll(menuAddElement, menuUpdateElement, menuDeleteElement);
-					this.setContextMenu(contextMenu);
-
-					this.setBook(book);
-
-					this.setMaxHeight(MAX_HEIGHT);
-				}
-			\end{lstlisting}
+				La méthode \textit{void setBook(Book)}, permet comme pour tous les autres éléments, de changer le livre actuel. Cependant des actions supplémentaires étaient requisent par les listes afin nottament de ne plus écouter les évènements sur l'ancien livre ainsi que d'afficher les éléments concernant le nouveau. Nous avons donc conçu la méthode \textit{void bookChanged(Book, Book)} qui est automatiquement appelée par \textit{void setBook(Book)} et permet à la liste d'éffectuer ces changements. Nous avons préféré fonctionner de cette manière plutôt que d'utiliser \textit{super} car cela oblige à fournir un comportement pour cette méthode et évite également l'oubli de la redéfinition de \textit{void setBook(Book)} pour traiter correctement le livre et réaliser les actions précédemment évoquées. La méthode \textit{T createRootElement()} quant a elle, permet de créer l'élément servira de label dans le TreeItem. La seul vrai valeur que l'on doit y renseigner est le nom de l'élément, les autres valeurs peuvent valoir null car elles ne seront pas utilisées. Les méthodes \texit{void addBookElementContextMenu()}, \texit{void updateBookElementContextMenu(T)}, \texit{void removeBookElementContextMenu(T)} correspondent aux actions à exécuter lorsque l'on clique sur l'action ajouter, modifier ou supprimer du menu lors d'un clique droit sur la liste. Enfin, les méthodes \textit{String getXXXContextMenuString()} permettent de récupérer le texte qui sera affiché dans le menu qui vient d'être évoqué.
 
-		\subsection{GraphPane}\label{sub:GraphPane}
-
-			Le GraphPane lui affiche la zone d'édition. Cette zone contient des méthodes permettant l'ajout de lien ainsi que l'ajout de noeud. Elle contient également deux classes appelé \textbf{NodeFxListener} ainsi que \textbf{NodeLinkFxListener}. Elle permettent de réalisé des actions en fonction des modes sélectioné dans le LeftPane.
+		\subsection{GraphPane}
+			\label{sub:GraphPane}
 
-			Son constructeur permet de créer le prélude ainsi que d'ajouter des noeud si le mode "ADD\_NODE" est sélectionné. Si ce bouton est sélectionné, et qu'un clique est observer sur le GraphPane, la méthode \textit{createNodeFxDialog()} permet d'ouvrir un \textbf{NodeDialog}. C'est la boite de dialogue permettant de créer le noeud. Si l'utilisateur valide le noeud, la méthode \textit{addNode()} de la classe \textbf{Book} est appelé permattant de rajouter les coordonnée du noeud pour le ZOOM. Puis une notification est envoyé dans le \textbf{BookNodeObservable} permettant d'appeler la méthode \textit{nodeAdded()} dans le GraphPane. Cette méthode permet de créer le noeud visuellement. Pour cela, un NodeFx est nécessaire. En effet, ce NodeFx fera le lien entre le RectangleFx qui sera le visuel sur noeud (soit un carré) et le noeud.
+			Le GraphPane correspond à la zone d'édition. Elle contient des méthodes permettant l'ajout de lien ainsi que l'ajout de noeud. C'est ici que le mode va prendre tout son sens et toute son importance. En efffet, un clique sur cette partie de l'application n'aura pas les même effets selon que l'on soit en mode "ADD\_NODE" ou "DELETE".
 
-			\subsubsection{NodeFxListener}
-				Si le mode "SELECT" est sélectionné et si la souris maintient le clique appuyé (soit \textit{setOnMouseDragged()}), la classe \textbf{RectangleFx} rattaché au noeud est appelé afin de modfier le rectangle de place. Ce qui veux dire que le rectangle à les même coordonnées que la souris. Mais la méthode empêche le Rectangle de sortir de la zone d'édition.
-				Si un double clique est effectué, le deuxième constructeur de la classe \textbf{NodeDialog} est appelé avec le noeud sélectionné en argument. Cela permet donc de modifier la saisie sur ce noeud. Si l'utilisateur valide la boite de dialogue, le livre met a jour le noeud contenue dans un HashMap, ce qui permet de le retrouver.
+			\subsubsection{Représentation graphique des éléments}
 
-				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode SELECT]
-					if(mode == Mode.SELECT){
-						selectedNodeFx = nodeFx;
-						if(event.getClickCount() == 2) {
-							NodeDialog dialog = new NodeDialog(book, selectedNodeFx.getNode());
-							if(dialog.isValid()) {
-								book.updateNode(nodeFx.getNode(), dialog.getNode());
-							}
-						}
-					}
-				\end{lstlisting}
-
-				La méthode \textit{updateNode()} est alors appelé mettant à jour le noeud. Si un moindre changement du type de noeud est effectué, le lien est alors supprimé grâce au \textbf{BookNodeLinkObservable} et de la méthode \textit{notifyNodeLinkDeleted()}.
-				Puis celle-ci fait appel l'observeur \textbf{BookNodeObservable} permettant de notifier \textit{nodeEdited()} de la classe \textbf{GraphPane}. Cette méthode permet de modifier le noeud dans le NodeFx qui a été cliqué.
-
-
-				Si le mode ADD\_NODE\_LINK est sélectionné, et que le premier clique ce fait sur un noeud qui n'a pas de choix, donc le prélude ou un noeud terminal, cela ne fait rien. Si au contraire, le noeud est autorisé à avoir des choix, le prmier clique enregistre donc le noeud sélectionné afin d'avoir le départ du lien. Si un autre clique est effectué et que la variable contenant le premier noeud sélectionné n'est pas vide, alors le noeud est créer en fonction du type du premier noeud. En effet, si le premier noeud est un noeud de type combat, et si tout ces choix sont déjà défini (combat gagner, combat perdu, evasion), le lien ne peux pas être effectué. Un message d'erreur s'affiche alors, puis la variable contenant le premier noeud est supprimé. Dans le cas contraire, la boite de dialogue s'affiche. Nous n'avons pas voulu faire d'autre condition car si l'utilisateur veux créer un lien qui effectue une boucle ou plusieurs choix qui mène aux même noeud, il est libre de le faire.
-				Une fois la boite de dialogue valider, et si c'est un noeud de combat, on met à jour le lien parmis ses destinations. Sinon, on ajoute le lien dans le HashMap contenant les liens. Puis on met à zéro la variable contenant le premier noeud.
-
-				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode ADD NODE LINK]
-					if(mode == Mode.ADD_NODE_LINK) {
-						if(selectedNodeFx == null && !(nodeFx.getNode() instanceof AbstractBookNodeWithChoices)) {
-							return;
-						} else if(selectedNodeFx == null && nodeFx.getNode() instanceof AbstractBookNodeWithChoices) {
-							selectedNodeFx = nodeFx;
-						} else {
-							if (selectedNodeFx.getNode() instanceof BookNodeCombat){
-								BookNodeCombat firstNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
-								if(firstNodeCombat.getEvasionBookNodeLink() != null
-										&& firstNodeCombat.getLooseBookNodeLink() != null
-										&& firstNodeCombat.getWinBookNodeLink() != null) {
-									Alert alertDialog = new Alert(Alert.AlertType.ERROR);
+				
 
-									alertDialog.setTitle("Erreur");
-									alertDialog.setHeaderText("Veuillez supprimer un lien de victoire / defaite / evasion pour pouvoir rajouter un autre lien.");
-									alertDialog.show();
+			\subsubsection{Gestion des évènements}
 
-									return;
-								}
-							}
+				On distingue l'écoute d'évènement à trois endroits. Sur la zone d'édition, sur un noeud et sur un lien.
 
-							NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(selectedNodeFx.getNode(), book);
-
-							if(nodeLinkDialog.isValid()) {
-								BookNodeLink bookNodeLink = nodeLinkDialog.getNodeLink();
-								bookNodeLink.setDestination(book.getNodeIndex(nodeFx.getNode()));
+				Sur la zone d'édition nous surveillons notamment les cliques lorsque nous somme en mode "ADD\_NODE". Dans le cas où un clique intervient, nous affichons la boite de dialogue permettant l'ajout d'un noeud puis, si nous avons validé cette dernière, nous ajoutons alors le noeud au livre. On recevra alors une "notification" grace à la méthode prévu à cet effet par le Pattern Observer que le noeud à été ajouté et qu'il faut donc l'afficher.
 
-								if(selectedNodeFx.getNode() instanceof BookNodeCombat) {
-									BookNodeCombat bookNodeCombat = (BookNodeCombat) selectedNodeFx.getNode();
+				Lorsque nous créons un noeud, nous devons faire en sorte qu'il réagisse avec les prochains évènement, de ce fait, nous ajoutons le \textbf{GraphPane} à la liste des observers du noeud. Dès lors, un clique sur ce noeud sera automatiquement perçue et traité dans la méthode correspondante.
 
-									if(nodeLinkDialog.getLinkType() == NodeLinkDialog.EVASION) {
-										bookNodeCombat.setEvasionBookNodeLink(bookNodeLink);
-									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.PERDRE) {
-										bookNodeCombat.setLooseBookNodeLink(bookNodeLink);
-									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
-										bookNodeCombat.setWinBookNodeLink(bookNodeLink);
-									}
-
-									createNodeLink(bookNodeLink, selectedNodeFx, nodeFx);
-								} else {
-									book.addNodeLink(bookNodeLink, (AbstractBookNodeWithChoices) selectedNodeFx.getNode());
-								}
-							}
-
-
-							selectedNodeFx = null;
-						}
-					}
-				\end{lstlisting}
-
-				La méthode \textit{addNodeLink()} ajoute donc le lien puis appel l'observeur \textbf{BookNodeLinkObservable} permettant de notifier \textit{nodeLinkAdded()} de la classe \textbf{GraphPane}. Cette méthode permet de trouver le premier et le deuxième noeud parmi la liste des noeuds existant. Dès qu'ils ont été trouvé, elle fait appel à la méthode \textit{createNodeLink()} permettant de créer un lien entre les deux noeuds.
-				Pour cela, un NodeLinkFx est d'abord créer permettant de pouvoir changer de valer si un des noeuds changeait d'emplement ainsi que de changer de position en fonction du zoom. Ce lien est ensuite ajouter dans une liste de lien permettant de le retrouver.
-
-				\begin{lstlisting}[gobble=20, language=java, caption=nodeLinkAdded()]
-					public NodeLinkFx createNodeLink(BookNodeLink bookNodeLink, NodeFx firstNodeFx, NodeFx secondNodeFx) {
-						NodeLinkFx nodeLinkFx = new NodeLinkFx(bookNodeLink, firstNodeFx, secondNodeFx, zoom);
-						nodeLinkFx.addNodeLinkFxObserver(new NodeLinkFxListener());
-
-						// Lie la line avec les deux autres noeuds
-						nodeLinkFx.startXProperty().bind(firstNodeFx.xProperty().add(firstNodeFx.widthProperty().divide(2)));
-						nodeLinkFx.startYProperty().bind(firstNodeFx.yProperty().add(firstNodeFx.heightProperty().divide(2)));
-
-						nodeLinkFx.endXProperty().bind(secondNodeFx.xProperty().add(secondNodeFx.widthProperty().divide(2)));
-						nodeLinkFx.endYProperty().bind(secondNodeFx.yProperty().add(secondNodeFx.heightProperty().divide(2)));
-
-						listeNoeudLien.add(nodeLinkFx);
-
-						nodeLinkFx.registerComponent(rootPane);
-
-						return nodeLinkFx;
-					}
-				\end{lstlisting}
-
-
-				Si le mode "DELETE" est sélectionné la méthode \textit{removeNode()} de la classe Book est appelé. Une boite de dialogue d'affiche demandant confirmation. Si l'utilisateur annule, rien ne se passe. S'il valide, une boucle "for" est parcouru afin d'envoyer une notification dans le \textbf{BookNodeLinkObservable} et la méthode \textit{notifyNodeLinkDeleted()} qui appel \textit{nodeLinkDeleted()} permettant de supprimer les liens lié à ce noeud. Puis une autre notification est envoyé à la classe \textbf{BookNodeLinkObservable}, qui lui, supprime le noeud en question grace à \textit{notifyNodeLinkDeleted()} qui appel \textit{nodeLinkDeleted()}.
-
-				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode DELETE]
-					if(mode == Mode.DELETE) {
-						if(confirmDeleteDialog()){
-							book.removeNode(nodeFx.getNode());
-						}
-					}
-				\end{lstlisting}
-
-				Si le mode "FIRST\_NODE" est sélectionné, le lien entre le prélude et le noeud sélectionné est ajouté. Pour cela, un controle est fait si c'est bien un noeud. Si oui, le tracer est fait entre le prélude et le noeud sélectionné. Le "premier noeud" est donc changé dans le livre.
-				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeFxListener avec le mode FIRST NODE]
-					public void setFirstNode(NodeFx newFirstNode) {
-						preludeFx.setFirstNode(newFirstNode);
-
-						if(newFirstNode == null) {
-							preludeFxFirstNodeLine.setVisible(false);
-						} else {
-							preludeFxFirstNodeLine.endXProperty().bind(newFirstNode.xProperty().add(newFirstNode.widthProperty().divide(2)));
-							preludeFxFirstNodeLine.endYProperty().bind(newFirstNode.yProperty().add(newFirstNode.heightProperty().divide(2)));
-
-							preludeFxFirstNodeLine.setVisible(true);
-
-							if(!rootPane.getChildren().contains(preludeFxFirstNodeLine)) {
-								rootPane.getChildren().add(preludeFxFirstNodeLine);
-							}
-
-							book.changeFirstNode(newFirstNode.getNode());
-						}
-					}
-				\end{lstlisting}
-
-			\subsubsection{NodeLinkFxListener}
-				Cette classe permet de savoir si un évenement a été détecté sur un lien à l'aide du \textbf{NodeLinkFx} lié à chaque lien.
-
-				Si le mode "SELECT" est sélectionné et un double clique est effectué sur un lien, le lien est donc modfiable. La boite de dialogue sur lien s'affiche. Si la boite de dialogue est validé, les liens sont mis à jour grâce à la méthode \textit{removeNodeLink()} présente dans la classe \textbf{Book}. Cette méthode notifie le \textbf{BookNodeLinkObservable} grâce à la méthode \textit{notifyNodeLinkEdited()} qui elle appel la méthode \textit{nodeLinkEdited()} du \textbf{GraphPane}. Cette méthode permet de remplacer le lien existant dans le \textbf{NodeLinkFx} par le nouveau lien modifié.
-
-				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeLinkFxListener avec le mode SELECT]
-					if(mode == Mode.SELECT) {
-						if(event.getClickCount() == 2) {
-							NodeLinkDialog nodeLinkDialog = new NodeLinkDialog(nodeLinkFx.getNodeLink(), nodeLinkFx.getStart().getNode(), book);
-
-							// Si on a validé les modifications sur un lien
-							if(nodeLinkDialog.isValid()) {
-								nodeLinkDialog.getNodeLink().setDestination(book.getNodeIndex(nodeLinkFx.getEnd().getNode()));
-
-								//On met à jour les liens pour un noeud de combat
-								if(nodeLinkFx.getStart().getNode() instanceof BookNodeCombat) {
-									BookNodeCombat bookNodeCombat = (BookNodeCombat) nodeLinkFx.getStart().getNode();
-
-									book.removeNodeLink(nodeLinkFx.getNodeLink());
-
-									if(nodeLinkDialog.getLinkType() == NodeLinkDialog.EVASION) {
-										bookNodeCombat.setEvasionBookNodeLink(nodeLinkDialog.getNodeLink());
-									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.PERDRE) {
-										bookNodeCombat.setLooseBookNodeLink(nodeLinkDialog.getNodeLink());
-									} else if(nodeLinkDialog.getLinkType() == NodeLinkDialog.GAGNE) {
-										bookNodeCombat.setWinBookNodeLink(nodeLinkDialog.getNodeLink());
-									}
-
-									createNodeLink(nodeLinkDialog.getNodeLink(), nodeLinkFx.getStart(), nodeLinkFx.getEnd());
-								} else {
-									book.updateNodeLink(nodeLinkFx.getNodeLink(), nodeLinkDialog.getNodeLink());
-								}
-							}
-						}
-					}
-				\end{lstlisting}
-
-				Si le mode "DELETE" est sélectionné et un clique est observé et l'utilisateur confirme la supression par la une réponse positive sur la boite de dialogue, la méthode \textit{removeNodeLink()} de la classe \textbf{Book} est appelé. Ces liens sont alors supprimer des choix du noeuds considéré en "premier noeud". Puis le lien est alors supprimé grâce à la notification du \textbf{BookNodeLinkObservable} au \textbf{GraphPane}. Il est aussi supprimé de la liste des liens existants.
-
-				\begin{lstlisting}[gobble=20, language=java, caption=Classe NodeLinkFxListener avec le mode DELETE]
-					public void removeNodeLink(BookNodeLink nodeLink) {
-						List<AbstractBookNodeWithChoices> postRemove = new ArrayList<>();
-
-						for(Entry<Integer, AbstractBookNode> entry : this.nodes.entrySet()) {
-							if(!(entry.getValue() instanceof AbstractBookNodeWithChoices))
-								continue;
-
-							AbstractBookNodeWithChoices currentChoice = (AbstractBookNodeWithChoices) entry.getValue();
-							for(BookNodeLink nl : entry.getValue().getChoices()) {
-								if(nl == nodeLink) {
-									postRemove.add(currentChoice);
-									break;
-								}
-							}
-						}
-
-						for(AbstractBookNodeWithChoices node : postRemove) {
-							node.removeChoice(nodeLink);
-						}
-
-						bookNodeLinkObservable.notifyNodeLinkDeleted(nodeLink);
-					}
-				\end{lstlisting}
+				Afin de réaliser un lien entre les deux noeuds, il faut cliquer sur un noeud puis sur un second tout en ayant sélectionné le mode "ADD\_NODE\_LINK". On retient dans une variable le premier noeud cliqué. Lors d'un clique sur un noeud, cette variable prend alors la valeur de celui-ci et rien de plus ne se passe. Lorsque l'on cliquera de nouveau sur un noeud, alors, comme la variable ne vaut plus "null", on affichera la boite de dialogue permettant de remplir les informations sur le lien entre ces deux noeuds. Comme pour le noeud, si on valide la boiite de dialogue, alors on ajoute à la classe \textbf{Book} le lien et une "notification" est perçue par la méthode correspondante.
 
-
+				De même, afin de recevoir les évènement concernant le lien, on enregistre le \textbf{GraphPane} comme étant observer de celui-ci. Cela nous permet maintenant de réagir par exemple à la demande de suppression d'un noeud.
 
 		\subsection{RightPane}
 
-		Ce panel contient tout ce qui représente les statistiques. Dès qu'un noeud est ajouté ou supprimé, une méthode de la classe \textbf{RightPane} est utilisé afin de mettre à jour le nombre de noeuds existant. Cette mise à jour est possible grâce au Observeur et Obervable entre le \textbf{GraphPane} et le \textbf{Book}. En effet, nous venons de voir que le \textbf{GraphPane} appelait une méthode dans le \textbf{Book}. Puis celui-ci notifiait grâce au \textbf{BookNodeObservable} le \textbf{GraphPane} de l'ajout/modfication/suppression de ce noeud. Mais en réalité elle notifie le \textbf{GraphPane} et le \textbf{RightPane}. Grâce à ce \textbf{BookNodeObserver}, les statistiques sont donc mis à jours en ajoutant ou en enlevant 1 aux types de noeuds.
+			Ce panel contient toutes les statistiques concernant le livre. Celles-ci sont immédiatement mise à jour lorsqu'un élément du livre change grace, comme mentionné précedemment, au Pattern Observer.
 
-		Pour la difficulté du livre, elle est mise à jours dès que \textbf{Estimé la difficulté du livre} est sélectionné grâce à la méthode \textit{difficultyChanged()} qui se situe dans la classe \textbf{RightPane}. Le pourcentage de difficulté est donc en paramètre de la méthode permettant à celle-ci de la mêttre à jour.\\
-
-		Si un nouveau livre est changé, tout ces statistiques ce remmettent à zéro grâce au \textit{setBook()}.
-
-
+			Pour le moment, les statistiques ne concernent que le nombre de noeuds de chaque type ainsi que la difficulté du livre. Dès qu'un noeud est ajouté, on incrémente les compteurs correspondant. De même, dès qu'un noeud se retrouve supprimé, on décrémente les compteurs qui doivent l'être. Un changement de livre reset les compteurs et, compte le nombre de noeud de chaque type. C'est le seul moment où l'on va parcourir tous les éléments du livre. En effet, le système de compteur permet de gagner un gain de temps sur des livres contenant de nombreux noeuds. Pour la difficulté du livre, il est possible de mettre à jour la valeur affiché avec la méthode \textit{void difficultyChanged(float)}. C'est notamment ce que l'on fait une fois que celle-ci à fini d'être calculée avec le menu \underline{Livre -> Estimer la difficulté}.
 
 	\section{Rendre le livre jouable et estimer sa difficulté}\label{sec:Jeu}
+
 		\subsection{Jeu}
-		Une classe a été créée, se nommant \textbf{Jeu}, permettant de gérer les méthodes de jeu communes entre les classes \textit{Player} et \textit{Fourmis}. Cela permet donc d'avoir une classe qui gère tout le jeu en faisant appel aux différentes méthodes et classes en fonctions du types de noeud et du type de joueur. \\
-		Un construteur est d'abord appelé, à partir de la MainWindow, afin d'envoyer le livre contenant toutes les informations. Puis, en fonction du mode sélectionner (\textbf{Générer la difficulté} ou \textbf{Jouer}), la méthode correspondante au joueur est appelé.\\
 
-		Soit la méthode \textit{play()} est appelé si \textbf{Jouer} est sélectionné. C'est donc le player qui va jouer. Cela veut dire que les messages vont alors s'afficher dans le terminal (\textit{showMessages}) et le player est défini sur la classe \textit{Player}. Cela permetra d'appeler le bon joueur lors de l'appélation des méthodes où un choix est nécessaires.
-		Une fois le jeu lancer grâce au \textit{runGame()}, expliqué dans le code \ref{lst:runGame} et les ressources temporaires qui ont été généré sont supprimés.
+			Une classe a été créée, se nommant \textbf{Jeu}, permettant de gérer les méthodes de jeu communes entre les classes \textit{Player} et \textit{Fourmis}. Cela permet donc d'avoir une classe qui gère tout le jeu en faisant appel aux différentes méthodes et classes en fonctions du types de noeud et du type de joueur. \\
+			Un construteur est d'abord appelé, à partir de la MainWindow, afin d'envoyer le livre contenant toutes les informations. Puis, en fonction du mode sélectionner (\textbf{Générer la difficulté} ou \textbf{Jouer}), la méthode correspondante au joueur est appelé.\\
 
-		\begin{lstlisting}[gobble=12, language=java, caption=play()]
-			public void play() throws IOException, BookFileException {
-				player = new Player();
+			Soit la méthode \textit{play()} est appelé si \textbf{Jouer} est sélectionné. C'est donc le player qui va jouer. Cela veut dire que les messages vont alors s'afficher dans le terminal (\textit{showMessages}) et le player est défini sur la classe \textit{Player}. Cela permetra d'appeler le bon joueur lors de l'appélation des méthodes où un choix est nécessaires.
+			Une fois le jeu lancer grâce au \textit{runGame()}, expliqué dans le code \ref{lst:runGame} et les ressources temporaires qui ont été généré sont supprimés.
 
-				showMessages = true;
+			\begin{lstlisting}[gobble=16, language=java, caption=play()]
+				public void play() throws IOException, BookFileException {
+					player = new Player();
 
-				runGame();
+					showMessages = true;
 
-				cleanUp();
-			}
-		\end{lstlisting}
+					runGame();
 
-		Soit la méthode \textit{fourmis()} est appelé si \textbf{Générer la difficulté} est sélectionné. Ce sont donc plusieurs fourmis qui vont jouer une par une afin de générer la difficulté du livre. Les messages sur le terminal sont donc non affiché. Puis vient le lancement des fourmis. Pour cela une boucle "for" est simplement necessaire. Le player est donc défini sur la classe \textbf{Fourmis} permettant ainsi d'utiliser les méthodes de cette classe afin de réaliser des choix random. Puis la méthode \textit{runGame()}, expliqué dans le code \ref{lst:runGame}, renvoi donc la finalité du livre: soit un boolean true en cas de victoire ou false en cas de défaite.\\
-		On a donc une classe qui permet réaliser des choix random ainsi qu'une méthode qui renvoie la finalité du livre. Cela permet donc de lancer un certain nombre de "fourmis" qui vont parcourir tout le livre, réalisé des choix, gagner ou perdre. Toutes les victoires vont être comptés, ce qui va permettre de savoir combien de fourmis ont gagnés. Soit calculé la difficulté du livre.
-
-		\begin{lstlisting}[gobble=12, language=java, caption=fourmis()]
-			public float fourmis(int nbrFourmis) throws IOException, BookFileException {
-			   showMessages = false;
-
-			   int victoire = 0;
-			   for(int i = 0 ; i < nbrFourmis ; i++){
-				   player = new Fourmi();
-
-				   if(runGame()) {
-					   victoire++;
-				   }
-			   }
-
-			   cleanUp();
-
-			   return ((float)victoire / (float)nbrFourmis) * 100f;
-			}
-		\end{lstlisting}
-
-		Une fois dans la méthode choisis, la méthode \textit{runGame()} est alors appelé. C'est la méthode principal de la classe \textbf{Jeu} car c'est elle qui lance le jeu.
-		Tout d'abord, la méthode copie le livre afin de ne pas le modifier par erreur pendant le jeu. Car même si on a fait attention, il suffit d'une erreur pour modifier tout le livre principal qui gère le jeu. Puis un BookState, qui correspond à l'état de la partie, est créé. Ce BookState permettera donc de suivre l'état du livre ainsi que du joueur (son inventaire, sa santé...). D'ailleur, le joueur enregistré dans le BookState est soit le personnage principal créer dans le prélude, soit, si inexistant, un personnage prééxistant permettant ainsi de jouer au jeu sans pour autant créer un personnage principal (voir méthode si dessous). Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur (\textit{execPlayerCreation}, voir \ref{lst:execPlayerCreation}) est appelé en fonction du joueur actuel.
-
-		\begin{lstlisting}[gobble=12, language=java, caption=createNewState()]
-			BookCharacter bookCharacter;
-			BookState newState = new BookState();
-
-			if(this.book.getMainCharacter() == null){
-				//Création d'un personnage
-			}
-			else {
-				//Récupération du personnage principal
-			}
-
-			//Affichage pour le joueur du personnages principal
-
-			newState.setBook(this.book);
-
-			//Conception du personnage (ajout de compétences, items)
-
-			return newState;
-		\end{lstlisting}
-
-		Une fois le \textbf{BookState} créé, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. La boucle while du \textit{runGame()} est donc lancé et ne s'arrètera qu'une fois la partie terminée. Comme vous pouvez le remarquer, sur le code ci-dessous, chaque méthode correspond à un type de noeud en particulier. Les méthodes s'exécutent alors, puis renvoie le noeud de destination, en fonction du choix du joueur et / ou de la mort du joueur. Durant l'exécution des différentes méthodes et en fonction du joueur, d'autres méthodes externe sont appelées nottament dans la classe \textbf{Fourmis} ou \textbf{Player}. Tout ceci permet de minimiser le code en commun.
-
-		\begin{lstlisting}[gobble=12, language=java, label=lst:runGame, caption=Méthode runGame()]
-			while(!gameFinish){
-				if(currentNode instanceof BookNodeCombat){
-					//execNodeCombat(bookNodeCombat);
+					cleanUp();
 				}
-				else if(currentNode instanceof BookNodeWithChoices){
-					//execNodeWithChoices(bookNodeWithChoices);
-				}
-				else if(currentNode instanceof BookNodeWithRandomChoices){
-					//execNodeWithRandomChoices(bookNodeWithRandomChoices);
-				}
-				else if(currentNode instanceof BookNodeTerminal){
-					//execNodeTerminal(bookNodeTerminal);
-					//Si partie gagné, win = true
-				} else {
-					//BookNodeTerminal FAILURE
-				}
-			}
-			return win;
-		\end{lstlisting}
-
-		Pour chaque type de noeud, sauf pour un noeud terminal car il ne contient pas ces options, une méthode commune, nommé \textit{execAbstractNodeWithChoices()} est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie (méthode \textit{execNodeHp()}), puis regarde si le joueur est toujours en vie. Cela permet donc que chaque exécution de noeud vérifie ceci, permettant ainsi de minimisé la redondance. Si le joueur n'est plus en vie, un noeud terminal de défaite est alors renvoyé en noeud de destination, permettant ainsi de notifier la défaite du joueur. S'il est encore en vie et que le noeud propose des items, ils sont proposés au joueur en appelant la méthode correspondante entre \textbf{Fourmis} ou \textbf{Player}. Ces classes sont appelé car le player doit faire un choix grâce au Scanner et la fourmis doit effectuer un choix random.\\
-
-		\begin{lstlisting}[gobble=12, language=java, caption=Méthode execAbstractNodeWithChoices(), label=lst:execAbstractNodeWithChoices]
-			public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
-				//Affichage pour le joueur
-
-				execNodeHp(node);
-
-				if(!state.getMainCharacter().isAlive()){
-					//Création du noeud terminal de défaite
-					return nodeTerminal;
-				}
-
-				if(!node.getItemLinks().isEmpty())
-					chooseItems(node);
-
-				return null;
-			}
-		\end{lstlisting}
-
-		Puis, à chaque destination du joueur, sauf si celui ci a été entrainé vers un noeud terminal de défaite créer par la classe jeu et donc, non existante, une autre méthode est appelé (nommé \textit{execBookNodeLink()}) afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent. Si c'est le cas, le joueur est alors "mis à jour". Si le joueur n'a plus de vie, même si le lien le portait vers un noeud de victoire, un noeud de défaite est créé. Le joueur est considéré alors comme perdant. Cela permet donc d'avoir une méthode complète pour la gestion des options dans les liens.
-
-		\textbf{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices()}, comme vous pouvez le constater dans la figure \ref{fig:JeuBookNodeWithChoices}. La méthode vérifie si au moins un choix est possible, pemettant ainsi de créer, ou non, un noeud terminal de défaite. S'il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du joueur (\textit{player.makeAchoice()}). Car ici, un choix est demandé, soit le Scanner du player ou le random de la fourmis. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, vu juste en dessous de la figure du haut, est appelé. Si le joueur est toujours en vie, le noeud choisi est renvoyé en noeud de destination. Sinon, le joueur doit faire un autre choix car il y a minimum un choix possible.\\
-
-		\begin{figure}[H]
-			\centering\includegraphics[width=0.70\textwidth]{img/codeJeuPrerequis.png}
-			\caption{Jeu prérequis}
-			\label{fig:codeJeuPrerequis}
-		\end{figure}
-
-		Le problème de la méthode \textit{isAvailable()}, c'est que cela peut créer un livre sans fin. En effet, prenons l'exemple d'un joueur avec un espace inventaire maximal de 1. Le joueur a un item, dans le premier noeud, "Potion" et décide de prendre l'item. Il n'a donc plus de place dans son inventaire. Le deuxième noeud, il décide de prendre l'item "Arme" car il veut pouvoir se défendre, l'item "Potion" est donc supprimé. Sauf qu'il se retouve en face de deux choix: Choix 1 avec de prérequi "Potion" qu'il vient de suprimmer, ainsi que le choix 2 qui le renvoi sur ce noeud. Le problème c'est que la méthode \textit{isAvailable()} renvoie true, car le joueur peut accéder au choix 2. Le joueur est donc coincé. Cela pose un problème que cela soit dans la génération de la difficulté et la jouabilité du livre.\\
-		Cela ouvre donc une piste de réflexion. Il faudrait peut être envoyer des fourmis à chaque "destination" de noeud trouvé. Si une fourmis trouve une boucle infini (retombe sur un même noeud "n" fois, avec un nombre assez grand permettant d'être sûr que c'est bien une boucle infini), elle renvoie un "false" et le numéro du noeud. Si le joueur tombe sur ce paragraphe, un noeud terminal défaite est généré en indiquant sur celui ci "le livre n'est plus possible, il vous manque [prerequi]". Ces fourmis et ce boolean sera généré a chaque destination chargé. La fourmis sera la copie exacte du personnage au moment même du chargement du noeud de destination. Mais cette méthode ralentirais l'application et une autre, plus simple, serait peut être possible.
-
-		\begin{figure}[H]
-			\centering\includegraphics[width=0.70\textwidth]{img/JeuBoucleInfiniExemple.png}
-			\caption{Exemple de boucle infini}
-		\end{figure}
-
-
-		Une fois qu'au moins une destination est possible, nous avons décidé de ne pas afficher que les choix possibles afin de ne pas aveugler le joueur de ses possibilités. S'il veut rejouer au livre, il saura les prérequis de certain chemins.
-
-		\begin{figure}[H]
-			\centering\includegraphics[width=0.70\textwidth]{img/JeuBookNodeWithChoices.png}
-			\caption{Lien entre les méthodes pour un noeud basique}
-			\label{fig:JeuBookNodeWithChoices}
-		\end{figure}
-
-
-		\textbf{Si c'est un noeud de type combat}, une vérification est réalisé afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, le noeud en cas de victoire est envoyé en noeud de destination. S'il ny a pas de noeud de victoire, un noeud de défaite est automatiquement transmit afin de ne pas avoir d'erreur sur ce noeud. Si une liste d'ennemis est présente, cette dernière est copié est créé afin de ne pas modifier la vie des ennemis. Car ces derniers ne sont pas lié au noeud, mais c'est l'ID de l'ennemi qui est lié au noeud. Cela permet donc de les appelés plusieurs fois dans plusieurs ou dans le même noeud.\\
-		Le combat commence alors. Le choix est défini par la méthode du joueur correspondant car un Scanner ou un random est requis pour ce type de choix. Ici, trois choix sont possibles:
-
-		\begin{description}
-			\item[Choix Attaque :]{que ce soit dans la classe \textbf{Player} ou \textbf{Fourmis}, un autre choix (cf ligne 2) est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Cela permet donc de créer un dynamisme et une certaine intélligence dans le combat. Je vous invite à voir les subsection fourmis \ref{sub:fourmis} et player \ref{sub:player} pour plus de détail dans le choix.
-			 Une fois l'ennemi sélectionné, une méthode attaque (cf ligne 7) est appelé apellant elle même une autre méthode commune entre l'attaque du joueur et l'attaque d'ennemi. Nommé \textit{getDamageAmount()}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player. Cette méthode commune permet donc d'éviter une répétition dans le code.}
-			Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimé de la liste des ennemis (cv logne 9) avant sont tour pour éviter que l'ennemi mort attaque ou que l'on rattaque cette ennemi.
-			\item[Inventaire :]{si ce choix est fait par le joueur, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense. Pour plus de détail sur ce choix, je vous invite à regarder les subsection fourmis \ref{sub:fourmis} et player \ref{sub:player}.}
-			\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 (voir cf 13) et si un noeud de d'évasion existe, le joueur peut alors s'enfuir. Sinon cela lui passe son tour.Nous avons décidé de ne pas relancer les choix à ce moment, car cela peut être une stratégie du joueur qui, dans une prochaine mise à jour d'implentation de pouvoir lié à des compétences, en cas d'une compétence de "renvoi" (qui se désactive en cas d'attaque de la part du joueur), l'attaque de l'ennemi est alors "retourné" vers lui même.}
-		\end{description}
-
-		\begin{lstlisting}[gobble=12, language=java, caption=JeuCombat]
-			while(!finCombat){
-				ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
-
-				if (choixCombat == ChoixCombat.ATTAQUER) {
-
-					BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
-					attaque(ennemi);
-					if(!ennemi.isAlive()){
-						listEnnemis.remove(ennemi);
-					}
-				}
-				else if(choixCombat == ChoixCombat.EVASION) {
-					if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null){
-						execBookNodeLink(node.getEvasionBookNodeLink());
-						return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
-					}
-				}
-
-				ennemiTour(listEnnemis);
-
-				if(!state.getMainCharacter().isAlive()) {
-					//Vérification d'un noeud Failure
-					if(node.getLooseBookNodeLink() != null)  {
-						execBookNodeLink(node.getLooseBookNodeLink());
-						return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
-					} else
-						return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
-				}
-
-				if(listEnnemis.isEmpty())
-					finCombat = true;
-
-				evasionRound -= 1;
-			}
-		\end{lstlisting}
-
-		Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textit{getDamageAmount()} permettant aux ennemis d'attaquer un par un. Cette liste d'ennemis et la méthode commune, \textit{getDamageAmount()}, est alors très pratique pour l'attaque de l'ennemis et est, on pense, le meilleur moyen utiliser afin de gérer les attaques.\\
-
-		La fin de combat est déterminé si la liste d'ennemis est vide ou si le joueur n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat. Bien sur, si le noeud de destination n'est pas existant, la noeud terminal de défaite est créer pour éviter de bloquer le jeu.
-
-		\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le joueur est encore en vie. Puis une autre méthode, nommé \textit{getRandomChoices()} (cf \nameref{lst:getRandomChoices} à la page \pageref{lst:getRandomChoices}) est appelé de la classe BookNodeLinkRandom afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
-
-		\textbf{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un boolean sur l'état de la fin de partie. Ce boolean permet de quitter la boucle while de la méthode \textit{runGame()} et permet ainsi donc d'arreter le jeu. L'utilisateur peut alors continuer l'édition du livre pour le player et permet de savoir si la partie est gagné ou perdu pour la fourmis (voir la subsection fourmis \ref{sub:fourmis}). Bien sûr, une vérification si le joueur est en vie est également éxécuté si c'est une noeud de type VICTORY, permettant ainsi que le joueur perde même si le son lieu de destination est un noeud de victoire.
-
-	\subsection{Interface Player / Foumis}
-		Une interface \textbf{InterfacePlayerFoumis} a été créé permettant une mise en commun des codes \textbf{Player} et \textbf{Fourmis}. Ces méthodes permettent de faire un choix, prendre les items disponibles, créer un personage lambda, aller dans l'inventaire, choisir son ennemis ou encore combatre. Elles sont appelé au même moment. La méthode sera alors exécuté différément en fonction du joueur. Ce sont des méthode communes car un choix est demandé, et la décision du choix est différentes en fonction d'un joueur ou d'une fourmis. En effet, un Scanner est utilisé afin de prendre en compte le choix du player et un nombre aléatoire est généré pour la fourmis.
-
-		Ci-dessous, toutes les méthodes communes sont présentés de façon général. Mais elles seront toutes expliquer dans les subsection fourmis \ref{sub:fourmis} et player\ref{sub:player}, vu un peu plus bas.
-
-		\textit{execPlayerCreation} permet de choisir les compétences et les items disponibles au début de la partie. Ces derniers sont défini lors de la création du prélude. Pour l'ajout des items, la méthode \textit{prendItems} est appelé. Cette méthode permet donc de jouer au livre avec peut être, différentes finalités en fonction de ces choix.
-
-		\textit{combatChoice}, prend en paramètre le noeud de Combat et le nombre de tour avant l'évasion ainsi que le BookState. Elle permet de faire un choix lors du tour du joueur dans un combat. On peut alors choisir d'attaquer, d'aller dans l'inventaire ou alors de s'évader. Si on choisi l'inventaire, on va alors dans une autre méthode appelé \textit{useInventaire} qui prend le BookState en paramètre. On peut alors utiliser un item de santé, prendre un objet de défense ou alors une arme. Si l'on choisis un autre choix, cette objet n'est pas utilisable lors d'un combat (comme par exemple de l'argent). Une fois l'objet pris, on retourne dans les choix du combat. On peut alors, soit retourner dans l'inventaire pour prendre un autre objet, soit attaquer ou s'évader. Cela donne donc libre choix au joueur sur le nombre d'objet à utiliser (comme par exemple, l'ajout d'une arme ainsi qu'un bouclier).
-
-		\textit{chooseEnnemi} permet de choisir l'ennemi à attaquer parmi la liste de tout les ennemis encore en vie. Cela rend le système de combat un peu plus "intelligent".
-
-		\textit{prendItems} permet de prendre un item parmi la liste d'items disponible. Cette liste est pris en paramètre ainsi que la sauvegarde de la partie et le nombre d'item maximum pouvant être pris. Cela permet ainsi d'avoir une méthode complète qui peut être utiliser pour prendre les items disponibles aux prélude comme sur les différents noeuds du livre.
-
-		\textit{makeAChoice} permet de faire un choix en fonction des différentes destinations proposé par le noeud. Cette méthode est ce qui défini un "livre à choix".
-
-		\textit{useIventaire} permet d'utiliser son inventaire lors d'un noeud de combat. La mise à jour d'un port d'item de défense ou d'arme est alors mis à jour. Si un item de soin est choisi, les points de vie du joueur sont alors actualisée.
-
-		Malgré une séparation entre le code en "communs" visible dans la classe \textbf{Jeu} et le code normalement "non communs" visible dans les classes \textbf{Player} et \textbf{Fourmis}, vous allez remarquer dans l'explication de ses classes, qu'une partie est encore commune. Ce problème n'a pas été réglé par manque de temps.
-
-	\subsection{Player}\label{sub:player}
-		La classe \textbf{Player} permet de jouer au jeu en tant que player. Elle permet de faire des choix grâce aux Scanner permettant ainsi l'avancement du jeu. Des messages sont aussi affiché afin de guider le player dans ses choix.\\
-		Nottament la méthode \textit{choixYesNo()} qui permet de choisir Oui ou Non et de renvoyer le boolean true ou false. Cette méthode permet, par exemple, de savoir si le player veut supprimer, prendre un item ou une compétence. Elle a donc été créé évitant ainsi la redondance de code.\\
-
-		Pour la méthode commune \textit{prendItems()}, cette dernière fait appel à d'autre méthodes présente dans la classe \textbf{Player}.
-
-		\begin{lstlisting}[gobble=12, language=java, label=lst:prendreItemsPlayer, caption=prendreItems() du Player]
-			public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
-				while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
-					System.out.println("Les items suivant sont disponible:");
-					//Affiche les items
-
-					System.out.println("Voulez vous un item ?");
-					if(choixYesNo()){
-						int itemMax = state.getMainCharacter().getItemsMax();
-
-						if(itemMax == state.getMainCharacter().getItems().size()){
-							itemPlein(state);
-
-							System.out.println("Voici vos choix:");
-
-							if(choixYesNo())
-								nbItemMax = 0;
-							else
-								itemSupp(state);
-						} else {
-							itemAdd(state, bookItemLinks);
-						}
-
-					} else {
-						nbItemMax = 0;
-					}
-
-					if(bookItemLinks.isEmpty())
-						nbItemMax = 0;
-				}
-			}
-
-		\end{lstlisting}
-
-		Par exemple, \textit{itemAdd()} (cf ligne 20 dans le code \ref{lst:prendreItemsPlayer}) qui elle permet de choisir l'item à ajouter dans l'inventaire. Une variable "choixValide" permet de ne pas valider un numéro de choix non valide. Une fois l'item choisi, l'ID de l'item est alors ajouter dans la liste de l'inventaire afin de pouvoir retrouver l'item si le joueur l'utilise.\\
-		Cette méthode a été créé permettant de séparer le code de la méthode \textit{prendItems()} pour une meilleure visibilité. Elle pourrait aussi servir, par exemple, dans l'ajout d'un item obligatoire. Dans ce cas, la méthode \textit{prendItems()} n'est plus utilisé mais directement \textit{itemAdd()}. Mais cette exemple n'est pas représentatif de l'état actuel de MagicBook qui ne permet pas de rendre un item obligatoire. Mais c'est une idée d'amélioration.\\
-
-		\begin{lstlisting}[gobble=12, language=java, caption=itemAdd()]
-			private void itemAdd(BookState state, List<BookItemLink> bookItemLinks){
-				System.out.println("Quel item voulez-vous ?");
-				boolean choixValide = false;
-				int choix = -1;
-
-				while(!choixValide){
-					Scanner scanner = new Scanner(System.in);
-					choix = scanner.nextInt();
-
-					if(choix >= 0 && choix <= (bookItemLinks.size()-1)){
-						choixValide = true;
-					} else {
-						System.out.println("vous ne pouvez pas effectuer ce choix");
-					}
-				}
-
-				BookItemLink itemLink = bookItemLinks.get(choix);
-				System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
-				state.getMainCharacter().getItems().add(itemLink.getId());
-
-				itemLink.setAmount(itemLink.getAmount()-1);
-
-				if(itemLink.getAmount() == 0)
-					bookItemLinks.remove(itemLink);
-			}
-
-		\end{lstlisting}
-
-		Puis la méthode \textit{itemPlein()} (cf ligne 11 dans le code \ref{lst:prendreItemsPlayer}), qui elle, affiche les items à supprimer. Cette méthode permet d'afficher les items de l'inventaire.
-
-		\begin{lstlisting}[gobble=12, language=java, caption=itemPlein()]
-			private void itemPlein(BookState state){
-				System.out.println("Votre inventaire est plein");
-				System.out.println("Voulez vous supprimer un item ?");
-				System.out.println("Vos Item: ");
-
-				int i = 0;
-				for(String itemState : state.getMainCharacter().getItems()){
-					System.out.println(i + " - "+state.getBook().getItems().get(itemState));
-					i++;
-				}
-			}
-		\end{lstlisting}
-
-		Pour la méthode \textit{itemSupp}, elle est appelé (cf ligne 18 dans le code \ref{lst:prendreItemsPlayer}) afin de choisir l'item à supprimer. Une boucle while est alors parcouru afin d'être sûr d'avoir un choix valide. Une fois l'item choisi, cela met l'inventaire du player à jour grâce au state pris en charge dans la méthode \textit{prendreItems}. Bien sûr, l'utilisateur à le choix de ne pas supprimer un item permettant ainsi de garder tout les items de son inventaire.
-		On aurait pu très bien laisser le choix au player de supprimer quand même un item si son inventaire n'était pas plein. Mais c'est un livre à choix avec des prérequis, tout les items peuvent donc être important, et il n'y a pas de pénalité de déplacement si l'inventaire est plein. Cette fonctionalité de supprimer un item dans l'inventaire n'a alors pas été jugé nécessaire à ajouter en option libre.
-
-		\begin{lstlisting}[gobble=12, language=java, caption=itemSupp()]
-			private void itemSupp(BookState state){
-				System.out.println("Quel item voulez-vous supprimer ?");
-				boolean choixValide = false;
-
-				while(!choixValide){
-					Scanner scanner = new Scanner(System.in);
-					int choix = scanner.nextInt();
-
-					if(choix >= 0 && choix <= (state.getMainCharacter().getItems().size()-1)){
-						state.getMainCharacter().getItems().remove(choix);
-						choixValide = true;
-					} else if(choix == -1) {
-						choixValide = true;
-					} else {
-						System.out.println("vous ne pouvez pas effectuer ce choix");
-					}
-				}
-
-			}
-		\end{lstlisting}
-
-		Pour la méthode \textit{itemAdd()}, elle permet d'ajouté un item choisi.
-		Tout ceci est donc gérer par la méthode \textit{prendreItemsPlayer}, permettant ainsi d'appeler certaine méthode en fonction des choix du player ainsi que de gérer la prise des items grâce à la boucle while.
-
-
-		Pour la méthode \textit{execPlayerCreation()} est presque la même que celle de la fourmis : elle utilise aussi la méthode \textit{prendItems()}, défini ici\ref{lst:prendreItemsPlayer} au moment de l'ajout des items. Mais au moment de l'ajout de compétences, la méthode \textit{skillAdd()} est appelé jusqu'à ce que le maximum de compétences autorisé a été pris ou qu'il n'en reste plus à prendre. Cette méthode ressemble fortement à la prise d'item. \textit{execPlayerCreation()} serais à implenté dans la classe \textit{Jeu}, car beaucoup de code est en commun.\\
-
-		\begin{lstlisting}[gobble=12, language=java, caption=execPlayerCreation() du Player]
-			public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
-				//Affichage du texte du début dans "création du personnage"
-
-				if(characterCreation instanceof CharacterCreationItem){
-					CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
-					prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
-				}
-				else if(characterCreation instanceof CharacterCreationSkill){
-					CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
-
-					int nbItemMax = characterCreationSkill.getAmountToPick();
-
-					while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
-						System.out.println("Les compétences suivant sont disponible:");
-						//Affichage des compétences
-						}
-
-						skillAdd(state, characterCreationSkill);
-						nbItemMax--;
-					}
-				}
-			}
 			\end{lstlisting}
 
+			Soit la méthode \textit{fourmis()} est appelé si \textbf{Générer la difficulté} est sélectionné. Ce sont donc plusieurs fourmis qui vont jouer une par une afin de générer la difficulté du livre. Les messages sur le terminal sont donc non affiché. Puis vient le lancement des fourmis. Pour cela une boucle "for" est simplement necessaire. Le player est donc défini sur la classe \textbf{Fourmis} permettant ainsi d'utiliser les méthodes de cette classe afin de réaliser des choix random. Puis la méthode \textit{runGame()}, expliqué dans le code \ref{lst:runGame}, renvoi donc la finalité du livre: soit un boolean true en cas de victoire ou false en cas de défaite.\\
+			On a donc une classe qui permet réaliser des choix random ainsi qu'une méthode qui renvoie la finalité du livre. Cela permet donc de lancer un certain nombre de "fourmis" qui vont parcourir tout le livre, réalisé des choix, gagner ou perdre. Toutes les victoires vont être comptés, ce qui va permettre de savoir combien de fourmis ont gagnés. Soit calculé la difficulté du livre.
 
-	\subsection{Fourmis}\label{sub:fourmis}
-		La classe \textbf{Fourmis} permet de parcourir le livre en tant que joueur fictif. Elle effectue des choix random en fonction des différentes méthodes de l'interface. Cela permet donc de terminer le livre grâce aux choix random.
+			\begin{lstlisting}[gobble=16, language=java, caption=fourmis()]
+				public float fourmis(int nbrFourmis) throws IOException, BookFileException {
+				   showMessages = false;
 
-		La méthode \textit{combatChoice} permet de choisir entre ATTAQUE, EVASION, INVENTAIRE. Nous avons choisi de faire un random sur les trois choix et non pas sur deux choix même si le tour d'évasion n'est pas disponible, permettant ainsi d'avoir la possibilité que la fourmi passe aussi son tour, comme le joueur, afin d'avoir la même chance lors des combats. Elle peut aussi utiliser son inventaire lors du combat.
+				   int victoire = 0;
+				   for(int i = 0 ; i < nbrFourmis ; i++){
+					   player = new Fourmi();
 
-		\begin{lstlisting}[gobble=12, language=java, caption=combatChoice() de Fourmis]
-			public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
-				boolean choixValide = false;
-				Random random = new Random();
-				ChoixCombat choixCombat = null;
-				int choix;
+					   if(runGame()) {
+						   victoire++;
+					   }
+				   }
 
-				while(!choixValide){
-					choix = random.nextInt(ChoixCombat.values().length);
-					choixCombat = ChoixCombat.values()[choix];
+				   cleanUp();
 
-					if (choixCombat == ChoixCombat.INVENTAIRE){
-						if(!state.getMainCharacter().getItems().isEmpty())
-							useInventaire(state);
+				   return ((float)victoire / (float)nbrFourmis) * 100f;
+				}
+			\end{lstlisting}
+
+			Une fois dans la méthode choisis, la méthode \textit{runGame()} est alors appelé. C'est la méthode principal de la classe \textbf{Jeu} car c'est elle qui lance le jeu.
+			Tout d'abord, la méthode copie le livre afin de ne pas le modifier par erreur pendant le jeu. Car même si on a fait attention, il suffit d'une erreur pour modifier tout le livre principal qui gère le jeu. Puis un BookState, qui correspond à l'état de la partie, est créé. Ce BookState permettera donc de suivre l'état du livre ainsi que du joueur (son inventaire, sa santé...). D'ailleur, le joueur enregistré dans le BookState est soit le personnage principal créer dans le prélude, soit, si inexistant, un personnage prééxistant permettant ainsi de jouer au jeu sans pour autant créer un personnage principal (voir méthode si dessous). Enfin, si des compétences et/ou des items sont disponible au début de la partie, la méthode de création de joueur (\textit{execPlayerCreation}, voir \ref{lst:execPlayerCreation}) est appelé en fonction du joueur actuel.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=createNewState()]
+				BookCharacter bookCharacter;
+				BookState newState = new BookState();
+
+				if(this.book.getMainCharacter() == null){
+					//Création d'un personnage
+				}
+				else {
+					//Récupération du personnage principal
+				}
+
+				//Affichage pour le joueur du personnages principal
+
+				newState.setBook(this.book);
+
+				//Conception du personnage (ajout de compétences, items)
+
+				return newState;
+			\end{lstlisting}
+
+			Une fois le \textbf{BookState} créé, le personnage principal initialisé et la copie du livre enregistré, le premier noeud est donc chargé. La boucle while du \textit{runGame()} est donc lancé et ne s'arrètera qu'une fois la partie terminée. Comme vous pouvez le remarquer, sur le code ci-dessous, chaque méthode correspond à un type de noeud en particulier. Les méthodes s'exécutent alors, puis renvoie le noeud de destination, en fonction du choix du joueur et / ou de la mort du joueur. Durant l'exécution des différentes méthodes et en fonction du joueur, d'autres méthodes externe sont appelées nottament dans la classe \textbf{Fourmis} ou \textbf{Player}. Tout ceci permet de minimiser le code en commun.
+
+			\begin{lstlisting}[gobble=16, language=java, label=lst:runGame, caption=Méthode runGame()]
+				while(!gameFinish){
+					if(currentNode instanceof BookNodeCombat){
+						//execNodeCombat(bookNodeCombat);
+					}
+					else if(currentNode instanceof BookNodeWithChoices){
+						//execNodeWithChoices(bookNodeWithChoices);
+					}
+					else if(currentNode instanceof BookNodeWithRandomChoices){
+						//execNodeWithRandomChoices(bookNodeWithRandomChoices);
+					}
+					else if(currentNode instanceof BookNodeTerminal){
+						//execNodeTerminal(bookNodeTerminal);
+						//Si partie gagné, win = true
 					} else {
-						choixValide = true;
+						//BookNodeTerminal FAILURE
+					}
+				}
+				return win;
+			\end{lstlisting}
+
+			Pour chaque type de noeud, sauf pour un noeud terminal car il ne contient pas ces options, une méthode commune, nommé \textit{execAbstractNodeWithChoices()} est appelé afin de savoir si le noeud pris en charge fait gagné/perdre de la vie (méthode \textit{execNodeHp()}), puis regarde si le joueur est toujours en vie. Cela permet donc que chaque exécution de noeud vérifie ceci, permettant ainsi de minimisé la redondance. Si le joueur n'est plus en vie, un noeud terminal de défaite est alors renvoyé en noeud de destination, permettant ainsi de notifier la défaite du joueur. S'il est encore en vie et que le noeud propose des items, ils sont proposés au joueur en appelant la méthode correspondante entre \textbf{Fourmis} ou \textbf{Player}. Ces classes sont appelé car le player doit faire un choix grâce au Scanner et la fourmis doit effectuer un choix random.\\
+
+			\begin{lstlisting}[gobble=12, language=java, caption=Méthode execAbstractNodeWithChoices(), label=lst:execAbstractNodeWithChoices]
+				public AbstractBookNode execAbstractNodeWithChoices(AbstractBookNodeWithChoices node){
+					//Affichage pour le joueur
+
+					execNodeHp(node);
+
+					if(!state.getMainCharacter().isAlive()){
+						//Création du noeud terminal de défaite
+						return nodeTerminal;
+					}
+
+					if(!node.getItemLinks().isEmpty())
+						chooseItems(node);
+
+					return null;
+				}
+			\end{lstlisting}
+
+			Puis, à chaque destination du joueur, sauf si celui ci a été entrainé vers un noeud terminal de défaite créer par la classe jeu et donc, non existante, une autre méthode est appelé (nommé \textit{execBookNodeLink()}) afin de regarder si le lien entre le noeud de départ et de destination fait perdre ou gagner de la vie et/ou de l'argent. Si c'est le cas, le joueur est alors "mis à jour". Si le joueur n'a plus de vie, même si le lien le portait vers un noeud de victoire, un noeud de défaite est créé. Le joueur est considéré alors comme perdant. Cela permet donc d'avoir une méthode complète pour la gestion des options dans les liens.
+
+			\textbf{Si un noeud est de type basic}, il est alors pris en charge dans la méthode \textit{execNodeWithChoices()}, comme vous pouvez le constater dans la figure \ref{fig:JeuBookNodeWithChoices}. La méthode vérifie si au moins un choix est possible, pemettant ainsi de créer, ou non, un noeud terminal de défaite. S'il peut au moins choisir une destination, un choix est demandé parmis toutes les destinations faisant un appel à la méthode en fonction du joueur (\textit{player.makeAchoice()}). Car ici, un choix est demandé, soit le Scanner du player ou le random de la fourmis. Une fois le choix décidé, si le joueur a les prérequis pour aller vers cette destination (si \textit{isAvailable()} renvoie true), alors la méthode \textit{execBookNodeLink()}, vu juste en dessous de la figure du haut, est appelé. Si le joueur est toujours en vie, le noeud choisi est renvoyé en noeud de destination. Sinon, le joueur doit faire un autre choix car il y a minimum un choix possible.\\
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.70\textwidth]{img/codeJeuPrerequis.png}
+				\caption{Jeu prérequis}
+				\label{fig:codeJeuPrerequis}
+			\end{figure}
+
+			Le problème de la méthode \textit{isAvailable()}, c'est que cela peut créer un livre sans fin. En effet, prenons l'exemple d'un joueur avec un espace inventaire maximal de 1. Le joueur a un item, dans le premier noeud, "Potion" et décide de prendre l'item. Il n'a donc plus de place dans son inventaire. Le deuxième noeud, il décide de prendre l'item "Arme" car il veut pouvoir se défendre, l'item "Potion" est donc supprimé. Sauf qu'il se retouve en face de deux choix: Choix 1 avec de prérequi "Potion" qu'il vient de suprimmer, ainsi que le choix 2 qui le renvoi sur ce noeud. Le problème c'est que la méthode \textit{isAvailable()} renvoie true, car le joueur peut accéder au choix 2. Le joueur est donc coincé. Cela pose un problème que cela soit dans la génération de la difficulté et la jouabilité du livre.\\
+			Cela ouvre donc une piste de réflexion. Il faudrait peut être envoyer des fourmis à chaque "destination" de noeud trouvé. Si une fourmis trouve une boucle infini (retombe sur un même noeud "n" fois, avec un nombre assez grand permettant d'être sûr que c'est bien une boucle infini), elle renvoie un "false" et le numéro du noeud. Si le joueur tombe sur ce paragraphe, un noeud terminal défaite est généré en indiquant sur celui ci "le livre n'est plus possible, il vous manque [prerequi]". Ces fourmis et ce boolean sera généré a chaque destination chargé. La fourmis sera la copie exacte du personnage au moment même du chargement du noeud de destination. Mais cette méthode ralentirais l'application et une autre, plus simple, serait peut être possible.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.70\textwidth]{img/JeuBoucleInfiniExemple.png}
+				\caption{Exemple de boucle infini}
+			\end{figure}
+
+
+			Une fois qu'au moins une destination est possible, nous avons décidé de ne pas afficher que les choix possibles afin de ne pas aveugler le joueur de ses possibilités. S'il veut rejouer au livre, il saura les prérequis de certain chemins.
+
+			\begin{figure}[H]
+				\centering\includegraphics[width=0.70\textwidth]{img/JeuBookNodeWithChoices.png}
+				\caption{Lien entre les méthodes pour un noeud basique}
+				\label{fig:JeuBookNodeWithChoices}
+			\end{figure}
+
+
+			\textbf{Si c'est un noeud de type combat}, une vérification est réalisé afin savoir si le noeud contient des ennemis. S'il n'y a pas d'ennemis, le noeud en cas de victoire est envoyé en noeud de destination. S'il ny a pas de noeud de victoire, un noeud de défaite est automatiquement transmit afin de ne pas avoir d'erreur sur ce noeud. Si une liste d'ennemis est présente, cette dernière est copié est créé afin de ne pas modifier la vie des ennemis. Car ces derniers ne sont pas lié au noeud, mais c'est l'ID de l'ennemi qui est lié au noeud. Cela permet donc de les appelés plusieurs fois dans plusieurs ou dans le même noeud.\\
+			Le combat commence alors. Le choix est défini par la méthode du joueur correspondant car un Scanner ou un random est requis pour ce type de choix. Ici, trois choix sont possibles:
+
+			\begin{description}
+				\item[Choix Attaque :]{que ce soit dans la classe \textbf{Player} ou \textbf{Fourmis}, un autre choix (cf ligne 2) est demandé permettant de sélectionner l'ennemi à attaquer parmi la liste des ennemis encore en vie. Cela permet donc de créer un dynamisme et une certaine intélligence dans le combat. Je vous invite à voir les subsection fourmis \ref{sub:fourmis} et player \ref{sub:player} pour plus de détail dans le choix.
+				 Une fois l'ennemi sélectionné, une méthode attaque (cf ligne 7) est appelé apellant elle même une autre méthode commune entre l'attaque du joueur et l'attaque d'ennemi. Nommé \textit{getDamageAmount()}, elle permet de savoir le nombre de dommage réalisé en fonction des point d'attaque de l'attaquant, de son double dommage décider en random si ce boolean est défini en true, d'un coup critique décider aussi en random, de l'arme de l'attaquant et de l'item de défense de l'attaqué. L'attaquant et l'attaqué est défini en fonction de la permière méthode qui l'appel. Ici c'est la méthode d'attaque du player. Cette méthode commune permet donc d'éviter une répétition dans le code.}
+				Une fois l'attaque effectué, si l'ennemi attaqué est mort, il est supprimé de la liste des ennemis (cv logne 9) avant sont tour pour éviter que l'ennemi mort attaque ou que l'on rattaque cette ennemi.
+				\item[Inventaire :]{si ce choix est fait par le joueur, la méthode appelé permettant d'utiliser son inventaire est elle même gérer dans la classe Player ou la classe Fourmis. Elle permet alors de choisir une potion, une arme et ou un item de défense. Pour plus de détail sur ce choix, je vous invite à regarder les subsection fourmis \ref{sub:fourmis} et player \ref{sub:player}.}
+				\item[Evasion :]{si le tour avant évasion est inférieur ou égal à 0 (voir cf 13) et si un noeud de d'évasion existe, le joueur peut alors s'enfuir. Sinon cela lui passe son tour.Nous avons décidé de ne pas relancer les choix à ce moment, car cela peut être une stratégie du joueur qui, dans une prochaine mise à jour d'implentation de pouvoir lié à des compétences, en cas d'une compétence de "renvoi" (qui se désactive en cas d'attaque de la part du joueur), l'attaque de l'ennemi est alors "retourné" vers lui même.}
+			\end{description}
+
+			\begin{lstlisting}[gobble=16, language=java, caption=JeuCombat]
+				while(!finCombat){
+					ChoixCombat choixCombat = player.combatChoice(node, evasionRound, state);
+
+					if (choixCombat == ChoixCombat.ATTAQUER) {
+
+						BookCharacter ennemi = player.chooseEnnemi(listEnnemis);
+						attaque(ennemi);
+						if(!ennemi.isAlive()){
+							listEnnemis.remove(ennemi);
+						}
+					}
+					else if(choixCombat == ChoixCombat.EVASION) {
+						if(evasionRound <= 0 && node.getEvasionBookNodeLink() != null){
+							execBookNodeLink(node.getEvasionBookNodeLink());
+							return book.getNodes().get(node.getEvasionBookNodeLink().getDestination());
+						}
+					}
+
+					ennemiTour(listEnnemis);
+
+					if(!state.getMainCharacter().isAlive()) {
+						//Vérification d'un noeud Failure
+						if(node.getLooseBookNodeLink() != null)  {
+							execBookNodeLink(node.getLooseBookNodeLink());
+							return book.getNodes().get(node.getLooseBookNodeLink().getDestination());
+						} else
+							return new BookNodeTerminal("Vous succombez à vos blessures", BookNodeStatus.FAILURE);
+					}
+
+					if(listEnnemis.isEmpty())
+						finCombat = true;
+
+					evasionRound -= 1;
+				}
+			\end{lstlisting}
+
+			Une fois le tour du joueur fini, vient le tour de l'ennemi. Il appel une méthode envoyant la liste d'ennemis restant. Cette méthode appel \textit{getDamageAmount()} permettant aux ennemis d'attaquer un par un. Cette liste d'ennemis et la méthode commune, \textit{getDamageAmount()}, est alors très pratique pour l'attaque de l'ennemis et est, on pense, le meilleur moyen utiliser afin de gérer les attaques.\\
+
+			La fin de combat est déterminé si la liste d'ennemis est vide ou si le joueur n'est plus en vie. Le noeud de destination est alors défini en fonction du résultat en fin de combat. Bien sur, si le noeud de destination n'est pas existant, la noeud terminal de défaite est créer pour éviter de bloquer le jeu.
+
+			\textbf{Si le noeud est de type aléatoire}, la méthode commune est appelé afin de savoir si le joueur est encore en vie. Puis une autre méthode, nommé \textit{getRandomChoices()} (cf \nameref{lst:getRandomChoices} à la page \pageref{lst:getRandomChoices}) est appelé de la classe BookNodeLinkRandom afin de déterminer le noeud de destination en fonction des chances attribué à chacun de ces choix.
+
+			\textbf{Si le noeud est de type terminal}, la partie est alors terminé et renvoie un boolean sur l'état de la fin de partie. Ce boolean permet de quitter la boucle while de la méthode \textit{runGame()} et permet ainsi donc d'arreter le jeu. L'utilisateur peut alors continuer l'édition du livre pour le player et permet de savoir si la partie est gagné ou perdu pour la fourmis (voir la subsection fourmis \ref{sub:fourmis}). Bien sûr, une vérification si le joueur est en vie est également éxécuté si c'est une noeud de type VICTORY, permettant ainsi que le joueur perde même si le son lieu de destination est un noeud de victoire.
+
+		\subsection{Interface Player / Foumis}
+			Une interface \textbf{InterfacePlayerFoumis} a été créé permettant une mise en commun des codes \textbf{Player} et \textbf{Fourmis}. Ces méthodes permettent de faire un choix, prendre les items disponibles, créer un personage lambda, aller dans l'inventaire, choisir son ennemis ou encore combatre. Elles sont appelé au même moment. La méthode sera alors exécuté différément en fonction du joueur. Ce sont des méthode communes car un choix est demandé, et la décision du choix est différentes en fonction d'un joueur ou d'une fourmis. En effet, un Scanner est utilisé afin de prendre en compte le choix du player et un nombre aléatoire est généré pour la fourmis.
+
+			Ci-dessous, toutes les méthodes communes sont présentés de façon général. Mais elles seront toutes expliquer dans les subsection fourmis \ref{sub:fourmis} et player\ref{sub:player}, vu un peu plus bas.
+
+			\textit{execPlayerCreation} permet de choisir les compétences et les items disponibles au début de la partie. Ces derniers sont défini lors de la création du prélude. Pour l'ajout des items, la méthode \textit{prendItems} est appelé. Cette méthode permet donc de jouer au livre avec peut être, différentes finalités en fonction de ces choix.
+
+			\textit{combatChoice}, prend en paramètre le noeud de Combat et le nombre de tour avant l'évasion ainsi que le BookState. Elle permet de faire un choix lors du tour du joueur dans un combat. On peut alors choisir d'attaquer, d'aller dans l'inventaire ou alors de s'évader. Si on choisi l'inventaire, on va alors dans une autre méthode appelé \textit{useInventaire} qui prend le BookState en paramètre. On peut alors utiliser un item de santé, prendre un objet de défense ou alors une arme. Si l'on choisis un autre choix, cette objet n'est pas utilisable lors d'un combat (comme par exemple de l'argent). Une fois l'objet pris, on retourne dans les choix du combat. On peut alors, soit retourner dans l'inventaire pour prendre un autre objet, soit attaquer ou s'évader. Cela donne donc libre choix au joueur sur le nombre d'objet à utiliser (comme par exemple, l'ajout d'une arme ainsi qu'un bouclier).
+
+			\textit{chooseEnnemi} permet de choisir l'ennemi à attaquer parmi la liste de tout les ennemis encore en vie. Cela rend le système de combat un peu plus "intelligent".
+
+			\textit{prendItems} permet de prendre un item parmi la liste d'items disponible. Cette liste est pris en paramètre ainsi que la sauvegarde de la partie et le nombre d'item maximum pouvant être pris. Cela permet ainsi d'avoir une méthode complète qui peut être utiliser pour prendre les items disponibles aux prélude comme sur les différents noeuds du livre.
+
+			\textit{makeAChoice} permet de faire un choix en fonction des différentes destinations proposé par le noeud. Cette méthode est ce qui défini un "livre à choix".
+
+			\textit{useIventaire} permet d'utiliser son inventaire lors d'un noeud de combat. La mise à jour d'un port d'item de défense ou d'arme est alors mis à jour. Si un item de soin est choisi, les points de vie du joueur sont alors actualisée.
+
+			Malgré une séparation entre le code en "communs" visible dans la classe \textbf{Jeu} et le code normalement "non communs" visible dans les classes \textbf{Player} et \textbf{Fourmis}, vous allez remarquer dans l'explication de ses classes, qu'une partie est encore commune. Ce problème n'a pas été réglé par manque de temps.
+
+		\subsection{Player}\label{sub:player}
+			La classe \textbf{Player} permet de jouer au jeu en tant que player. Elle permet de faire des choix grâce aux Scanner permettant ainsi l'avancement du jeu. Des messages sont aussi affiché afin de guider le player dans ses choix.\\
+			Nottament la méthode \textit{choixYesNo()} qui permet de choisir Oui ou Non et de renvoyer le boolean true ou false. Cette méthode permet, par exemple, de savoir si le player veut supprimer, prendre un item ou une compétence. Elle a donc été créé évitant ainsi la redondance de code.\\
+
+			Pour la méthode commune \textit{prendItems()}, cette dernière fait appel à d'autre méthodes présente dans la classe \textbf{Player}.
+
+			\begin{lstlisting}[gobble=16, language=java, label=lst:prendreItemsPlayer, caption=prendreItems() du Player]
+				public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
+					while(nbItemMax != 0 && !bookItemLinks.isEmpty()){
+						System.out.println("Les items suivant sont disponible:");
+						//Affiche les items
+
+						System.out.println("Voulez vous un item ?");
+						if(choixYesNo()){
+							int itemMax = state.getMainCharacter().getItemsMax();
+
+							if(itemMax == state.getMainCharacter().getItems().size()){
+								itemPlein(state);
+
+								System.out.println("Voici vos choix:");
+
+								if(choixYesNo())
+									nbItemMax = 0;
+								else
+									itemSupp(state);
+							} else {
+								itemAdd(state, bookItemLinks);
+							}
+
+						} else {
+							nbItemMax = 0;
+						}
+
+						if(bookItemLinks.isEmpty())
+							nbItemMax = 0;
 					}
 				}
 
-				return choixCombat;
-			}
-		\end{lstlisting}
+			\end{lstlisting}
 
-		 Ainsi, elle peut se soigner, prendre des armes et/ou des items de défense. Malheureusement, la foumis n'est pas "intelligente" et ne prend pas donc la meilleur arme ou ne se soigne pas alors qu'elle va mourir. Mais c'est un gros point à améliorer. Elle choisi donc au hasard un des items et peut même prendre un items non utile dans le combat. Elle revient donc sur les trois choix ATTAQUE, EVASION, INVENTAIRE sans avoir pris une arme ou autre lors du choix de l'item dans son inventaire.
+			Par exemple, \textit{itemAdd()} (cf ligne 20 dans le code \ref{lst:prendreItemsPlayer}) qui elle permet de choisir l'item à ajouter dans l'inventaire. Une variable "choixValide" permet de ne pas valider un numéro de choix non valide. Une fois l'item choisi, l'ID de l'item est alors ajouter dans la liste de l'inventaire afin de pouvoir retrouver l'item si le joueur l'utilise.\\
+			Cette méthode a été créé permettant de séparer le code de la méthode \textit{prendItems()} pour une meilleure visibilité. Elle pourrait aussi servir, par exemple, dans l'ajout d'un item obligatoire. Dans ce cas, la méthode \textit{prendItems()} n'est plus utilisé mais directement \textit{itemAdd()}. Mais cette exemple n'est pas représentatif de l'état actuel de MagicBook qui ne permet pas de rendre un item obligatoire. Mais c'est une idée d'amélioration.\\
 
-		\begin{lstlisting}[gobble=12, language=java, caption=useInventaire() de Fourmis]
-			public void useInventaire(BookState state){
-				List<String> listItemState = state.getMainCharacter().getItems();
+			\begin{lstlisting}[gobble=16, language=java, caption=itemAdd()]
+				private void itemAdd(BookState state, List<BookItemLink> bookItemLinks){
+					System.out.println("Quel item voulez-vous ?");
+					boolean choixValide = false;
+					int choix = -1;
 
-				Random random = new Random();
-				int choix = random.nextInt(listItemState.size());
-				BookItem bookItem = state.getBook().getItems().get(listItemState.get(choix));
+					while(!choixValide){
+						Scanner scanner = new Scanner(System.in);
+						choix = scanner.nextInt();
 
-				if(bookItem instanceof BookItemDefense){
-					state.setBookItemDefense((BookItemDefense) bookItem);
+						if(choix >= 0 && choix <= (bookItemLinks.size()-1)){
+							choixValide = true;
+						} else {
+							System.out.println("vous ne pouvez pas effectuer ce choix");
+						}
+					}
+
+					BookItemLink itemLink = bookItemLinks.get(choix);
+					System.out.println("L'item "+state.getBook().getItems().get(itemLink.getId()).getName()+" a été rajouté");
+					state.getMainCharacter().getItems().add(itemLink.getId());
+
+					itemLink.setAmount(itemLink.getAmount()-1);
+
+					if(itemLink.getAmount() == 0)
+						bookItemLinks.remove(itemLink);
 				}
-				else if(bookItem instanceof BookItemHealing){
-					BookItemHealing bookItemHealing = (BookItemHealing) bookItem;
-					state.getMainCharacter().heal(bookItemHealing.getHp());
-					state.getMainCharacter().getItems().remove(listItemState.get(choix));
+
+			\end{lstlisting}
+
+			Puis la méthode \textit{itemPlein()} (cf ligne 11 dans le code \ref{lst:prendreItemsPlayer}), qui elle, affiche les items à supprimer. Cette méthode permet d'afficher les items de l'inventaire.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=itemPlein()]
+				private void itemPlein(BookState state){
+					System.out.println("Votre inventaire est plein");
+					System.out.println("Voulez vous supprimer un item ?");
+					System.out.println("Vos Item: ");
+
+					int i = 0;
+					for(String itemState : state.getMainCharacter().getItems()){
+						System.out.println(i + " - "+state.getBook().getItems().get(itemState));
+						i++;
+					}
 				}
-				else if(bookItem instanceof BookItemWeapon){
-					state.setBookItemArme((BookItemWeapon) bookItem);
+			\end{lstlisting}
+
+			Pour la méthode \textit{itemSupp}, elle est appelé (cf ligne 18 dans le code \ref{lst:prendreItemsPlayer}) afin de choisir l'item à supprimer. Une boucle while est alors parcouru afin d'être sûr d'avoir un choix valide. Une fois l'item choisi, cela met l'inventaire du player à jour grâce au state pris en charge dans la méthode \textit{prendreItems}. Bien sûr, l'utilisateur à le choix de ne pas supprimer un item permettant ainsi de garder tout les items de son inventaire.
+			On aurait pu très bien laisser le choix au player de supprimer quand même un item si son inventaire n'était pas plein. Mais c'est un livre à choix avec des prérequis, tout les items peuvent donc être important, et il n'y a pas de pénalité de déplacement si l'inventaire est plein. Cette fonctionalité de supprimer un item dans l'inventaire n'a alors pas été jugé nécessaire à ajouter en option libre.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=itemSupp()]
+				private void itemSupp(BookState state){
+					System.out.println("Quel item voulez-vous supprimer ?");
+					boolean choixValide = false;
+
+					while(!choixValide){
+						Scanner scanner = new Scanner(System.in);
+						int choix = scanner.nextInt();
+
+						if(choix >= 0 && choix <= (state.getMainCharacter().getItems().size()-1)){
+							state.getMainCharacter().getItems().remove(choix);
+							choixValide = true;
+						} else if(choix == -1) {
+							choixValide = true;
+						} else {
+							System.out.println("vous ne pouvez pas effectuer ce choix");
+						}
+					}
+
 				}
-			}
-		\end{lstlisting}
+			\end{lstlisting}
 
-		Autre point, lors de l'utilisation de la méthode \textit{prendreItems()}, la fourmis prend tout les items disponible, tant qu'elle a encore de la place, que le maximum d'objet à prendre n'est pas à 0 et si des objets sont encore disponible.
+			Pour la méthode \textit{itemAdd()}, elle permet d'ajouté un item choisi.
+			Tout ceci est donc gérer par la méthode \textit{prendreItemsPlayer}, permettant ainsi d'appeler certaine méthode en fonction des choix du player ainsi que de gérer la prise des items grâce à la boucle while.
 
-		\begin{lstlisting}[gobble=12, language=java, caption=prendreItems() de Fourmis]
-			public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
-				int choix = 0;
 
-				while(nbItemMax != 0){
-					int itemMax = state.getMainCharacter().getItemsMax();
-					//Vérifie item maximum et si il y a encore des items à prendre
-					if(state.getMainCharacter().getItems().size() < itemMax && !bookItemLinks.isEmpty()){
-						//Choix
-						Random random = new Random();
-						choix = random.nextInt(bookItemLinks.size());
+			Pour la méthode \textit{execPlayerCreation()} est presque la même que celle de la fourmis : elle utilise aussi la méthode \textit{prendItems()}, défini ici\ref{lst:prendreItemsPlayer} au moment de l'ajout des items. Mais au moment de l'ajout de compétences, la méthode \textit{skillAdd()} est appelé jusqu'à ce que le maximum de compétences autorisé a été pris ou qu'il n'en reste plus à prendre. Cette méthode ressemble fortement à la prise d'item. \textit{execPlayerCreation()} serais à implenté dans la classe \textit{Jeu}, car beaucoup de code est en commun.\\
 
-						BookItemLink itemLink = bookItemLinks.get(choix);
+			\begin{lstlisting}[gobble=16, language=java, caption=execPlayerCreation() du Player]
+				public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state){
+					//Affichage du texte du début dans "création du personnage"
 
-						state.getMainCharacter().addItem(itemLink.getId());
-						itemLink.setAmount(itemLink.getAmount()-1);
+					if(characterCreation instanceof CharacterCreationItem){
+						CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
+						prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
+					}
+					else if(characterCreation instanceof CharacterCreationSkill){
+						CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
 
-						if(itemLink.getAmount() == 0)
-							bookItemLinks.remove(itemLink);
+						int nbItemMax = characterCreationSkill.getAmountToPick();
 
-						if(nbItemMax != -1)
+						while(nbItemMax != 0 && !characterCreationSkill.getSkillLinks().isEmpty()){
+							System.out.println("Les compétences suivant sont disponible:");
+							//Affichage des compétences
+							}
+
+							skillAdd(state, characterCreationSkill);
 							nbItemMax--;
-					} else {
-						nbItemMax = 0;
+						}
 					}
 				}
-			}
-		\end{lstlisting}
+				\end{lstlisting}
 
-		Des boucles infini sont donc à prévoir si par exemple, un objet est requis pour accéder au choix 2 et qu'il faut aller dans le choix 1 pour prendre l'item. Vu qu'au moins un choix est disponible, aucun noeud terminal n'est généré. Sauf que si l'item de la fourmis est plein, l'item ne peut pas être pris et aucun item est supprimé. Si la supression est active, quel est l'item à suprimmer ? Comment définir un item important ? A la santé du personnage, au nombre d'objet non possédé d'un certain type (exemple: defense) ? A un nombre "d'importance" prédéfini à l'édition du livre ? Cette piste de réflexion serait donc à exploiter dans les améliorations à apporter.
 
-		\begin{figure}[H]
-			\centering\includegraphics[height=2.5cm, keepaspectratio]{img/fourmisPrendreItemInfiniExemple.png}
-			\caption{prendreItem exemple de boucle infini}
-		\end{figure}[H]
+		\subsection{Fourmis}\label{sub:fourmis}
+			La classe \textbf{Fourmis} permet de parcourir le livre en tant que joueur fictif. Elle effectue des choix random en fonction des différentes méthodes de l'interface. Cela permet donc de terminer le livre grâce aux choix random.
 
-		A la méthode \textit{execPlayerCreation()}, soit, à la création du personnage, le même problème se pose. En effet, la méthode \textit{prendreItems()} est utilisé. Pour l'ajout de compétence, le problème est moins important. En effet, les compétences ne peuvent pas être aprise autre part qu'à la création du personnage. En effet, c'est une autre amélioration prévu. Nous avons donc décidé d'ajouter le nombre maximal de compétence. Mais si les compétences avait des effets, comment définir qu'une compétence est plus importante qu'une autre ? Peur être avoir aussi un nombre prédéfini, comme les items, qui désigne son importance. Puis copier la méthode pour choisir un noeud aléatoire. Il faudrait aditionner tout les nombres désignant l'importance, choisir un nombre aléatoire, puis soustraire chaque nombres désignant l'importance jusqu'à être égal ou inférieur à zero. Ces une piste de réflexion possible, mais pas la seule solution.
+			La méthode \textit{combatChoice} permet de choisir entre ATTAQUE, EVASION, INVENTAIRE. Nous avons choisi de faire un random sur les trois choix et non pas sur deux choix même si le tour d'évasion n'est pas disponible, permettant ainsi d'avoir la possibilité que la fourmi passe aussi son tour, comme le joueur, afin d'avoir la même chance lors des combats. Elle peut aussi utiliser son inventaire lors du combat.
 
-		\begin{lstlisting}[gobble=12, language=java, caption=execPlayerCreation() de Fourmis]
-			public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state) {
+			\begin{lstlisting}[gobble=16, language=java, caption=combatChoice() de Fourmis]
+				public ChoixCombat combatChoice(BookNodeCombat bookNodeCombat, int remainingRoundBeforeEvasion, BookState state) {
+					boolean choixValide = false;
+					Random random = new Random();
+					ChoixCombat choixCombat = null;
+					int choix;
 
-				if(characterCreation instanceof CharacterCreationItem){
-					CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
+					while(!choixValide){
+						choix = random.nextInt(ChoixCombat.values().length);
+						choixCombat = ChoixCombat.values()[choix];
 
-					prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
+						if (choixCombat == ChoixCombat.INVENTAIRE){
+							if(!state.getMainCharacter().getItems().isEmpty())
+								useInventaire(state);
+						} else {
+							choixValide = true;
+						}
+					}
+
+					return choixCombat;
 				}
-				else if(characterCreation instanceof CharacterCreationSkill){
-					CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
+			\end{lstlisting}
+
+			 Ainsi, elle peut se soigner, prendre des armes et/ou des items de défense. Malheureusement, la foumis n'est pas "intelligente" et ne prend pas donc la meilleur arme ou ne se soigne pas alors qu'elle va mourir. Mais c'est un gros point à améliorer. Elle choisi donc au hasard un des items et peut même prendre un items non utile dans le combat. Elle revient donc sur les trois choix ATTAQUE, EVASION, INVENTAIRE sans avoir pris une arme ou autre lors du choix de l'item dans son inventaire.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=useInventaire() de Fourmis]
+				public void useInventaire(BookState state){
+					List<String> listItemState = state.getMainCharacter().getItems();
 
 					Random random = new Random();
-					int amountToPick = characterCreationSkill.getAmountToPick();
-					while(amountToPick != 0 && !characterCreationSkill.getSkillLinks().isEmpty()) {
-						int choix = random.nextInt(characterCreationSkill.getSkillLinks().size());
-						state.getMainCharacter().addSkill(characterCreationSkill.getSkillLinks().get(choix));
-						characterCreationSkill.getSkillLinks().remove(choix);
-						amountToPick--;
+					int choix = random.nextInt(listItemState.size());
+					BookItem bookItem = state.getBook().getItems().get(listItemState.get(choix));
+
+					if(bookItem instanceof BookItemDefense){
+						state.setBookItemDefense((BookItemDefense) bookItem);
+					}
+					else if(bookItem instanceof BookItemHealing){
+						BookItemHealing bookItemHealing = (BookItemHealing) bookItem;
+						state.getMainCharacter().heal(bookItemHealing.getHp());
+						state.getMainCharacter().getItems().remove(listItemState.get(choix));
+					}
+					else if(bookItem instanceof BookItemWeapon){
+						state.setBookItemArme((BookItemWeapon) bookItem);
 					}
 				}
-			}
-		\end{lstlisting}
+			\end{lstlisting}
 
-		Pour la méthode \textit{chooseEnnemi}, la fourmi envoyé prend obligatoirement le premier ennemi permettant de tuer le maximum d'ennemis en attaquant toujours le même ennemi. Nous avons choisi cette solution pour éviter que la fourmi attaque tout les ennemis sans en tuer un seul. Sauf qu'à chaque tour, chaque ennemi attaque. Donc moins il y a d'ennemis, plus sont les chances de remporter le combat.\\
-		Mais un autre problème se pose. Imaginons une fourmi avec 15 points de vie 10 points d'attaque. Imaginons une liste ennemis: [20pts,5pts,5pts,5pts]. Si le premier ennemi à 20 point de vie et les troix suivant ont 5 points de vie, serait-il plus judicieux alors de tuer les troix ennemis avec 5 points de vie avant d'attaquer le premier ennemis avec 20 points de vie. Probablement oui. Voyons le problème de plus près.
-		\begin{itemize}
-			\item Attaque de la fourmis: deuxième de la liste
-			\item Reste liste ennemis: [20pts,5pts,5pts]
-			\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 10pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 10pts vie restant)\\
-		\end{itemize}
+			Autre point, lors de l'utilisation de la méthode \textit{prendreItems()}, la fourmis prend tout les items disponible, tant qu'elle a encore de la place, que le maximum d'objet à prendre n'est pas à 0 et si des objets sont encore disponible.
 
-		En tant que player, il changerait d'ennemis. La fourmi devra alors avoir l'intelligence de changer d'adversaire. Elle gagnera alors de combat.\\
+			\begin{lstlisting}[gobble=16, language=java, caption=prendreItems() de Fourmis]
+				public void prendreItems(BookState state, List<BookItemLink> bookItemLinks, int nbItemMax){
+					int choix = 0;
 
-		\begin{itemize}
-			\item Attaque de la fourmis: premier de la liste
-			\item Perte de 10pts de vie sur le premier ennemi
-			\item Reste liste ennemis: [10pts,5pts,5pts]
-			\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 5pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 5pts vie restant)
-			\item Attaque de la fourmis: premier de la liste
-			\item Reste liste ennemis: [5pts,5pts]
-			\item Attaque des ennemis: les autres attaque aussi (-0pts de vie à la fourmi, soit 5pts vie restant)
-			\item ...
-		\end{itemize}
+					while(nbItemMax != 0){
+						int itemMax = state.getMainCharacter().getItemsMax();
+						//Vérifie item maximum et si il y a encore des items à prendre
+						if(state.getMainCharacter().getItems().size() < itemMax && !bookItemLinks.isEmpty()){
+							//Choix
+							Random random = new Random();
+							choix = random.nextInt(bookItemLinks.size());
+
+							BookItemLink itemLink = bookItemLinks.get(choix);
+
+							state.getMainCharacter().addItem(itemLink.getId());
+							itemLink.setAmount(itemLink.getAmount()-1);
+
+							if(itemLink.getAmount() == 0)
+								bookItemLinks.remove(itemLink);
+
+							if(nbItemMax != -1)
+								nbItemMax--;
+						} else {
+							nbItemMax = 0;
+						}
+					}
+				}
+			\end{lstlisting}
+
+			Des boucles infini sont donc à prévoir si par exemple, un objet est requis pour accéder au choix 2 et qu'il faut aller dans le choix 1 pour prendre l'item. Vu qu'au moins un choix est disponible, aucun noeud terminal n'est généré. Sauf que si l'item de la fourmis est plein, l'item ne peut pas être pris et aucun item est supprimé. Si la supression est active, quel est l'item à suprimmer ? Comment définir un item important ? A la santé du personnage, au nombre d'objet non possédé d'un certain type (exemple: defense) ? A un nombre "d'importance" prédéfini à l'édition du livre ? Cette piste de réflexion serait donc à exploiter dans les améliorations à apporter.
+
+			\begin{figure}[H]
+				\centering\includegraphics[height=2.5cm, keepaspectratio]{img/fourmisPrendreItemInfiniExemple.png}
+				\caption{prendreItem exemple de boucle infini}
+			\end{figure}[H]
+
+			A la méthode \textit{execPlayerCreation()}, soit, à la création du personnage, le même problème se pose. En effet, la méthode \textit{prendreItems()} est utilisé. Pour l'ajout de compétence, le problème est moins important. En effet, les compétences ne peuvent pas être aprise autre part qu'à la création du personnage. En effet, c'est une autre amélioration prévu. Nous avons donc décidé d'ajouter le nombre maximal de compétence. Mais si les compétences avait des effets, comment définir qu'une compétence est plus importante qu'une autre ? Peur être avoir aussi un nombre prédéfini, comme les items, qui désigne son importance. Puis copier la méthode pour choisir un noeud aléatoire. Il faudrait aditionner tout les nombres désignant l'importance, choisir un nombre aléatoire, puis soustraire chaque nombres désignant l'importance jusqu'à être égal ou inférieur à zero. Ces une piste de réflexion possible, mais pas la seule solution.
+
+			\begin{lstlisting}[gobble=16, language=java, caption=execPlayerCreation() de Fourmis]
+				public void execPlayerCreation(Book book, AbstractCharacterCreation characterCreation, BookState state) {
+
+					if(characterCreation instanceof CharacterCreationItem){
+						CharacterCreationItem characterCreationItem = (CharacterCreationItem) characterCreation;
+
+						prendreItems(state, characterCreationItem.getItemLinks(), characterCreationItem.getAmountToPick());
+					}
+					else if(characterCreation instanceof CharacterCreationSkill){
+						CharacterCreationSkill characterCreationSkill = (CharacterCreationSkill) characterCreation;
+
+						Random random = new Random();
+						int amountToPick = characterCreationSkill.getAmountToPick();
+						while(amountToPick != 0 && !characterCreationSkill.getSkillLinks().isEmpty()) {
+							int choix = random.nextInt(characterCreationSkill.getSkillLinks().size());
+							state.getMainCharacter().addSkill(characterCreationSkill.getSkillLinks().get(choix));
+							characterCreationSkill.getSkillLinks().remove(choix);
+							amountToPick--;
+						}
+					}
+				}
+			\end{lstlisting}
+
+			Pour la méthode \textit{chooseEnnemi}, la fourmi envoyé prend obligatoirement le premier ennemi permettant de tuer le maximum d'ennemis en attaquant toujours le même ennemi. Nous avons choisi cette solution pour éviter que la fourmi attaque tout les ennemis sans en tuer un seul. Sauf qu'à chaque tour, chaque ennemi attaque. Donc moins il y a d'ennemis, plus sont les chances de remporter le combat.\\
+			Mais un autre problème se pose. Imaginons une fourmi avec 15 points de vie 10 points d'attaque. Imaginons une liste ennemis: [20pts,5pts,5pts,5pts]. Si le premier ennemi à 20 point de vie et les troix suivant ont 5 points de vie, serait-il plus judicieux alors de tuer les troix ennemis avec 5 points de vie avant d'attaquer le premier ennemis avec 20 points de vie. Probablement oui. Voyons le problème de plus près.
+			\begin{itemize}
+				\item Attaque de la fourmis: deuxième de la liste
+				\item Reste liste ennemis: [20pts,5pts,5pts]
+				\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 10pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 10pts vie restant)
+			\end{itemize}
+
+			En tant que player, il changerait d'ennemis. La fourmi devra alors avoir l'intelligence de changer d'adversaire. Elle gagnera alors de combat.
+
+			\begin{itemize}
+				\item Attaque de la fourmis: premier de la liste
+				\item Perte de 10pts de vie sur le premier ennemi
+				\item Reste liste ennemis: [10pts,5pts,5pts]
+				\item Attaque des ennemis: Le premier ennemi attaque (-5 points de vie à la fourmi, soit 5pts vie restant), les autres attaque aussi (-0pts de vie à la fourmi, soit 5pts vie restant)
+				\item Attaque de la fourmis: premier de la liste
+				\item Reste liste ennemis: [5pts,5pts]
+				\item Attaque des ennemis: les autres attaque aussi (-0pts de vie à la fourmi, soit 5pts vie restant)
+				\item ...
+			\end{itemize}
